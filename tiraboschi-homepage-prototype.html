@@ -216,7 +216,7 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
 .hdr__m {
   display: none;
   grid-template-columns: 1fr auto auto auto;
-  align-items: center; gap: 18px;
+  align-items: center; gap: 14px;        /* ← légèrement rapproché (18→14) */
   height: 100%; padding: 0 20px;
   color: var(--tira-white);
   transition: color .5s ease;
@@ -226,16 +226,19 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
   display: block; line-height: 0;
 }
 .hdr__m-logo .hdr__logo-img {
-  height: 18px;
+  height: 22px;                          /* ← agrandi (18→22) */
 }
 .hdr__m svg {
-  width: 21px; height: 21px; fill: none;
+  width: 24px; height: 24px; fill: none; /* ← agrandi (21→24) */
   stroke: currentColor; stroke-width: 1.5;
   stroke-linecap: square; stroke-linejoin: miter;
 }
+.hdr__m .tira-bag-icon {
+  width: 24px; height: 24px;             /* ← agrandi aussi */
+}
 .hdr__m button {
   background: none; border: none; cursor: pointer;
-  display: flex; align-items: center; color: inherit; padding: 3px;
+  display: flex; align-items: center; color: inherit; padding: 2px;
 }
 
 @media (max-width: 900px) {
@@ -253,20 +256,20 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
   position: fixed; top: var(--header-h); left: 0; right: 0; z-index: 199;
   display: flex; align-items: center;
   height: var(--search-h); padding: 0 40px;
-  background: transparent;
-  border-bottom: 1px solid rgba(255,255,255,.15);
+  /* Léger fond pour distinguer du header, sans trait dur */
+  background: rgba(0,0,0,.18);
+  border-bottom: none;                   /* ← trait supprimé */
   transition: top .35s var(--tira-ease),
-              background .5s ease,
-              border-color .5s ease;
+              background .5s ease;
 }
 .hdr-search.solid {
   background: var(--tira-white);
-  border-bottom-color: var(--tira-border);
+  border-bottom: 1px solid var(--tira-border);
 }
 .hdr-search.sticky-mode {
   top: 0;
   background: var(--tira-white);
-  border-bottom-color: var(--tira-border);
+  border-bottom: 1px solid var(--tira-border);
 }
 
 /* Champ centré (max 600px, margin auto) */
@@ -287,25 +290,25 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
   font-family: inherit; font-size: 11px;
   text-transform: uppercase; letter-spacing: .12em;
   color: var(--tira-white);
-  border-bottom: 1px solid rgba(255,255,255,.3);
+  border-bottom: 1px solid rgba(255,255,255,.5); /* ← plus visible (.3→.5) */
   transition: color .4s, border-color .4s;
-  padding-bottom: 3px; text-align: center; /* placeholder centré */
+  padding-bottom: 3px; text-align: center;
 }
 .hdr-search.solid input,
 .hdr-search.sticky-mode input {
   color: var(--tira-black);
   border-bottom-color: var(--tira-border);
-  text-align: left; /* en sticky : texte à gauche pour lisibilité */
+  text-align: left;
 }
 .hdr-search.solid input:focus,
 .hdr-search.sticky-mode input:focus { border-bottom-color: var(--tira-black); }
-.hdr-search input::placeholder { opacity: .45; letter-spacing: .06em; }
+.hdr-search input::placeholder { opacity: .65; letter-spacing: .06em; } /* ← plus lisible (.45→.65) */
 
 /* Loupe — dans le champ, toujours visible */
 .hdr-search__icon { flex-shrink: 0; display: flex; align-items: center; }
 .hdr-search__icon svg {
   width: 15px; height: 15px; fill: none;
-  stroke: var(--tira-white); stroke-width: 1.2; opacity: .55;
+  stroke: var(--tira-white); stroke-width: 1.2; opacity: .75; /* ← plus visible (.55→.75) */
   transition: stroke .4s;
 }
 .hdr-search.solid .hdr-search__icon svg,
