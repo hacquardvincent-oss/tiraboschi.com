@@ -203,23 +203,23 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
 }
 
 /* ──────────────────────────────────────────────
-   MOBILE : [hamburger] · [LOGO CENTRÉ] · [bag] [account]
+   MOBILE : [LOGO gauche] · [account] [bag] [hamburger]
    ────────────────────────────────────────────── */
 .hdr__m {
   display: none;
-  /* hamburger(auto) | logo(1fr centré) | bag(auto) | account(auto) */
-  grid-template-columns: auto 1fr auto auto;
-  align-items: center; gap: 16px;
+  /* logo(1fr) | account(auto) | bag(auto) | hamburger(auto) */
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center; gap: 18px;
   height: 100%; padding: 0 20px;
   color: var(--tira-white);
   transition: color .4s ease;
 }
 .hdr.solid .hdr__m { color: var(--tira-black); }
 
-/* Logo mobile — centré dans sa cellule 1fr */
+/* Logo mobile — aligné à gauche */
 .hdr__m-logo {
-  display: flex; justify-content: center; align-items: center;
-  text-align: center;
+  display: flex; flex-direction: column; align-items: flex-start;
+  gap: 3px;
 }
 .hdr__m-logo .hdr__logo-name { font-size: 13px; letter-spacing: .2em; }
 .hdr__m-logo .hdr__logo-sub  { font-size: 6px; letter-spacing: .18em; }
@@ -239,33 +239,49 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
   .hdr__m { display: grid; }
 }
 
-/* ── Bande search — TOUJOURS visible sous header, TOUJOURS blanche ── */
-/* Elle suit le header quand il se cache (translateY avec lui) */
+/* ── Bande search — transparente sur hero, blanche après scroll ── */
+/* Elle suit le header (disparaît avec lui via sibling selector CSS) */
 .hdr-search {
   position: fixed; top: var(--header-h); left: 0; right: 0; z-index: 199;
   display: flex; align-items: center;
   height: var(--search-h); padding: 0 40px;
-  background: var(--tira-white);
-  border-bottom: 1px solid var(--tira-border);
-  transition: transform .35s var(--tira-ease);
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background .4s ease, border-color .4s ease, transform .35s var(--tira-ease);
+  pointer-events: none;
 }
+/* Sur hero transparent : input blanc, placeholder visible */
+.hdr-search input { color: var(--tira-white); }
+.hdr-search svg   { stroke: var(--tira-white); }
+
+/* Solid (après scroll) : fond blanc, texte noir */
+.hdr-search.solid {
+  background: var(--tira-white);
+  border-bottom-color: var(--tira-border);
+  pointer-events: auto;
+}
+.hdr-search.solid input { color: var(--tira-black); }
+.hdr-search.solid svg   { stroke: var(--tira-black); }
+
 /* Suit le header quand il disparaît */
 .hdr.hidden ~ .hdr-search {
   transform: translateY(calc(-1 * var(--header-h)));
 }
+
 .hdr-search input {
   flex: 1; border: none; background: none; outline: none;
   font-family: inherit; font-size: 11px;
-  text-transform: uppercase; letter-spacing: .1em; color: var(--tira-black);
+  text-transform: uppercase; letter-spacing: .1em;
   border-bottom: 1px solid transparent;
-  transition: border-color .2s;
+  transition: border-color .2s, color .4s;
   padding-bottom: 2px;
 }
-.hdr-search input:focus { border-color: var(--tira-black); }
-.hdr-search input::placeholder { opacity: .3; }
+.hdr-search.solid input:focus { border-bottom-color: var(--tira-black); }
+.hdr-search input::placeholder { opacity: .4; }
 .hdr-search svg {
   width: 15px; height: 15px; fill: none;
-  stroke: var(--tira-black); stroke-width: 1.2; opacity: .35;
+  stroke-width: 1.2; opacity: .5;
+  transition: stroke .4s;
 }
 @media (max-width: 900px) {
   .hdr-search { padding: 0 20px; }
@@ -894,24 +910,24 @@ body.nav-open { overflow: hidden; }
     </div>
   </div>
 
-  <!-- ═ MOBILE : [hamburger gauche] · [LOGO CENTRÉ] · [bag] [account] ═ -->
+  <!-- ═ MOBILE : [LOGO gauche] · [account] [bag] [hamburger] ═ -->
   <div class="hdr__m" aria-label="Navigation mobile">
 
-    <!-- Hamburger — à gauche -->
-    <button aria-label="Menu principal" aria-expanded="false" id="mobile-menu-btn">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <line x1="3" y1="8" x2="21" y2="8"/>
-        <line x1="3" y1="16" x2="21" y2="16"/>
-      </svg>
-    </button>
-
-    <!-- Logo — centré dans sa colonne 1fr -->
+    <!-- Logo — gauche (1fr) -->
     <a href="/" class="hdr__m-logo" aria-label="TIRABOSCHI Paris — accueil">
       <span class="hdr__logo-name">Tiraboschi</span>
       <span class="hdr__logo-sub">Paris · Since 1904</span>
     </a>
 
-    <!-- Picto panier TIRABOSCHI forme V — à droite -->
+    <!-- Compte -->
+    <button aria-label="Mon compte">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="7.5" r="3.5"/>
+        <path d="M3.5 20c0-4.5 3.8-7 8.5-7s8.5 2.5 8.5 7"/>
+      </svg>
+    </button>
+
+    <!-- Picto panier TIRABOSCHI — rect + anse en V -->
     <button aria-label="Panier — 0 article">
       <svg viewBox="0 0 24 24" aria-hidden="true" fill="none"
            stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">
@@ -920,11 +936,11 @@ body.nav-open { overflow: hidden; }
       </svg>
     </button>
 
-    <!-- Compte — à droite -->
-    <button aria-label="Mon compte">
+    <!-- Hamburger — tout à droite -->
+    <button aria-label="Menu principal" aria-expanded="false" id="mobile-menu-btn">
       <svg viewBox="0 0 24 24" aria-hidden="true">
-        <circle cx="12" cy="7.5" r="3.5"/>
-        <path d="M3.5 20c0-4.5 3.8-7 8.5-7s8.5 2.5 8.5 7"/>
+        <line x1="3" y1="8" x2="21" y2="8"/>
+        <line x1="3" y1="16" x2="21" y2="16"/>
       </svg>
     </button>
   </div>
@@ -1467,7 +1483,7 @@ function updateHeader() {
   /* Transparent ↔ solid (seuil : 85% du hero) */
   const isSolid = y >= heroH * 0.85;
   hdr.classList.toggle('solid', isSolid);
-  /* Note : .hdr-search est toujours blanche (pas de toggle solid) */
+  if (search) search.classList.toggle('solid', isSolid);
   document.body.classList.toggle('on-dark', !isSolid);
 
   /* Directionnel : cacher scroll down (delta > 4px, seuil 120px)
