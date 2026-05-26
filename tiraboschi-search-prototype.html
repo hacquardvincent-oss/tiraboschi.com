@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ═══ SEO ═══ -->
+<title>Recherche : sac cuir — TIRABOSCHI Paris</title>
+<meta name="description" content="Résultats de recherche pour « sac cuir » — TIRABOSCHI Paris. Maroquinerie de luxe Made in France depuis 1904.">
+<link rel="canonical" href="https://tiraboschi-paris.com/search?q=sac+cuir">
+<meta name="robots" content="noindex">
+
+<!-- ═══ OPEN GRAPH ═══ -->
+<meta property="og:type"    content="website">
+<meta property="og:url"     content="https://tiraboschi-paris.com/search">
+<meta property="og:title"   content="Recherche — TIRABOSCHI Paris">
+<meta property="og:locale"  content="fr_FR">
+<meta name="twitter:card"   content="summary">
+
+<!-- ═══ FONTS ═══ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap&subset=latin" rel="stylesheet">
+
+<!-- ═══ JSON-LD ═══ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "name": "Recherche — TIRABOSCHI Paris",
+      "url": "https://tiraboschi-paris.com/search?q=sac+cuir",
+      "description": "Résultats de recherche pour sac cuir sur TIRABOSCHI Paris",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "TIRABOSCHI Paris",
+        "url": "https://tiraboschi-paris.com",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://tiraboschi-paris.com/search?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://tiraboschi-paris.com" },
+        { "@type": "ListItem", "position": 2, "name": "Recherche", "item": "https://tiraboschi-paris.com/search" }
+      ]
+    }
+  ]
+}
+</script>
+
+<style>
+/* ════════════════════════════════════════════
+   RESET & DESIGN TOKENS
+════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --tira-black:    #0a0a0a;
+  --tira-white:    #ffffff;
+  --tira-grey:     #f7f5f2;
+  --tira-border:   #e8e8e8;
+  --tira-ease:     cubic-bezier(0.16, 1, 0.3, 1);
+  --tira-duration: 0.9s;
+  --header-h:      64px;
+  --search-h:      44px;
+}
+
+body {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 400;
+  background: var(--tira-white);
+  color: var(--tira-black);
+  overflow-x: hidden;
+  cursor: none;
+}
+@media (hover: none) { body { cursor: auto; } }
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 2px solid var(--tira-black); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ════════════════════════════════════════════
+   CURSEUR CUSTOM
+════════════════════════════════════════════ */
+.cur-dot, .cur-ring {
+  position: fixed; border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%);
+  will-change: left, top;
+}
+.cur-dot {
+  width: 6px; height: 6px;
+  background: var(--tira-black);
+  transition: width .3s var(--tira-ease), height .3s var(--tira-ease), background .3s;
+}
+.cur-ring {
+  width: 30px; height: 30px;
+  border: 1px solid rgba(10,10,10,.38);
+  transition: opacity .25s, width .3s var(--tira-ease), height .3s var(--tira-ease);
+}
+body.on-hover .cur-dot  { width: 44px; height: 44px; background: rgba(10,10,10,.06); }
+body.on-hover .cur-ring { opacity: 0; }
+@media (hover: none) { .cur-dot, .cur-ring { display: none; } }
+
+/* ════════════════════════════════════════════
+   HEADER — Solid white (interior page)
+════════════════════════════════════════════ */
+.hdr {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: var(--header-h);
+  background: var(--tira-white);
+  border-bottom: 1px solid var(--tira-border);
+  transition: transform .35s var(--tira-ease);
+}
+.hdr.hidden { transform: translateY(calc(-1 * var(--header-h))); }
+
+.hdr__d {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  height: 100%; padding: 0 40px; gap: 24px;
+}
+.hdr__nav {
+  display: flex; align-items: center; gap: 24px; justify-content: flex-start;
+}
+.hdr__nav a {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+  opacity: .65; transition: opacity .2s; white-space: nowrap;
+}
+.hdr__nav a:hover { opacity: 1; }
+.hdr__nav .nav-sep { width: 1px; height: 11px; background: var(--tira-black); opacity: .2; }
+.hdr__logo { display: flex; justify-content: center; }
+.hdr__logo a { display: block; line-height: 0; }
+.hdr__logo-img { display: block; height: 28px; width: auto; filter: none; }
+.hdr__icons {
+  display: flex; align-items: center; justify-content: flex-end; gap: 18px;
+}
+.hdr__icons button {
+  background: none; border: none; cursor: none;
+  display: flex; align-items: center;
+  opacity: .65; transition: opacity .2s;
+}
+.hdr__icons button:hover { opacity: 1; }
+.hdr__icons svg {
+  width: 20px; height: 20px; fill: none;
+  stroke: var(--tira-black); stroke-width: 1.5;
+  stroke-linecap: square; stroke-linejoin: miter;
+}
+.tira-bag-icon { display: block; width: 22px; height: 22px; object-fit: contain; filter: none; }
+
+.hdr__m {
+  display: none;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center; gap: 14px;
+  height: 100%; padding: 0 20px;
+  color: var(--tira-black);
+}
+.hdr__m-logo { display: block; line-height: 0; }
+.hdr__m svg {
+  width: 24px; height: 24px; fill: none;
+  stroke: currentColor; stroke-width: 1.5;
+  stroke-linecap: square; stroke-linejoin: miter;
+}
+.hdr__m .tira-bag-icon { width: 24px; height: 24px; }
+.hdr__m button {
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; color: inherit; padding: 2px;
+}
+
+@media (max-width: 900px) {
+  .hdr__d { display: none; }
+  .hdr__m { display: grid; }
+}
+
+/* ════════════════════════════════════════════
+   SEARCH BAR — repurposed as sub-header only on mobile
+════════════════════════════════════════════ */
+.hdr-search {
+  position: fixed; top: var(--header-h); left: 0; right: 0; z-index: 199;
+  display: flex; align-items: center; justify-content: center;
+  height: var(--search-h); padding: 0 40px;
+  background: var(--tira-white);
+  border-bottom: 1px solid var(--tira-border);
+  transition: transform .35s var(--tira-ease);
+}
+.hdr-search.hidden { transform: translateY(calc(-1 * (var(--header-h) + var(--search-h)))); }
+
+.hdr-search__field {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; max-width: 560px;
+}
+.hdr-search input {
+  flex: 1; border: none; background: none; outline: none;
+  font-family: inherit; font-size: 11px;
+  text-transform: uppercase; letter-spacing: .12em;
+  color: var(--tira-black);
+  border-bottom: 1px solid var(--tira-border);
+  transition: border-color .3s; padding-bottom: 3px;
+}
+.hdr-search input::placeholder { color: rgba(10,10,10,.4); opacity: 1; }
+.hdr-search input:focus { border-bottom-color: var(--tira-black); outline: none; }
+.hdr-search__icon { flex-shrink: 0; display: flex; align-items: center; }
+.hdr-search__icon svg {
+  width: 15px; height: 15px; fill: none;
+  stroke: var(--tira-black); stroke-width: 1.2; opacity: .6;
+}
+
+/* ════════════════════════════════════════════
+   PAGE OFFSET
+════════════════════════════════════════════ */
+.page-body { padding-top: calc(var(--header-h) + var(--search-h)); }
+
+/* ════════════════════════════════════════════
+   MOBILE NAV DRAWER
+════════════════════════════════════════════ */
+.nav-overlay {
+  display: none; position: fixed; inset: 0; z-index: 300;
+  background: rgba(10,10,10,.45);
+  opacity: 0; transition: opacity .35s ease;
+}
+.nav-overlay.open { display: block; }
+.nav-overlay.visible { opacity: 1; }
+.nav-drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 301;
+  width: min(320px, 88vw);
+  background: var(--tira-white);
+  transform: translateX(100%);
+  transition: transform .45s var(--tira-ease);
+  display: flex; flex-direction: column;
+  padding: 28px 28px 40px; overflow-y: auto;
+}
+.nav-drawer.open { transform: translateX(0); }
+.nav-drawer__close {
+  align-self: flex-end; background: none; border: none; cursor: pointer;
+  padding: 4px; margin-bottom: 32px;
+}
+.nav-drawer__close svg { width: 22px; height: 22px; stroke: var(--tira-black); stroke-width: 1.5; fill: none; }
+.nav-drawer a {
+  display: block; font-size: 20px; letter-spacing: -.01em;
+  padding: 12px 0; border-bottom: 1px solid var(--tira-border);
+  opacity: .85; transition: opacity .2s;
+}
+.nav-drawer a:hover { opacity: 1; }
+.nav-drawer__sub { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; padding: 18px 0 10px; opacity: .45; }
+
+/* ════════════════════════════════════════════
+   SCROLL REVEAL
+════════════════════════════════════════════ */
+[data-tira-reveal] {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity var(--tira-duration) var(--tira-ease),
+              transform var(--tira-duration) var(--tira-ease);
+}
+[data-tira-reveal].is-visible { opacity: 1; transform: none; }
+[data-tira-reveal].d1 { transition-delay: .1s; }
+[data-tira-reveal].d2 { transition-delay: .2s; }
+[data-tira-reveal].d3 { transition-delay: .3s; }
+[data-tira-reveal].d4 { transition-delay: .4s; }
+
+/* ════════════════════════════════════════════
+   SECTION 1 — SEARCH HERO (grey, 200px)
+════════════════════════════════════════════ */
+.srch-hero {
+  background: var(--tira-grey);
+  height: 200px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 0 40px;
+  border-bottom: 1px solid var(--tira-border);
+}
+.srch-hero__label {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .15em; opacity: .4;
+  margin-bottom: 16px;
+}
+.srch-hero__form {
+  display: flex; align-items: center;
+  width: 100%; max-width: 560px;
+  border-bottom: 1px solid var(--tira-black);
+  padding-bottom: 4px;
+  margin-bottom: 16px;
+  transition: border-color .3s;
+}
+.srch-hero__form:focus-within { border-bottom-color: var(--tira-black); }
+.srch-hero__input {
+  flex: 1; border: none; background: none; outline: none;
+  font-family: inherit; font-size: 20px; letter-spacing: -.01em;
+  color: var(--tira-black); padding: 4px 0;
+}
+.srch-hero__input::placeholder { opacity: .35; }
+.srch-hero__input:focus { border-bottom-color: var(--tira-black); }
+.srch-hero__btn {
+  background: none; border: none; cursor: none;
+  display: flex; align-items: center; padding: 4px;
+  opacity: .6; transition: opacity .2s;
+}
+.srch-hero__btn:hover { opacity: 1; }
+.srch-hero__btn svg {
+  width: 20px; height: 20px; fill: none;
+  stroke: var(--tira-black); stroke-width: 1.4;
+}
+.srch-hero__count {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .1em; opacity: .4;
+}
+.srch-hero__count strong { opacity: .8; font-weight: 400; }
+
+@media (max-width: 768px) {
+  .srch-hero { height: auto; padding: 40px 20px; }
+  .srch-hero__input { font-size: 16px; }
+}
+
+/* ════════════════════════════════════════════
+   SECTION 2 — RESULTS (white)
+════════════════════════════════════════════ */
+.srch-results {
+  background: var(--tira-white);
+  padding: 60px 60px 80px;
+  border-bottom: 1px solid var(--tira-border);
+}
+.srch-results__inner {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: 220px 1fr; gap: 60px; align-items: start;
+}
+
+/* ── SIDEBAR FILTERS ── */
+.srch-sidebar {
+  position: sticky; top: calc(var(--header-h) + var(--search-h) + 24px);
+}
+.srch-sidebar__title {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .15em; opacity: .4;
+  margin-bottom: 28px;
+}
+.srch-filter-group { margin-bottom: 28px; }
+.srch-filter-group__title {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .12em; opacity: .55;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--tira-border); padding-bottom: 8px;
+}
+.srch-filter-item {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+  cursor: pointer;
+}
+.srch-filter-item input[type="checkbox"] {
+  appearance: none; -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border: 1px solid var(--tira-border);
+  background: var(--tira-white);
+  cursor: pointer; flex-shrink: 0;
+  position: relative; transition: border-color .2s;
+}
+.srch-filter-item input[type="checkbox"]:checked {
+  background: var(--tira-black); border-color: var(--tira-black);
+}
+.srch-filter-item input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute; top: 2px; left: 4px;
+  width: 4px; height: 7px;
+  border-right: 1px solid var(--tira-white);
+  border-bottom: 1px solid var(--tira-white);
+  transform: rotate(40deg);
+}
+.srch-filter-item label {
+  font-size: 13px; opacity: .7; cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+}
+.srch-filter-item label .count {
+  font-size: 10px; opacity: .4; letter-spacing: .04em;
+}
+.srch-apply {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .15em;
+  border-bottom: 1px solid var(--tira-black); padding-bottom: 3px;
+  opacity: .6; transition: opacity .2s; cursor: pointer;
+  background: none; border-left: none; border-right: none; border-top: none;
+  font-family: inherit; margin-top: 8px;
+}
+.srch-apply:hover { opacity: 1; }
+
+/* ── RESULTS GRID ── */
+.srch-grid { }
+.srch-section-label {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .15em; opacity: .35;
+  margin-bottom: 16px; margin-top: 44px;
+  display: flex; align-items: center; gap: 12px;
+}
+.srch-section-label:first-child { margin-top: 0; }
+.srch-section-label::after {
+  content: ''; flex: 1; height: 1px; background: var(--tira-border);
+}
+
+/* Product cards grid */
+.srch-products-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+  margin-bottom: 2px;
+}
+.srch-product-card {
+  background: var(--tira-grey);
+  transition: opacity .3s;
+}
+.srch-product-card:hover { opacity: .88; }
+.srch-product-card__image {
+  aspect-ratio: 3/4; overflow: hidden; position: relative;
+}
+.srch-product-card__ph {
+  width: 100%; height: 100%;
+  display: flex; align-items: flex-end; justify-content: center;
+  padding-bottom: 20px;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .12em;
+  color: rgba(255,255,255,.4);
+}
+/* Gradient backgrounds per product type */
+.ph--victoire  { background: linear-gradient(180deg, #1a1814 0%, #2a2420 100%); }
+.ph--colette   { background: linear-gradient(180deg, #1c1a16 0%, #2c2820 100%); }
+.ph--rafael    { background: linear-gradient(180deg, #181818 0%, #282420 100%); }
+.ph--colette-mini { background: linear-gradient(180deg, #1e1c18 0%, #2e2a22 100%); }
+.ph--jane      { background: linear-gradient(180deg, #1a1c18 0%, #2a2c22 100%); }
+.ph--olympe    { background: linear-gradient(180deg, #16181a 0%, #262830 100%); }
+.ph--pochon    { background: linear-gradient(180deg, #1a1614 0%, #2a2218 100%); }
+.ph--chaine    { background: linear-gradient(180deg, #181818 0%, #242420 100%); }
+.ph--anse      { background: linear-gradient(180deg, #161a18 0%, #222a24 100%); }
+
+.srch-product-card__info {
+  padding: 16px 16px 20px;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 8px;
+}
+.srch-product-card__name { font-size: 14px; letter-spacing: -.01em; }
+.srch-product-card__type { font-size: 10px; text-transform: uppercase; letter-spacing: .1em; opacity: .4; margin-top: 4px; }
+.srch-product-card__price { font-size: 14px; white-space: nowrap; }
+
+/* Article cards (2-col row) */
+.srch-articles-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+}
+.srch-article-card {
+  background: var(--tira-grey);
+  display: flex; gap: 0;
+  transition: opacity .3s;
+}
+.srch-article-card:hover { opacity: .85; }
+.srch-article-card__image {
+  width: 120px; flex-shrink: 0;
+  aspect-ratio: 4/3; overflow: hidden;
+}
+.srch-article-card__ph {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .1em; color: rgba(255,255,255,.3);
+}
+.ph--art1 { background: linear-gradient(135deg, #2a1f16 0%, #3d2e1f 100%); }
+.ph--art2 { background: linear-gradient(135deg, #1a1410 0%, #2d2118 100%); }
+.srch-article-card__content {
+  padding: 16px 18px;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.srch-article-card__cat {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .1em; opacity: .4; margin-bottom: 6px;
+}
+.srch-article-card__title { font-size: 14px; line-height: 1.3; letter-spacing: -.01em; }
+
+/* Page links */
+.srch-pages-list {
+  display: flex; flex-direction: column; gap: 0;
+}
+.srch-page-item {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--tira-border);
+  display: flex; gap: 16px; align-items: flex-start;
+}
+.srch-page-item:first-child { border-top: 1px solid var(--tira-border); }
+.srch-page-item__name {
+  font-size: 16px; letter-spacing: -.01em; min-width: 200px;
+  border-bottom: 1px solid var(--tira-black); padding-bottom: 2px; display: inline;
+  opacity: .8; transition: opacity .2s;
+}
+.srch-page-item:hover .srch-page-item__name { opacity: 1; }
+.srch-page-item__desc { font-size: 13px; opacity: .45; line-height: 1.6; }
+
+@media (max-width: 1100px) {
+  .srch-results { padding: 48px 40px 60px; }
+  .srch-results__inner { gap: 40px; }
+}
+@media (max-width: 900px) {
+  .srch-results { padding: 40px 20px 60px; }
+  .srch-results__inner { grid-template-columns: 1fr; gap: 0; }
+  .srch-sidebar { position: static; margin-bottom: 40px; display: none; } /* replaced by bottom sheet on mobile */
+  .srch-sidebar.open { display: block; }
+  .srch-products-grid { grid-template-columns: 1fr 1fr; }
+  .srch-articles-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .srch-products-grid { grid-template-columns: 1fr 1fr; gap: 2px; }
+}
+
+/* ════════════════════════════════════════════
+   MOBILE FILTER TOGGLE BUTTON
+════════════════════════════════════════════ */
+.srch-filter-btn {
+  display: none;
+  margin-bottom: 24px;
+  background: none; border: none; font-family: inherit; cursor: pointer;
+  font-size: 11px; text-transform: uppercase; letter-spacing: .15em;
+  border-bottom: 1px solid var(--tira-black); padding-bottom: 3px;
+  opacity: .65; transition: opacity .2s;
+}
+.srch-filter-btn:hover { opacity: 1; }
+
+@media (max-width: 900px) {
+  .srch-filter-btn { display: inline-block; }
+}
+
+/* ════════════════════════════════════════════
+   SECTION 3 — NO RESULTS STATE
+════════════════════════════════════════════ */
+.srch-noresult {
+  background: var(--tira-grey);
+  padding: 60px 60px;
+  border: 1px solid var(--tira-border);
+  margin: 2px 0 0;
+}
+.srch-noresult__inner { max-width: 680px; margin: 0 auto; text-align: center; }
+.srch-noresult__label {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .15em; opacity: .4; margin-bottom: 16px;
+}
+.srch-noresult__title {
+  font-size: 24px; letter-spacing: -.01em; margin-bottom: 20px; opacity: .65;
+}
+.srch-noresult__suggest {
+  font-size: 14px; opacity: .55; line-height: 1.8; margin-bottom: 28px;
+}
+.srch-noresult__suggest a {
+  border-bottom: 1px solid currentColor; padding-bottom: 2px; opacity: .8; transition: opacity .2s;
+}
+.srch-noresult__suggest a:hover { opacity: 1; }
+.srch-noresult__cats {
+  display: flex; flex-wrap: wrap; gap: 2px; justify-content: center; margin-bottom: 28px;
+}
+.srch-noresult__cat {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .12em;
+  border: 1px solid var(--tira-border); padding: 12px 20px;
+  background: var(--tira-white); opacity: .7; transition: opacity .2s;
+}
+.srch-noresult__cat:hover { opacity: 1; }
+.srch-noresult__cta {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .15em;
+  border-bottom: 1px solid var(--tira-black); padding-bottom: 3px;
+  opacity: .6; transition: opacity .2s; display: inline;
+}
+.srch-noresult__cta:hover { opacity: 1; }
+
+@media (max-width: 768px) {
+  .srch-noresult { padding: 40px 20px; }
+}
+
+/* ════════════════════════════════════════════
+   SECTION 4 — POPULAR SEARCHES (grey)
+════════════════════════════════════════════ */
+.srch-popular {
+  background: var(--tira-grey);
+  padding: 72px 60px;
+  border-bottom: 1px solid var(--tira-border);
+}
+.srch-popular__inner { max-width: 960px; margin: 0 auto; text-align: center; }
+.srch-popular__title {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .15em; opacity: .4;
+  margin-bottom: 32px;
+}
+.srch-popular__tags {
+  display: flex; flex-wrap: wrap; gap: 0; justify-content: center;
+}
+.srch-popular__tag {
+  font-size: 13px; letter-spacing: .02em;
+  border-bottom: 1px solid currentColor; padding-bottom: 2px;
+  margin: 0 14px 16px;
+  opacity: .55; transition: opacity .2s; cursor: pointer;
+}
+.srch-popular__tag:hover { opacity: 1; }
+
+@media (max-width: 768px) {
+  .srch-popular { padding: 48px 20px; }
+  .srch-popular__tag { margin: 0 10px 12px; font-size: 12px; }
+}
+
+/* ════════════════════════════════════════════
+   MARQUEE
+════════════════════════════════════════════ */
+.tira-marquee {
+  overflow: hidden; border-top: 1px solid var(--tira-border);
+  background: var(--tira-grey); padding: 12px 0;
+}
+.tira-marquee__track {
+  display: flex; gap: 28px; width: max-content;
+  animation: marquee-scroll 28s linear infinite;
+}
+.tira-marquee:hover .tira-marquee__track { animation-play-state: paused; }
+.tira-marquee__item {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .15em;
+  white-space: nowrap; opacity: .55;
+}
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ════════════════════════════════════════════
+   FOOTER
+════════════════════════════════════════════ */
+.footer {
+  background: var(--tira-black);
+  color: var(--tira-white);
+  padding: 72px 60px 32px;
+}
+.footer__grid {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 48px;
+  padding-bottom: 56px;
+  border-bottom: 1px solid rgba(255,255,255,.12);
+}
+.footer__logo-img { height: 24px; width: auto; filter: brightness(0) invert(1); margin-bottom: 16px; }
+.footer__tagline { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; opacity: .45; line-height: 1.7; margin-bottom: 12px; }
+.footer__insta { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; opacity: .35; transition: opacity .2s; }
+.footer__insta:hover { opacity: .7; }
+.footer__col-title { font-size: 11px; text-transform: uppercase; letter-spacing: .15em; opacity: .35; margin-bottom: 20px; }
+.footer__col ul { list-style: none; }
+.footer__col ul li { margin-bottom: 10px; }
+.footer__col ul li a { font-size: 13px; opacity: .65; transition: opacity .2s; }
+.footer__col ul li a:hover { opacity: 1; }
+.footer__bottom {
+  max-width: 1200px; margin: 0 auto;
+  padding-top: 24px;
+  font-size: 11px; opacity: .3; text-align: center; letter-spacing: .05em;
+}
+.footer__col-header {
+  display: none;
+  font-size: 11px; text-transform: uppercase; letter-spacing: .15em;
+  opacity: .45; padding: 16px 0; cursor: pointer;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  justify-content: space-between; align-items: center;
+  background: none; border-left: none; border-right: none; border-top: none;
+  color: var(--tira-white); width: 100%;
+}
+.footer__col-body { display: block; }
+
+@media (max-width: 900px) {
+  .footer { padding: 48px 20px 24px; }
+  .footer__grid { grid-template-columns: 1fr; gap: 0; }
+  .footer__col-header { display: flex; }
+  .footer__col-body { display: none; padding-bottom: 16px; }
+  .footer__col-body.open { display: block; }
+  .footer__col:first-child .footer__col-body { display: block; padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,.1); }
+  .footer__col:first-child .footer__col-header { display: none; }
+}
+
+/* ════════════════════════════════════════════
+   NO RESULTS ANNOTATION
+════════════════════════════════════════════ */
+.srch-noresult-annotation {
+  padding: 12px 60px;
+  background: var(--tira-white);
+  border-bottom: 1px solid var(--tira-border);
+}
+.srch-noresult-annotation__label {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .12em; opacity: .35;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 768px) {
+  .srch-noresult-annotation { padding: 12px 20px; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- CURSEUR -->
+<div class="cur-dot" id="curDot"></div>
+<div class="cur-ring" id="curRing"></div>
+
+<!-- ═══════════════════════════════════════════
+     HEADER
+═══════════════════════════════════════════ -->
+<header class="hdr" id="hdr">
+  <div class="hdr__d">
+    <nav class="hdr__nav">
+      <a href="#">Collections</a>
+      <span class="nav-sep"></span>
+      <a href="#">Iconiques</a>
+      <span class="nav-sep"></span>
+      <a href="#">Sur Mesure</a>
+      <span class="nav-sep"></span>
+      <a href="#">La Maison</a>
+    </nav>
+    <div class="hdr__logo">
+      <a href="/">
+        <img class="hdr__logo-img"
+             src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738"
+             alt="TIRABOSCHI Paris" height="28" width="auto">
+      </a>
+    </div>
+    <div class="hdr__icons">
+      <button aria-label="Mon compte">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </button>
+      <button aria-label="Rechercher">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+      </button>
+      <button aria-label="Panier">
+        <img class="tira-bag-icon"
+             src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050"
+             alt="Panier" width="22" height="22">
+      </button>
+    </div>
+  </div>
+
+  <div class="hdr__m">
+    <a class="hdr__m-logo" href="/">
+      <img class="hdr__logo-img"
+           src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738"
+           alt="TIRABOSCHI Paris" height="24" width="auto">
+    </a>
+    <button aria-label="Panier">
+      <img class="tira-bag-icon"
+           src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050"
+           alt="Panier" width="24" height="24">
+    </button>
+    <button aria-label="Mon compte">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    </button>
+    <button id="hamburger" aria-label="Menu">
+      <svg viewBox="0 0 24 24"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="13" x2="21" y2="13"/><line x1="3" y1="19" x2="21" y2="19"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="hdr-search" id="hdrSearch">
+  <div class="hdr-search__field">
+    <input type="search" placeholder="Rechercher une pièce, une matière…" aria-label="Recherche">
+    <span class="hdr-search__icon">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+    </span>
+  </div>
+</div>
+
+<div class="nav-overlay" id="navOverlay"></div>
+<nav class="nav-drawer" id="navDrawer">
+  <button class="nav-drawer__close" id="navClose" aria-label="Fermer">
+    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <a href="#">Collections</a>
+  <a href="#">Iconiques</a>
+  <a href="#">Sur Mesure</a>
+  <div class="nav-drawer__sub">La Maison</div>
+  <a href="#">Histoire</a>
+  <a href="#">Savoir-Faire</a>
+  <a href="#">Matières &amp; Cuirs</a>
+  <a href="#">La Société</a>
+  <a href="#">L'Atelier Blog</a>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     PAGE BODY
+═══════════════════════════════════════════ -->
+<div class="page-body">
+
+  <!-- ── SECTION 1 : SEARCH HERO ── -->
+  <section class="srch-hero">
+    <p class="srch-hero__label" data-tira-reveal>Recherche</p>
+    <form class="srch-hero__form" role="search" action="/search" method="get" data-tira-reveal style="transition-delay:.1s">
+      <input class="srch-hero__input" type="search" name="q"
+             value="sac cuir" aria-label="Rechercher" autocomplete="off"
+             placeholder="Rechercher…">
+      <button class="srch-hero__btn" type="submit" aria-label="Lancer la recherche">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+      </button>
+    </form>
+    <p class="srch-hero__count" data-tira-reveal style="transition-delay:.2s">
+      <strong>14 résultats</strong> pour &laquo;&nbsp;sac cuir&nbsp;&raquo;
+    </p>
+  </section>
+
+  <!-- ── SECTION 2 : RESULTS ── -->
+  <section class="srch-results">
+    <div class="srch-results__inner">
+
+      <!-- SIDEBAR FILTERS (desktop) -->
+      <aside class="srch-sidebar" id="srchSidebar" aria-label="Filtres">
+        <p class="srch-sidebar__title">Filtrer par</p>
+
+        <div class="srch-filter-group">
+          <p class="srch-filter-group__title">Type</p>
+          <div class="srch-filter-item">
+            <input type="checkbox" id="f-sacs" checked>
+            <label for="f-sacs">Sacs <span class="count">(7)</span></label>
+          </div>
+          <div class="srch-filter-item">
+            <input type="checkbox" id="f-pm" checked>
+            <label for="f-pm">Petite maroquinerie <span class="count">(3)</span></label>
+          </div>
+          <div class="srch-filter-item">
+            <input type="checkbox" id="f-acc" checked>
+            <label for="f-acc">Accessoires <span class="count">(2)</span></label>
+          </div>
+          <div class="srch-filter-item">
+            <input type="checkbox" id="f-art">
+            <label for="f-art">Articles <span class="count">(2)</span></label>
+          </div>
+        </div>
+
+        <div class="srch-filter-group">
+          <p class="srch-filter-group__title">Matière</p>
+          <div class="srch-filter-item">
+            <input type="checkbox" id="f-veau" checked>
+            <label for="f-veau">Veau <span class="count">(8)</span></label>
+          </div>
+          <div class="srch-filter-item">
+            <input type="checkbox" id="f-agneau" checked>
+            <label for="f-agneau">Agneau <span class="count">(3)</span></label>
+          </div>
+          <div class="srch-filter-item">
+            <input type="checkbox" id="f-exo">
+            <label for="f-exo">Exotiques <span class="count">(3)</span></label>
+          </div>
+        </div>
+
+        <div class="srch-filter-group">
+          <p class="srch-filter-group__title">Prix</p>
+          <div class="srch-filter-item">
+            <input type="checkbox" id="f-p1">
+            <label for="f-p1">– 500&thinsp;€ <span class="count">(2)</span></label>
+          </div>
+          <div class="srch-filter-item">
+            <input type="checkbox" id="f-p2" checked>
+            <label for="f-p2">500–2000&thinsp;€ <span class="count">(4)</span></label>
+          </div>
+          <div class="srch-filter-item">
+            <input type="checkbox" id="f-p3" checked>
+            <label for="f-p3">2000–3500&thinsp;€ <span class="count">(5)</span></label>
+          </div>
+          <div class="srch-filter-item">
+            <input type="checkbox" id="f-p4">
+            <label for="f-p4">+ 3500&thinsp;€ <span class="count">(3)</span></label>
+          </div>
+        </div>
+
+        <button class="srch-apply" type="button">Appliquer</button>
+      </aside>
+
+      <!-- RESULTS GRID -->
+      <div class="srch-grid" data-tira-reveal>
+
+        <!-- MOBILE FILTER TOGGLE -->
+        <button class="srch-filter-btn" id="filterBtn" type="button">Filtrer (14)</button>
+
+        <!-- PRODUCTS -->
+        <p class="srch-section-label">Pièces &nbsp;<span style="opacity:.4;font-size:10px;letter-spacing:.08em">(9)</span></p>
+        <div class="srch-products-grid">
+
+          <a href="#" class="srch-product-card">
+            <div class="srch-product-card__image">
+              <div class="srch-product-card__ph ph--victoire">Victoire</div>
+            </div>
+            <div class="srch-product-card__info">
+              <div>
+                <div class="srch-product-card__name">Victoire</div>
+                <div class="srch-product-card__type">Sac</div>
+              </div>
+              <div class="srch-product-card__price">2 850&thinsp;€</div>
+            </div>
+          </a>
+
+          <a href="#" class="srch-product-card">
+            <div class="srch-product-card__image">
+              <div class="srch-product-card__ph ph--colette">Colette</div>
+            </div>
+            <div class="srch-product-card__info">
+              <div>
+                <div class="srch-product-card__name">Colette</div>
+                <div class="srch-product-card__type">Sac</div>
+              </div>
+              <div class="srch-product-card__price">2 290&thinsp;€</div>
+            </div>
+          </a>
+
+          <a href="#" class="srch-product-card">
+            <div class="srch-product-card__image">
+              <div class="srch-product-card__ph ph--rafael">Rafael</div>
+            </div>
+            <div class="srch-product-card__info">
+              <div>
+                <div class="srch-product-card__name">Rafael</div>
+                <div class="srch-product-card__type">Sac</div>
+              </div>
+              <div class="srch-product-card__price">3 200&thinsp;€</div>
+            </div>
+          </a>
+
+          <a href="#" class="srch-product-card">
+            <div class="srch-product-card__image">
+              <div class="srch-product-card__ph ph--colette-mini">Colette Mini</div>
+            </div>
+            <div class="srch-product-card__info">
+              <div>
+                <div class="srch-product-card__name">Colette Mini</div>
+                <div class="srch-product-card__type">Sac</div>
+              </div>
+              <div class="srch-product-card__price">1 890&thinsp;€</div>
+            </div>
+          </a>
+
+          <a href="#" class="srch-product-card">
+            <div class="srch-product-card__image">
+              <div class="srch-product-card__ph ph--jane">Jane</div>
+            </div>
+            <div class="srch-product-card__info">
+              <div>
+                <div class="srch-product-card__name">Jane</div>
+                <div class="srch-product-card__type">Sac</div>
+              </div>
+              <div class="srch-product-card__price">2 650&thinsp;€</div>
+            </div>
+          </a>
+
+          <a href="#" class="srch-product-card">
+            <div class="srch-product-card__image">
+              <div class="srch-product-card__ph ph--olympe">Olympe</div>
+            </div>
+            <div class="srch-product-card__info">
+              <div>
+                <div class="srch-product-card__name">Olympe</div>
+                <div class="srch-product-card__type">Sac</div>
+              </div>
+              <div class="srch-product-card__price">3 450&thinsp;€</div>
+            </div>
+          </a>
+
+          <a href="#" class="srch-product-card">
+            <div class="srch-product-card__image">
+              <div class="srch-product-card__ph ph--pochon">Pochon</div>
+            </div>
+            <div class="srch-product-card__info">
+              <div>
+                <div class="srch-product-card__name">Pochon</div>
+                <div class="srch-product-card__type">Petite Maroquinerie</div>
+              </div>
+              <div class="srch-product-card__price">490&thinsp;€</div>
+            </div>
+          </a>
+
+          <a href="#" class="srch-product-card">
+            <div class="srch-product-card__image">
+              <div class="srch-product-card__ph ph--chaine">Chaine</div>
+            </div>
+            <div class="srch-product-card__info">
+              <div>
+                <div class="srch-product-card__name">Chaine</div>
+                <div class="srch-product-card__type">Accessoire</div>
+              </div>
+              <div class="srch-product-card__price">190&thinsp;€</div>
+            </div>
+          </a>
+
+          <a href="#" class="srch-product-card">
+            <div class="srch-product-card__image">
+              <div class="srch-product-card__ph ph--anse">Anse en Cuir</div>
+            </div>
+            <div class="srch-product-card__info">
+              <div>
+                <div class="srch-product-card__name">Anse en Cuir</div>
+                <div class="srch-product-card__type">Accessoire</div>
+              </div>
+              <div class="srch-product-card__price">290&thinsp;€</div>
+            </div>
+          </a>
+
+        </div>
+
+        <!-- ARTICLES -->
+        <p class="srch-section-label">L'Atelier &nbsp;<span style="opacity:.4;font-size:10px;letter-spacing:.08em">(2)</span></p>
+        <div class="srch-articles-grid">
+          <a href="#" class="srch-article-card">
+            <div class="srch-article-card__image">
+              <div class="srch-article-card__ph ph--art1">Cuirs</div>
+            </div>
+            <div class="srch-article-card__content">
+              <div>
+                <div class="srch-article-card__cat">Matières</div>
+                <p class="srch-article-card__title">Guide complet des cuirs de maroquinerie de luxe</p>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="srch-article-card">
+            <div class="srch-article-card__image">
+              <div class="srch-article-card__ph ph--art2">Couture</div>
+            </div>
+            <div class="srch-article-card__content">
+              <div>
+                <div class="srch-article-card__cat">Technique</div>
+                <p class="srch-article-card__title">La Couture Sellier : deux aiguilles, un fil, une éternité</p>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- PAGES -->
+        <p class="srch-section-label">Pages &nbsp;<span style="opacity:.4;font-size:10px;letter-spacing:.08em">(3)</span></p>
+        <div class="srch-pages-list">
+          <div class="srch-page-item">
+            <a href="#" class="srch-page-item__name">Matières &amp; Cuirs</a>
+            <p class="srch-page-item__desc">Découvrez nos cuirs pleine fleur, sélectionnés dans les meilleures tanneries françaises et italiennes.</p>
+          </div>
+          <div class="srch-page-item">
+            <a href="#" class="srch-page-item__name">Savoir-Faire</a>
+            <p class="srch-page-item__desc">6 techniques ancestrales de maroquinerie : couture sellier, teinture des tranches, dorure à la roue.</p>
+          </div>
+          <div class="srch-page-item">
+            <a href="#" class="srch-page-item__name">Sur Mesure</a>
+            <p class="srch-page-item__desc">Une pièce unique façonnée pour vous — choix du cuir, des couleurs, des dimensions et des finitions.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- NO RESULTS STATE (annotated, shown below) -->
+    <div style="max-width:1200px;margin:60px auto 0;padding-top:40px;border-top:1px solid var(--tira-border);">
+      <p style="font-size:11px;text-transform:uppercase;letter-spacing:.12em;opacity:.3;margin-bottom:20px;">Si aucun résultat</p>
+      <div class="srch-noresult">
+        <div class="srch-noresult__inner">
+          <p class="srch-noresult__label">Aucun résultat</p>
+          <p class="srch-noresult__title">Votre recherche n'a pas trouvé de résultat.</p>
+          <p class="srch-noresult__suggest">Vous cherchiez peut-être :
+            <a href="#">sac victoire</a> · <a href="#">colette</a> · <a href="#">rafael</a> · <a href="#">sur mesure</a>
+          </p>
+          <div class="srch-noresult__cats">
+            <a href="#" class="srch-noresult__cat">FW25</a>
+            <a href="#" class="srch-noresult__cat">Sacs</a>
+            <a href="#" class="srch-noresult__cat">Petite Maroquinerie</a>
+            <a href="#" class="srch-noresult__cat">Sur Mesure</a>
+          </div>
+          <a href="#" class="srch-noresult__cta">Contacter notre équipe</a>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ── SECTION 4 : POPULAR SEARCHES ── -->
+  <section class="srch-popular">
+    <div class="srch-popular__inner">
+      <p class="srch-popular__title" data-tira-reveal>Recherches fréquentes</p>
+      <div class="srch-popular__tags" data-tira-reveal style="transition-delay:.1s">
+        <a href="#" class="srch-popular__tag">sac victoire</a>
+        <a href="#" class="srch-popular__tag">colette mini</a>
+        <a href="#" class="srch-popular__tag">cuir de veau</a>
+        <a href="#" class="srch-popular__tag">sur mesure</a>
+        <a href="#" class="srch-popular__tag">cadeau</a>
+        <a href="#" class="srch-popular__tag">bleu nuit</a>
+        <a href="#" class="srch-popular__tag">python</a>
+        <a href="#" class="srch-popular__tag">sac de jour</a>
+        <a href="#" class="srch-popular__tag">made in france</a>
+        <a href="#" class="srch-popular__tag">colette</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="tira-marquee" aria-hidden="true">
+    <div class="tira-marquee__track">
+      <span class="tira-marquee__item">Made in France, Only.</span>
+      <span class="tira-marquee__item">·</span>
+      <span class="tira-marquee__item">Since 1904</span>
+      <span class="tira-marquee__item">·</span>
+      <span class="tira-marquee__item">Maroquinerie de Luxe</span>
+      <span class="tira-marquee__item">·</span>
+      <span class="tira-marquee__item">Paris</span>
+      <span class="tira-marquee__item">·</span>
+      <span class="tira-marquee__item">Made in France, Only.</span>
+      <span class="tira-marquee__item">·</span>
+      <span class="tira-marquee__item">Since 1904</span>
+      <span class="tira-marquee__item">·</span>
+      <span class="tira-marquee__item">Maroquinerie de Luxe</span>
+      <span class="tira-marquee__item">·</span>
+      <span class="tira-marquee__item">Paris</span>
+      <span class="tira-marquee__item">·</span>
+    </div>
+  </div>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <div class="footer__grid">
+      <div class="footer__col">
+        <img class="footer__logo-img"
+             src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738"
+             alt="TIRABOSCHI Paris" height="24" width="auto">
+        <p class="footer__tagline">Made in France, Only.<br>Since 1904</p>
+        <a href="https://instagram.com/boschi_paris" class="footer__insta">@boschi_paris</a>
+      </div>
+      <div class="footer__col">
+        <button class="footer__col-header" aria-expanded="false">Collections <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="footer__col-body">
+          <p class="footer__col-title">Collections</p>
+          <ul>
+            <li><a href="#">FW25</a></li>
+            <li><a href="#">Sacs</a></li>
+            <li><a href="#">Petite Maroquinerie</a></li>
+            <li><a href="#">Iconiques</a></li>
+            <li><a href="#">Sur Mesure &amp; Exotiques</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__col">
+        <button class="footer__col-header" aria-expanded="false">La Maison <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="footer__col-body">
+          <p class="footer__col-title">La Maison</p>
+          <ul>
+            <li><a href="#">Histoire</a></li>
+            <li><a href="#">Savoir-Faire</a></li>
+            <li><a href="#">Matières &amp; Cuirs</a></li>
+            <li><a href="#">La Société</a></li>
+            <li><a href="#">Blog L'Atelier</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__col">
+        <button class="footer__col-header" aria-expanded="false">Service <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="footer__col-body">
+          <p class="footer__col-title">Service</p>
+          <ul>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">Prendre RDV</a></li>
+            <li><a href="#">Livraison</a></li>
+            <li><a href="#">Retours</a></li>
+            <li><a href="#">FAQ</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      &copy; 2025 TIRABOSCHI Paris. Tous droits réservés.
+    </div>
+  </footer>
+
+</div><!-- /page-body -->
+
+<script>
+/* ═══ CURSOR ═══ */
+const dot  = document.getElementById('curDot');
+const ring = document.getElementById('curRing');
+let rx = 0, ry = 0;
+document.addEventListener('mousemove', e => {
+  dot.style.left = e.clientX + 'px';
+  dot.style.top  = e.clientY + 'px';
+});
+(function lerp() {
+  requestAnimationFrame(lerp);
+  if (!ring) return;
+  ring.style.left = rx + 'px';
+  ring.style.top  = ry + 'px';
+})();
+document.addEventListener('mousemove', e => {
+  rx += (e.clientX - rx) * .12;
+  ry += (e.clientY - ry) * .12;
+});
+document.querySelectorAll('a, button, input, label').forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('on-hover'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('on-hover'));
+});
+
+/* ═══ HEADER STICKY DIRECTIONAL ═══ */
+const hdr = document.getElementById('hdr');
+const hdrSearch = document.getElementById('hdrSearch');
+let lastY = 0, ticking = false;
+window.addEventListener('scroll', () => {
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      const y = window.scrollY;
+      if (y > lastY && y > 80) {
+        hdr.classList.add('hidden');
+        hdrSearch.classList.add('hidden');
+      } else {
+        hdr.classList.remove('hidden');
+        hdrSearch.classList.remove('hidden');
+      }
+      lastY = y; ticking = false;
+    });
+    ticking = true;
+  }
+}, { passive: true });
+
+/* ═══ MOBILE DRAWER ═══ */
+const hamburger  = document.getElementById('hamburger');
+const navOverlay = document.getElementById('navOverlay');
+const navDrawer  = document.getElementById('navDrawer');
+const navClose   = document.getElementById('navClose');
+function openNav() {
+  navOverlay.classList.add('open');
+  navDrawer.classList.add('open');
+  requestAnimationFrame(() => navOverlay.classList.add('visible'));
+  document.body.style.overflow = 'hidden';
+}
+function closeNav() {
+  navOverlay.classList.remove('visible');
+  navDrawer.classList.remove('open');
+  setTimeout(() => navOverlay.classList.remove('open'), 350);
+  document.body.style.overflow = '';
+}
+hamburger.addEventListener('click', openNav);
+navClose.addEventListener('click', closeNav);
+navOverlay.addEventListener('click', closeNav);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeNav(); });
+
+/* ═══ MOBILE FILTER TOGGLE ═══ */
+const filterBtn  = document.getElementById('filterBtn');
+const srchSidebar = document.getElementById('srchSidebar');
+if (filterBtn && srchSidebar) {
+  filterBtn.addEventListener('click', () => {
+    const isOpen = srchSidebar.classList.contains('open');
+    srchSidebar.classList.toggle('open', !isOpen);
+    filterBtn.textContent = isOpen ? 'Filtrer (14)' : 'Masquer les filtres';
+  });
+}
+
+/* ═══ FOOTER ACCORDION ═══ */
+document.querySelectorAll('.footer__col-header').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const body = btn.nextElementSibling;
+    const open = body.classList.contains('open');
+    body.classList.toggle('open', !open);
+    btn.setAttribute('aria-expanded', !open);
+    const svg = btn.querySelector('svg');
+    if (svg) svg.style.transform = !open ? 'rotate(180deg)' : '';
+  });
+});
+
+/* ═══ SEARCH INPUT FOCUS BORDER ═══ */
+const heroInput = document.querySelector('.srch-hero__input');
+const heroForm  = document.querySelector('.srch-hero__form');
+if (heroInput && heroForm) {
+  heroInput.addEventListener('focus',  () => heroForm.style.borderBottomColor = 'var(--tira-black)');
+  heroInput.addEventListener('blur',   () => heroForm.style.borderBottomColor = 'var(--tira-black)');
+}
+
+/* ═══ SCROLL REVEAL ═══ */
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('[data-tira-reveal]').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
