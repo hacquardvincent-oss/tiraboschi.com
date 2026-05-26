@@ -1279,7 +1279,7 @@ if (window.matchMedia('(hover: hover)').matches) {
   if (!noMotion) {
     (function fr() { rx += (mx-rx)*.1; ry += (my-ry)*.1; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(fr); })();
   }
-  document.querySelectorAll('a, button, .card, .prd-thumb').forEach(el => {
+  document.querySelectorAll('a, button, .card, .prd-swatch, .prd-gallery__img').forEach(el => {
     el.addEventListener('mouseenter', () => document.body.classList.add('on-hover'));
     el.addEventListener('mouseleave', () => document.body.classList.remove('on-hover'));
   });
