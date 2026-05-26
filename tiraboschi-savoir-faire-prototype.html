@@ -192,247 +192,6 @@
       .cursor-ring { display: none; }
     }
 
-    /* =============================================
-       HEADER
-    ============================================= */
-    .site-header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 900;
-      height: var(--header-h);
-      background: var(--tira-white);
-      border-bottom: 1px solid var(--tira-border);
-      transition: transform 0.4s var(--tira-ease);
-    }
-
-    .site-header.header-hidden {
-      transform: translateY(calc(-1 * (var(--header-h) + var(--search-h))));
-    }
-
-    .header-inner {
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      padding: 0 32px;
-    }
-
-    .header-nav {
-      position: absolute;
-      left: 32px;
-      display: flex;
-      gap: 32px;
-      align-items: center;
-    }
-
-    .header-nav a {
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--tira-black);
-      transition: opacity 0.3s ease;
-    }
-
-    .header-nav a:hover {
-      opacity: 0.5;
-    }
-
-    .header-logo {
-      display: flex;
-      align-items: center;
-    }
-
-    .header-logo img {
-      height: 28px;
-      width: auto;
-      display: block;
-    }
-
-    .header-actions {
-      position: absolute;
-      right: 32px;
-      display: flex;
-      gap: 20px;
-      align-items: center;
-    }
-
-    .header-actions a,
-    .header-actions button {
-      display: flex;
-      align-items: center;
-      opacity: 1;
-      transition: opacity 0.3s ease;
-    }
-
-    .header-actions a:hover,
-    .header-actions button:hover {
-      opacity: 0.5;
-    }
-
-    .header-actions svg {
-      stroke: var(--tira-black);
-      fill: none;
-      stroke-width: 1.2;
-    }
-
-    /* Search bar */
-    .search-bar {
-      position: fixed;
-      top: var(--header-h);
-      left: 0;
-      right: 0;
-      z-index: 899;
-      height: var(--search-h);
-      background: var(--tira-white);
-      border-bottom: 1px solid var(--tira-border);
-      display: flex;
-      align-items: center;
-      padding: 0 32px;
-      gap: 12px;
-      transition: transform 0.4s var(--tira-ease);
-    }
-
-    .site-header.header-hidden ~ .search-bar {
-      transform: translateY(calc(-1 * (var(--header-h) + var(--search-h))));
-    }
-
-    .search-bar input {
-      flex: 1;
-      border: none;
-      border-bottom: 1px solid transparent;
-      background: transparent;
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--tira-black);
-      outline: none;
-      transition: border-color 0.3s ease;
-    }
-
-    .search-bar input:focus {
-      border-bottom-color: var(--tira-black);
-    }
-
-    .search-bar input::placeholder {
-      color: #999;
-    }
-
-    .search-bar svg {
-      stroke: var(--tira-black);
-      fill: none;
-      stroke-width: 1.2;
-      opacity: 0.5;
-    }
-
-    /* Mobile header */
-    .header-hamburger {
-      display: none;
-    }
-
-    @media (max-width: 1023px) {
-      .header-nav { display: none; }
-
-      .header-inner { justify-content: flex-start; padding: 0 20px; }
-
-      .header-logo { margin: 0; }
-
-      .header-actions {
-        right: 20px;
-        gap: 16px;
-      }
-
-      .header-hamburger {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        background: none;
-        border: none;
-        cursor: none;
-        padding: 4px;
-      }
-
-      .header-hamburger span {
-        display: block;
-        width: 20px;
-        height: 1px;
-        background: var(--tira-black);
-        transition: transform 0.3s var(--tira-ease), opacity 0.3s ease;
-      }
-
-      .search-bar { padding: 0 20px; }
-    }
-
-    /* =============================================
-       MOBILE NAV DRAWER
-    ============================================= */
-    .mobile-nav {
-      position: fixed;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      width: 100%;
-      max-width: 360px;
-      background: var(--tira-white);
-      z-index: 1000;
-      transform: translateX(100%);
-      transition: transform 0.5s var(--tira-ease);
-      padding: 80px 40px 40px;
-      border-left: 1px solid var(--tira-border);
-    }
-
-    .mobile-nav.is-open {
-      transform: translateX(0);
-    }
-
-    .mobile-nav-close {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: none;
-      border: none;
-      cursor: none;
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--tira-black);
-    }
-
-    .mobile-nav-links {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 28px;
-    }
-
-    .mobile-nav-links a {
-      font-size: 24px;
-      color: var(--tira-black);
-      display: block;
-      transition: opacity 0.3s ease;
-    }
-
-    .mobile-nav-links a:hover {
-      opacity: 0.5;
-    }
-
-    .mobile-nav-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(10,10,10,0.4);
-      z-index: 999;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease;
-    }
-
-    .mobile-nav-overlay.is-visible {
-      opacity: 1;
-      pointer-events: all;
-    }
 
     /* =============================================
        PAGE OFFSET
@@ -1230,213 +989,6 @@
       .cta-separator { width: 32px; height: 1px; }
     }
 
-    /* =============================================
-       FOOTER
-    ============================================= */
-    .site-footer {
-      background: var(--tira-black);
-      color: var(--tira-white);
-      padding: 80px 40px 40px;
-      border-top: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .footer-main {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr 1fr 1fr;
-      gap: 60px;
-      margin-bottom: 60px;
-    }
-
-    .footer-col__logo {
-      height: 24px;
-      width: auto;
-      margin-bottom: 20px;
-      filter: brightness(0) invert(1);
-    }
-
-    .footer-tagline {
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.4);
-      margin-bottom: 24px;
-      line-height: 1.8;
-    }
-
-    .footer-instagram {
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.4);
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      transition: color 0.3s ease;
-    }
-
-    .footer-instagram:hover {
-      color: var(--tira-white);
-    }
-
-    .footer-col__heading {
-      font-size: 11px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.35);
-      margin-bottom: 20px;
-    }
-
-    .footer-col__links {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .footer-col__links a {
-      font-size: 13px;
-      color: rgba(255,255,255,0.65);
-      transition: color 0.3s ease;
-      display: block;
-    }
-
-    .footer-col__links a:hover {
-      color: var(--tira-white);
-    }
-
-    .footer-bottom {
-      border-top: 1px solid rgba(255,255,255,0.08);
-      padding-top: 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .footer-copyright {
-      font-size: 11px;
-      letter-spacing: 0.08em;
-      color: rgba(255,255,255,0.25);
-    }
-
-    .footer-powered {
-      font-size: 11px;
-      letter-spacing: 0.08em;
-      color: rgba(255,255,255,0.25);
-    }
-
-    /* Mobile footer accordion */
-    .footer-col-accordion {
-      display: none;
-    }
-
-    @media (max-width: 1023px) {
-      .footer-main {
-        grid-template-columns: 1fr 1fr;
-        gap: 40px;
-      }
-    }
-
-    @media (max-width: 767px) {
-      .site-footer { padding: 60px 24px 32px; }
-
-      .footer-main {
-        display: none;
-      }
-
-      .footer-col-accordion {
-        display: block;
-        border-top: 1px solid rgba(255,255,255,0.08);
-        margin-bottom: 40px;
-      }
-
-      .footer-accordion-brand {
-        padding: 32px 0;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
-      }
-
-      .footer-accordion-item {
-        border-bottom: 1px solid rgba(255,255,255,0.08);
-      }
-
-      .footer-accordion-trigger {
-        width: 100%;
-        background: none;
-        border: none;
-        color: var(--tira-white);
-        font-family: 'Playfair Display', Georgia, serif;
-        font-size: 11px;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        text-align: left;
-        padding: 20px 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: none;
-      }
-
-      .footer-accordion-icon {
-        width: 12px;
-        height: 12px;
-        position: relative;
-        flex-shrink: 0;
-      }
-
-      .footer-accordion-icon::before,
-      .footer-accordion-icon::after {
-        content: '';
-        position: absolute;
-        background: var(--tira-white);
-        transition: transform 0.3s var(--tira-ease);
-      }
-
-      .footer-accordion-icon::before {
-        width: 12px;
-        height: 1px;
-        top: 50%;
-        left: 0;
-        transform: translateY(-50%);
-      }
-
-      .footer-accordion-icon::after {
-        width: 1px;
-        height: 12px;
-        left: 50%;
-        top: 0;
-        transform: translateX(-50%);
-      }
-
-      .footer-accordion-item.is-open .footer-accordion-icon::after {
-        transform: translateX(-50%) rotate(90deg);
-        opacity: 0;
-      }
-
-      .footer-accordion-content {
-        display: none;
-        padding-bottom: 20px;
-      }
-
-      .footer-accordion-content.is-open {
-        display: block;
-      }
-
-      .footer-accordion-content ul {
-        list-style: none;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-      }
-
-      .footer-accordion-content ul a {
-        font-size: 14px;
-        color: rgba(255,255,255,0.5);
-      }
-
-      .footer-bottom {
-        flex-direction: column;
-        gap: 12px;
-        text-align: center;
-      }
-    }
 
     /* =============================================
        MARQUEE (above footer)
@@ -1486,103 +1038,184 @@
       white-space: nowrap;
     }
 
+  
+.cur-dot, .cur-ring { position: fixed; border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); }
+.cur-dot { width: 6px; height: 6px; background: var(--tira-black); transition: width .3s var(--tira-ease), height .3s var(--tira-ease); }
+.cur-ring { width: 30px; height: 30px; border: 1px solid rgba(10,10,10,.38); transition: opacity .25s; }
+body.on-hover .cur-dot { width: 44px; height: 44px; background: rgba(10,10,10,.06); }
+body.on-hover .cur-ring { opacity: 0; }
+@media (hover: none) { .cur-dot, .cur-ring { display: none; } }
+/* ── Header (fond blanc, toujours opaque — page secondaire) ── */
+.hdr { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: var(--header-h); background: var(--tira-white); border-bottom: 1px solid var(--tira-border); transition: transform .35s var(--tira-ease); }
+.hdr.hidden { transform: translateY(-100%); }
+.hdr__d { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 40px; height: 100%; padding: 0 40px; }
+.hdr__logo a { display: block; line-height: 0; }
+.hdr__logo-img { display: block; height: 28px; width: auto; }
+.hdr__nav { display: flex; align-items: center; gap: 28px; }
+.hdr__nav a { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; opacity: .55; transition: opacity .2s; white-space: nowrap; }
+.hdr__nav a:hover, .hdr__nav a[aria-current] { opacity: 1; }
+.hdr__nav .nav-sep { width: 1px; height: 11px; background: currentColor; opacity: .2; }
+.hdr__icons { display: flex; align-items: center; gap: 18px; }
+.hdr__icons button { background: none; border: none; cursor: none; display: flex; align-items: center; opacity: .65; transition: opacity .2s; }
+.hdr__icons button:hover { opacity: 1; }
+.hdr__icons svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: square; stroke-linejoin: miter; }
+.tira-bag-icon { display: block; width: 22px; height: 22px; object-fit: contain; }
+.hdr__m { display: none; grid-template-columns: 1fr auto auto auto; align-items: center; gap: 14px; height: 100%; padding: 0 20px; }
+.hdr__m-logo { display: block; line-height: 0; }
+.hdr__m-logo .hdr__logo-img { height: 24px; }
+.hdr__m svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: square; stroke-linejoin: miter; }
+.hdr__m .tira-bag-icon { width: 24px; height: 24px; }
+.hdr__m button { background: none; border: none; cursor: pointer; display: flex; align-items: center; padding: 2px; }
+@media (max-width: 900px) { .hdr__d { display: none; } .hdr__m { display: grid; } }
+.hdr-search { position: fixed; top: var(--header-h); left: 0; right: 0; z-index: 199; display: flex; align-items: center; justify-content: center; height: var(--search-h); padding: 0 40px; background: var(--tira-white); border-bottom: 1px solid var(--tira-border); transition: top .35s var(--tira-ease); }
+.hdr-search.sticky-mode { top: 0; }
+.hdr-search__field { display: flex; align-items: center; gap: 8px; margin: 0 auto; width: 100%; max-width: 560px; }
+.hdr-search input { flex: 1; border: none; background: none; outline: none; font-family: inherit; font-size: 11px; text-transform: uppercase; letter-spacing: .12em; color: var(--tira-black); border-bottom: 1px solid var(--tira-border); padding-bottom: 3px; }
+.hdr-search input::placeholder { opacity: .35; }
+.hdr-search__icon svg { width: 15px; height: 15px; fill: none; stroke: var(--tira-black); stroke-width: 1.2; opacity: .4; }
+.hdr-search__actions { display: flex; align-items: center; gap: 20px; position: absolute; right: 40px; top: 50%; transform: translateY(-50%); opacity: 0; pointer-events: none; transition: opacity .3s; }
+.hdr-search.sticky-mode .hdr-search__actions { opacity: 1; pointer-events: auto; }
+.hdr-search__actions button { background: none; border: none; cursor: pointer; display: flex; align-items: center; opacity: .65; transition: opacity .2s; }
+.hdr-search__actions svg { width: 20px; height: 20px; fill: none; stroke: var(--tira-black); stroke-width: 1.5; stroke-linecap: square; stroke-linejoin: miter; }
+@media (max-width: 900px) { .hdr-search { padding: 0 20px; } .hdr-search__actions { right: 20px; } }
+.mobile-nav { position: fixed; inset: 0; z-index: 300; background: rgba(10,10,10,.5); opacity: 0; pointer-events: none; transition: opacity .35s var(--tira-ease); }
+.mobile-nav.open { opacity: 1; pointer-events: auto; }
+.mobile-nav__inner { position: absolute; top: 0; right: 0; bottom: 0; width: min(320px, 88vw); background: var(--tira-white); padding: 28px 32px 40px; transform: translateX(100%); transition: transform .4s var(--tira-ease); overflow-y: auto; }
+.mobile-nav.open .mobile-nav__inner { transform: none; }
+.mobile-nav__close { display: flex; margin-left: auto; margin-bottom: 40px; background: none; border: none; cursor: pointer; opacity: .5; }
+.mobile-nav__close svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+.mobile-nav ul { list-style: none; }
+.mobile-nav li a { display: block; font-size: 13px; text-transform: uppercase; letter-spacing: .1em; padding: 14px 0; border-bottom: 1px solid var(--tira-border); opacity: .75; transition: opacity .2s; }
+.mobile-nav li a:hover { opacity: 1; }
+body.nav-open { overflow: hidden; }
+.society-crm { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; padding: 80px 48px; border-top: 1px solid var(--tira-border); border-bottom: 1px solid var(--tira-border); }
+.society-crm__inner { display: contents; }
+.society-crm__title { font-size: clamp(28px, 3.5vw, 48px); font-weight: 400; line-height: 1.1; }
+.society-crm__field { display: flex; align-items: center; border-bottom: 1px solid var(--tira-border); margin-bottom: 14px; }
+.society-crm__input { flex: 1; border: none; background: none; outline: none; font-family: inherit; font-size: 13px; padding: 10px 0; }
+.society-crm__input::placeholder { opacity: .4; }
+.society-crm__arrow { background: none; border: none; cursor: pointer; display: flex; align-items: center; padding: 8px 0 8px 12px; opacity: .6; transition: opacity .2s; }
+.society-crm__arrow:hover { opacity: 1; }
+.society-crm__arrow svg { width: 18px; height: 18px; fill: none; stroke: var(--tira-black); }
+.society-crm__gdpr { font-size: 10px; opacity: .4; line-height: 1.6; margin-bottom: 32px; }
+.society-crm__gdpr a { text-decoration: underline; text-underline-offset: 3px; }
+.society-crm__confirm { font-size: 12px; opacity: .6; font-style: italic; }
+.society-crm__social { display: flex; align-items: center; gap: 20px; }
+.society-crm__social-label { font-size: 10px; text-transform: uppercase; letter-spacing: .14em; opacity: .4; }
+.society-crm__social-icons { display: flex; gap: 16px; }
+.society-crm__social-icons a { display: flex; align-items: center; opacity: .5; transition: opacity .2s; }
+.society-crm__social-icons a:hover { opacity: 1; }
+.society-crm__social-icons svg { width: 20px; height: 20px; }
+@media (max-width: 768px) { .society-crm { grid-template-columns: 1fr; padding: 60px 24px; gap: 44px; } }
+.footer { background: var(--tira-black); color: var(--tira-white); padding: 80px 48px 40px; }
+.footer__top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; padding-bottom: 64px; border-bottom: 1px solid rgba(255,255,255,.08); }
+.footer__brand-logo { font-size: 12px; text-transform: uppercase; letter-spacing: .2em; margin-bottom: 20px; }
+.footer__brand-text { font-size: 13px; opacity: .4; line-height: 1.75; max-width: 220px; }
+.footer__col h4 { font-size: 9px; text-transform: uppercase; letter-spacing: .16em; opacity: .3; margin-bottom: 22px; }
+.footer__col ul { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+.footer__col ul a { font-size: 13px; opacity: .6; transition: opacity .2s; }
+.footer__col ul a:hover { opacity: 1; }
+.footer__seo summary::-webkit-details-marker { display: none; }
+.footer__bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 32px; }
+.footer__copy { font-size: 10px; opacity: .22; text-transform: uppercase; letter-spacing: .1em; }
+.footer__policies { display: flex; gap: 24px; }
+.footer__policies a { font-size: 10px; opacity: .22; text-transform: uppercase; letter-spacing: .1em; transition: opacity .2s; }
+.footer__policies a:hover { opacity: .6; }
+@media (max-width: 900px) {
+  .footer { padding: 60px 24px 32px; } .footer__top { grid-template-columns: 1fr; gap: 0; }
+  .footer__col { border-top: 1px solid rgba(255,255,255,.08); }
+  .footer__col h4 { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; margin-bottom: 0; cursor: pointer; }
+  .footer__col h4::after { content: '+'; font-size: 16px; opacity: .4; transition: transform .3s; }
+  .footer__col.open h4::after { transform: rotate(45deg); }
+  .footer__col ul { max-height: 0; overflow: hidden; transition: max-height .4s var(--tira-ease); }
+  .footer__col.open ul { max-height: 320px; padding-bottom: 20px; }
+  .footer__bottom { flex-direction: column; gap: 16px; text-align: center; }
+  .footer__policies { flex-wrap: wrap; justify-content: center; gap: 16px; }
+}
+
   </style>
 </head>
 <body>
+<div class="cur-dot" id="cur-dot" aria-hidden="true"></div>
+<div class="cur-ring" id="cur-ring" aria-hidden="true"></div>
 
-  <!-- Custom cursor -->
-  <div class="cursor-dot" aria-hidden="true"></div>
-  <div class="cursor-ring" aria-hidden="true"></div>
 
-  <!-- Mobile nav overlay -->
-  <div class="mobile-nav-overlay" id="mobileNavOverlay" aria-hidden="true"></div>
-
-  <!-- Mobile nav drawer -->
-  <nav class="mobile-nav" id="mobileNav" aria-label="Navigation mobile">
-    <button class="mobile-nav-close" id="mobileNavClose" aria-label="Fermer le menu">Fermer</button>
-    <ul class="mobile-nav-links">
-      <li><a href="#">Collections</a></li>
-      <li><a href="#">FW25</a></li>
-      <li><a href="#">Sur Mesure</a></li>
-      <li><a href="#">Histoire</a></li>
-      <li><a href="#" aria-current="page">Savoir-Faire</a></li>
-      <li><a href="#">Matières</a></li>
-      <li><a href="#">L'Atelier</a></li>
-    </ul>
-  </nav>
-
-  <!-- Header -->
-  <header class="site-header" id="siteHeader" role="banner">
-    <div class="header-inner">
-      <!-- Nav left (desktop) -->
-      <nav class="header-nav" aria-label="Navigation principale">
-        <a href="#">Collections</a>
-        <a href="#">FW25</a>
-        <a href="#">Sur Mesure</a>
-        <a href="#">Histoire</a>
-        <a href="#" aria-current="page">Savoir-Faire</a>
-      </nav>
-
-      <!-- Logo center -->
-      <a href="#" class="header-logo" aria-label="TIRABOSCHI Paris — Accueil">
-        <img
-          src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738"
-          alt="TIRABOSCHI Paris — Since 1904"
-          height="28"
-          width="auto">
+<header class="hdr" id="hdr" role="banner">
+  <div class="hdr__d">
+    <div class="hdr__logo">
+      <a href="/" aria-label="TIRABOSCHI Paris — accueil">
+        <img class="hdr__logo-img"
+             src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738"
+             alt="TIRABOSCHI Paris" width="auto" height="28">
       </a>
-
-      <!-- Actions right (desktop) -->
-      <div class="header-actions">
-        <!-- Search -->
-        <a href="#" aria-label="Rechercher">
-          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="11" cy="11" r="7"/>
-            <line x1="16.5" y1="16.5" x2="22" y2="22"/>
-          </svg>
-        </a>
-        <!-- Account -->
-        <a href="#" aria-label="Mon compte">
-          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="12" cy="8" r="4"/>
-            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-          </svg>
-        </a>
-        <!-- Bag -->
-        <a href="#" aria-label="Panier">
-          <img
-            src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050"
-            width="22"
-            height="22"
-            alt="Panier"
-            aria-hidden="true">
-        </a>
-        <!-- Hamburger (mobile only) -->
-        <button
-          class="header-hamburger"
-          id="hamburgerBtn"
-          aria-label="Ouvrir le menu"
-          aria-expanded="false"
-          aria-controls="mobileNav">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
     </div>
-  </header>
-
-  <!-- Search bar -->
-  <div class="search-bar" role="search" id="searchBar">
-    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-      <circle cx="11" cy="11" r="7"/>
-      <line x1="16.5" y1="16.5" x2="22" y2="22"/>
-    </svg>
-    <input
-      type="search"
-      placeholder="Rechercher une pièce, une matière…"
-      aria-label="Rechercher">
+    <nav class="hdr__nav" aria-label="Navigation principale">
+      <a href="/collections/sacs">Sacs</a>
+      <a href="/collections/petite-maroquinerie">Petite Maroquinerie</a>
+      <a href="/collections/iconiques">Iconiques</a>
+      <a href="/collections/sur-mesure-exotiques">Sur Mesure</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/pages/savoir-faire" aria-current="page">La Maison</a>
+    </nav>
+    <div class="hdr__icons">
+      <button aria-label="Mon compte">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"><circle cx="12" cy="7.5" r="3.5"/><path d="M3.5 20c0-4.5 3.8-7 8.5-7s8.5 2.5 8.5 7"/></svg>
+      </button>
+      <button aria-label="Ouvrir la recherche">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
+      </button>
+      <button aria-label="Panier — 0 article">
+        <img class="tira-bag-icon"
+             src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050"
+             alt="" aria-hidden="true" width="22" height="22">
+      </button>
+    </div>
   </div>
+  <div class="hdr__m" aria-label="Navigation mobile">
+    <a href="/" class="hdr__m-logo" aria-label="TIRABOSCHI Paris — accueil">
+      <img class="hdr__logo-img"
+           src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738"
+           alt="TIRABOSCHI Paris" width="auto" height="24">
+    </a>
+    <button aria-label="Panier — 0 article">
+      <img class="tira-bag-icon"
+           src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050"
+           alt="" aria-hidden="true" width="24" height="24">
+    </button>
+    <button aria-label="Mon compte">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">
+        <circle cx="12" cy="7.5" r="3.5"/>
+        <path d="M3.5 20c0-4.5 3.8-7 8.5-7s8.5 2.5 8.5 7"/>
+      </svg>
+    </button>
+    <button aria-label="Menu principal" aria-expanded="false" id="mobile-menu-btn">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">
+        <line x1="3" y1="6"  x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<div class="hdr-search" id="hdr-search" role="search" aria-label="Recherche">
+  <div class="hdr-search__field">
+    <input type="search" placeholder="Demander à Tiraboschi" aria-label="Recherche">
+    <div class="hdr-search__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
+    </div>
+  </div>
+  <div class="hdr-search__actions" aria-hidden="true">
+    <button aria-label="Mon compte">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"><circle cx="12" cy="7.5" r="3.5"/><path d="M3.5 20c0-4.5 3.8-7 8.5-7s8.5 2.5 8.5 7"/></svg>
+    </button>
+    <button aria-label="Panier">
+      <img class="tira-bag-icon"
+           src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050"
+           alt="" aria-hidden="true" width="20" height="20">
+    </button>
+  </div>
+</div>
 
   <!-- PAGE CONTENT -->
   <main class="page-content" id="main-content">
@@ -1899,410 +1532,186 @@
     </div>
   </div>
 
-  <!-- ==================== FOOTER ==================== -->
-  <footer class="site-footer" role="contentinfo">
 
-    <!-- Desktop footer -->
-    <div class="footer-main">
 
-      <!-- Col 1 — Brand -->
-      <div>
-        <img
-          src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738"
-          alt="TIRABOSCHI Paris"
-          height="24"
-          class="footer-col__logo">
-        <p class="footer-tagline">
-          Made in France, Only.<br>
-          Since 1904
+<section class="society-crm" data-reveal aria-labelledby="society-title">
+  <div class="society-crm__inner">
+    <div class="society-crm__left">
+      <h2 class="society-crm__title" id="society-title">Join<br>the Society</h2>
+    </div>
+    <div class="society-crm__right">
+      <form class="society-crm__form" id="society-form" novalidate>
+        <div class="society-crm__field">
+          <input class="society-crm__input" type="email" id="society-email"
+                 placeholder="email" required autocomplete="email">
+          <button type="submit" class="society-crm__arrow" aria-label="S'inscrire">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
+          </button>
+        </div>
+        <p class="society-crm__gdpr">
+          En vous inscrivant, vous acceptez notre <a href="/pages/confidentialite">politique de confidentialité</a>. Vous pouvez vous désinscrire à tout moment.
         </p>
-        <a href="https://instagram.com/boschi_paris" class="footer-instagram" target="_blank" rel="noopener noreferrer">
-          @boschi_paris
-        </a>
-      </div>
-
-      <!-- Col 2 — Collections -->
-      <div>
-        <p class="footer-col__heading">Collections</p>
-        <ul class="footer-col__links">
-          <li><a href="#">FW25</a></li>
-          <li><a href="#">Sacs</a></li>
-          <li><a href="#">Petite Maroquinerie</a></li>
-          <li><a href="#">Iconiques</a></li>
-          <li><a href="#">Sur Mesure & Exotiques</a></li>
-        </ul>
-      </div>
-
-      <!-- Col 3 — La Maison -->
-      <div>
-        <p class="footer-col__heading">La Maison</p>
-        <ul class="footer-col__links">
-          <li><a href="#">Histoire</a></li>
-          <li><a href="#" aria-current="page">Savoir-Faire</a></li>
-          <li><a href="#">Matières & Cuirs</a></li>
-          <li><a href="#">La Société</a></li>
-          <li><a href="#">Blog L'Atelier</a></li>
-        </ul>
-      </div>
-
-      <!-- Col 4 — Service -->
-      <div>
-        <p class="footer-col__heading">Service</p>
-        <ul class="footer-col__links">
-          <li><a href="#">Contact</a></li>
-          <li><a href="#">Prendre RDV</a></li>
-          <li><a href="#">Livraison</a></li>
-          <li><a href="#">Retours</a></li>
-          <li><a href="#">FAQ</a></li>
-        </ul>
-      </div>
-
-    </div>
-
-    <!-- Mobile footer accordion -->
-    <div class="footer-col-accordion">
-
-      <!-- Brand (always visible) -->
-      <div class="footer-accordion-brand">
-        <img
-          src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738"
-          alt="TIRABOSCHI Paris"
-          height="22"
-          style="filter: brightness(0) invert(1); margin-bottom: 16px;">
-        <p class="footer-tagline">Made in France, Only. · Since 1904</p>
-        <a href="https://instagram.com/boschi_paris" class="footer-instagram" target="_blank" rel="noopener noreferrer">@boschi_paris</a>
-      </div>
-
-      <!-- Collections -->
-      <div class="footer-accordion-item" id="acc-collections">
-        <button class="footer-accordion-trigger" aria-expanded="false" aria-controls="acc-collections-content">
-          Collections
-          <span class="footer-accordion-icon" aria-hidden="true"></span>
-        </button>
-        <div class="footer-accordion-content" id="acc-collections-content" role="region">
-          <ul>
-            <li><a href="#">FW25</a></li>
-            <li><a href="#">Sacs</a></li>
-            <li><a href="#">Petite Maroquinerie</a></li>
-            <li><a href="#">Iconiques</a></li>
-            <li><a href="#">Sur Mesure & Exotiques</a></li>
-          </ul>
+        <p class="society-crm__confirm" aria-live="polite" hidden>
+          Bienvenue — votre inscription est confirmée.
+        </p>
+      </form>
+      <div class="society-crm__social">
+        <span class="society-crm__social-label">Suivez-nous</span>
+        <div class="society-crm__social-icons">
+          <a href="https://instagram.com/boschi_paris" target="_blank" rel="noopener" aria-label="Instagram @boschi_paris">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="#" target="_blank" rel="noopener" aria-label="LinkedIn TIRABOSCHI">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="3"/><path d="M7 10v7M7 7v.01M11 17v-4a2 2 0 0 1 4 0v4M11 10v7"/></svg>
+          </a>
+          <a href="#" target="_blank" rel="noopener" aria-label="YouTube TIRABOSCHI">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 8s-.3-2-1.2-2.8c-1.1-1.2-2.4-1.2-3-1.3C15.1 3.8 12 3.8 12 3.8s-3.1 0-5.8.1c-.6.1-1.9.1-3 1.3C2.3 6 2 8 2 8S1.8 10.3 1.8 12.6v2.1c0 2.3.2 4.6.2 4.6s.3 2 1.2 2.8c1.1 1.2 2.6 1.2 3.2 1.2C8.2 23.5 12 23.5 12 23.5s3.1 0 5.8-.3c.6-.1 1.9-.1 3-1.3.9-.8 1.2-2.8 1.2-2.8s.2-2.3.2-4.6v-2.1C22.2 10.3 22 8 22 8z"/><polygon points="9.5,15.5 15.5,12 9.5,8.5" fill="currentColor" stroke="none"/></svg>
+          </a>
         </div>
       </div>
-
-      <!-- La Maison -->
-      <div class="footer-accordion-item" id="acc-maison">
-        <button class="footer-accordion-trigger" aria-expanded="false" aria-controls="acc-maison-content">
-          La Maison
-          <span class="footer-accordion-icon" aria-hidden="true"></span>
-        </button>
-        <div class="footer-accordion-content" id="acc-maison-content" role="region">
-          <ul>
-            <li><a href="#">Histoire</a></li>
-            <li><a href="#">Savoir-Faire</a></li>
-            <li><a href="#">Matières & Cuirs</a></li>
-            <li><a href="#">La Société</a></li>
-            <li><a href="#">Blog L'Atelier</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Service -->
-      <div class="footer-accordion-item" id="acc-service">
-        <button class="footer-accordion-trigger" aria-expanded="false" aria-controls="acc-service-content">
-          Service
-          <span class="footer-accordion-icon" aria-hidden="true"></span>
-        </button>
-        <div class="footer-accordion-content" id="acc-service-content" role="region">
-          <ul>
-            <li><a href="#">Contact</a></li>
-            <li><a href="#">Prendre RDV</a></li>
-            <li><a href="#">Livraison</a></li>
-            <li><a href="#">Retours</a></li>
-            <li><a href="#">FAQ</a></li>
-          </ul>
-        </div>
-      </div>
-
     </div>
+  </div>
+</section>
 
-    <!-- Footer bottom -->
-    <div class="footer-bottom">
-      <p class="footer-copyright">
-        &copy; 2025 TIRABOSCHI Paris. Tous droits réservés.
-      </p>
-      <p class="footer-powered">Powered by TIRABOSCHI</p>
+<footer class="footer" role="contentinfo">
+  <div class="footer__top">
+    <div>
+      <p class="footer__brand-logo">TIRABOSCHI · Since 1904</p>
+      <p class="footer__brand-text">Maroquinerie de luxe française. Chaque pièce fabriquée à la main, par un seul artisan, dans nos ateliers parisiens.</p>
+      <details class="footer__seo" style="margin-top:28px">
+        <summary style="font-size:10px;text-transform:uppercase;letter-spacing:.12em;opacity:.3;cursor:pointer;list-style:none">Plan du site</summary>
+        <div style="margin-top:12px;font-size:11px;opacity:.3;line-height:2">
+          <a href="/collections/sacs">Sacs</a> · <a href="/collections/petite-maroquinerie">Petite Maroquinerie</a> · <a href="/pages/histoire">Histoire</a> · <a href="/pages/savoir-faire">Savoir-Faire</a> · <a href="/pages/matieres-cuirs">Les Matières</a> · <a href="/pages/sur-mesure">Sur Mesure</a> · <a href="/pages/la-societe">The Society</a> · <a href="/pages/contact">Contact</a>
+        </div>
+      </details>
     </div>
+    <div class="footer__col">
+      <h4>Collections</h4>
+      <ul>
+        <li><a href="/collections/sacs">Sacs</a></li>
+        <li><a href="/collections/petite-maroquinerie">Petite Maroquinerie</a></li>
+        <li><a href="/collections/iconiques">Iconiques</a></li>
+        <li><a href="/collections/fw25">FW 2025</a></li>
+        <li><a href="/collections/sur-mesure-exotiques">Sur Mesure &amp; Exotiques</a></li>
+      </ul>
+    </div>
+    <div class="footer__col">
+      <h4>La Maison</h4>
+      <ul>
+        <li><a href="/pages/histoire">Notre Histoire</a></li>
+        <li><a href="/pages/savoir-faire" aria-current="page">Savoir-Faire</a></li>
+        <li><a href="/pages/matieres-cuirs">Les Matières &amp; Cuirs</a></li>
+        <li><a href="/blogs/latelier">L'Atelier</a></li>
+        <li><a href="/pages/la-societe">The Society</a></li>
+      </ul>
+    </div>
+    <div class="footer__col">
+      <h4>Service</h4>
+      <ul>
+        <li><a href="/pages/contact">Contact</a></li>
+        <li><a href="#">Livraison &amp; Retours</a></li>
+        <li><a href="/pages/entretien-reparation">Entretien du cuir</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="/pages/contact">Prendre rendez-vous</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer__bottom">
+    <p class="footer__copy">© 2025 TIRABOSCHI Paris. Tous droits réservés.</p>
+    <nav class="footer__policies" aria-label="Liens légaux">
+      <a href="#">Mentions légales</a>
+      <a href="#">Confidentialité</a>
+      <a href="#">CGV</a>
+    </nav>
+  </div>
+</footer>
 
-  </footer>
+<nav class="mobile-nav" id="mobile-nav" aria-hidden="true">
+  <div class="mobile-nav__inner">
+    <button class="mobile-nav__close" id="mobile-nav-close">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+    </button>
+    <ul>
+      <li><a href="/collections/sacs">Sacs</a></li>
+      <li><a href="/collections/petite-maroquinerie">Petite Maroquinerie</a></li>
+      <li><a href="/collections/iconiques">Iconiques</a></li>
+      <li><a href="/collections/sur-mesure-exotiques">Sur Mesure</a></li>
+      <li><a href="/pages/histoire">Notre Histoire</a></li>
+      <li><a href="/pages/savoir-faire" aria-current="page">Savoir-Faire</a></li>
+      <li><a href="/pages/matieres-cuirs">Les Matières</a></li>
+      <li><a href="/pages/la-societe">The Society</a></li>
+      <li><a href="/pages/contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
 
-  <!-- ==================== SCRIPTS ==================== -->
-  <script>
-    'use strict';
+<script>
+'use strict';
 
-    /* ================================================
-       CUSTOM CURSOR
-    ================================================ */
-    (function() {
-      const dot  = document.querySelector('.cursor-dot');
-      const ring = document.querySelector('.cursor-ring');
-      if (!dot || !ring) return;
+/* ── Curseur custom ── */
+const noMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (window.matchMedia('(hover: hover)').matches) {
+  const dot = document.getElementById('cur-dot'), ring = document.getElementById('cur-ring');
+  if (dot && ring) {
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; dot.style.left=mx+'px'; dot.style.top=my+'px'; });
+    if (!noMotion) { (function fr(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(fr);})(); }
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => document.body.classList.add('on-hover'));
+      el.addEventListener('mouseleave', () => document.body.classList.remove('on-hover'));
+    });
+  }
+}
+/* ── Header directionnel (toujours opaque) ── */
+const hdr = document.getElementById('hdr');
+const search = document.getElementById('hdr-search');
+let lastY = window.scrollY, ticking = false, lastDir = 'up';
+function updateHdr() {
+  const y = window.scrollY, d = y - lastY;
+  if (y > 120) {
+    if (d > 4 && lastDir !== 'down') { hdr && hdr.classList.add('hidden'); document.body.classList.add('hdr-hidden'); if (search) search.classList.add('sticky-mode'); lastDir = 'down'; }
+    else if (d < -4 && lastDir !== 'up') { hdr && hdr.classList.remove('hidden'); document.body.classList.remove('hdr-hidden'); if (search) search.classList.remove('sticky-mode'); lastDir = 'up'; }
+  } else { hdr && hdr.classList.remove('hidden'); document.body.classList.remove('hdr-hidden'); if (search) search.classList.remove('sticky-mode'); lastDir = 'up'; }
+  lastY = y; ticking = false;
+}
+window.addEventListener('scroll', () => { if (!ticking) { requestAnimationFrame(updateHdr); ticking = true; } }, { passive: true });
+/* ── Mobile menu ── */
+const mmBtn = document.getElementById('mobile-menu-btn');
+const mNav = document.getElementById('mobile-nav');
+const mnClose = document.getElementById('mobile-nav-close');
+if (mmBtn && mNav) {
+  mmBtn.addEventListener('click', () => { mNav.classList.add('open'); mNav.setAttribute('aria-hidden', 'false'); document.body.classList.add('nav-open'); });
+  [mnClose, mNav].forEach(el => el && el.addEventListener('click', e => {
+    if (e.target === mNav || e.target.closest('#mobile-nav-close')) { mNav.classList.remove('open'); mNav.setAttribute('aria-hidden', 'true'); document.body.classList.remove('nav-open'); }
+  }));
+}
+/* ── Footer accordion (mobile) ── */
+document.querySelectorAll('.footer__col h4').forEach(h => h.addEventListener('click', () => h.closest('.footer__col').classList.toggle('open')));
+/* ── Society CRM form ── */
+const societyForm = document.getElementById('society-form');
+if (societyForm) { societyForm.addEventListener('submit', function(e) { e.preventDefault(); const em = this.querySelector('input[type="email"]').value; if (!em) return; const c = this.querySelector('.society-crm__confirm'); if (c) c.hidden = false; }); }
 
-      // Skip on touch devices
-      if (!window.matchMedia('(hover: hover)').matches) return;
+/* ── Scroll reveals ── */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+}, {threshold: 0.08, rootMargin: '0px 0px -40px 0px'});
+document.querySelectorAll('[data-tira-reveal], [data-reveal]').forEach(el => io.observe(el));
 
-      let mx = 0, my = 0; // mouse position
-      let rx = 0, ry = 0; // ring position (lagged)
+/* ── Word reveal ── */
+document.querySelectorAll('[data-tira-word-reveal]').forEach(el => {
+  el.innerHTML = el.textContent.split(' ').map((w, i) => `<span style="--i:${i}">${w}</span>`).join(' ');
+});
 
-      document.addEventListener('mousemove', (e) => {
-        mx = e.clientX;
-        my = e.clientY;
-        dot.style.transform  = `translate(calc(${mx}px - 50%), calc(${my}px - 50%))`;
-      });
-
-      function lerp(a, b, t) { return a + (b - a) * t; }
-
-      function animateRing() {
-        rx = lerp(rx, mx, 0.12);
-        ry = lerp(ry, my, 0.12);
-        ring.style.transform = `translate(calc(${rx}px - 50%), calc(${ry}px - 50%))`;
-        requestAnimationFrame(animateRing);
-      }
-      animateRing();
-
-      // Hover enlargement
-      const hoverTargets = 'a, button, [role="button"]';
-      document.addEventListener('mouseover', (e) => {
-        if (e.target.closest(hoverTargets)) {
-          document.body.classList.add('cursor-hover');
-        }
-      });
-      document.addEventListener('mouseout', (e) => {
-        if (e.target.closest(hoverTargets)) {
-          document.body.classList.remove('cursor-hover');
-        }
-      });
-    })();
-
-    /* ================================================
-       DIRECTIONAL STICKY HEADER
-    ================================================ */
-    (function() {
-      const header    = document.getElementById('siteHeader');
-      const searchBar = document.getElementById('searchBar');
-      if (!header) return;
-
-      let lastScrollY  = 0;
-      let ticking      = false;
-
-      function updateHeader() {
-        const currentY = window.scrollY;
-        if (currentY > lastScrollY && currentY > 120) {
-          header.classList.add('header-hidden');
-          if (searchBar) searchBar.style.transform =
-            `translateY(calc(-1 * (var(--header-h) + var(--search-h))))`;
-        } else {
-          header.classList.remove('header-hidden');
-          if (searchBar) searchBar.style.transform = '';
-        }
-        lastScrollY = currentY;
-        ticking = false;
-      }
-
-      window.addEventListener('scroll', () => {
-        if (!ticking) {
-          requestAnimationFrame(updateHeader);
-          ticking = true;
-        }
-      }, { passive: true });
-    })();
-
-    /* ================================================
-       MOBILE NAV
-    ================================================ */
-    (function() {
-      const hamburger = document.getElementById('hamburgerBtn');
-      const nav       = document.getElementById('mobileNav');
-      const overlay   = document.getElementById('mobileNavOverlay');
-      const closeBtn  = document.getElementById('mobileNavClose');
-      if (!hamburger || !nav) return;
-
-      function openNav() {
-        nav.classList.add('is-open');
-        overlay.classList.add('is-visible');
-        hamburger.setAttribute('aria-expanded', 'true');
-        document.body.style.overflow = 'hidden';
-      }
-
-      function closeNav() {
-        nav.classList.remove('is-open');
-        overlay.classList.remove('is-visible');
-        hamburger.setAttribute('aria-expanded', 'false');
-        document.body.style.overflow = '';
-      }
-
-      hamburger.addEventListener('click', openNav);
-      if (closeBtn) closeBtn.addEventListener('click', closeNav);
-      overlay.addEventListener('click', closeNav);
-
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && nav.classList.contains('is-open')) {
-          closeNav();
-        }
-      });
-    })();
-
-    /* ================================================
-       FOOTER ACCORDION (mobile)
-    ================================================ */
-    (function() {
-      const triggers = document.querySelectorAll('.footer-accordion-trigger');
-      triggers.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const item    = btn.closest('.footer-accordion-item');
-          const content = item.querySelector('.footer-accordion-content');
-          const isOpen  = item.classList.contains('is-open');
-
-          // Close all
-          document.querySelectorAll('.footer-accordion-item.is-open').forEach(el => {
-            el.classList.remove('is-open');
-            el.querySelector('.footer-accordion-content').classList.remove('is-open');
-            el.querySelector('.footer-accordion-trigger').setAttribute('aria-expanded', 'false');
-          });
-
-          // Open clicked if was closed
-          if (!isOpen) {
-            item.classList.add('is-open');
-            content.classList.add('is-open');
-            btn.setAttribute('aria-expanded', 'true');
-          }
-        });
-      });
-    })();
-
-    /* ================================================
-       WORD REVEAL
-    ================================================ */
-    (function() {
-      document.querySelectorAll('[data-tira-word-reveal]').forEach(el => {
-        el.innerHTML = el.textContent.trim().split(' ')
-          .map((w, i) => `<span style="--i:${i}">${w}</span>`)
-          .join(' ');
-      });
-    })();
-
-    /* ================================================
-       SCROLL REVEAL — IntersectionObserver
-    ================================================ */
-    (function() {
-      const els = document.querySelectorAll('[data-tira-reveal], [data-tira-word-reveal]');
-      if (!els.length) return;
-
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-            // Trigger word reveal immediately for hero
-            observer.unobserve(entry.target);
-          }
-        });
-      }, {
-        threshold: 0.12,
-        rootMargin: '0px 0px -40px 0px'
-      });
-
-      els.forEach(el => observer.observe(el));
-
-      // Trigger hero elements immediately on load
-      document.querySelectorAll('.hero [data-tira-reveal], .hero [data-tira-word-reveal]').forEach(el => {
-        setTimeout(() => el.classList.add('is-visible'), 300);
-      });
-    })();
-
-    /* ================================================
-       STATS COUNTER
-    ================================================ */
-    (function() {
-      const counters = document.querySelectorAll('[data-tira-counter]');
-      if (!counters.length) return;
-
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (!entry.isIntersecting) return;
-          const el     = entry.target;
-          const target = parseInt(el.dataset.tiraCounter, 10);
-          const suffix = el.textContent.replace(/\d/g, '').trim();
-          const duration = 1600;
-          const start  = Date.now();
-
-          function update() {
-            const elapsed  = Date.now() - start;
-            const progress = Math.min(elapsed / duration, 1);
-            // Ease out quad
-            const eased    = 1 - Math.pow(1 - progress, 2);
-            const current  = Math.floor(eased * target);
-            el.textContent = current + suffix;
-            if (progress < 1) requestAnimationFrame(update);
-            else el.textContent = target + suffix;
-          }
-
-          requestAnimationFrame(update);
-          observer.unobserve(el);
-        });
-      }, { threshold: 0.5 });
-
-      counters.forEach(el => observer.observe(el));
-    })();
-
-    /* ================================================
-       LAZY VIDEO
-    ================================================ */
-    (function() {
-      const lazyVideos = document.querySelectorAll('video[data-tira-lazy]');
-      if (!lazyVideos.length) return;
-
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (!entry.isIntersecting) return;
-          const video = entry.target;
-          const src   = video.dataset.src;
-          if (src) {
-            video.src = src;
-            video.load();
-          }
-          video.querySelectorAll('source[data-src]').forEach(source => {
-            source.src = source.dataset.src;
-          });
-          video.load();
-          observer.unobserve(video);
-        });
-      }, { rootMargin: '200px' });
-
-      lazyVideos.forEach(v => observer.observe(v));
-    })();
-
-    /* ================================================
-       VIDEO PLAY/PAUSE — IntersectionObserver
-    ================================================ */
-    (function() {
-      const videos = document.querySelectorAll('video[autoplay]');
-      if (!videos.length) return;
-
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          const video = entry.target;
-          if (entry.isIntersecting) {
-            video.play().catch(() => {});
-          } else {
-            video.pause();
-          }
-        });
-      }, { threshold: 0.3 });
-
-      videos.forEach(v => observer.observe(v));
-    })();
-
-  </script>
+/* ── Lazy video ── */
+const videoObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    const v = e.target;
+    if (e.isIntersecting) { v.play && v.play().catch(()=>{}); }
+    else { v.pause && v.pause(); }
+  });
+}, {threshold: 0.25});
+document.querySelectorAll('video').forEach(v => videoObs.observe(v));
+</script>
 
 </body>
 </html>

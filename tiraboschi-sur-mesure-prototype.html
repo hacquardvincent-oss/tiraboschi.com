@@ -775,6 +775,94 @@ body.on-dark .cur-ring { border-color: rgba(255,255,255,.38); }
   .ftr__col.open .ftr__links { max-height: 300px; padding-bottom: 20px; }
   .ftr__bottom { flex-direction: column; align-items: flex-start; }
 }
+
+/* -- Header (fond blanc, toujours opaque -- page secondaire) -- */
+.hdr { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: var(--header-h); background: var(--tira-white); border-bottom: 1px solid var(--tira-border); transition: transform .35s var(--tira-ease); }
+.hdr.hidden { transform: translateY(-100%); }
+.hdr__d { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 40px; height: 100%; padding: 0 40px; }
+.hdr__logo a { display: block; line-height: 0; }
+.hdr__logo-img { display: block; height: 28px; width: auto; }
+.hdr__nav { display: flex; align-items: center; justify-content: center; gap: 28px; }
+.hdr__nav a { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; opacity: .55; transition: opacity .2s; white-space: nowrap; }
+.hdr__nav a:hover, .hdr__nav a[aria-current] { opacity: 1; }
+.hdr__nav .nav-sep { width: 1px; height: 11px; background: currentColor; opacity: .2; }
+.hdr__icons { display: flex; align-items: center; gap: 18px; }
+.hdr__icons button { background: none; border: none; cursor: pointer; display: flex; align-items: center; opacity: .65; transition: opacity .2s; }
+.hdr__icons button:hover { opacity: 1; }
+.hdr__icons svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: square; stroke-linejoin: miter; }
+.tira-bag-icon { display: block; width: 22px; height: 22px; object-fit: contain; }
+.hdr__m { display: none; grid-template-columns: 1fr auto auto auto; align-items: center; gap: 14px; height: 100%; padding: 0 20px; }
+.hdr__m-logo { display: block; line-height: 0; }
+.hdr__m-logo .hdr__logo-img { height: 24px; }
+.hdr__m svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: square; stroke-linejoin: miter; }
+.hdr__m .tira-bag-icon { width: 24px; height: 24px; }
+.hdr__m button { background: none; border: none; cursor: pointer; display: flex; align-items: center; padding: 2px; }
+@media (max-width: 900px) { .hdr__d { display: none; } .hdr__m { display: grid; } }
+.hdr-search { position: fixed; top: var(--header-h); left: 0; right: 0; z-index: 199; display: flex; align-items: center; justify-content: center; height: var(--search-h); padding: 0 40px; background: var(--tira-white); border-bottom: 1px solid var(--tira-border); transition: top .35s var(--tira-ease); }
+.hdr-search.sticky-mode { top: 0; }
+.hdr-search__field { display: flex; align-items: center; gap: 8px; margin: 0 auto; width: 100%; max-width: 560px; }
+.hdr-search input { flex: 1; border: none; background: none; outline: none; font-family: inherit; font-size: 11px; text-transform: uppercase; letter-spacing: .12em; color: var(--tira-black); border-bottom: 1px solid var(--tira-border); padding-bottom: 3px; }
+.hdr-search input::placeholder { opacity: .35; }
+.hdr-search__icon svg { width: 15px; height: 15px; fill: none; stroke: var(--tira-black); stroke-width: 1.2; opacity: .4; }
+.hdr-search__actions { display: flex; align-items: center; gap: 20px; position: absolute; right: 40px; top: 50%; transform: translateY(-50%); opacity: 0; pointer-events: none; transition: opacity .3s; }
+.hdr-search.sticky-mode .hdr-search__actions { opacity: 1; pointer-events: auto; }
+.hdr-search__actions button { background: none; border: none; cursor: pointer; display: flex; align-items: center; opacity: .65; transition: opacity .2s; }
+.hdr-search__actions svg { width: 20px; height: 20px; fill: none; stroke: var(--tira-black); stroke-width: 1.5; stroke-linecap: square; stroke-linejoin: miter; }
+@media (max-width: 900px) { .hdr-search { padding: 0 20px; } .hdr-search__actions { right: 20px; } }
+.mobile-nav { position: fixed; inset: 0; z-index: 300; background: rgba(10,10,10,.5); opacity: 0; pointer-events: none; transition: opacity .35s var(--tira-ease); }
+.mobile-nav.open { opacity: 1; pointer-events: auto; }
+.mobile-nav__inner { position: absolute; top: 0; right: 0; bottom: 0; width: min(320px, 88vw); background: var(--tira-white); padding: 28px 32px 40px; transform: translateX(100%); transition: transform .4s var(--tira-ease); overflow-y: auto; }
+.mobile-nav.open .mobile-nav__inner { transform: none; }
+.mobile-nav__close { display: flex; margin-left: auto; margin-bottom: 40px; background: none; border: none; cursor: pointer; opacity: .5; }
+.mobile-nav__close svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+.mobile-nav ul { list-style: none; }
+.mobile-nav li a { display: block; font-size: 13px; text-transform: uppercase; letter-spacing: .1em; padding: 14px 0; border-bottom: 1px solid var(--tira-border); opacity: .75; transition: opacity .2s; }
+.mobile-nav li a:hover { opacity: 1; }
+body.nav-open { overflow: hidden; }
+.society-crm { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; padding: 80px 48px; border-top: 1px solid var(--tira-border); border-bottom: 1px solid var(--tira-border); }
+.society-crm__inner { display: contents; }
+.society-crm__title { font-size: clamp(28px, 3.5vw, 48px); font-weight: 400; line-height: 1.1; }
+.society-crm__field { display: flex; align-items: center; border-bottom: 1px solid var(--tira-border); margin-bottom: 14px; }
+.society-crm__input { flex: 1; border: none; background: none; outline: none; font-family: inherit; font-size: 13px; padding: 10px 0; }
+.society-crm__input::placeholder { opacity: .4; }
+.society-crm__arrow { background: none; border: none; cursor: pointer; display: flex; align-items: center; padding: 8px 0 8px 12px; opacity: .6; transition: opacity .2s; }
+.society-crm__arrow:hover { opacity: 1; }
+.society-crm__arrow svg { width: 18px; height: 18px; fill: none; stroke: var(--tira-black); }
+.society-crm__gdpr { font-size: 10px; opacity: .4; line-height: 1.6; margin-bottom: 32px; }
+.society-crm__gdpr a { text-decoration: underline; text-underline-offset: 3px; }
+.society-crm__confirm { font-size: 12px; opacity: .6; font-style: italic; }
+.society-crm__social { display: flex; align-items: center; gap: 20px; }
+.society-crm__social-label { font-size: 10px; text-transform: uppercase; letter-spacing: .14em; opacity: .4; }
+.society-crm__social-icons { display: flex; gap: 16px; }
+.society-crm__social-icons a { display: flex; align-items: center; opacity: .5; transition: opacity .2s; }
+.society-crm__social-icons a:hover { opacity: 1; }
+.society-crm__social-icons svg { width: 20px; height: 20px; }
+@media (max-width: 768px) { .society-crm { grid-template-columns: 1fr; padding: 60px 24px; gap: 44px; } }
+.footer { background: var(--tira-black); color: var(--tira-white); padding: 80px 48px 40px; }
+.footer__top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; padding-bottom: 64px; border-bottom: 1px solid rgba(255,255,255,.08); }
+.footer__brand-logo { font-size: 12px; text-transform: uppercase; letter-spacing: .2em; margin-bottom: 20px; }
+.footer__brand-text { font-size: 13px; opacity: .4; line-height: 1.75; max-width: 220px; }
+.footer__col h4 { font-size: 9px; text-transform: uppercase; letter-spacing: .16em; opacity: .3; margin-bottom: 22px; }
+.footer__col ul { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+.footer__col ul a { font-size: 13px; opacity: .6; transition: opacity .2s; }
+.footer__col ul a:hover { opacity: 1; }
+.footer__seo summary::-webkit-details-marker { display: none; }
+.footer__bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 32px; }
+.footer__copy { font-size: 10px; opacity: .22; text-transform: uppercase; letter-spacing: .1em; }
+.footer__policies { display: flex; gap: 24px; }
+.footer__policies a { font-size: 10px; opacity: .22; text-transform: uppercase; letter-spacing: .1em; transition: opacity .2s; }
+.footer__policies a:hover { opacity: .6; }
+@media (max-width: 900px) {
+  .footer { padding: 60px 24px 32px; } .footer__top { grid-template-columns: 1fr; gap: 0; }
+  .footer__col { border-top: 1px solid rgba(255,255,255,.08); }
+  .footer__col h4 { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; margin-bottom: 0; cursor: pointer; }
+  .footer__col h4::after { content: '+'; font-size: 16px; opacity: .4; transition: transform .3s; }
+  .footer__col.open h4::after { transform: rotate(45deg); }
+  .footer__col ul { max-height: 0; overflow: hidden; transition: max-height .4s var(--tira-ease); }
+  .footer__col.open ul { max-height: 320px; padding-bottom: 20px; }
+  .footer__bottom { flex-direction: column; gap: 16px; text-align: center; }
+  .footer__policies { flex-wrap: wrap; justify-content: center; gap: 16px; }
+}
 </style>
 </head>
 
@@ -785,85 +873,65 @@ body.on-dark .cur-ring { border-color: rgba(255,255,255,.38); }
 
 <!-- ── HEADER ── -->
 <header class="hdr" id="hdr" role="banner">
-  <!-- Desktop -->
   <div class="hdr__d">
-    <nav class="hdr__nav" aria-label="Navigation principale">
-      <a href="/collections/fw25">FW25</a>
-      <span class="sep" aria-hidden="true"></span>
-      <a href="/collections/sacs">Sacs</a>
-      <span class="sep" aria-hidden="true"></span>
-      <a href="/collections/iconiques">Iconiques</a>
-      <span class="sep" aria-hidden="true"></span>
-      <a href="/pages/sur-mesure" aria-current="page">Sur Mesure</a>
-    </nav>
     <div class="hdr__logo">
-      <a href="/" aria-label="TIRABOSCHI Paris — Accueil">
-        <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738" alt="TIRABOSCHI Paris" class="hdr__logo-img">
+      <a href="/" aria-label="TIRABOSCHI Paris -- accueil">
+        <img class="hdr__logo-img" src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738" alt="TIRABOSCHI Paris" width="auto" height="28">
       </a>
     </div>
+    <nav class="hdr__nav" aria-label="Navigation principale">
+      <a href="/collections/sacs">Sacs</a>
+      <a href="/collections/petite-maroquinerie">Petite Maroquinerie</a>
+      <a href="/collections/iconiques">Iconiques</a>
+      <a href="/collections/sur-mesure-exotiques">Sur Mesure</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/pages/histoire">La Maison</a>
+    </nav>
     <div class="hdr__icons">
-      <button aria-label="Rechercher">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="22" y2="22"/></svg>
-      </button>
       <button aria-label="Mon compte">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4.418 3.582-8 8-8s8 3.582 8 8"/></svg>
       </button>
-      <button aria-label="Panier">
-        <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050" alt="" class="tira-bag-icon" aria-hidden="true">
+      <button aria-label="Ouvrir la recherche">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="22" y2="22"/></svg>
+      </button>
+      <button aria-label="Panier -- 0 article">
+        <img class="tira-bag-icon" src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050" alt="" width="22" height="22" aria-hidden="true">
       </button>
     </div>
   </div>
-  <!-- Mobile -->
-  <div class="hdr__m">
-    <a href="/" class="hdr__m-logo" aria-label="TIRABOSCHI Paris — Accueil">
-      <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738" alt="TIRABOSCHI Paris" class="hdr__logo-img">
+  <div class="hdr__m" aria-label="Navigation mobile">
+    <a href="/" class="hdr__m-logo" aria-label="TIRABOSCHI Paris -- accueil">
+      <img class="hdr__logo-img" src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738" alt="TIRABOSCHI Paris" height="24">
     </a>
-    <button aria-label="Panier">
-      <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050" alt="" class="tira-bag-icon" aria-hidden="true">
+    <button aria-label="Panier -- 0 article">
+      <img class="tira-bag-icon" src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050" alt="" width="24" height="24" aria-hidden="true">
     </button>
     <button aria-label="Mon compte">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4.418 3.582-8 8-8s8 3.582 8 8"/></svg>
     </button>
-    <button id="navToggle" aria-label="Menu" aria-expanded="false" aria-controls="navDrawer">
+    <button aria-label="Menu principal" aria-expanded="false" id="mobile-menu-btn">
       <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
   </div>
 </header>
 
-<!-- Search bar -->
-<div class="hdr-search" id="hdrSearch" role="search">
+<div class="hdr-search" id="hdr-search" role="search" aria-label="Recherche">
   <div class="hdr-search__field">
-    <div class="hdr-search__icon">
+    <input type="search" placeholder="Demander a Tiraboschi" aria-label="Recherche">
+    <div class="hdr-search__icon" aria-hidden="true">
       <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="22" y2="22"/></svg>
     </div>
-    <input type="search" placeholder="Rechercher" aria-label="Rechercher">
+  </div>
+  <div class="hdr-search__actions" aria-hidden="true">
+    <button aria-label="Mon compte">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4.418 3.582-8 8-8s8 3.582 8 8"/></svg>
+    </button>
+    <button aria-label="Panier">
+      <img class="tira-bag-icon" src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050" alt="" width="20" height="20">
+    </button>
   </div>
 </div>
 
-<!-- Mobile nav drawer -->
-<div class="nav-overlay" id="navOverlay" aria-hidden="true"></div>
-<nav class="nav-drawer" id="navDrawer" aria-label="Menu mobile" aria-hidden="true">
-  <div class="nav-drawer__close">
-    <button id="navClose" aria-label="Fermer le menu">
-      <svg viewBox="0 0 24 24"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
-    </button>
-  </div>
-  <a href="/collections/fw25">FW25</a>
-  <a href="/collections/sacs">Sacs</a>
-  <a href="/collections/iconiques">Iconiques</a>
-  <a href="/pages/sur-mesure">Sur Mesure</a>
-  <div class="nav-drawer__sub">
-    <a href="/pages/histoire">Histoire</a>
-    <a href="/pages/savoir-faire">Savoir-Faire</a>
-    <a href="/pages/matieres-cuirs">Matières & Cuirs</a>
-    <a href="/pages/la-societe">La Société</a>
-    <a href="/blogs/latelier">L'Atelier</a>
-  </div>
-</nav>
-
-<!-- ══════════════════════════════════════
-     1. HERO
-══════════════════════════════════════ -->
 <main id="main">
 <section class="sm-hero" aria-label="Sur Mesure">
   <div class="sm-hero__img" aria-hidden="true">
@@ -1153,189 +1221,142 @@ body.on-dark .cur-ring { border-color: rgba(255,255,255,.38); }
 <!-- ══════════════════════════════════════
      FOOTER
 ══════════════════════════════════════ -->
-<footer class="ftr" aria-label="Pied de page">
-  <div class="ftr__grid">
-    <!-- Col 1 : Brand -->
-    <div class="ftr__brand">
-      <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738" alt="TIRABOSCHI Paris" loading="lazy">
-      <p class="ftr__tagline">Made in France, Only.<br>Since 1904</p>
-      <a href="https://instagram.com/boschi_paris" class="ftr__insta" target="_blank" rel="noopener">@boschi_paris</a>
+<section class="society-crm" data-tira-reveal aria-labelledby="society-crm-title">
+  <div class="society-crm__inner">
+    <div class="society-crm__left">
+      <h2 class="society-crm__title" id="society-crm-title">Join<br>the Society</h2>
     </div>
-    <!-- Col 2 : Collections -->
-    <div class="ftr__col" id="ftr-col-2">
-      <p class="ftr__col-title" role="button" aria-expanded="false" aria-controls="ftr-links-2">Collections</p>
-      <nav class="ftr__links" id="ftr-links-2" aria-label="Collections">
-        <a href="/collections/fw25">FW25</a>
-        <a href="/collections/sacs">Sacs</a>
-        <a href="/collections/petite-maroquinerie">Petite Maroquinerie</a>
-        <a href="/collections/iconiques">Iconiques</a>
-        <a href="/collections/sur-mesure-exotiques">Sur Mesure &amp; Exotiques</a>
-      </nav>
-    </div>
-    <!-- Col 3 : La Maison -->
-    <div class="ftr__col" id="ftr-col-3">
-      <p class="ftr__col-title" role="button" aria-expanded="false" aria-controls="ftr-links-3">La Maison</p>
-      <nav class="ftr__links" id="ftr-links-3" aria-label="La Maison">
-        <a href="/pages/histoire">Histoire</a>
-        <a href="/pages/savoir-faire">Savoir-Faire</a>
-        <a href="/pages/matieres-cuirs">Matières &amp; Cuirs</a>
-        <a href="/pages/la-societe">La Société</a>
-        <a href="/blogs/latelier">Blog L'Atelier</a>
-      </nav>
-    </div>
-    <!-- Col 4 : Service -->
-    <div class="ftr__col" id="ftr-col-4">
-      <p class="ftr__col-title" role="button" aria-expanded="false" aria-controls="ftr-links-4">Service</p>
-      <nav class="ftr__links" id="ftr-links-4" aria-label="Service client">
-        <a href="/pages/contact">Contact</a>
-        <a href="/pages/prendrez-rendez-vous">Prendre RDV</a>
-        <a href="/pages/livraison">Livraison</a>
-        <a href="/pages/retours">Retours</a>
-        <a href="/pages/faq">FAQ</a>
-      </nav>
+    <div class="society-crm__right">
+      <form class="society-crm__form" id="society-form" novalidate>
+        <div class="society-crm__field">
+          <input class="society-crm__input" type="email" placeholder="email" required autocomplete="email">
+          <button type="submit" class="society-crm__arrow" aria-label="S'inscrire">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
+          </button>
+        </div>
+        <p class="society-crm__gdpr">En vous inscrivant, vous acceptez notre <a href="/pages/confidentialite">politique de confidentialite</a>. Vous pouvez vous desinscrire a tout moment.</p>
+        <p class="society-crm__confirm" aria-live="polite" hidden>Bienvenue -- votre inscription est confirmee.</p>
+      </form>
+      <div class="society-crm__social">
+        <span class="society-crm__social-label">Suivez-nous</span>
+        <div class="society-crm__social-icons">
+          <a href="https://instagram.com/boschi_paris" target="_blank" rel="noopener" aria-label="Instagram @boschi_paris">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="#" aria-label="LinkedIn TIRABOSCHI">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20"/><line x1="7" y1="10" x2="7" y2="17"/><path d="M11 17v-4a2 2 0 0 1 4 0v4"/><line x1="11" y1="10" x2="11" y2="17"/><circle cx="7" cy="7" r=".8" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="#" aria-label="YouTube TIRABOSCHI">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="20" height="14"/><polygon points="10,9 16,12 10,15"/></svg>
+          </a>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="ftr__bottom">
-    <p class="ftr__copy">© 2025 TIRABOSCHI Paris — Tous droits réservés</p>
-    <div class="ftr__legal">
-      <a href="/pages/mentions-legales">Mentions légales</a>
-      <a href="/pages/confidentialite">Confidentialité</a>
-      <a href="/pages/cgv">CGV</a>
+</section>
+
+<footer class="footer" role="contentinfo">
+  <div class="footer__top">
+    <div>
+      <p class="footer__brand-logo">TIRABOSCHI &middot; Since 1904</p>
+      <p class="footer__brand-text">Maroquinerie de luxe francaise. Chaque piece fabriquee a la main, par un seul artisan, dans nos ateliers parisiens.</p>
+      <details class="footer__seo" style="margin-top:28px">
+        <summary style="font-size:10px;text-transform:uppercase;letter-spacing:.12em;opacity:.3;cursor:pointer;list-style:none">Plan du site</summary>
+        <div style="margin-top:12px;font-size:11px;opacity:.3;line-height:2">
+          <a href="/collections/sacs">Sacs</a> &middot; <a href="/collections/petite-maroquinerie">Petite Maroquinerie</a> &middot; <a href="/collections/iconiques">Iconiques</a> &middot; <a href="/collections/sur-mesure-exotiques">Sur Mesure</a> &middot; <a href="/pages/histoire">Histoire</a> &middot; <a href="/pages/savoir-faire">Savoir-Faire</a> &middot; <a href="/pages/matieres-cuirs">Matieres</a> &middot; <a href="/pages/la-societe">The Society</a> &middot; <a href="/pages/contact">Contact</a>
+        </div>
+      </details>
     </div>
+    <div class="footer__col">
+      <h4>Collections</h4>
+      <ul>
+        <li><a href="/collections/sacs">Sacs</a></li>
+        <li><a href="/collections/petite-maroquinerie">Petite Maroquinerie</a></li>
+        <li><a href="/collections/iconiques">Iconiques</a></li>
+        <li><a href="/collections/fw25">FW 2025</a></li>
+        <li><a href="/collections/sur-mesure-exotiques">Sur Mesure &amp; Exotiques</a></li>
+      </ul>
+    </div>
+    <div class="footer__col">
+      <h4>La Maison</h4>
+      <ul>
+        <li><a href="/pages/histoire">Notre Histoire</a></li>
+        <li><a href="/pages/savoir-faire">Savoir-Faire</a></li>
+        <li><a href="/pages/matieres-cuirs">Matieres &amp; Cuirs</a></li>
+        <li><a href="/blogs/latelier">L'Atelier</a></li>
+        <li><a href="/pages/la-societe">The Society</a></li>
+      </ul>
+    </div>
+    <div class="footer__col">
+      <h4>Service</h4>
+      <ul>
+        <li><a href="/pages/contact">Contact</a></li>
+        <li><a href="/pages/prendrez-rendez-vous">Prendre RDV</a></li>
+        <li><a href="/pages/entretien-reparation">Entretien &amp; Reparation</a></li>
+        <li><a href="/pages/livraison">Livraison</a></li>
+        <li><a href="/pages/faq">FAQ</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer__bottom">
+    <p class="footer__copy">&copy; 2025 TIRABOSCHI Paris. Tous droits reserves.</p>
+    <nav class="footer__policies" aria-label="Liens legaux">
+      <a href="/pages/mentions-legales">Mentions legales</a>
+      <a href="/pages/confidentialite">Confidentialite</a>
+      <a href="/pages/cgv">CGV</a>
+    </nav>
   </div>
 </footer>
 
+<nav class="mobile-nav" id="mobile-nav" aria-hidden="true">
+  <div class="mobile-nav__inner">
+    <button class="mobile-nav__close" id="mobile-nav-close">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+    </button>
+    <ul>
+      <li><a href="/collections/sacs">Sacs</a></li>
+      <li><a href="/collections/petite-maroquinerie">Petite Maroquinerie</a></li>
+      <li><a href="/collections/iconiques">Iconiques</a></li>
+      <li><a href="/collections/sur-mesure-exotiques">Sur Mesure</a></li>
+      <li><a href="/pages/histoire">Notre Histoire</a></li>
+      <li><a href="/pages/savoir-faire">Savoir-Faire</a></li>
+      <li><a href="/pages/matieres-cuirs">Les Matieres</a></li>
+      <li><a href="/pages/la-societe">The Society</a></li>
+      <li><a href="/pages/contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+
 <script>
-(function() {
-  'use strict';
-
-  /* ── Curseur ── */
-  const dot  = document.getElementById('curDot');
-  const ring = document.getElementById('curRing');
-  let mx = -100, my = -100, rx = -100, ry = -100;
-  if (dot && ring) {
-    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-    (function animCur() {
-      rx += (mx - rx) * 0.14;
-      ry += (my - ry) * 0.14;
-      if (dot) { dot.style.left = mx + 'px'; dot.style.top = my + 'px'; }
-      if (ring) { ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; }
-      requestAnimationFrame(animCur);
-    })();
-    document.querySelectorAll('a, button, [role="button"], label, input, textarea').forEach(el => {
-      el.addEventListener('mouseenter', () => document.body.classList.add('on-hover'));
-      el.addEventListener('mouseleave', () => document.body.classList.remove('on-hover'));
-    });
-    document.querySelectorAll('.sm-hero, .sm-exotic').forEach(el => {
-      el.addEventListener('mouseenter', () => document.body.classList.add('on-dark'));
-      el.addEventListener('mouseleave', () => document.body.classList.remove('on-dark'));
-    });
-  }
-
-  /* ── Header directionnel ── */
-  const hdr = document.getElementById('hdr');
-  const searchBar = document.getElementById('hdrSearch');
-  let lastY = 0, ticking = false;
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      requestAnimationFrame(() => {
-        const y = window.scrollY;
-        if (y > lastY && y > 80) {
-          hdr.classList.add('hidden');
-          searchBar && searchBar.classList.add('up');
-        } else {
-          hdr.classList.remove('hidden');
-          searchBar && searchBar.classList.remove('up');
-        }
-        lastY = y;
-        ticking = false;
-      });
-      ticking = true;
-    }
-  }, { passive: true });
-
-  /* ── Scroll reveal ── */
-  function initReveal() {
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('is-visible');
-          io.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-    document.querySelectorAll('[data-tira-reveal]').forEach(el => io.observe(el));
-  }
-
-  /* ── Word reveal ── */
-  function initWordReveal() {
-    document.querySelectorAll('[data-tira-word-reveal]').forEach(el => {
-      el.innerHTML = el.textContent.trim().split(' ')
-        .map((w, i) => `<span style="--i:${i}">${w}</span>`).join(' ');
-    });
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('is-visible');
-          io.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.2 });
-    document.querySelectorAll('[data-tira-word-reveal]').forEach(el => io.observe(el));
-  }
-
-  /* ── FAQ accordion ── */
-  document.querySelectorAll('.faq-item__q').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const item = this.closest('.faq-item');
-      const isOpen = item.classList.contains('open');
-      // close all
-      document.querySelectorAll('.faq-item').forEach(i => {
-        i.classList.remove('open');
-        i.querySelector('.faq-item__q').setAttribute('aria-expanded', 'false');
-      });
-      if (!isOpen) {
-        item.classList.add('open');
-        this.setAttribute('aria-expanded', 'true');
-      }
-    });
-  });
-
-  /* ── Mobile nav drawer ── */
-  const navToggle  = document.getElementById('navToggle');
-  const navClose   = document.getElementById('navClose');
-  const navOverlay = document.getElementById('navOverlay');
-  const navDrawer  = document.getElementById('navDrawer');
-  function openNav() {
-    navOverlay.classList.add('open'); navOverlay.setAttribute('aria-hidden','false');
-    navDrawer.classList.add('open'); navDrawer.setAttribute('aria-hidden','false');
-    if (navToggle) navToggle.setAttribute('aria-expanded','true');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeNav() {
-    navOverlay.classList.remove('open'); navOverlay.setAttribute('aria-hidden','true');
-    navDrawer.classList.remove('open'); navDrawer.setAttribute('aria-hidden','true');
-    if (navToggle) navToggle.setAttribute('aria-expanded','false');
-    document.body.style.overflow = '';
-  }
-  navToggle  && navToggle.addEventListener('click', openNav);
-  navClose   && navClose.addEventListener('click', closeNav);
-  navOverlay && navOverlay.addEventListener('click', closeNav);
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeNav(); });
-
-  /* ── Footer accordion mobile ── */
-  document.querySelectorAll('.ftr__col-title').forEach(title => {
-    title.addEventListener('click', function() {
-      const col = this.closest('.ftr__col');
-      col.classList.toggle('open');
-      this.setAttribute('aria-expanded', col.classList.contains('open'));
-    });
-  });
-
-  /* ── Init ── */
-  initWordReveal();
-  initReveal();
-})();
+/* -- Header directionnel (toujours opaque) -- */
+const hdr = document.getElementById('hdr');
+const search = document.getElementById('hdr-search');
+let lastY = window.scrollY, ticking = false, lastDir = 'up';
+function updateHdr() {
+  const y = window.scrollY, d = y - lastY;
+  if (y > 120) {
+    if (d > 4 && lastDir !== 'down') { hdr && hdr.classList.add('hidden'); document.body.classList.add('hdr-hidden'); if (search) search.classList.add('sticky-mode'); lastDir = 'down'; }
+    else if (d < -4 && lastDir !== 'up') { hdr && hdr.classList.remove('hidden'); document.body.classList.remove('hdr-hidden'); if (search) search.classList.remove('sticky-mode'); lastDir = 'up'; }
+  } else { hdr && hdr.classList.remove('hidden'); document.body.classList.remove('hdr-hidden'); if (search) search.classList.remove('sticky-mode'); lastDir = 'up'; }
+  lastY = y; ticking = false;
+}
+window.addEventListener('scroll', () => { if (!ticking) { requestAnimationFrame(updateHdr); ticking = true; } }, { passive: true });
+/* -- Mobile menu -- */
+const mmBtn = document.getElementById('mobile-menu-btn');
+const mNav = document.getElementById('mobile-nav');
+const mnClose = document.getElementById('mobile-nav-close');
+if (mmBtn && mNav) {
+  mmBtn.addEventListener('click', () => { mNav.classList.add('open'); mNav.setAttribute('aria-hidden', 'false'); document.body.classList.add('nav-open'); });
+  [mnClose, mNav].forEach(function(el) { el && el.addEventListener('click', function(e) {
+    if (e.target === mNav || e.target.closest('#mobile-nav-close')) { mNav.classList.remove('open'); mNav.setAttribute('aria-hidden', 'true'); document.body.classList.remove('nav-open'); }
+  }); });
+}
+/* -- Footer accordion (mobile) -- */
+document.querySelectorAll('.footer__col h4').forEach(function(h) { h.addEventListener('click', function() { h.closest('.footer__col').classList.toggle('open'); }); });
+/* -- Society CRM form -- */
+const societyForm = document.getElementById('society-form');
+if (societyForm) { societyForm.addEventListener('submit', function(e) { e.preventDefault(); var em = this.querySelector('input[type="email"]').value; if (!em) return; var c = this.querySelector('.society-crm__confirm'); if (c) c.hidden = false; }); }
 </script>
 </body>
 </html>

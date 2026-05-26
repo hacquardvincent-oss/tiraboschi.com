@@ -810,6 +810,13 @@ body {
 
 body.show-confirmation .page-checkout { display: none; }
 body.show-confirmation .page-confirmation { display: block; }
+
+/* Mobile recap above fold */
+.chk-mobile-recap { display: none; }
+@media (max-width: 768px) {
+  .chk-mobile-recap { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: var(--tira-grey); border-bottom: 1px solid var(--tira-border); font-size:12px; }
+  .chk-mobile-recap__toggle { font-size: 10px; text-transform: uppercase; letter-spacing: .1em; opacity: .5; text-decoration: underline; cursor: pointer; }
+}
 </style>
 </head>
 <body>
@@ -821,14 +828,13 @@ body.show-confirmation .page-confirmation { display: block; }
 <!-- PROTOTYPE SWITCHER -->
 <div class="proto-switcher">
   <button class="active" onclick="switchPage('checkout')">Étape 1 — Livraison</button>
-  <button onclick="switchPage('payment')">Étape 2 — Paiement</button>
   <button onclick="switchPage('confirmation')">Confirmation commande</button>
 </div>
 
 <div class="proto-note">
   <strong>Note de prototype · Checkout TIRABOSCHI</strong>
   Le checkout Shopify standard est personnalisable via Checkout Editor (logo, couleurs, police, bannière) sur plan Shopify Basic+.
-  Ce prototype illustre le branding cible + les éléments custom possible (packaging cadeau, message, La Société onboarding post-commande).
+  Ce prototype illustre le branding cible + les éléments custom possible (packaging cadeau, message, The Society onboarding post-commande).
   La police et les couleurs sont injectées via CSS custom dans checkout.liquid (plan Shopify Plus) ou via Checkout Branding API.
 </div>
 
@@ -850,6 +856,12 @@ body.show-confirmation .page-confirmation { display: block; }
   <div class="chk-steps">
     <div class="chk-step done">
       <div class="chk-step__num">✓</div>
+  <!-- Mobile recap above fold -->
+  <div class="chk-mobile-recap" role="region" aria-label="Resume commande">
+    <span>2 articles</span>
+    <span>4 200 EUR</span>
+    <button class="chk-mobile-recap__toggle" type="button" aria-expanded="false">Voir le detail</button>
+  </div>
       <span class="chk-step__label">Panier</span>
     </div>
     <div class="chk-step active">
@@ -975,29 +987,6 @@ body.show-confirmation .page-confirmation { display: block; }
       </div>
 
       <!-- PACKAGING CADEAU -->
-      <div class="chk-section">
-        <div class="chk-section__title">Packaging</div>
-
-        <div class="gift-toggle" id="gift-toggle">
-          <div class="gift-toggle__text">
-            <div class="gift-toggle__label">Emballage cadeau TIRABOSCHI</div>
-            <div class="gift-toggle__desc">Boîte signature · Papier de soie · Ruban noir · Message manuscrit</div>
-          </div>
-          <div class="gift-toggle__switch"></div>
-        </div>
-
-        <div class="gift-message" id="gift-message">
-          <div class="field" style="margin-top:12px">
-            <label>Message personnalisé (optionnel)</label>
-            <textarea placeholder="Votre message manuscrit..."></textarea>
-          </div>
-        </div>
-
-        <p style="font-size:11px;color:#888;margin-top:12px;line-height:1.6;letter-spacing:.05em">
-          Chaque pièce est livrée dans son pochon en coton naturel. L'emballage cadeau ajoute la boîte coffret noire mate gravée, le papier de soie et le ruban.
-        </p>
-      </div>
-
       <!-- CTA -->
       <div class="chk-cta">
         <button class="chk-btn-primary" onclick="switchPage('payment')">
@@ -1251,14 +1240,14 @@ body.show-confirmation .page-confirmation { display: block; }
       <strong>sophie.martin@gmail.com</strong>
     </p>
 
-    <!-- La Société onboarding — IMPORTANT UX -->
+    <!-- The Society onboarding — IMPORTANT UX -->
     <div class="chk-confirm__societe">
-      <h3>Bienvenue dans La Société.</h3>
+      <h3>Bienvenue dans The Society.</h3>
       <p>
         Votre première pièce TIRABOSCHI vous ouvre les portes<br>
         du Cercle I — Membre. Vos privilèges commencent aujourd'hui.
       </p>
-      <a href="#">Découvrir La Société →</a>
+      <a href="#">Découvrir The Society →</a>
     </div>
 
     <!-- Livraison -->
@@ -1335,24 +1324,7 @@ if (!('ontouchstart' in window)) {
 }
 
 // === GIFT TOGGLE ===
-const giftToggle = document.getElementById('gift-toggle');
-const giftMessage = document.getElementById('gift-message');
-if (giftToggle) {
-  giftToggle.addEventListener('click', () => {
-    giftToggle.classList.toggle('active');
-    giftMessage.classList.toggle('visible');
-  });
-}
-
-// === OPTION ITEMS ===
-document.querySelectorAll('.option-group').forEach(group => {
-  group.querySelectorAll('.option-item').forEach(item => {
-    item.addEventListener('click', () => {
-      group.querySelectorAll('.option-item').forEach(i => i.classList.remove('selected'));
-      item.classList.add('selected');
-    });
-  });
-});
+/* gift wrapping removed */;
 
 // === PAGE SWITCHER ===
 function switchPage(page) {
