@@ -1,0 +1,145 @@
+{%- comment -%}
+  snippets/tira-drop-bar.liquid
+  TIRABOSCHI Paris — Barre d'annonce drop (site-wide)
+
+  Barre 44px en haut du site pendant un drop actif.
+  Récupère les infos du drop actif depuis un metaobject "tira_drop".
+
+  Prérequis :
+  Option A (recommandée) — Shopify Metaobject "tira_drop" avec les champs :
+    - active        → Boolean
+    - drop_name     → Texte : "FW25"
+    - product_title → Texte : "Victoire Noir Verni"
+    - end_date      → Date
+    - cta_url       → URL : /collections/drop-fw25
+
+  Option B (simple) — Variables hardcodées dans config/settings_data.json
+  Utiliser settings.drop_active / settings.drop_bar_text / etc.
+
+  Usage dans layout/theme.liquid, juste AVANT le header :
+  {% render 'tira-drop-bar' %}
+{%- endcomment -%}
+
+{%- liquid
+  # Option B — settings (plus simple à configurer sans metaobject)
+  assign drop_active = settings.drop_active | default: false
+  assign drop_name   = settings.drop_name | default: 'DROP'
+  assign drop_text   = settings.drop_bar_text | default: 'Réservations ouvertes'
+  assign drop_cta_url = settings.drop_cta_url | default: '/collections/drop'
+  assign drop_cta    = settings.drop_cta_label | default: 'Réserver →'
+  assign drop_end    = settings.drop_end_date
+-%}
+
+{%- if drop_active -%}
+
+<div class="tira-drop-bar" role="banner" aria-label="{{ 'preorder.drop_bar_label' | t }}">
+
+  <div class="tira-drop-bar__content">
+    <span class="tira-drop-bar__name">{{ drop_name }}</span>
+    <span class="tira-drop-bar__sep" aria-hidden="true">·</span>
+    <span class="tira-drop-bar__text">{{ drop_text }}</span>
+    <a href="{{ drop_cta_url }}" class="tira-drop-bar__cta">
+      {{- drop_cta -}}
+    </a>
+  </div>
+
+  {%- if drop_end != blank -%}
+  <div class="tira-drop-bar__countdown" data-target="{{ drop_end }}" id="tira-drop-bar-countdown">
+    <span class="tira-drop-bar__timer">
+      <span data-countdown="days">--</span>j
+      <span class="tira-drop-bar__timer-sep">:</span>
+      <span data-countdown="hours">--</span>h
+      <span class="tira-drop-bar__timer-sep">:</span>
+      <span data-countdown="mins">--</span>m
+    </span>
+  </div>
+  {%- endif -%}
+
+</div>
+
+<style>
+  .tira-drop-bar {
+    position: relative;
+    z-index: 400;
+    background: var(--tira-black, #0a0a0a);
+    color: var(--tira-white, #fff);
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 0 20px;
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .tira-drop-bar__content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .tira-drop-bar__name {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    opacity: 0.6;
+  }
+  .tira-drop-bar__sep {
+    opacity: 0.3;
+  }
+  .tira-drop-bar__text {
+    opacity: 0.85;
+    font-size: 11px;
+  }
+  .tira-drop-bar__cta {
+    color: var(--tira-white, #fff);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    transition: opacity 0.2s;
+  }
+  .tira-drop-bar__cta:hover { opacity: 0.7; }
+  .tira-drop-bar__countdown {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    opacity: 0.65;
+  }
+  .tira-drop-bar__timer-sep { opacity: 0.4; margin: 0 2px; }
+
+  @media (max-width: 768px) {
+    .tira-drop-bar__text { display: none; }
+    .tira-drop-bar { gap: 12px; }
+  }
+</style>
+
+<script>
+(function() {
+  var el = document.getElementById('tira-drop-bar-countdown');
+  if (!el) return;
+  var targetStr = el.getAttribute('data-target');
+  var target = targetStr ? new Date(targetStr) : null;
+  if (!target || isNaN(target.getTime())) return;
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function update() {
+    var now  = new Date();
+    var diff = target - now;
+    if (diff <= 0) { el.style.display = 'none'; return; }
+
+    var days  = Math.floor(diff / 86400000);
+    var hours = Math.floor((diff % 86400000) / 3600000);
+    var mins  = Math.floor((diff % 3600000) / 60000);
+
+    el.querySelector('[data-countdown="days"]').textContent  = pad(days);
+    el.querySelector('[data-countdown="hours"]').textContent = pad(hours);
+    el.querySelector('[data-countdown="mins"]').textContent  = pad(mins);
+  }
+
+  update();
+  setInterval(update, 60000); // 1 min refresh sufficient for bar (no seconds)
+})();
+</script>
+
+{%- endif -%}

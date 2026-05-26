@@ -110,6 +110,7 @@ shopify theme list --store tiraboschi-paris.myshopify.com
 | Bordures | 1px solid — jamais plus |
 | Icônes | stroke thin 22px — jamais filled |
 | Boutons | texte souligné uppercase — PAS de boîte rectangulaire |
+| **Exception bouton** | CTA principal précommande ("Réserver ma pièce") → box 1px border autorisée |
 | Gap grille collection | 2–4px (style Miu Miu) |
 
 ---
@@ -202,6 +203,8 @@ shopify theme list --store tiraboschi-paris.myshopify.com
 |---|---|---|
 | Newsletter popup | `tiraboschi-newsletter-popup-prototype.html` | P3 |
 | Animations premium (Lenis, transitions, splash…) | `tiraboschi-composants-prototype.html` | P3 |
+| International · Marchés | `tiraboschi-international-prototype.html` | P3 |
+| Drops & Précommandes | `tiraboschi-precommande-prototype.html` | P2 |
 
 ### Agent IA Search (Phase 5 — après validation contenu)
 | Élément | Description |
@@ -236,6 +239,10 @@ shopify theme list --store tiraboschi-paris.myshopify.com
 | `templates/article.json` | Article | P3 |
 | `templates/search.json` | Search | P3 |
 | `templates/404.json` | 404 | P3 |
+| `snippets/tira-preorder.liquid` | Bloc précommande fiche produit | P2 |
+| `snippets/tira-drop-bar.liquid` | Barre annonce drop site-wide | P2 |
+| `assets/tira-preorder.css` | CSS précommande | P2 |
+| `templates/page.drop.json` | Page campagne drop | P2 |
 | `templates/page.cadeaux.json` | Cadeaux | P3 |
 | `templates/page.wishlist.json` | Wishlist | P3 |
 | `templates/page.presse.json` | Presse | P3 |
@@ -762,6 +769,101 @@ Afficher dans la section "La Silhouette" des pages Icônes et dans les specs de 
 - `font-display: swap` + subset latin uniquement
 - Lenis : désactivé sur mobile (scroll natif iOS déjà excellent)
 - Splash screen : sessionStorage (1× par session, pas à chaque page)
+
+---
+
+## DROPS & PRÉCOMMANDES — SPECS COMPLÈTES
+
+### Concept — Adaptation du modèle Asphalte au luxe
+| Asphalte (mode éthique) | TIRABOSCHI (luxe) |
+|---|---|
+| "On fabrique si assez de commandes" | "Édition limitée — façonnée après clôture" |
+| Progress bar vers un seuil de production | `X réservées · Y disponibles` (scarcité) |
+| Transparence manufacturing | Exclusivité + délai = artisanat (atout) |
+| CTA "Commander" | CTA "Réserver ma pièce →" |
+| Délai subi | Délai narratif (1 artisan · 48h de travail) |
+| Annulation = service client | Annulation gratuite avant clôture (luxury standard) |
+
+### Métafields produit (à créer dans Shopify Admin)
+```
+custom.is_preorder          → Boolean     : true si en précommande
+custom.drop_name            → Texte court : "FW25" / "SS26" etc.
+custom.drop_end_date        → Date        : date ISO 8601 de clôture
+custom.drop_delivery_est    → Texte court : "août 2025"
+custom.drop_edition_size    → Entier      : nombre total d'exemplaires
+custom.drop_reserved        → Entier      : réservations en cours (→ via Shopify Flow)
+```
+
+### Tags produit pour drops
+```
+preorder          → déclenche l'affichage du snippet tira-preorder
+drop              → tag générique drop
+drop-fw25         → tag spécifique à la campagne (utile pour filtres)
+```
+
+### Settings thème (config/settings_schema.json additions)
+```json
+{
+  "name": "Drop actif",
+  "settings": [
+    { "id": "drop_active",   "type": "checkbox", "label": "Drop en cours" },
+    { "id": "drop_name",     "type": "text",     "label": "Nom du drop (ex: FW25)" },
+    { "id": "drop_bar_text", "type": "text",     "label": "Texte barre annonce" },
+    { "id": "drop_cta_url",  "type": "url",      "label": "URL CTA barre" },
+    { "id": "drop_cta_label","type": "text",     "label": "Label CTA barre" },
+    { "id": "drop_end_date", "type": "text",     "label": "Date clôture (ISO: 2025-06-15T23:59:00)" }
+  ]
+}
+```
+
+### Snippets Liquid (dans shopify-snippets/ → à migrer vers snippets/)
+```
+snippets/tira-preorder.liquid      → Bloc complet précommande sur fiche produit
+snippets/tira-drop-bar.liquid      → Barre 44px site-wide (layout/theme.liquid, avant header)
+assets/tira-preorder.css           → Styles countdown, edition bar, timeline
+```
+
+### Logique product page (sections/product-tiraboschi.liquid)
+```liquid
+{% if product.tags contains 'preorder' %}
+  {% render 'tira-preorder', product: product %}
+{% else %}
+  {# ATC standard #}
+  <button type="submit" name="add">Ajouter au panier</button>
+{% endif %}
+```
+
+### Layout/theme.liquid — Barre drop
+```liquid
+{% render 'tira-drop-bar' %}  {# juste après <body>, avant header #}
+```
+
+### Countdown timer — Règle CSS seconds
+```css
+/* Les secondes ne battent que sur la fiche produit.
+   Sur la barre drop, refresh toutes les 60s uniquement (économie JS). */
+.tira-drop-bar__countdown [data-countdown="secs"] { display: none; }
+```
+
+### Shopify Flow — Mise à jour compteur réservations
+```
+Trigger : Order Created
+Condition : Product has tag "preorder"
+Action : Set metafield custom.drop_reserved = current_value + quantity
+```
+*Nécessite Shopify Flow (gratuit sur Basic+)*
+
+### Page campagne `/pages/drop-fw25`
+Structure identique au prototype `tiraboschi-precommande-prototype.html` :
+- Hero 16:9 avec countdown large
+- "Comment fonctionne un drop" (3 étapes)
+- Grille produits du drop avec badges + compteurs
+- FAQ 3 questions (accordion)
+- Waitlist newsletter pour le prochain drop
+
+### Règle absolue — Prix drops
+Même prix que la collection normale. **Jamais de prix réduit sur un drop luxury**.
+Le drop = exclusivité et accès prioritaire, pas une promotion.
 
 ---
 

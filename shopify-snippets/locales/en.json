@@ -210,6 +210,39 @@
     }
   },
 
+  "preorder": {
+    "label": "Pre-order",
+    "drop_bar_label": "Active drop announcement",
+    "edition_limited": "Limited edition of {{ size }} pieces",
+    "reserved_count": "{{ reserved }} reserved · {{ available }} available",
+    "closes_in": "Pre-orders close in",
+    "closed": "Pre-orders closed",
+    "countdown": {
+      "days": "Days",
+      "hours": "Hours",
+      "mins": "Min",
+      "secs": "Sec"
+    },
+    "reserve_cta": "Reserve this piece",
+    "reserve_aria": "Pre-order {{ product }}",
+    "sold_out": "Sold out",
+    "payment_notice": "Payment charged now · Free cancellation before closing date",
+    "timeline_intro": "Your piece will be crafted after the order closes",
+    "step_close": "Order closes",
+    "step_craft": "Artisan crafting",
+    "step_delivery": "Estimated delivery",
+    "weeks": "weeks",
+    "artisan_note": "1 artisan · 48 hours of handwork · Fine leather goods",
+    "faq": {
+      "q1": "Why a pre-order?",
+      "a1": "We craft each bag after the campaign closes. This allows us to produce exactly what is ordered — no surplus, no compromise on quality.",
+      "q2": "Can I cancel?",
+      "a2": "Yes, free of charge until the closing date. After that, production begins and cancellation is no longer possible.",
+      "q3": "When will I receive my piece?",
+      "a3": "Delivery is estimated 4 to 6 weeks after closing. You will receive a tracking email as soon as your order ships."
+    }
+  },
+
   "accessibility": {
     "product_card_link": "View {{ title }}",
     "collection_card_link": "View the {{ title }} collection",

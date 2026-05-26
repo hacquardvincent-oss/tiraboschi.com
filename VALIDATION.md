@@ -50,6 +50,8 @@ Une fois la page annotée, me la renvoyer ou me dicter les retours.
 | 14 | Checkout | `tiraboschi-checkout-prototype.html` | P4 | 🔲 |
 | **INTERNATIONAL** | | | | |
 | 25 | International · Marchés | `tiraboschi-international-prototype.html` | P3 | 🔲 |
+| **DROPS** | | | | |
+| 26 | Drops & Précommandes | `tiraboschi-precommande-prototype.html` | P2 | 🔲 |
 
 ---
 

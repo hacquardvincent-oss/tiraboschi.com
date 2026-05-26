@@ -209,6 +209,39 @@
     }
   },
 
+  "preorder": {
+    "label": "Précommande",
+    "drop_bar_label": "Annonce drop en cours",
+    "edition_limited": "Édition limitée à {{ size }} exemplaires",
+    "reserved_count": "{{ reserved }} réservées · {{ available }} disponibles",
+    "closes_in": "Réservations closes dans",
+    "closed": "Réservations closes",
+    "countdown": {
+      "days": "Jours",
+      "hours": "Heures",
+      "mins": "Min",
+      "secs": "Sec"
+    },
+    "reserve_cta": "Réserver ma pièce",
+    "reserve_aria": "Réserver {{ product }} en précommande",
+    "sold_out": "Épuisé",
+    "payment_notice": "Paiement immédiat · Annulation gratuite avant la clôture",
+    "timeline_intro": "Votre pièce sera façonnée à la clôture de la commande",
+    "step_close": "Clôture de la commande",
+    "step_craft": "Façonnage artisanal",
+    "step_delivery": "Livraison estimée",
+    "weeks": "semaines",
+    "artisan_note": "1 artisan · 48h de travail à la main · Maroquinerie d'art",
+    "faq": {
+      "q1": "Pourquoi une précommande ?",
+      "a1": "Nous façonnons chaque sac après la clôture de la campagne. Cela nous permet de produire exactement ce qui est demandé — sans surplus, sans compromis sur la qualité.",
+      "q2": "Puis-je annuler ?",
+      "a2": "Oui, gratuitement jusqu'à la clôture. Après cette date, la fabrication commence et l'annulation n'est plus possible.",
+      "q3": "Quand vais-je recevoir ma pièce ?",
+      "a3": "La livraison est estimée 4 à 6 semaines après la clôture. Vous recevrez un email avec le suivi dès l'expédition."
+    }
+  },
+
   "accessibility": {
     "product_card_link": "Voir {{ title }}",
     "collection_card_link": "Voir la collection {{ title }}",
