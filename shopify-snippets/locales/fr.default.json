@@ -1,0 +1,218 @@
+{
+  "_comment": "TIRABOSCHI Paris — Traductions françaises (langue par défaut)",
+  "_version": "1.0.0",
+  "_date": "2026-05-26",
+
+  "general": {
+    "accessibility": {
+      "close": "Fermer",
+      "open_menu": "Ouvrir le menu",
+      "close_menu": "Fermer le menu",
+      "skip_to_content": "Passer au contenu",
+      "loading": "Chargement en cours",
+      "next": "Suivant",
+      "previous": "Précédent"
+    },
+    "currency": {
+      "includes_tax": "TTC",
+      "excludes_tax": "HT"
+    }
+  },
+
+  "localization": {
+    "country_label": "Pays / Région",
+    "language_label": "Langue",
+    "submit": "Valider",
+    "switch_currency": "Changer de devise"
+  },
+
+  "geo": {
+    "suggestion": "Vous semblez naviguer depuis un autre pays.",
+    "switch": "Continuer en {currency} {symbol}",
+    "stay": "Rester en €  EUR",
+    "dismiss_label": "Ignorer la suggestion"
+  },
+
+  "header": {
+    "search_placeholder": "Rechercher un sac, une matière...",
+    "cart_count": {
+      "one": "1 article",
+      "other": "{{ count }} articles"
+    },
+    "menu": "Menu"
+  },
+
+  "products": {
+    "product": {
+      "add_to_cart": "Ajouter au panier",
+      "sold_out": "Épuisé",
+      "unavailable": "Indisponible",
+      "see_details": "Voir le produit",
+      "discover": "Découvrir",
+      "quantity_label": "Quantité",
+      "color_label": "Couleur",
+      "size_label": "Taille",
+      "material_label": "Matière",
+      "share": "Partager",
+      "add_to_wishlist": "Ajouter à ma liste",
+      "remove_from_wishlist": "Retirer de ma liste",
+      "recently_viewed": "Récemment consultés"
+    },
+    "facets": {
+      "filter_by": "Filtrer par",
+      "sort_by": "Trier par",
+      "clear_all": "Tout effacer",
+      "filters_active": {
+        "one": "1 filtre actif",
+        "other": "{{ count }} filtres actifs"
+      },
+      "sort_options": {
+        "manual": "En vedette",
+        "best_selling": "Meilleures ventes",
+        "title_ascending": "A–Z",
+        "title_descending": "Z–A",
+        "price_ascending": "Prix croissant",
+        "price_descending": "Prix décroissant",
+        "created_ascending": "Anciens d'abord",
+        "created_descending": "Nouveautés"
+      }
+    }
+  },
+
+  "cart": {
+    "title": "Mon panier",
+    "empty": "Votre panier est vide.",
+    "continue_shopping": "Continuer mes achats",
+    "checkout": "Finaliser ma commande",
+    "subtotal": "Sous-total",
+    "taxes_notice": "Taxes et frais de livraison calculés à la validation",
+    "remove_item": "Retirer cet article",
+    "item_count": {
+      "one": "1 article",
+      "other": "{{ count }} articles"
+    }
+  },
+
+  "checkout": {
+    "contact": "Coordonnées",
+    "email_placeholder": "Votre adresse email",
+    "continue_to_shipping": "Continuer vers la livraison",
+    "continue_to_payment": "Continuer vers le paiement",
+    "pay_now": "Confirmer la commande",
+    "shipping": "Livraison",
+    "payment": "Paiement",
+    "summary": "Récapitulatif",
+    "shipping_free": "Livraison offerte",
+    "shipping_calculated": "Calculé à l'étape suivante"
+  },
+
+  "shipping": {
+    "free": "Livraison offerte",
+    "free_threshold": "Livraison offerte à partir de {amount}",
+    "included": "Livraison incluse",
+    "worldwide": "Livraison internationale disponible",
+    "signature": "Colissimo Signature",
+    "express": "Chronopost Express",
+    "international": "DHL Express International"
+  },
+
+  "customer": {
+    "login": "Se connecter",
+    "logout": "Se déconnecter",
+    "register": "Créer un compte",
+    "account": "Mon compte",
+    "orders": "Mes commandes",
+    "addresses": "Mes adresses",
+    "wishlist": "Ma liste de souhaits",
+    "la_societe": "La Société",
+    "password_placeholder": "Mot de passe",
+    "email_placeholder": "Votre adresse email",
+    "forgot_password": "Mot de passe oublié ?"
+  },
+
+  "la_societe": {
+    "title": "La Société",
+    "join": "Rejoindre La Société",
+    "cercle_1": "Cercle I — Membre",
+    "cercle_2": "Cercle II — Artisan",
+    "cercle_3": "Cercle III — Maison",
+    "privileges": "Vos privilèges",
+    "welcome": "Bienvenue dans La Société"
+  },
+
+  "newsletter": {
+    "title": "Entrez dans la confidence",
+    "subtitle": "Actualités, lancements en avant-première et coulisses de l'atelier.",
+    "email_placeholder": "Votre adresse email",
+    "submit": "Rejoindre",
+    "success": "Merci de votre confiance.",
+    "error": "Une erreur est survenue. Veuillez réessayer.",
+    "legal": "Vos données restent confidentielles. Désabonnement en un clic."
+  },
+
+  "sections": {
+    "marquee": {
+      "text": "Made in France, Only. · Since 1904 · Maroquinerie de Luxe · Paris · Fait à la main"
+    },
+    "hero": {
+      "scroll_cta": "Découvrir"
+    },
+    "collection": {
+      "view_all": "Voir la collection",
+      "products_count": {
+        "one": "1 pièce",
+        "other": "{{ count }} pièces"
+      }
+    },
+    "savoir_faire": {
+      "discover": "Découvrir le savoir-faire"
+    },
+    "sur_mesure": {
+      "cta": "Prendre rendez-vous"
+    }
+  },
+
+  "pages": {
+    "histoire": {
+      "title": "Notre Histoire",
+      "seo_title": "Notre Histoire depuis 1904 | TIRABOSCHI Paris"
+    },
+    "savoir_faire": {
+      "title": "Savoir-Faire",
+      "seo_title": "Savoir-Faire Artisanal | TIRABOSCHI Paris"
+    },
+    "matieres": {
+      "title": "Matières & Cuirs",
+      "seo_title": "Matières & Cuirs Nobles | TIRABOSCHI Paris"
+    },
+    "sur_mesure": {
+      "title": "Sur Mesure",
+      "seo_title": "Sur Mesure & Exotiques | TIRABOSCHI Paris"
+    },
+    "contact": {
+      "title": "Contact",
+      "seo_title": "Contact & Rendez-vous | TIRABOSCHI Paris"
+    },
+    "search": {
+      "title": "Recherche",
+      "placeholder": "Rechercher...",
+      "no_results": "Aucun résultat pour « {{ terms }} »",
+      "results_count": {
+        "one": "1 résultat",
+        "other": "{{ count }} résultats"
+      }
+    },
+    "404": {
+      "title": "Page introuvable",
+      "message": "La page que vous cherchez n'existe pas ou a été déplacée.",
+      "cta": "Retourner à l'accueil"
+    }
+  },
+
+  "accessibility": {
+    "product_card_link": "Voir {{ title }}",
+    "collection_card_link": "Voir la collection {{ title }}",
+    "image_alt_product": "{{ title }} — {{ type }} TIRABOSCHI Paris",
+    "image_alt_lifestyle": "TIRABOSCHI Paris — {{ context }}"
+  }
+}

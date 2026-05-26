@@ -48,6 +48,8 @@ Une fois la page annotée, me la renvoyer ou me dicter les retours.
 | 12 | 404 | `tiraboschi-404-prototype.html` | P3 | 🔲 |
 | 13 | Espace client | `tiraboschi-account-prototype.html` | P4 | 🔲 |
 | 14 | Checkout | `tiraboschi-checkout-prototype.html` | P4 | 🔲 |
+| **INTERNATIONAL** | | | | |
+| 25 | International · Marchés | `tiraboschi-international-prototype.html` | P3 | 🔲 |
 
 ---
 
@@ -678,6 +680,100 @@ Une fois la page annotée, me la renvoyer ou me dicter les retours.
 - [ ] Magnetic buttons
 - [ ] Video scrub on scroll
 - [ ] Color scheme shift on scroll
+
+---
+
+## PAGE 25 — INTERNATIONAL · MARCHÉS
+**Fichier :** `tiraboschi-international-prototype.html`
+**Priorité :** P3
+**Statut :** 🔲 À valider
+
+### Comment utiliser cette page
+Ouvrir le fichier dans un navigateur. La barre noire en haut permet de basculer entre 6 marchés.
+Tester chaque marché et vérifier les comportements décrits ci-dessous.
+
+### Validation par composant
+
+**Composant 1 — Bandeau géo-suggestion**
+- [ ] France : aucun bandeau affiché (marché local)
+- [ ] UK : bandeau apparaît avec texte EN "You appear to be browsing from the United Kingdom"
+- [ ] USA : bandeau EN, mention "$ USD"
+- [ ] Japon : bandeau JA, katakana lisible
+- [ ] Corée : bandeau KO, hangul lisible
+- [ ] Arabe : bandeau AR, texte RTL correct (droite → gauche)
+- [ ] Animation slide-down (translateY) fluide
+- [ ] Bouton × ferme le bandeau proprement
+- [ ] "Stay in € EUR" / "Rester en €" fonctionne (dismiss)
+
+**Composant 2 — Header locale chip**
+- [ ] Chip affiche bien le drapeau + code devise (🇫🇷 EUR / 🇬🇧 GBP / 🇺🇸 USD / 🇯🇵 JPY / 🇰🇷 KRW)
+- [ ] Dropdown s'ouvre au clic, se ferme en cliquant ailleurs
+- [ ] Sélectionner un marché dans le dropdown bascule correctement
+- [ ] Dropdown : 0px border-radius ✓ Playfair Display ✓ underline buttons ✓
+- [ ] Position dropdown OK (top calc(100% + 12px) sous le chip)
+
+**Composant 3 — Prix dynamiques**
+- [ ] France : 2 850 € · 2 290 € · 3 200 € · 490 €
+- [ ] UK : 2 450 £ · 1 950 £ · 2 750 £ · 420 £
+- [ ] USA : 3 100 $ · 2 500 $ · 3 450 $ · 530 $
+- [ ] Japon : ¥415 000 · ¥330 000 · ¥460 000 · ¥72 000
+- [ ] Corée : ₩3 850 000 · ₩3 050 000 · ₩4 250 000 · ₩645 000
+- [ ] Animation fade (opacity) lors du changement de marché
+- [ ] Avis fiscal sous prix adapté au marché
+
+**Composant 4 — Footer locale selector**
+- [ ] Select pays : 14 pays listés
+- [ ] Select langue : 5 langues (FR / EN / JA / KO / AR)
+- [ ] Style : underline seulement, pas de box, pas de border-radius
+- [ ] Bouton "Valider →" : underlined uppercase, pas de box
+- [ ] Synchro footer → bascule marché principal
+
+**Composant 5 — Avis fiscaux par marché**
+- [ ] France : "Prix TTC (TVA 20% incluse)"
+- [ ] UK : "Price excl. VAT" + mention droits post-Brexit
+- [ ] USA : "Price excl. taxes" + sales tax notice
+- [ ] Japon : "税込価格（消費税10%）"
+- [ ] Arabe : texte RTL correct
+
+**Composant 6 — Tableau labels traduits**
+- [ ] 7 lignes × 5 colonnes (FR / EN / JA / KO / AR)
+- [ ] Colonne active du marché en cours mise en évidence (fond gris)
+- [ ] "Ajouter au panier" → "Add to bag" → "カートに追加" → "카트에 추가" → "أضف إلى الحقيبة"
+- [ ] "Sur Mesure" → "Bespoke" → "オーダーメイド" → "맞춤 제작" → "حسب الطلب"
+
+**Support RTL (marché arabe uniquement)**
+- [ ] document.dir = "rtl" actif
+- [ ] Header : navigation inversée (droite → gauche)
+- [ ] Bandeau : texte aligné à droite
+- [ ] Cards produit : texte aligné à droite
+- [ ] Footer : colonnes inversées
+- [ ] Aucun élément "cassé" visuellement
+
+### Questions décisionnelles
+
+**1. Prix par marché** → Les prix affichés sont-ils corrects ?
+- Victoire : 2 850 € / 2 450 £ / 3 100 $ / ¥415 000 / ₩3 850 000
+→ Retour :
+
+**2. Marchés à activer en priorité** → Dans quel ordre lancer les marchés ?
+(Proposition : France → UK → USA → Japon)
+→ Ordre retenu :
+
+**3. Traductions** → Weglot (~€99/mois) est recommandé. Faut-il procéder autrement ?
+→ Décision :
+
+**4. Arabe** → Confirmer l'intégration RTL. L'affichage Moyen-Orient est-il souhaité au lancement ?
+→ Décision :
+
+**5. Bandeau géo** → Approche "suggestion, jamais forçage" validée ?
+→ Validation :
+
+**6. La Société internationale** → "La Société" reste en français dans toutes les langues (comme "Chanel" garde son nom) ou traduire ?
+→ Décision :
+
+**Retours généraux page 25 →**
+
+---
 
 ### Ordre de priorité pour la Phase 3 (Intégration Shopify)
 > À confirmer ensemble après validation des prototypes
