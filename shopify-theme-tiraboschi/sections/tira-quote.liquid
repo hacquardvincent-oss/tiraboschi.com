@@ -1,0 +1,56 @@
+{% comment %}
+  TIRABOSCHI — Section citation maison (fond noir centré)
+  Référence : tiraboschi-homepage-prototype.html L1542-1551
+{% endcomment %}
+
+<section class="quote" data-tira-reveal>
+  {%- if section.settings.since_text != blank -%}
+    <p class="quote__since">{{ section.settings.since_text }}</p>
+  {%- endif -%}
+  {%- if section.settings.quote_text != blank -%}
+    <blockquote class="quote__text" data-tira-word-reveal>
+      {{ section.settings.quote_text }}
+    </blockquote>
+  {%- endif -%}
+  {%- if section.settings.link_label != blank -%}
+    <a href="{{ section.settings.link_url | default: '#' }}" class="quote__link">{{ section.settings.link_label }}</a>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Citation maison",
+  "tag": "section",
+  "class": "tira-section tira-section--quote",
+  "settings": [
+    {
+      "type": "text",
+      "id": "since_text",
+      "label": "Sur-titre (lieu · année)",
+      "default": "Paris · Depuis 1904"
+    },
+    {
+      "type": "richtext",
+      "id": "quote_text",
+      "label": "Citation",
+      "default": "<p>\"Un seul artisan. Un seul sac. De A à Z.<br>C'est notre seule règle depuis 1904.\"</p>"
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Libellé lien",
+      "default": "Notre histoire"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Lien"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Citation TIRABOSCHI"
+    }
+  ]
+}
+{% endschema %}

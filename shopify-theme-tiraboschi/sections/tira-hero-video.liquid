@@ -1,0 +1,140 @@
+{% comment %}
+  TIRABOSCHI — Hero vidéo responsive 9:16 mobile / 16:9 desktop
+  Référence : tiraboschi-homepage-prototype.html L1126-1164
+{% endcomment %}
+
+<section class="hero" aria-label="{{ section.settings.aria_label | escape }}">
+
+  <div class="hero__video-wrap">
+    {%- assign has_video = false -%}
+    {%- if section.settings.video_desktop or section.settings.video_mobile -%}
+      {%- assign has_video = true -%}
+    {%- endif -%}
+
+    {%- if has_video -%}
+      <video class="hero__video" id="hero-video"
+             autoplay muted loop playsinline
+             {% if section.settings.poster %}poster="{{ section.settings.poster | image_url: width: 1920 }}"{% endif %}
+             aria-hidden="true">
+        {%- if section.settings.video_mobile -%}
+          <source media="(max-width: 768px)"
+                  src="{{ section.settings.video_mobile.sources[1].url | default: section.settings.video_mobile.sources[0].url }}"
+                  type="video/mp4">
+        {%- endif -%}
+        {%- if section.settings.video_desktop -%}
+          <source src="{{ section.settings.video_desktop.sources[1].url | default: section.settings.video_desktop.sources[0].url }}"
+                  type="video/mp4">
+        {%- endif -%}
+      </video>
+    {%- elsif section.settings.poster -%}
+      <img class="hero__video"
+           src="{{ section.settings.poster | image_url: width: 1920 }}"
+           alt=""
+           aria-hidden="true"
+           width="1920" height="1080"
+           loading="eager"
+           fetchpriority="high">
+    {%- endif -%}
+  </div>
+
+  <div class="hero__overlay"></div>
+
+  <div class="hero__content">
+    {%- if section.settings.label != blank -%}
+      <p class="hero__label">{{ section.settings.label }}</p>
+    {%- endif -%}
+    {%- if section.settings.title != blank -%}
+      <h1 class="hero__title">{{ section.settings.title }}</h1>
+    {%- endif -%}
+    {%- if section.settings.cta_label != blank -%}
+      <a href="{{ section.settings.cta_link | default: '#' }}" class="hero__cta tira-magnetic">{{ section.settings.cta_label }}</a>
+    {%- endif -%}
+  </div>
+
+  {%- if section.settings.show_scroll_indicator -%}
+    <div class="hero__scroll" aria-hidden="true">{{ section.settings.scroll_label | default: 'Défiler' }}</div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Hero vidéo",
+  "tag": "section",
+  "class": "tira-section tira-section--hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Contenu"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Sur-titre",
+      "default": "Automne — Hiver 2025"
+    },
+    {
+      "type": "richtext",
+      "id": "title",
+      "label": "Titre H1",
+      "default": "<p>L'Art<br>du Cuir</p>"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Libellé CTA",
+      "default": "Découvrir la collection"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Lien CTA"
+    },
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "Aria-label section",
+      "default": "Collection Automne–Hiver 2025"
+    },
+    {
+      "type": "header",
+      "content": "Médias"
+    },
+    {
+      "type": "video",
+      "id": "video_desktop",
+      "label": "Vidéo desktop (16:9)"
+    },
+    {
+      "type": "video",
+      "id": "video_mobile",
+      "label": "Vidéo mobile (9:16)"
+    },
+    {
+      "type": "image_picker",
+      "id": "poster",
+      "label": "Image poster (fallback)"
+    },
+    {
+      "type": "header",
+      "content": "Options"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scroll_indicator",
+      "label": "Afficher l'indicateur de scroll",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "scroll_label",
+      "label": "Texte indicateur scroll",
+      "default": "Défiler"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero vidéo TIRABOSCHI"
+    }
+  ]
+}
+{% endschema %}

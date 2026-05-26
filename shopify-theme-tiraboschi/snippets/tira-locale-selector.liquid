@@ -1,0 +1,336 @@
+{%- comment -%}
+  snippets/tira-locale-selector.liquid
+  TIRABOSCHI Paris — Locale / Country / Currency selector
+
+  Sélecteur de pays + langue pour le footer (et potentiellement le header).
+  Utilise le formulaire Shopify natif `form 'localization'`.
+
+  Usage :
+  {% render 'tira-locale-selector', context: 'footer' %}
+  {% render 'tira-locale-selector', context: 'header' %}
+
+  Paramètres :
+  - context : 'footer' (défaut) | 'header'
+{%- endcomment -%}
+
+{%- liquid
+  assign selector_context = context | default: 'footer'
+-%}
+
+<div class="tira-locale-selector tira-locale-selector--{{ selector_context }}">
+
+  {%- form 'localization', id: 'tira-locale-form-{{ selector_context }}', class: 'tira-locale-form' -%}
+    <input type="hidden" name="return_to" value="{{ request.path }}">
+
+    {%- if selector_context == 'footer' -%}
+      {%- comment -%} Footer layout : pays + langue côte à côte {%- endcomment -%}
+
+      <div class="tira-locale-row">
+
+        {{- 'localization.country_label' | t -}}
+
+        {%- comment -%} Country / Market selector {%- endcomment -%}
+        <div class="tira-locale-field">
+          <label class="tira-locale-label" for="country-{{ selector_context }}">
+            {{- 'localization.country_label' | t -}}
+          </label>
+          <div class="tira-locale-select-wrap">
+            <select
+              name="country_code"
+              id="country-{{ selector_context }}"
+              class="tira-locale-select"
+              aria-label="{{ 'localization.country_label' | t }}"
+            >
+              {%- for country in localization.available_countries -%}
+                <option
+                  value="{{ country.iso_code }}"
+                  {%- if country.iso_code == localization.country.iso_code %} selected{%- endif -%}
+                >
+                  {{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})
+                </option>
+              {%- endfor -%}
+            </select>
+            <span class="tira-locale-caret" aria-hidden="true">▾</span>
+          </div>
+        </div>
+
+        {%- comment -%} Language selector {%- endcomment -%}
+        <div class="tira-locale-field">
+          <label class="tira-locale-label" for="locale-{{ selector_context }}">
+            {{- 'localization.language_label' | t -}}
+          </label>
+          <div class="tira-locale-select-wrap">
+            <select
+              name="locale_code"
+              id="locale-{{ selector_context }}"
+              class="tira-locale-select"
+              aria-label="{{ 'localization.language_label' | t }}"
+            >
+              {%- for locale in shop.published_locales -%}
+                <option
+                  value="{{ locale.iso_code }}"
+                  {%- if locale.iso_code == request.locale.iso_code %} selected{%- endif -%}
+                >
+                  {{ locale.endonym_name }}
+                </option>
+              {%- endfor -%}
+            </select>
+            <span class="tira-locale-caret" aria-hidden="true">▾</span>
+          </div>
+        </div>
+
+        <button type="submit" class="tira-locale-submit">
+          {{- 'localization.submit' | t }} →
+        </button>
+
+      </div>
+
+    {%- elsif selector_context == 'header' -%}
+      {%- comment -%} Header layout : chip compact avec dropdown {%- endcomment -%}
+
+      <div class="tira-locale-chip" id="tira-locale-chip" role="button" aria-haspopup="listbox" aria-expanded="false" tabindex="0">
+        <span class="tira-locale-chip__flag">
+          {%- case localization.country.iso_code -%}
+            {%- when 'FR' -%}🇫🇷
+            {%- when 'GB' -%}🇬🇧
+            {%- when 'US' -%}🇺🇸
+            {%- when 'JP' -%}🇯🇵
+            {%- when 'KR' -%}🇰🇷
+            {%- when 'SA', 'AE', 'QA', 'KW', 'BH', 'OM' -%}🇸🇦
+            {%- else -%}🌐
+          {%- endcase -%}
+        </span>
+        <span class="tira-locale-chip__code">{{ localization.country.currency.iso_code }}</span>
+        <span class="tira-locale-chip__caret" aria-hidden="true">▾</span>
+
+        <div class="tira-locale-chip__dropdown" role="listbox">
+          {%- for country in localization.available_countries -%}
+            <button
+              type="submit"
+              name="country_code"
+              value="{{ country.iso_code }}"
+              class="tira-locale-chip__option {% if country.iso_code == localization.country.iso_code %}is-active{% endif %}"
+              role="option"
+              aria-selected="{% if country.iso_code == localization.country.iso_code %}true{% else %}false{% endif %}"
+            >
+              <span class="tira-locale-chip__option-flag">
+                {%- case country.iso_code -%}
+                  {%- when 'FR' -%}🇫🇷
+                  {%- when 'BE' -%}🇧🇪
+                  {%- when 'CH' -%}🇨🇭
+                  {%- when 'DE' -%}🇩🇪
+                  {%- when 'IT' -%}🇮🇹
+                  {%- when 'ES' -%}🇪🇸
+                  {%- when 'GB' -%}🇬🇧
+                  {%- when 'US' -%}🇺🇸
+                  {%- when 'CA' -%}🇨🇦
+                  {%- when 'JP' -%}🇯🇵
+                  {%- when 'KR' -%}🇰🇷
+                  {%- when 'AE' -%}🇦🇪
+                  {%- when 'SA' -%}🇸🇦
+                  {%- when 'AU' -%}🇦🇺
+                  {%- else -%}🌐
+                {%- endcase -%}
+              </span>
+              <span class="tira-locale-chip__option-name">{{ country.name }}</span>
+              <span class="tira-locale-chip__option-currency">{{ country.currency.iso_code }} {{ country.currency.symbol }}</span>
+            </button>
+          {%- endfor -%}
+        </div>
+      </div>
+
+    {%- endif -%}
+
+  {%- endform -%}
+
+</div>
+
+{%- comment -%} CSS (injecté ici ou via assets/tiraboschi-international.css) {%- endcomment -%}
+{%- if selector_context == 'footer' -%}
+<style>
+  .tira-locale-selector--footer {
+    padding-top: 40px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    margin-top: 40px;
+  }
+  .tira-locale-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  .tira-locale-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 180px;
+  }
+  .tira-locale-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.35;
+  }
+  .tira-locale-select-wrap {
+    position: relative;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding-bottom: 6px;
+  }
+  .tira-locale-select {
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    border: none;
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    padding-right: 20px;
+    outline: none;
+    width: 100%;
+    /* Color overrides per context (footer = white, header = black) */
+  }
+  .tira-locale-selector--footer .tira-locale-select {
+    color: var(--tira-white, #fff);
+  }
+  .tira-locale-select option { background: var(--tira-black, #0a0a0a); }
+  .tira-locale-caret {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+  .tira-locale-submit {
+    background: none;
+    border: none;
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    opacity: 0.65;
+    transition: opacity 0.2s;
+    padding: 0 0 6px;
+  }
+  .tira-locale-selector--footer .tira-locale-submit { color: var(--tira-white, #fff); }
+  .tira-locale-submit:hover { opacity: 1; }
+
+  /* RTL */
+  [dir="rtl"] .tira-locale-row { flex-direction: row-reverse; }
+
+  @media (max-width: 768px) {
+    .tira-locale-row { flex-direction: column; gap: 24px; }
+    .tira-locale-field { min-width: 100%; }
+  }
+</style>
+{%- endif -%}
+
+{%- if selector_context == 'header' -%}
+<style>
+  .tira-locale-chip {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 4px 0;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+    user-select: none;
+  }
+  .tira-locale-chip:hover,
+  .tira-locale-chip[aria-expanded="true"] {
+    border-color: var(--tira-border, #e8e8e8);
+  }
+  .tira-locale-chip__caret {
+    font-size: 9px;
+    opacity: 0.5;
+    transition: transform 0.2s;
+    pointer-events: none;
+  }
+  .tira-locale-chip[aria-expanded="true"] .tira-locale-chip__caret {
+    transform: rotate(180deg);
+  }
+  .tira-locale-chip__dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    background: var(--tira-white, #fff);
+    border: 1px solid var(--tira-border, #e8e8e8);
+    min-width: 220px;
+    z-index: 500;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+  }
+  .tira-locale-chip[aria-expanded="true"] .tira-locale-chip__dropdown {
+    display: block;
+  }
+  .tira-locale-chip__option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 16px;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--tira-border, #e8e8e8);
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s;
+    color: var(--tira-black, #0a0a0a);
+  }
+  .tira-locale-chip__option:last-child { border-bottom: none; }
+  .tira-locale-chip__option:hover,
+  .tira-locale-chip__option.is-active { background: var(--tira-grey, #f7f5f2); }
+  .tira-locale-chip__option-name { flex: 1; }
+  .tira-locale-chip__option-currency { opacity: 0.45; font-size: 10px; }
+
+  /* RTL */
+  [dir="rtl"] .tira-locale-chip { flex-direction: row-reverse; }
+  [dir="rtl"] .tira-locale-chip__dropdown { right: auto; left: 0; }
+  [dir="rtl"] .tira-locale-chip__option { text-align: right; flex-direction: row-reverse; }
+</style>
+<script>
+  (function() {
+    var chip = document.getElementById('tira-locale-chip');
+    if (!chip) return;
+
+    function toggle() {
+      var expanded = chip.getAttribute('aria-expanded') === 'true';
+      chip.setAttribute('aria-expanded', !expanded);
+    }
+    function close() {
+      chip.setAttribute('aria-expanded', 'false');
+    }
+
+    chip.addEventListener('click', function(e) {
+      // Don't close if clicking a submit button (let form submit)
+      if (e.target.closest('.tira-locale-chip__option')) return;
+      toggle();
+      e.stopPropagation();
+    });
+
+    chip.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') { toggle(); e.preventDefault(); }
+      if (e.key === 'Escape') close();
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!chip.contains(e.target)) close();
+    });
+  })();
+</script>
+{%- endif -%}

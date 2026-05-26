@@ -1,0 +1,240 @@
+{% comment %}
+  ═══════════════════════════════════════════════════════════════
+  TIRABOSCHI · Header
+  ═══════════════════════════════════════════════════════════════
+  Desktop : [logo gauche] [nav centrée] [account · search · bag droite]
+  Mobile  : [logo 1fr] [bag] [account] [hamburger]
+  Plus    : search bar sticky sous le header + drawer mobile
+  Styles  : assets/tiraboschi.css + assets/tiraboschi-header.css
+{% endcomment %}
+
+{%- liquid
+  assign menu = section.settings.main_menu
+  assign transparent_home = section.settings.transparent_on_home
+  assign hdr_classes = 'hdr'
+  if transparent_home and template == 'index'
+    assign hdr_classes = hdr_classes | append: ' hdr--transparent-home'
+  endif
+-%}
+
+<header class="{{ hdr_classes }}" id="hdr" role="banner" data-transparent-home="{{ transparent_home }}">
+
+  {%- comment -%} ═══ DESKTOP ═══ {%- endcomment -%}
+  <div class="hdr__d">
+
+    {%- comment -%} Logo gauche {%- endcomment -%}
+    <div class="hdr__logo">
+      <a href="{{ routes.root_url }}" aria-label="{{ shop.name }} — accueil">
+        {%- if section.settings.logo != blank -%}
+          {{ section.settings.logo | image_url: width: 400 | image_tag:
+              class: 'hdr__logo-img',
+              alt: shop.name,
+              widths: '200,400',
+              height: 22 }}
+        {%- else -%}
+          <img class="hdr__logo-img"
+               src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738"
+               alt="{{ shop.name }}" width="auto" height="22">
+        {%- endif -%}
+      </a>
+    </div>
+
+    {%- comment -%} Navigation centrée {%- endcomment -%}
+    <nav class="hdr__nav" aria-label="{{ 'general.navigation' | t | default: 'Navigation principale' }}">
+      {%- if linklists[menu].links.size > 0 -%}
+        {%- for link in linklists[menu].links -%}
+          {%- if link.title contains '|sep' -%}
+            <span class="nav-sep" aria-hidden="true"></span>
+          {%- else -%}
+            <a href="{{ link.url }}"{% if link.active %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- else -%}
+        <a href="{{ routes.collections_url }}/sacs">Sacs</a>
+        <a href="{{ routes.collections_url }}/petite-maroquinerie">Petite Maroquinerie</a>
+        <a href="{{ routes.collections_url }}/iconiques">Iconiques</a>
+        <a href="{{ routes.collections_url }}/sur-mesure-exotiques">Sur Mesure</a>
+        <span class="nav-sep" aria-hidden="true"></span>
+        <a href="/pages/histoire">La Maison</a>
+      {%- endif -%}
+    </nav>
+
+    {%- comment -%} Icons droite : [account] [search] [bag] {%- endcomment -%}
+    <div class="hdr__icons">
+      <a href="{{ routes.account_url }}" aria-label="{% if customer %}Mon compte — {{ customer.first_name | escape }}{% else %}Se connecter{% endif %}">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="7.5" r="3.5"/>
+          <path d="M3.5 20c0-4.5 3.8-7 8.5-7s8.5 2.5 8.5 7"/>
+        </svg>
+      </a>
+
+      <button type="button" aria-label="Ouvrir la recherche" data-tira-search-toggle>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.5"/>
+          <line x1="15.5" y1="15.5" x2="21" y2="21"/>
+        </svg>
+      </button>
+
+      <a href="{{ routes.cart_url }}" aria-label="Panier — {{ cart.item_count }} article{% if cart.item_count != 1 %}s{% endif %}" class="hdr__bag" data-cart-count="{{ cart.item_count }}">
+        <img class="tira-bag-icon"
+             src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050"
+             alt="" aria-hidden="true" width="22" height="22">
+        {%- if cart.item_count > 0 -%}
+          <span class="hdr__bag-count" aria-hidden="true">{{ cart.item_count }}</span>
+        {%- endif -%}
+      </a>
+    </div>
+  </div>
+
+  {%- comment -%} ═══ MOBILE ═══ {%- endcomment -%}
+  <div class="hdr__m" aria-label="Navigation mobile">
+
+    <a href="{{ routes.root_url }}" class="hdr__m-logo" aria-label="{{ shop.name }} — accueil">
+      {%- if section.settings.logo != blank -%}
+        {{ section.settings.logo | image_url: width: 360 | image_tag:
+            class: 'hdr__logo-img',
+            alt: shop.name,
+            widths: '180,360',
+            height: 18 }}
+      {%- else -%}
+        <img class="hdr__logo-img"
+             src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738"
+             alt="{{ shop.name }}" width="auto" height="18">
+      {%- endif -%}
+    </a>
+
+    <a href="{{ routes.cart_url }}" aria-label="Panier — {{ cart.item_count }} article{% if cart.item_count != 1 %}s{% endif %}" class="hdr__bag" data-cart-count="{{ cart.item_count }}">
+      <img class="tira-bag-icon"
+           src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050"
+           alt="" aria-hidden="true" width="21" height="21">
+      {%- if cart.item_count > 0 -%}
+        <span class="hdr__bag-count" aria-hidden="true">{{ cart.item_count }}</span>
+      {%- endif -%}
+    </a>
+
+    <a href="{{ routes.account_url }}" aria-label="Mon compte">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="7.5" r="3.5"/>
+        <path d="M3.5 20c0-4.5 3.8-7 8.5-7s8.5 2.5 8.5 7"/>
+      </svg>
+    </a>
+
+    <button type="button" aria-label="Menu principal" aria-expanded="false" id="mobile-menu-btn" data-tira-menu-toggle>
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <line x1="3" y1="6"  x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+{%- if section.settings.show_search -%}
+  {%- comment -%} ═══ SEARCH BAR — fixe sous header ═══ {%- endcomment -%}
+  <form class="hdr-search" id="hdr-search" role="search" aria-label="Recherche" action="{{ routes.search_url }}" method="get">
+    <input type="hidden" name="type" value="product,article,page">
+
+    <div class="hdr-search__field">
+      <div class="hdr-search__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <circle cx="10.5" cy="10.5" r="6.5"/>
+          <line x1="15.5" y1="15.5" x2="21" y2="21"/>
+        </svg>
+      </div>
+
+      <input type="search" name="q" placeholder="Demander à Tiraboschi" aria-label="Recherche" autocomplete="off">
+
+      <button type="submit" class="hdr-search__submit" aria-label="Rechercher">
+        <svg viewBox="0 0 24 24">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12,5 19,12 12,19"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="hdr-search__actions" aria-hidden="true">
+      <a href="{{ routes.account_url }}" aria-label="Mon compte">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="7.5" r="3.5"/>
+          <path d="M3.5 20c0-4.5 3.8-7 8.5-7s8.5 2.5 8.5 7"/>
+        </svg>
+      </a>
+      <a href="{{ routes.cart_url }}" aria-label="Panier">
+        <img class="tira-bag-icon"
+             src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050"
+             alt="" aria-hidden="true" width="20" height="20">
+      </a>
+    </div>
+  </form>
+{%- endif -%}
+
+{%- comment -%} ═══ MOBILE NAV DRAWER ═══ {%- endcomment -%}
+<div class="mobile-nav" id="mobile-nav" aria-hidden="true">
+  <div class="mobile-nav__inner" role="dialog" aria-label="Menu de navigation">
+    <button type="button" class="mobile-nav__close" aria-label="Fermer le menu" data-tira-menu-close>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <line x1="6" y1="6" x2="18" y2="18"/>
+        <line x1="6" y1="18" x2="18" y2="6"/>
+      </svg>
+    </button>
+
+    <ul>
+      {%- if linklists[menu].links.size > 0 -%}
+        {%- for link in linklists[menu].links -%}
+          {%- unless link.title contains '|sep' -%}
+            <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+          {%- endunless -%}
+        {%- endfor -%}
+      {%- else -%}
+        <li><a href="{{ routes.collections_url }}/sacs">Sacs</a></li>
+        <li><a href="{{ routes.collections_url }}/petite-maroquinerie">Petite Maroquinerie</a></li>
+        <li><a href="{{ routes.collections_url }}/iconiques">Iconiques</a></li>
+        <li><a href="{{ routes.collections_url }}/sur-mesure-exotiques">Sur Mesure</a></li>
+        <li><a href="/pages/histoire">La Maison</a></li>
+      {%- endif -%}
+
+      <li class="mobile-nav__sep" aria-hidden="true"></li>
+
+      <li>
+        <a href="{{ routes.account_url }}">
+          {%- if customer -%}Mon compte{%- else -%}Se connecter{%- endif -%}
+        </a>
+      </li>
+      <li><a href="{{ routes.search_url }}">Recherche</a></li>
+      <li><a href="{{ routes.cart_url }}">Panier ({{ cart.item_count }})</a></li>
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Header TIRABOSCHI",
+  "tag": "header",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "transparent_on_home",
+      "label": "Header transparent sur la homepage",
+      "default": true
+    },
+    {
+      "type": "link_list",
+      "id": "main_menu",
+      "label": "Menu principal",
+      "default": "main-menu"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo (laisser vide pour utiliser le logo CDN par défaut)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Afficher la barre de recherche sticky",
+      "default": true
+    }
+  ],
+  "presets": [{ "name": "Header TIRABOSCHI" }]
+}
+{% endschema %}

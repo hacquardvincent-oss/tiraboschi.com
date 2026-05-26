@@ -1,0 +1,159 @@
+{
+  "_comment": "TIRABOSCHI Paris — Arabic translations (Middle East market)",
+  "_version": "1.0.0",
+  "_date": "2026-05-26",
+  "_note": "Professional native translation MANDATORY before launch — this is draft only. RTL support required.",
+
+  "general": {
+    "accessibility": {
+      "close": "إغلاق",
+      "open_menu": "فتح القائمة",
+      "close_menu": "إغلاق القائمة",
+      "skip_to_content": "انتقل إلى المحتوى",
+      "loading": "جاري التحميل",
+      "next": "التالي",
+      "previous": "السابق"
+    },
+    "currency": {
+      "includes_tax": "شامل الضريبة",
+      "excludes_tax": "غير شامل الضريبة"
+    }
+  },
+
+  "localization": {
+    "country_label": "الدولة / المنطقة",
+    "language_label": "اللغة",
+    "submit": "تطبيق",
+    "switch_currency": "تغيير العملة"
+  },
+
+  "geo": {
+    "suggestion": "يبدو أنك تتصفح من منطقة الشرق الأوسط.",
+    "switch": "متابعة بالدولار الأمريكي ←",
+    "stay": "البقاء باليورو",
+    "dismiss_label": "تجاهل الاقتراح"
+  },
+
+  "header": {
+    "search_placeholder": "ابحث عن حقيبة أو مادة...",
+    "cart_count": {
+      "one": "قطعة واحدة",
+      "other": "{{ count }} قطع"
+    },
+    "menu": "القائمة"
+  },
+
+  "products": {
+    "product": {
+      "add_to_cart": "أضف إلى الحقيبة",
+      "sold_out": "نفذ من المخزون",
+      "unavailable": "غير متوفر",
+      "see_details": "عرض المنتج",
+      "discover": "اكتشف",
+      "quantity_label": "الكمية",
+      "color_label": "اللون",
+      "size_label": "الحجم",
+      "material_label": "المادة",
+      "share": "مشاركة",
+      "add_to_wishlist": "أضف إلى قائمة الرغبات",
+      "remove_from_wishlist": "إزالة من قائمة الرغبات",
+      "recently_viewed": "شاهدته مؤخرًا"
+    },
+    "facets": {
+      "filter_by": "تصفية حسب",
+      "sort_by": "ترتيب حسب",
+      "clear_all": "مسح الكل"
+    }
+  },
+
+  "cart": {
+    "title": "حقيبتي",
+    "empty": "حقيبتك فارغة.",
+    "continue_shopping": "متابعة التسوق",
+    "checkout": "إتمام الشراء",
+    "subtotal": "المجموع الجزئي",
+    "taxes_notice": "تحسب الضرائب والشحن عند الدفع",
+    "remove_item": "إزالة هذا المنتج"
+  },
+
+  "checkout": {
+    "contact": "معلومات الاتصال",
+    "email_placeholder": "بريدك الإلكتروني",
+    "continue_to_shipping": "متابعة إلى الشحن",
+    "continue_to_payment": "متابعة إلى الدفع",
+    "pay_now": "تأكيد الطلب",
+    "shipping": "الشحن",
+    "payment": "الدفع",
+    "summary": "ملخص الطلب"
+  },
+
+  "shipping": {
+    "free": "شحن مجاني",
+    "included": "الشحن مشمول",
+    "worldwide": "الشحن الدولي متاح"
+  },
+
+  "customer": {
+    "login": "تسجيل الدخول",
+    "logout": "تسجيل الخروج",
+    "register": "إنشاء حساب",
+    "account": "حسابي",
+    "orders": "طلباتي",
+    "la_societe": "La Société",
+    "forgot_password": "نسيت كلمة المرور؟"
+  },
+
+  "la_societe": {
+    "title": "La Société",
+    "join": "انضم إلى La Société",
+    "privileges": "امتيازاتك"
+  },
+
+  "newsletter": {
+    "title": "انضم إلى دائرة الثقة",
+    "subtitle": "أخبار حصرية، وصول مبكر إلى المجموعات الجديدة وكواليس الورشة.",
+    "email_placeholder": "بريدك الإلكتروني",
+    "submit": "انضم",
+    "success": "شكرًا لثقتك.",
+    "error": "حدث خطأ. يرجى المحاولة مرة أخرى."
+  },
+
+  "sections": {
+    "marquee": {
+      "text": "صُنع في فرنسا حصرًا · منذ 1904 · مصنوعات جلدية فاخرة · باريس · مصنوع يدويًا"
+    },
+    "hero": {
+      "scroll_cta": "اكتشف"
+    },
+    "collection": {
+      "view_all": "عرض المجموعة"
+    },
+    "sur_mesure": {
+      "cta": "احجز موعدًا"
+    }
+  },
+
+  "pages": {
+    "histoire": {
+      "title": "قصتنا",
+      "seo_title": "قصتنا منذ 1904 | TIRABOSCHI Paris"
+    },
+    "savoir_faire": {
+      "title": "الحرفية",
+      "seo_title": "الحرفية الأصيلة | TIRABOSCHI Paris"
+    },
+    "sur_mesure": {
+      "title": "حسب الطلب",
+      "seo_title": "حسب الطلب | TIRABOSCHI Paris"
+    },
+    "contact": {
+      "title": "اتصل بنا",
+      "seo_title": "اتصل بنا وحجز المواعيد | TIRABOSCHI Paris"
+    },
+    "404": {
+      "title": "الصفحة غير موجودة",
+      "message": "الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
+      "cta": "العودة إلى الصفحة الرئيسية"
+    }
+  }
+}
