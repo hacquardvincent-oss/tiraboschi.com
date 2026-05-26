@@ -211,47 +211,7 @@ body.on-hover .cur-ring { opacity: 0; }
 .hdr-search__actions .tira-bag-icon { filter: none; }
 @media (max-width: 900px) { .hdr-search { padding: 0 20px; } .hdr-search__actions { right: 20px; } }
 
-/* ════════════════════════════════════════════
-   MINI-HEADER PRODUIT — après 300px scroll
-   Style Tag Heuer : nom + prix + ATC compact
-════════════════════════════════════════════ */
-.prd-minibar {
-  position: fixed;
-  top: calc(var(--header-h) + var(--search-h)); /* sous header+search */
-  left: 0; right: 0; z-index: 190;
-  height: 52px;
-  background: var(--tira-white);
-  border-bottom: 1px solid var(--tira-border);
-  display: flex; align-items: center;
-  padding: 0 40px; gap: 24px;
-  transform: translateY(-100%);
-  opacity: 0;
-  transition: transform .4s var(--tira-ease), opacity .3s ease,
-              top .35s var(--tira-ease);
-}
-.prd-minibar.visible { transform: none; opacity: 1; }
-body.hdr-hidden .prd-minibar { top: var(--search-h); }
-
-.prd-minibar__name {
-  font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
-  flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.prd-minibar__price {
-  font-size: 11px; letter-spacing: .06em; opacity: .55; white-space: nowrap;
-}
-.prd-minibar__atc {
-  background: var(--tira-black); color: var(--tira-white);
-  border: none; padding: 9px 24px;
-  font-family: inherit; font-size: 10px;
-  text-transform: uppercase; letter-spacing: .12em;
-  cursor: none; transition: background .2s; white-space: nowrap;
-}
-.prd-minibar__atc:hover { background: rgba(10,10,10,.82); }
-
-@media (max-width: 900px) {
-  .prd-minibar { padding: 0 20px; }
-  .prd-minibar__name { font-size: 10px; }
-}
+/* mini-header supprimé — retour recette 3.5 */
 
 /* ════════════════════════════════════════════
    LAYOUT PRINCIPAL — galerie + infos
@@ -270,53 +230,46 @@ body.hdr-hidden .prd-minibar { top: var(--search-h); }
 }
 
 /* ════════════════════════════════════════════
-   GALERIE DESKTOP — thumbnails + image principale
-   Style Tag Heuer : strip vertical gauche
+   GALERIE DESKTOP — scroll vertical style Miu Miu / LV
+   Retour recette 3.1 + 3.2 : plus de thumbnails
 ════════════════════════════════════════════ */
 .prd-gallery {
   position: sticky; top: calc(var(--header-h) + var(--search-h));
   height: calc(100vh - var(--header-h) - var(--search-h));
-  display: flex; gap: 0;
+  overflow-y: scroll; scrollbar-width: none;
   background: var(--tira-grey);
-  overflow: hidden;
+  cursor: zoom-in;
 }
+.prd-gallery::-webkit-scrollbar { display: none; }
 
-/* Strip thumbnails verticaux — 60×80px */
-.prd-gallery__thumbs {
-  display: flex; flex-direction: column; gap: 4px;
-  padding: 16px 0 16px 16px; width: 76px; flex-shrink: 0;
-  overflow-y: auto; scrollbar-width: none;
-}
-.prd-gallery__thumbs::-webkit-scrollbar { display: none; }
-
-.prd-thumb {
-  width: 60px; height: 80px; flex-shrink: 0;
-  overflow: hidden; cursor: none;
-  border: 1px solid transparent;
-  transition: border-color .2s;
-}
-.prd-thumb.active { border-color: var(--tira-black); }
-.prd-thumb img { width: 100%; height: 100%; }
-
-/* Image principale */
-.prd-gallery__main {
-  flex: 1; position: relative; overflow: hidden;
-}
 .prd-gallery__img {
-  position: absolute; inset: 0;
-  opacity: 0; transition: opacity .4s ease;
+  position: relative; aspect-ratio: 3/4;
+  overflow: hidden; display: block; width: 100%;
 }
-.prd-gallery__img.active { opacity: 1; }
-.prd-gallery__img img { width: 100%; height: 100%; }
+.prd-gallery__img img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform .6s var(--tira-ease);
+}
+.prd-gallery__img:hover img { transform: scale(1.02); }
 
-/* Zoom hint desktop */
-.prd-gallery__zoom {
-  position: absolute; bottom: 16px; right: 16px; z-index: 2;
-  font-size: 9px; text-transform: uppercase; letter-spacing: .14em;
-  opacity: .35; display: flex; align-items: center; gap: 6px;
-  pointer-events: none;
+/* Navigation produit — bas de la galerie */
+.prd-nav {
+  position: sticky; bottom: 0; z-index: 10;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 20px;
+  background: rgba(247,245,242,.92);
+  border-top: 1px solid var(--tira-border);
 }
-.prd-gallery__zoom svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.prd-nav__prev, .prd-nav__next {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 9px; text-transform: uppercase; letter-spacing: .14em;
+  opacity: .45; transition: opacity .2s; cursor: pointer;
+  text-decoration: none; color: var(--tira-black);
+}
+.prd-nav__prev:hover, .prd-nav__next:hover { opacity: 1; }
+.prd-nav__prev svg, .prd-nav__next svg {
+  width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.5;
+}
 
 /* Lightbox */
 .prd-lightbox {
@@ -344,7 +297,7 @@ body.hdr-hidden .prd-minibar { top: var(--search-h); }
 .prd-lightbox__prev { left: 0; }
 .prd-lightbox__next { right: 0; }
 
-/* Galerie mobile — carousel swipe */
+/* Galerie mobile — carousel swipe, barre de progression (retour recette 3.2) */
 .prd-gallery--mobile {
   display: none;
   position: relative; aspect-ratio: 3/4;
@@ -360,18 +313,16 @@ body.hdr-hidden .prd-minibar { top: var(--search-h); }
   position: relative;
 }
 .prd-carousel__slide img { width: 100%; height: 100%; }
-.prd-carousel__dots {
-  position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
-  display: flex; gap: 6px; z-index: 2;
+
+/* Barre de progression — remplace les dots ronds (retour recette 3.2) */
+.prd-carousel__progress {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+  background: rgba(10,10,10,.12); z-index: 2;
 }
-.prd-carousel__dots span {
-  width: 5px; height: 5px;
-  background: rgba(255,255,255,.4);
-  border-radius: 50%;
-  transition: background .2s, transform .2s;
-}
-.prd-carousel__dots span.active {
-  background: var(--tira-white); transform: scale(1.3);
+.prd-carousel__progress-bar {
+  height: 100%; background: var(--tira-black);
+  transition: width .4s var(--tira-ease);
+  width: 20%; /* 1/5 images par défaut */
 }
 
 @media (max-width: 900px) {
@@ -414,37 +365,29 @@ body.hdr-hidden .prd-minibar { top: var(--search-h); }
   opacity: .65; margin-bottom: 32px;
 }
 
-/* Rating */
-.prd-rating {
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 32px; padding-bottom: 32px;
-  border-bottom: 1px solid var(--tira-border);
-}
-.prd-rating__stars { display: flex; gap: 2px; }
-.prd-rating__stars svg { width: 12px; height: 12px; fill: var(--tira-black); stroke: none; }
-.prd-rating__score { font-size: 11px; opacity: .6; }
-.prd-rating__count { font-size: 10px; text-transform: uppercase; letter-spacing: .1em; opacity: .35; }
+/* Rating — CSS conservé mais section retirée du HTML (retour recette 3.14) */
 
-/* Couleurs */
+/* Matières — zooms cuir (retour recette 3.16 : remplace cercles couleur) */
 .prd-colors { margin-bottom: 28px; }
 .prd-colors__label {
   font-size: 10px; text-transform: uppercase; letter-spacing: .12em;
   opacity: .4; margin-bottom: 12px; display: flex; justify-content: space-between;
 }
-.prd-colors__swatches { display: flex; gap: 10px; }
-.prd-color-swatch {
-  display: flex; flex-direction: column; align-items: center; gap: 5px;
+.prd-colors__swatches { display: flex; gap: 12px; }
+.prd-swatch {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
   cursor: none;
 }
-.prd-color-swatch input { position: absolute; opacity: 0; pointer-events: none; }
-.prd-color-swatch__circle {
-  width: 24px; height: 24px; border-radius: 0;
+.prd-swatch input { position: absolute; opacity: 0; pointer-events: none; }
+.prd-swatch__material {
+  width: 40px; height: 40px; overflow: hidden;
   border: 1px solid transparent;
   transition: border-color .2s;
 }
-.prd-color-swatch input:checked ~ .prd-color-swatch__circle,
-.prd-color-swatch:hover .prd-color-swatch__circle { border-color: var(--tira-black); }
-.prd-color-swatch__name { font-size: 9px; text-transform: uppercase; letter-spacing: .08em; opacity: .4; }
+.prd-swatch input:checked ~ .prd-swatch__material,
+.prd-swatch:hover .prd-swatch__material { border-color: var(--tira-black); }
+.prd-swatch__material img { width: 100%; height: 100%; object-fit: cover; }
+.prd-swatch__name { font-size: 9px; text-transform: uppercase; letter-spacing: .08em; opacity: .4; }
 
 /* Dimensions */
 .prd-dims { margin-bottom: 32px; }
@@ -472,6 +415,21 @@ body.hdr-hidden .prd-minibar { top: var(--search-h); }
 }
 .prd-atc:hover { background: rgba(10,10,10,.82); }
 .prd-atc.in-cart { background: rgba(10,10,10,.6); }
+
+/* ATC — état précommande (retour recette 3.9) */
+.prd-atc__btn--preorder {
+  width: 100%; padding: 16px 32px;
+  border: 1px solid var(--tira-black);
+  font-family: inherit; font-size: 11px; text-transform: uppercase; letter-spacing: .12em;
+  background: transparent; color: var(--tira-black);
+  cursor: none; transition: background .3s, color .3s;
+  text-align: center;
+}
+.prd-atc__btn--preorder:hover { background: var(--tira-black); color: var(--tira-white); }
+.prd-atc__preorder-note {
+  display: block; font-size: 9px; letter-spacing: .1em;
+  opacity: .5; margin-top: 4px;
+}
 
 /* Infos rapides sous ATC */
 .prd-trust {
@@ -513,7 +471,6 @@ body.hdr-hidden .prd-minibar { top: var(--search-h); }
    STICKY ATC MOBILE — fixe en bas
 ════════════════════════════════════════════ */
 .prd-sticky-atc {
-  display: none;
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 290;
   background: var(--tira-white);
   border-top: 1px solid var(--tira-border);
@@ -527,14 +484,24 @@ body.hdr-hidden .prd-minibar { top: var(--search-h); }
   border: none; font-family: inherit; font-size: 10px;
   text-transform: uppercase; letter-spacing: .14em; cursor: pointer;
 }
+/* Sticky ATC — état précommande (retour recette 3.6) */
+.prd-sticky-atc__btn--preorder {
+  flex: 1; padding: 14px;
+  border: 1px solid var(--tira-black);
+  background: transparent; color: var(--tira-black);
+  font-family: inherit; font-size: 10px;
+  text-transform: uppercase; letter-spacing: .14em;
+  cursor: pointer; text-align: center; text-decoration: none;
+  display: flex; align-items: center; justify-content: center;
+}
 @media (max-width: 900px) {
   .prd-sticky-atc { display: flex; }
   body { padding-bottom: 72px; } /* espace pour le sticky ATC */
 }
 
 /* ════════════════════════════════════════════
-   SECTIONS STORYTELLING — style Tag Heuer
-   Sous le fold : 7 sections scroll-reveal
+   SECTIONS STORYTELLING — style Miu Miu / Etam
+   Retour recette 3.7 : visuels sticky, texte scrollable
 ════════════════════════════════════════════ */
 .prd-story { background: var(--tira-white); }
 
@@ -544,14 +511,19 @@ body.hdr-hidden .prd-minibar { top: var(--search-h); }
 }
 .story-section__inner {
   display: grid; grid-template-columns: 1fr 1fr;
-  min-height: 72vh;
+  min-height: 100vh;
 }
 .story-section__inner.flip { direction: rtl; }
 .story-section__inner.flip > * { direction: ltr; }
 
-.story-section__img { position: relative; overflow: hidden; }
-.story-section__img img { width: 100%; height: 100%; transition: transform .9s var(--tira-ease); }
-.story-section:hover .story-section__img img { transform: scale(1.04); }
+/* Visuel sticky pendant le scroll — image continue hors écran */
+.story-section__img {
+  position: sticky; top: calc(var(--header-h) + var(--search-h));
+  height: calc(100vh - var(--header-h) - var(--search-h));
+  overflow: hidden;
+  align-self: start;
+}
+.story-section__img img { width: 100%; height: 100%; object-fit: cover; }
 
 .story-section__body {
   display: flex; flex-direction: column; justify-content: center;
@@ -643,7 +615,9 @@ body.hdr-hidden .prd-minibar { top: var(--search-h); }
 .story-surmesure .story-section__body { background: var(--tira-grey); }
 
 /* ════════════════════════════════════════════
-   SECTION — VOUS AIMEREZ AUSSI (carousel)
+   SECTION — COMPLÉTEZ VOTRE COLLECTION
+   Retour recette 3.8 : grille collection 4 cols × 1 rangée
+   Plus de carousel, grille identique à page collection
 ════════════════════════════════════════════ */
 .prd-related {
   border-top: 1px solid var(--tira-border);
@@ -661,10 +635,10 @@ body.hdr-hidden .prd-minibar { top: var(--search-h); }
 }
 .prd-related__head a:hover { opacity: 1; }
 
-/* 4 cards horizontales */
+/* Grille 4 cols, gap 3px — identique collection (retour recette 3.8) */
 .prd-related__grid {
   display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 3px; padding: 3px;
+  gap: 3px; padding: 0;
 }
 @media (max-width: 900px) { .prd-related__grid { grid-template-columns: repeat(2, 1fr); } }
 
@@ -743,7 +717,11 @@ body.hdr-hidden .prd-minibar { top: var(--search-h); }
 @media (max-width: 900px) {
   .story-section__inner { grid-template-columns: 1fr; direction: ltr; }
   .story-section__inner.flip { direction: ltr; }
-  .story-section__img { aspect-ratio: 4/3; }
+  /* Sur mobile : visuel non sticky, hauteur auto */
+  .story-section__img {
+    position: relative; top: auto;
+    height: auto; aspect-ratio: 4/3;
+  }
   .story-section__body { padding: 44px 24px; }
   .story-atelier__content { padding: 48px 24px; }
   .prd-related__head { padding: 0 20px 24px; }
@@ -804,14 +782,7 @@ body.hdr-hidden .prd-minibar { top: var(--search-h); }
   </div>
 </div>
 
-<!-- ════════════════════════════════════════
-     MINI-HEADER PRODUIT — apparaît après 300px
-════════════════════════════════════════ -->
-<div class="prd-minibar" id="prd-minibar" aria-hidden="true">
-  <span class="prd-minibar__name">Victoire — Veau Grainé Noir</span>
-  <span class="prd-minibar__price">2 850 EUR</span>
-  <button class="prd-minibar__atc">Ajouter au panier</button>
-</div>
+<!-- mini-header supprimé — retour recette 3.5 -->
 
 <!-- ════════════════════════════════════════
      LAYOUT PRINCIPAL : galerie + infos
