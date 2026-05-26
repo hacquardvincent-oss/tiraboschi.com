@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matières & Cuirs — TIRABOSCHI Paris | Cuirs Pleine Fleur, Peaux Précieuses</title>
+<meta name="description" content="TIRABOSCHI Paris ne travaille que le plein fleur. Veau, agneau, veau box, peaux précieuses — cuirs sélectionnés dans des tanneries françaises partenaires depuis plus de 50 ans. Made in France, Only.">
+<link rel="canonical" href="https://tiraboschi-paris.com/pages/matieres-cuirs">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap&subset=latin" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "@id": "https://tiraboschi-paris.com/pages/matieres-cuirs",
+      "headline": "Matières & Cuirs — TIRABOSCHI Paris",
+      "description": "Guide encyclopédique des cuirs utilisés par la maison TIRABOSCHI Paris. Veau pleine fleur, agneau nappa, veau box, peaux précieuses (Python, Lézard, Autruche). Tanneries françaises partenaires depuis 1904.",
+      "author": {"@type": "Organization", "name": "TIRABOSCHI Paris"},
+      "publisher": {
+        "@type": "Organization",
+        "name": "TIRABOSCHI Paris",
+        "foundingDate": "1904",
+        "url": "https://tiraboschi-paris.com"
+      },
+      "datePublished": "2025-01-01",
+      "inLanguage": "fr",
+      "about": [
+        {"@type": "Thing", "name": "Maroquinerie de luxe"},
+        {"@type": "Thing", "name": "Cuir pleine fleur"},
+        {"@type": "Thing", "name": "Tannerie française"},
+        {"@type": "Thing", "name": "Made in France"}
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type":"ListItem","position":1,"name":"Accueil","item":"https://tiraboschi-paris.com"},
+        {"@type":"ListItem","position":2,"name":"La Maison"},
+        {"@type":"ListItem","position":3,"name":"Matières & Cuirs","item":"https://tiraboschi-paris.com/pages/matieres-cuirs"}
+      ]
+    }
+  ]
+}
+</script>
+
+<style>
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+:root {
+  --tira-black: #0a0a0a;
+  --tira-white: #ffffff;
+  --tira-grey: #f7f5f2;
+  --tira-border: #e8e8e8;
+  --tira-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --tira-duration: 0.9s;
+  --header-h: 64px;
+  --search-h: 44px;
+}
+body {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 400;
+  background: var(--tira-white);
+  color: var(--tira-black);
+  overflow-x: hidden;
+  cursor: none;
+}
+@media (hover: none) { body { cursor: auto; } }
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 2px solid var(--tira-black); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* ── Curseur ── */
+.cur-dot, .cur-ring {
+  position: fixed; pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%); border-radius: 50%;
+}
+.cur-dot {
+  width: 6px; height: 6px; background: var(--tira-black);
+  transition: width .3s var(--tira-ease), height .3s var(--tira-ease), background .3s;
+}
+.cur-ring {
+  width: 30px; height: 30px;
+  border: 1px solid rgba(10,10,10,.38);
+  transition: opacity .25s, width .3s var(--tira-ease), height .3s var(--tira-ease);
+}
+body.on-hover .cur-dot { width: 44px; height: 44px; background: rgba(10,10,10,.06); }
+body.on-hover .cur-ring { opacity: 0; }
+body.on-dark .cur-dot { background: var(--tira-white); }
+body.on-dark .cur-ring { border-color: rgba(255,255,255,.38); }
+@media (hover: none) { .cur-dot, .cur-ring { display: none; } }
+
+/* ── Header ── */
+.hdr {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: var(--header-h);
+  background: var(--tira-white);
+  border-bottom: 1px solid var(--tira-border);
+  transition: transform .35s var(--tira-ease);
+}
+.hdr.hidden { transform: translateY(-100%); }
+.hdr__d {
+  display: grid; grid-template-columns: auto 1fr auto;
+  align-items: center; gap: 40px;
+  height: 100%; padding: 0 40px;
+}
+.hdr__nav { display: flex; align-items: center; gap: 28px; }
+.hdr__nav a {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+  opacity: .55; transition: opacity .2s; white-space: nowrap;
+}
+.hdr__nav a:hover, .hdr__nav a[aria-current] { opacity: 1; }
+.hdr__nav .sep { width: 1px; height: 11px; background: currentColor; opacity: .2; }
+.hdr__logo { display: flex; align-items: center; justify-content: center; }
+.hdr__logo a { display: block; line-height: 0; }
+.hdr__logo img { height: 28px; width: auto; display: block; }
+.hdr__icons { display: flex; align-items: center; gap: 18px; }
+.hdr__icons button {
+  background: none; border: none; cursor: none;
+  display: flex; align-items: center;
+  opacity: .65; transition: opacity .2s; padding: 2px;
+}
+.hdr__icons button:hover { opacity: 1; }
+.hdr__icons svg {
+  width: 20px; height: 20px; fill: none; stroke: currentColor;
+  stroke-width: 1.5; stroke-linecap: square; stroke-linejoin: miter;
+}
+.tira-bag-icon { display: block; width: 22px; height: 22px; object-fit: contain; }
+/* Mobile header */
+.hdr__m {
+  display: none; grid-template-columns: 1fr auto auto auto;
+  align-items: center; gap: 14px;
+  height: 100%; padding: 0 20px;
+}
+.hdr__m a { display: flex; align-items: center; line-height: 0; }
+.hdr__m img.hdr__logo-img { height: 24px; width: auto; }
+.hdr__m svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: square; stroke-linejoin: miter; }
+.hdr__m .tira-bag-icon { width: 24px; height: 24px; }
+.hdr__m button { background: none; border: none; cursor: pointer; display: flex; align-items: center; padding: 2px; }
+@media (max-width: 900px) { .hdr__d { display: none; } .hdr__m { display: grid; } }
+
+/* ── Search bar ── */
+.hdr-search {
+  position: fixed; top: var(--header-h); left: 0; right: 0; z-index: 199;
+  display: flex; align-items: center; justify-content: center;
+  height: var(--search-h); padding: 0 40px;
+  background: var(--tira-white);
+  border-bottom: 1px solid var(--tira-border);
+  transition: top .35s var(--tira-ease);
+}
+.hdr-search.up { top: 0; }
+.hdr-search__field {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; max-width: 560px;
+}
+.hdr-search input {
+  flex: 1; border: none; background: none; outline: none;
+  font-family: inherit; font-size: 11px;
+  text-transform: uppercase; letter-spacing: .12em;
+  color: var(--tira-black);
+  border-bottom: 1px solid var(--tira-border); padding-bottom: 3px;
+}
+.hdr-search input::placeholder { opacity: .35; }
+.hdr-search__icon svg { width: 15px; height: 15px; fill: none; stroke: var(--tira-black); stroke-width: 1.2; opacity: .4; }
+@media (max-width: 900px) { .hdr-search { padding: 0 20px; } }
+
+/* ── Mobile nav drawer ── */
+.nav-overlay {
+  position: fixed; inset: 0; background: rgba(10,10,10,.55);
+  z-index: 300; opacity: 0; pointer-events: none;
+  transition: opacity .4s var(--tira-ease);
+}
+.nav-overlay.open { opacity: 1; pointer-events: auto; }
+.nav-drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; width: 280px;
+  background: var(--tira-white); z-index: 301;
+  transform: translateX(100%); transition: transform .45s var(--tira-ease);
+  padding: 32px 28px; overflow-y: auto;
+}
+.nav-drawer.open { transform: translateX(0); }
+.nav-drawer__close {
+  display: flex; align-items: center; justify-content: flex-end;
+  margin-bottom: 40px;
+}
+.nav-drawer__close button { background: none; border: none; cursor: pointer; padding: 4px; }
+.nav-drawer__close svg { width: 22px; height: 22px; fill: none; stroke: var(--tira-black); stroke-width: 1.5; }
+.nav-drawer a {
+  display: block; font-size: 18px; letter-spacing: -.01em;
+  padding: 14px 0; border-bottom: 1px solid var(--tira-border);
+  transition: opacity .2s;
+}
+.nav-drawer a:hover { opacity: .55; }
+.nav-drawer__sub { margin-top: 32px; }
+.nav-drawer__sub a { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; padding: 10px 0; }
+
+/* ── Scroll reveal ── */
+[data-tira-reveal] {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity var(--tira-duration) var(--tira-ease),
+              transform var(--tira-duration) var(--tira-ease);
+}
+[data-tira-reveal].is-visible { opacity: 1; transform: none; }
+.d1 { transition-delay: 100ms !important; }
+.d2 { transition-delay: 200ms !important; }
+.d3 { transition-delay: 300ms !important; }
+.d4 { transition-delay: 400ms !important; }
+
+/* ── Word reveal ── */
+[data-tira-word-reveal] span {
+  display: inline-block; opacity: 0; transform: translateY(10px);
+  transition: opacity .5s var(--tira-ease) calc(var(--i) * 55ms),
+              transform .5s var(--tira-ease) calc(var(--i) * 55ms);
+}
+[data-tira-word-reveal].is-visible span { opacity: 1; transform: none; }
+
+/* ══════════════════════════════════════
+   1. HERO — typographique, 80vh
+══════════════════════════════════════ */
+.mat-hero {
+  position: relative; height: 80vh; min-height: 500px;
+  background: var(--tira-grey);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 0 24px;
+  margin-top: calc(var(--header-h) + var(--search-h));
+}
+/* Grande lettre décorative en arrière-plan */
+.mat-hero__bg-letter {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none; user-select: none;
+  font-size: clamp(320px, 40vw, 600px);
+  font-style: italic; line-height: 1;
+  opacity: .04; color: var(--tira-black);
+  overflow: hidden;
+  white-space: nowrap;
+}
+.mat-hero__eyebrow {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+  opacity: .35; margin-bottom: 28px;
+  display: flex; gap: 12px; position: relative; z-index: 1;
+}
+.mat-hero__eyebrow a { transition: opacity .2s; }
+.mat-hero__eyebrow a:hover { opacity: .65; }
+.mat-hero h1 {
+  font-size: clamp(36px, 6vw, 56px);
+  line-height: .95; letter-spacing: -.01em;
+  margin-bottom: 20px; position: relative; z-index: 1;
+}
+.mat-hero__sub {
+  font-size: 14px; opacity: .5;
+  max-width: 420px; line-height: 1.7;
+  position: relative; z-index: 1;
+}
+@media (max-width: 768px) { .mat-hero h1 { font-size: 36px; } }
+
+/* ══════════════════════════════════════
+   2. PHILOSOPHIE INTRO
+══════════════════════════════════════ */
+.mat-phil {
+  background: var(--tira-white);
+  padding: 100px 48px;
+  border-top: 1px solid var(--tira-border);
+}
+.mat-phil__inner {
+  max-width: 760px; margin: 0 auto; text-align: center;
+}
+.mat-phil__label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+  opacity: .3; margin-bottom: 36px;
+}
+.mat-phil__quote {
+  font-size: clamp(18px, 2.4vw, 26px);
+  font-style: italic; line-height: 1.65;
+  margin-bottom: 48px; opacity: .85;
+}
+.mat-phil__quote::before { content: '\201C'; }
+.mat-phil__quote::after  { content: '\201D'; }
+.mat-phil__body { font-size: 14px; line-height: 2; opacity: .55; }
+.mat-phil__body p + p { margin-top: 20px; }
+@media (max-width: 768px) { .mat-phil { padding: 64px 24px; } }
+
+/* ══════════════════════════════════════
+   3. LES CUIRS — grille principale
+══════════════════════════════════════ */
+.mat-cuirs {
+  background: var(--tira-white);
+  padding: 0 48px 100px;
+  border-top: 1px solid var(--tira-border);
+}
+.mat-cuirs__header {
+  text-align: center; padding: 80px 0 72px;
+}
+.mat-cuirs__label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+  opacity: .3; margin-bottom: 16px;
+}
+.mat-cuirs__title { font-size: clamp(32px, 4vw, 48px); letter-spacing: -.01em; }
+/* Grille 2 colonnes desktop, 1 colonne mobile */
+.mat-cards {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 2px; max-width: 1200px; margin: 0 auto;
+}
+/* Cuirs précieux — full-width, couleur différente */
+.mat-cards--precious {
+  margin-top: 2px;
+  grid-template-columns: repeat(3, 1fr);
+}
+.mat-card {
+  background: var(--tira-grey);
+  padding: 48px 44px;
+  display: grid; grid-template-columns: 80px 1fr; gap: 36px; align-items: start;
+}
+.mat-card--featured {
+  background: var(--tira-black); color: var(--tira-white);
+}
+.mat-card__swatch {
+  width: 80px; height: 120px; flex-shrink: 0;
+}
+/* Swatches — gradients simulant les textures */
+/* Veau pleine fleur — beige chaud */
+.swatch-veau-pf {
+  background: linear-gradient(160deg, #c8b49a 0%, #a8906c 40%, #8c7250 100%);
+}
+/* Agneau nappa — très doux, crème */
+.swatch-agneau {
+  background: linear-gradient(160deg, #e8d8c0 0%, #d0bc9c 50%, #b89878 100%);
+}
+/* Veau box — brillant, noir avec reflets */
+.swatch-veau-box {
+  background: linear-gradient(
+    135deg,
+    #2a2a2a 0%, #1a1a1a 30%,
+    rgba(255,255,255,.12) 40%, rgba(255,255,255,.08) 45%,
+    #1a1a1a 55%, #0c0c0c 100%
+  );
+}
+/* Veau gras — légèrement grainé, châtain */
+.swatch-veau-gras {
+  background:
+    repeating-linear-gradient(
+      45deg,
+      rgba(0,0,0,.03) 0px, rgba(0,0,0,.03) 1px,
+      transparent 1px, transparent 6px
+    ),
+    linear-gradient(160deg, #b09060 0%, #907040 50%, #745030 100%);
+}
+/* Python */
+.swatch-python {
+  background:
+    repeating-linear-gradient(
+      60deg, rgba(255,255,255,.05) 0px, rgba(255,255,255,.05) 2px,
+      transparent 2px, transparent 18px
+    ),
+    repeating-linear-gradient(
+      -60deg, rgba(255,255,255,.04) 0px, rgba(255,255,255,.04) 2px,
+      transparent 2px, transparent 18px
+    ),
+    linear-gradient(160deg, #3a3228 0%, #2a2218 50%, #1a1410 100%);
+}
+/* Lézard */
+.swatch-lezard {
+  background:
+    repeating-linear-gradient(
+      0deg, rgba(255,255,255,.06) 0px, rgba(255,255,255,.06) 1px,
+      transparent 1px, transparent 10px
+    ),
+    repeating-linear-gradient(
+      90deg, rgba(255,255,255,.06) 0px, rgba(255,255,255,.06) 1px,
+      transparent 1px, transparent 10px
+    ),
+    linear-gradient(160deg, #3c3424 0%, #2c2418 50%, #1c160e 100%);
+}
+/* Autruche */
+.swatch-autruche {
+  background:
+    radial-gradient(ellipse 10px 8px at 20% 20%, rgba(255,255,255,.1) 0%, transparent 70%),
+    radial-gradient(ellipse 10px 8px at 55% 50%, rgba(255,255,255,.08) 0%, transparent 70%),
+    radial-gradient(ellipse 10px 8px at 80% 25%, rgba(255,255,255,.09) 0%, transparent 70%),
+    radial-gradient(ellipse 10px 8px at 30% 75%, rgba(255,255,255,.07) 0%, transparent 70%),
+    radial-gradient(ellipse 10px 8px at 70% 80%, rgba(255,255,255,.08) 0%, transparent 70%),
+    linear-gradient(160deg, #242018 0%, #181410 50%, #0e0c08 100%);
+}
+.mat-card__info {}
+.mat-card__name {
+  font-size: clamp(20px, 2.2vw, 26px); letter-spacing: -.01em;
+  margin-bottom: 12px;
+}
+.mat-card__origin {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+  opacity: .4; margin-bottom: 20px;
+}
+.mat-card__texture {
+  font-size: 14px; font-style: italic; line-height: 1.7;
+  opacity: .7; margin-bottom: 16px;
+}
+.mat-card__usage {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+  opacity: .4; border-top: 1px solid var(--tira-border);
+  padding-top: 16px;
+}
+.mat-card--featured .mat-card__usage {
+  border-top-color: rgba(255,255,255,.12);
+}
+.mat-card__cites {
+  display: inline-block; margin-top: 10px;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .1em;
+  padding: 4px 8px; border: 1px solid rgba(255,255,255,.2);
+  opacity: .5;
+}
+/* Section précieuses — 3 colonnes, fond noir */
+.mat-precious-wrap {
+  background: var(--tira-black); color: var(--tira-white);
+  padding: 72px 48px;
+}
+.mat-precious-wrap .mat-cuirs__header { padding-top: 0; }
+.mat-precious-wrap .mat-cuirs__label,
+.mat-precious-wrap .mat-cuirs__title { color: var(--tira-white); }
+.mat-cards--precious .mat-card {
+  background: rgba(255,255,255,.04);
+  grid-template-columns: 80px 1fr;
+}
+.mat-cards--precious .mat-card__usage { border-top-color: rgba(255,255,255,.1); }
+@media (max-width: 900px) {
+  .mat-cuirs { padding: 0 24px 64px; }
+  .mat-cards { grid-template-columns: 1fr; }
+  .mat-cards--precious { grid-template-columns: 1fr; }
+  .mat-precious-wrap { padding: 48px 24px; }
+  .mat-card { grid-template-columns: 60px 1fr; gap: 20px; padding: 32px 24px; }
+  .mat-card__swatch { width: 60px; height: 90px; }
+}
+
+/* ══════════════════════════════════════
+   4. TANNERIES PARTENAIRES
+══════════════════════════════════════ */
+.mat-tanneries {
+  background: var(--tira-grey);
+  padding: 100px 48px;
+  border-top: 1px solid var(--tira-border);
+}
+.mat-tanneries__header {
+  text-align: center; margin-bottom: 64px;
+}
+.mat-tanneries__label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+  opacity: .3; margin-bottom: 16px;
+}
+.mat-tanneries__title { font-size: clamp(32px, 4vw, 48px); letter-spacing: -.01em; }
+.mat-tanneries__sub {
+  font-size: 14px; opacity: .45; margin-top: 12px;
+  max-width: 520px; margin-left: auto; margin-right: auto; line-height: 1.7;
+}
+.mat-tan-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 2px; max-width: 1100px; margin: 0 auto;
+}
+.mat-tan-card {
+  background: var(--tira-white);
+  padding: 48px 36px;
+}
+.mat-tan-card__year {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+  opacity: .3; margin-bottom: 8px;
+}
+.mat-tan-card__name {
+  font-size: 22px; letter-spacing: -.01em; margin-bottom: 6px;
+}
+.mat-tan-card__location {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+  opacity: .35; margin-bottom: 24px;
+}
+.mat-tan-card__specialty {
+  font-size: 12px; text-transform: uppercase; letter-spacing: .1em;
+  opacity: .5; border-left: 1px solid var(--tira-border);
+  padding-left: 12px; margin-bottom: 20px; line-height: 1.6;
+}
+.mat-tan-card__text { font-size: 13px; line-height: 1.85; opacity: .55; }
+@media (max-width: 900px) {
+  .mat-tanneries { padding: 64px 24px; }
+  .mat-tan-grid { grid-template-columns: 1fr; gap: 2px; }
+}
+
+/* ══════════════════════════════════════
+   5. LA PALETTE — swatches couleurs
+══════════════════════════════════════ */
+.mat-palette {
+  background: var(--tira-white);
+  padding: 100px 48px;
+  border-top: 1px solid var(--tira-border);
+}
+.mat-palette__header {
+  text-align: center; margin-bottom: 64px;
+}
+.mat-palette__label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+  opacity: .3; margin-bottom: 16px;
+}
+.mat-palette__title { font-size: clamp(32px, 4vw, 48px); letter-spacing: -.01em; }
+.mat-palette__inner { max-width: 1000px; margin: 0 auto; }
+.mat-palette__row {
+  margin-bottom: 48px;
+}
+.mat-palette__row-label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+  opacity: .25; margin-bottom: 20px; padding-bottom: 12px;
+  border-bottom: 1px solid var(--tira-border);
+}
+.mat-swatches {
+  display: flex; flex-wrap: wrap; gap: 16px;
+}
+.mat-swatch {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  cursor: default;
+}
+.mat-swatch__square {
+  width: 48px; height: 48px;
+  border: 1px solid rgba(0,0,0,.06);
+  transition: transform .3s var(--tira-ease);
+}
+.mat-swatch:hover .mat-swatch__square { transform: translateY(-3px); }
+.mat-swatch__name {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .08em;
+  opacity: .4; text-align: center; white-space: nowrap;
+}
+/* Couleurs des swatches */
+.c-naturel    { background: #d4bfa0; }
+.c-sable      { background: #c8aa80; }
+.c-caramel    { background: #b08050; }
+.c-miel       { background: #c09050; }
+.c-noir       { background: #0a0a0a; }
+.c-marine     { background: #1a2840; }
+.c-chocolat   { background: #3c2418; }
+.c-bordeaux   { background: #6c1428; }
+.c-cognac     { background: #9c5020; }
+.c-rouille    { background: #9a4020; }
+.c-sauge      { background: #7a8870; }
+.c-bleu-nuit  { background: #1a2038; }
+.c-ivoire     { background: #f0e8d8; border-color: rgba(0,0,0,.1) !important; }
+.c-parme      { background: #9080a8; }
+.c-grenat     { background: #5c1828; }
+.c-kaki       { background: #6a6840; }
+.mat-palette__note {
+  text-align: center; margin-top: 48px;
+  font-size: 11px; text-transform: uppercase; letter-spacing: .12em;
+  opacity: .35; font-style: italic;
+}
+@media (max-width: 768px) {
+  .mat-palette { padding: 64px 24px; }
+  .mat-swatches { gap: 12px; }
+  .mat-swatch__square { width: 40px; height: 40px; }
+}
+
+/* ══════════════════════════════════════
+   6. ENTRETIEN — accordion
+══════════════════════════════════════ */
+.mat-care {
+  background: var(--tira-grey);
+  padding: 100px 48px;
+  border-top: 1px solid var(--tira-border);
+}
+.mat-care__inner { max-width: 760px; margin: 0 auto; }
+.mat-care__header {
+  text-align: center; margin-bottom: 64px;
+}
+.mat-care__label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+  opacity: .3; margin-bottom: 16px;
+}
+.mat-care__title { font-size: clamp(28px, 3.5vw, 42px); letter-spacing: -.01em; }
+.care-item { border-bottom: 1px solid var(--tira-border); }
+.care-item:first-of-type { border-top: 1px solid var(--tira-border); }
+.care-item__q {
+  width: 100%; background: none; border: none; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 24px; padding: 22px 0;
+  font-family: inherit; font-size: 16px; letter-spacing: -.005em;
+  text-align: left; color: var(--tira-black);
+  transition: opacity .2s;
+}
+.care-item__q:hover { opacity: .6; }
+.care-item__icon {
+  flex-shrink: 0; width: 16px; height: 16px; position: relative;
+}
+.care-item__icon::before, .care-item__icon::after {
+  content: ''; position: absolute; background: currentColor;
+  transition: transform .4s var(--tira-ease), opacity .4s;
+}
+.care-item__icon::before { width: 16px; height: 1px; top: 50%; left: 0; transform: translateY(-50%); }
+.care-item__icon::after  { width: 1px; height: 16px; top: 0; left: 50%; transform: translateX(-50%); }
+.care-item.open .care-item__icon::after { transform: translateX(-50%) rotate(90deg); opacity: 0; }
+.care-item__a {
+  font-size: 14px; line-height: 1.85; opacity: .55;
+  max-height: 0; overflow: hidden;
+  transition: max-height .5s var(--tira-ease), padding .4s;
+}
+.care-item.open .care-item__a { max-height: 200px; padding-bottom: 24px; }
+@media (max-width: 768px) { .mat-care { padding: 64px 24px; } }
+
+/* ══════════════════════════════════════
+   7. CTA DOUBLE
+══════════════════════════════════════ */
+.mat-cta {
+  background: var(--tira-white);
+  padding: 100px 48px;
+  border-top: 1px solid var(--tira-border);
+  text-align: center;
+}
+.mat-cta__label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+  opacity: .3; margin-bottom: 16px;
+}
+.mat-cta__title {
+  font-size: clamp(28px, 3.5vw, 44px); letter-spacing: -.01em;
+  margin-bottom: 48px; max-width: 480px; margin-left: auto; margin-right: auto;
+  line-height: 1.15;
+}
+.mat-cta__links {
+  display: flex; justify-content: center; align-items: center;
+  gap: 48px; flex-wrap: wrap;
+}
+.mat-cta__link {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .15em;
+  border-bottom: 1px solid currentColor; padding-bottom: 3px;
+  transition: opacity .2s;
+}
+.mat-cta__link:hover { opacity: .45; }
+.mat-cta__sep {
+  width: 1px; height: 14px; background: var(--tira-border);
+}
+@media (max-width: 768px) {
+  .mat-cta { padding: 64px 24px; }
+  .mat-cta__sep { display: none; }
+  .mat-cta__links { flex-direction: column; gap: 24px; }
+}
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+.ftr {
+  background: var(--tira-black); color: var(--tira-white);
+  border-top: 1px solid rgba(255,255,255,.06);
+  padding: 72px 48px 40px;
+}
+.ftr__grid {
+  display: grid; grid-template-columns: 1.2fr 1fr 1fr 1fr;
+  gap: 48px; margin-bottom: 64px;
+}
+.ftr__brand img { height: 24px; width: auto; margin-bottom: 20px; filter: invert(1); }
+.ftr__tagline {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .12em;
+  opacity: .35; line-height: 1.7; margin-bottom: 16px;
+}
+.ftr__insta {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+  opacity: .4; border-bottom: 1px solid rgba(255,255,255,.2);
+  padding-bottom: 2px; display: inline-block; transition: opacity .2s;
+}
+.ftr__insta:hover { opacity: .7; }
+.ftr__col-title {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+  opacity: .3; margin-bottom: 20px;
+}
+.ftr__links { display: flex; flex-direction: column; gap: 10px; }
+.ftr__links a {
+  font-size: 13px; opacity: .45; transition: opacity .2s;
+}
+.ftr__links a:hover { opacity: .85; }
+.ftr__bottom {
+  border-top: 1px solid rgba(255,255,255,.06);
+  padding-top: 28px;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 12px;
+}
+.ftr__copy { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; opacity: .25; }
+.ftr__legal { display: flex; gap: 24px; }
+.ftr__legal a { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; opacity: .25; transition: opacity .2s; }
+.ftr__legal a:hover { opacity: .6; }
+@media (max-width: 900px) {
+  .ftr { padding: 48px 20px 32px; }
+  .ftr__grid { grid-template-columns: 1fr; gap: 0; }
+  .ftr__brand { padding-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,.06); }
+  .ftr__col { border-bottom: 1px solid rgba(255,255,255,.06); }
+  .ftr__col-title {
+    padding: 20px 0; margin-bottom: 0; cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .ftr__col-title::after { content: '+'; font-size: 16px; opacity: .4; transition: transform .3s; }
+  .ftr__col.open .ftr__col-title::after { transform: rotate(45deg); }
+  .ftr__links {
+    max-height: 0; overflow: hidden;
+    transition: max-height .4s var(--tira-ease), padding .4s;
+  }
+  .ftr__col.open .ftr__links { max-height: 300px; padding-bottom: 20px; }
+  .ftr__bottom { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+
+<body>
+<!-- Curseur custom -->
+<div class="cur-dot" id="curDot"></div>
+<div class="cur-ring" id="curRing"></div>
+
+<!-- ── HEADER ── -->
+<header class="hdr" id="hdr" role="banner">
+  <!-- Desktop -->
+  <div class="hdr__d">
+    <nav class="hdr__nav" aria-label="Navigation principale">
+      <a href="/collections/fw25">FW25</a>
+      <span class="sep" aria-hidden="true"></span>
+      <a href="/collections/sacs">Sacs</a>
+      <span class="sep" aria-hidden="true"></span>
+      <a href="/collections/iconiques">Iconiques</a>
+      <span class="sep" aria-hidden="true"></span>
+      <a href="/pages/sur-mesure">Sur Mesure</a>
+    </nav>
+    <div class="hdr__logo">
+      <a href="/" aria-label="TIRABOSCHI Paris — Accueil">
+        <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738" alt="TIRABOSCHI Paris" class="hdr__logo-img">
+      </a>
+    </div>
+    <div class="hdr__icons">
+      <button aria-label="Rechercher">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="22" y2="22"/></svg>
+      </button>
+      <button aria-label="Mon compte">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4.418 3.582-8 8-8s8 3.582 8 8"/></svg>
+      </button>
+      <button aria-label="Panier">
+        <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050" alt="" class="tira-bag-icon" aria-hidden="true">
+      </button>
+    </div>
+  </div>
+  <!-- Mobile -->
+  <div class="hdr__m">
+    <a href="/" aria-label="TIRABOSCHI Paris — Accueil">
+      <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738" alt="TIRABOSCHI Paris" class="hdr__logo-img">
+    </a>
+    <button aria-label="Panier">
+      <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050" alt="" class="tira-bag-icon" aria-hidden="true">
+    </button>
+    <button aria-label="Mon compte">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4.418 3.582-8 8-8s8 3.582 8 8"/></svg>
+    </button>
+    <button id="navToggle" aria-label="Menu" aria-expanded="false" aria-controls="navDrawer">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- Search bar -->
+<div class="hdr-search" id="hdrSearch" role="search">
+  <div class="hdr-search__field">
+    <div class="hdr-search__icon">
+      <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="22" y2="22"/></svg>
+    </div>
+    <input type="search" placeholder="Rechercher" aria-label="Rechercher">
+  </div>
+</div>
+
+<!-- Mobile nav drawer -->
+<div class="nav-overlay" id="navOverlay" aria-hidden="true"></div>
+<nav class="nav-drawer" id="navDrawer" aria-label="Menu mobile" aria-hidden="true">
+  <div class="nav-drawer__close">
+    <button id="navClose" aria-label="Fermer le menu">
+      <svg viewBox="0 0 24 24"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+    </button>
+  </div>
+  <a href="/collections/fw25">FW25</a>
+  <a href="/collections/sacs">Sacs</a>
+  <a href="/collections/iconiques">Iconiques</a>
+  <a href="/pages/sur-mesure">Sur Mesure</a>
+  <div class="nav-drawer__sub">
+    <a href="/pages/histoire">Histoire</a>
+    <a href="/pages/savoir-faire">Savoir-Faire</a>
+    <a href="/pages/matieres-cuirs" aria-current="page">Matières & Cuirs</a>
+    <a href="/pages/la-societe">La Société</a>
+    <a href="/blogs/latelier">L'Atelier</a>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════
+     1. HERO TYPOGRAPHIQUE
+══════════════════════════════════════ -->
+<main id="main">
+<section class="mat-hero" aria-label="Matières et Cuirs">
+  <div class="mat-hero__bg-letter" aria-hidden="true">M</div>
+  <div class="mat-hero__eyebrow" aria-hidden="true">
+    <a href="/">Accueil</a>
+    <span>·</span>
+    <span>La Maison</span>
+    <span>·</span>
+    <span>Matières &amp; Cuirs</span>
+  </div>
+  <h1 data-tira-word-reveal>Matières &amp; Cuirs</h1>
+  <p class="mat-hero__sub" data-tira-reveal>L'excellence commence avant l'atelier</p>
+</section>
+
+<!-- ══════════════════════════════════════
+     2. PHILOSOPHIE INTRO
+══════════════════════════════════════ -->
+<section class="mat-phil" aria-labelledby="phil-heading">
+  <div class="mat-phil__inner">
+    <p class="mat-phil__label" data-tira-reveal>Notre philosophie</p>
+    <blockquote class="mat-phil__quote" data-tira-reveal>
+      Nous ne travaillons que le plein fleur — la surface intacte du cuir, jamais corrigée, jamais enduite.
+    </blockquote>
+    <div class="mat-phil__body" data-tira-reveal>
+      <p>Depuis 1904, TIRABOSCHI s'approvisionne exclusivement auprès de tanneries françaises partenaires avec lesquelles nous entretenons des relations de confiance depuis plus de cinquante ans. Le cuir pleine fleur — la couche supérieure de la peau, non poncée, non pigmentée — est la seule matière que nous acceptons. Elle révèle ses imperfections naturelles, sa personnalité, et développe avec le temps une patine unique qui est, précisément, sa beauté.</p>
+      <p>Chaque lot de cuir est inspecté à la main par notre artisan avant toute coupe. Une peau qui ne convient pas est renvoyée, quel qu'en soit le coût. C'est cette exigence silencieuse, invisible une fois le sac terminé, qui fonde notre réputation.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     3. LES CUIRS — grille éditoriale
+══════════════════════════════════════ -->
+<section class="mat-cuirs" aria-labelledby="cuirs-heading">
+  <div class="mat-cuirs__header">
+    <p class="mat-cuirs__label" data-tira-reveal>Notre sélection</p>
+    <h2 class="mat-cuirs__title" id="cuirs-heading" data-tira-word-reveal>Les Cuirs de la Maison</h2>
+  </div>
+
+  <!-- Cuirs courants — 2 colonnes -->
+  <div class="mat-cards" role="list">
+    <!-- Veau Pleine Fleur -->
+    <article class="mat-card" role="listitem" data-tira-reveal>
+      <div class="mat-card__swatch swatch-veau-pf" aria-hidden="true"></div>
+      <div class="mat-card__info">
+        <h3 class="mat-card__name">Veau Pleine Fleur</h3>
+        <p class="mat-card__origin">Mégisserie Berry, Vallée de la Loire — France</p>
+        <p class="mat-card__texture">Grain serré et régulier, toucher soyeux, patine naturelle dorée avec l'usage.</p>
+        <p class="mat-card__usage">Victoire · Colette · Rafael · Jane · Olympe</p>
+      </div>
+    </article>
+
+    <!-- Agneau Nappa -->
+    <article class="mat-card" role="listitem" data-tira-reveal class="d1">
+      <div class="mat-card__swatch swatch-agneau" aria-hidden="true"></div>
+      <div class="mat-card__info">
+        <h3 class="mat-card__name">Agneau Nappa</h3>
+        <p class="mat-card__origin">Gants de Millau, Aveyron — France</p>
+        <p class="mat-card__texture">Douceur incomparable, légèreté naturelle, chute souple au toucher comme de la soie tendue.</p>
+        <p class="mat-card__usage">Pochon · Doublures de tous les modèles</p>
+      </div>
+    </article>
+
+    <!-- Veau Box -->
+    <article class="mat-card" role="listitem" data-tira-reveal>
+      <div class="mat-card__swatch swatch-veau-box" aria-hidden="true"></div>
+      <div class="mat-card__info">
+        <h3 class="mat-card__name">Veau Box</h3>
+        <p class="mat-card__origin">Tannerie Rémy Carriat, Normandie — France</p>
+        <p class="mat-card__texture">Lisse, brillant, résistant aux égratignures. Acquiert avec l'âge le lustre d'un miroir patiné.</p>
+        <p class="mat-card__usage">Modèles iconiques sur demande · Sur Mesure</p>
+      </div>
+    </article>
+
+    <!-- Veau Gras -->
+    <article class="mat-card" role="listitem" data-tira-reveal class="d1">
+      <div class="mat-card__swatch swatch-veau-gras" aria-hidden="true"></div>
+      <div class="mat-card__info">
+        <h3 class="mat-card__name">Veau Gras</h3>
+        <p class="mat-card__origin">Tannerie du Puy, Haute-Loire — France</p>
+        <p class="mat-card__texture">Légèrement grainé, souple dès la première utilisation, naturellement résistant à l'eau.</p>
+        <p class="mat-card__usage">Colette Mini · Jane · Chaine</p>
+      </div>
+    </article>
+  </div>
+
+  <!-- Peaux précieuses — 3 colonnes, fond noir -->
+  <div class="mat-precious-wrap">
+    <div class="mat-cuirs__header">
+      <p class="mat-cuirs__label" data-tira-reveal>Réservées aux esprits rares</p>
+      <h2 class="mat-cuirs__title" data-tira-reveal>Peaux Précieuses</h2>
+    </div>
+    <div class="mat-cards mat-cards--precious" role="list">
+      <!-- Python -->
+      <article class="mat-card" role="listitem" data-tira-reveal>
+        <div class="mat-card__swatch swatch-python" aria-hidden="true"></div>
+        <div class="mat-card__info">
+          <h3 class="mat-card__name">Python de Birmanie</h3>
+          <p class="mat-card__origin">Élevages certifiés CITES, Asie du Sud-Est</p>
+          <p class="mat-card__texture">Écailles régulières naturelles, reflets nacrés changeants selon la lumière. Aucune peau ne ressemble à une autre.</p>
+          <p class="mat-card__usage">Sur Mesure &amp; Exotiques uniquement</p>
+          <span class="mat-card__cites">Certifié CITES · Éthique</span>
+        </div>
+      </article>
+      <!-- Lézard -->
+      <article class="mat-card" role="listitem" data-tira-reveal class="d1">
+        <div class="mat-card__swatch swatch-lezard" aria-hidden="true"></div>
+        <div class="mat-card__info">
+          <h3 class="mat-card__name">Lézard Niloticus</h3>
+          <p class="mat-card__origin">Élevages certifiés CITES, Afrique</p>
+          <p class="mat-card__texture">Écailles carrées et uniformes, toucher sec et précis, structure géométrique naturellement parfaite.</p>
+          <p class="mat-card__usage">Sur Mesure &amp; Exotiques uniquement</p>
+          <span class="mat-card__cites">Certifié CITES · Éthique</span>
+        </div>
+      </article>
+      <!-- Autruche -->
+      <article class="mat-card" role="listitem" data-tira-reveal class="d2">
+        <div class="mat-card__swatch swatch-autruche" aria-hidden="true"></div>
+        <div class="mat-card__info">
+          <h3 class="mat-card__name">Autruche d'Afrique du Sud</h3>
+          <p class="mat-card__origin">Élevages certifiés CITES, Cape Province</p>
+          <p class="mat-card__texture">Rondeurs caractéristiques et reconnaissables, ultra-souple, rarissime — production mondiale limitée.</p>
+          <p class="mat-card__usage">Sur Mesure &amp; Exotiques uniquement</p>
+          <span class="mat-card__cites">Certifié CITES · Éthique</span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     4. TANNERIES PARTENAIRES
+══════════════════════════════════════ -->
+<section class="mat-tanneries" aria-labelledby="tanneries-heading">
+  <div class="mat-tanneries__header">
+    <p class="mat-tanneries__label" data-tira-reveal>Depuis plus de 50 ans</p>
+    <h2 class="mat-tanneries__title" id="tanneries-heading" data-tira-word-reveal>Nos Tanneurs</h2>
+    <p class="mat-tanneries__sub" data-tira-reveal>
+      Trois maisons françaises, trois générations de confiance. Nous ne changeons pas de tanneries — nous les accompagnons.
+    </p>
+  </div>
+  <div class="mat-tan-grid">
+    <article class="mat-tan-card" data-tira-reveal>
+      <p class="mat-tan-card__year">Fondée en 1897</p>
+      <h3 class="mat-tan-card__name">Mégisserie Berry</h3>
+      <p class="mat-tan-card__location">Vallée de la Loire, France</p>
+      <p class="mat-tan-card__specialty">Tannage végétal · Processus 6 semaines</p>
+      <p class="mat-tan-card__text">Spécialisée dans le tannage végétal à l'écorce de chêne, la Mégisserie Berry est l'une des dernières manufactures françaises à maintenir un processus de six semaines — contre quelques jours pour le tannage chimique. C'est ici que naît notre veau pleine fleur signature.</p>
+    </article>
+    <article class="mat-tan-card" data-tira-reveal class="d1">
+      <p class="mat-tan-card__year">Fondée en 1934</p>
+      <h3 class="mat-tan-card__name">Rémy Carriat</h3>
+      <p class="mat-tan-card__location">Normandie, France</p>
+      <p class="mat-tan-card__specialty">Veau box · Spécialité 3 générations</p>
+      <p class="mat-tan-card__text">Trois générations de tanneurs normands dédiées exclusivement au veau box. La famille Carriat a développé un procédé de lustrage à froid unique qui donne à leur cuir son brillant caractéristique sans aucun revêtement artificiel. Une maison confidentielle, pour les maroquiniers qui savent.</p>
+    </article>
+    <article class="mat-tan-card" data-tira-reveal class="d2">
+      <p class="mat-tan-card__year">Fondée en 1912</p>
+      <h3 class="mat-tan-card__name">Tannerie du Puy</h3>
+      <p class="mat-tan-card__location">Haute-Loire, France</p>
+      <p class="mat-tan-card__specialty">Teinture artisanale · Couleurs exclusives</p>
+      <p class="mat-tan-card__text">Installée dans les gorges de la Loire depuis 1912, la Tannerie du Puy maîtrise une technique de teinture en cuve artisanale qui teint le cuir dans toute son épaisseur. Nos couleurs exclusives — y compris les teintes sur commande spéciale — sont développées ici, en collaboration directe avec notre artisan.</p>
+    </article>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     5. LA PALETTE — swatches couleurs
+══════════════════════════════════════ -->
+<section class="mat-palette" aria-labelledby="palette-heading">
+  <div class="mat-palette__header">
+    <p class="mat-palette__label" data-tira-reveal>Seize teintes permanentes</p>
+    <h2 class="mat-palette__title" id="palette-heading" data-tira-word-reveal>La Palette</h2>
+  </div>
+  <div class="mat-palette__inner">
+    <!-- Naturels -->
+    <div class="mat-palette__row" data-tira-reveal>
+      <p class="mat-palette__row-label">Naturels</p>
+      <div class="mat-swatches">
+        <div class="mat-swatch">
+          <div class="mat-swatch__square c-naturel" aria-label="Couleur Naturel"></div>
+          <span class="mat-swatch__name">Naturel</span>
+        </div>
+        <div class="mat-swatch">
+          <div class="mat-swatch__square c-sable" aria-label="Couleur Sable"></div>
+          <span class="mat-swatch__name">Sable</span>
+        </div>
+        <div class="mat-swatch">
+          <div class="mat-swatch__square c-caramel" aria-label="Couleur Caramel"></div>
+          <span class="mat-swatch__name">Caramel</span>
+        </div>
+        <div class="mat-swatch">
+          <div class="mat-swatch__square c-miel" aria-label="Couleur Miel"></div>
+          <span class="mat-swatch__name">Miel</span>
+        </div>
+      </div>
+    </div>
+    <!-- Noirs & Marines -->
+    <div class="mat-palette__row" data-tira-reveal>
+      <p class="mat-palette__row-label">Noirs &amp; Marines</p>
+      <div class="mat-swatches">
+        <div class="mat-swatch">
+          <div class="mat-swatch__square c-noir" aria-label="Couleur Noir"></div>
+          <span class="mat-swatch__name">Noir</span>
+        </div>
+        <div class="mat-swatch">
+          <div class="mat-swatch__square c-marine" aria-label="Couleur Marine"></div>
+          <span class="mat-swatch__name">Marine</span>
+        </div>
+        <div class="mat-swatch">
+          <div class="mat-swatch__square c-chocolat" aria-label="Couleur Chocolat"></div>
+          <span class="mat-swatch__name">Chocolat</span>
+        </div>
+        <div class="mat-swatch">
+          <div class="mat-swatch__square c-bordeaux" aria-label="Couleur Bordeaux"></div>
+          <span class="mat-swatch__name">Bordeaux</span>
+        </div>
+      </div>
+    </div>
+    <!-- Couleurs -->
+    <div class="mat-palette__row" data-tira-reveal>
+      <p class="mat-palette__row-label">Couleurs</p>
+      <div class="mat-swatches">
+        <div class="mat-swatch">
+          <div class="mat-swatch__square c-cognac" aria-label="Couleur Cognac"></div>
+          <span class="mat-swatch__name">Cognac</span>
+        </div>
+        <div class="mat-swatch">
+          <div class="mat-swatch__square c-rouille" aria-label="Couleur Rouille"></div>
+          <span class="mat-swatch__name">Rouille</span>
+        </div>
+        <div class="mat-swatch">
+          <div class="mat-swatch__square c-sauge" aria-label="Couleur Sauge"></div>
+          <span class="mat-swatch__name">Sauge</span>
+        </div>
+        <div class="mat-swatch">
+          <div class="mat-swatch__square c-bleu-nuit" aria-label="Couleur Bleu Nuit"></div>
+          <span class="mat-swatch__name">Bleu Nuit</span>
+        </div>
+      </div>
+    </div>
+    <!-- Précieux -->
+    <div class="mat-palette__row" data-tira-reveal>
+      <p class="mat-palette__row-label">Précieux</p>
+      <div class="mat-swatches">
+        <div class="mat-swatch">
+          <div class="mat-swatch__square c-ivoire" aria-label="Couleur Ivoire"></div>
+          <span class="mat-swatch__name">Ivoire</span>
+        </div>
+        <div class="mat-swatch">
+          <div class="mat-swatch__square c-parme" aria-label="Couleur Parme"></div>
+          <span class="mat-swatch__name">Parme</span>
+        </div>
+        <div class="mat-swatch">
+          <div class="mat-swatch__square c-grenat" aria-label="Couleur Grenat"></div>
+          <span class="mat-swatch__name">Grenat</span>
+        </div>
+        <div class="mat-swatch">
+          <div class="mat-swatch__square c-kaki" aria-label="Couleur Kaki"></div>
+          <span class="mat-swatch__name">Kaki</span>
+        </div>
+      </div>
+    </div>
+    <p class="mat-palette__note" data-tira-reveal>
+      Toutes les teintes sont disponibles en commande spéciale · Délai 6 à 8 semaines
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     6. ENTRETIEN — accordion
+══════════════════════════════════════ -->
+<section class="mat-care" aria-labelledby="care-heading">
+  <div class="mat-care__inner">
+    <div class="mat-care__header">
+      <p class="mat-care__label" data-tira-reveal>Conseils de la maison</p>
+      <h2 class="mat-care__title" id="care-heading" data-tira-reveal>Prendre soin de votre pièce</h2>
+    </div>
+    <div role="list">
+      <div class="care-item" role="listitem">
+        <button class="care-item__q" aria-expanded="false">
+          <span>Rangement quotidien</span>
+          <span class="care-item__icon" aria-hidden="true"></span>
+        </button>
+        <div class="care-item__a" role="region">
+          <p>Rangez votre pièce dans son pochon de coton dédié lorsqu'elle n'est pas utilisée. Évitez toute exposition prolongée à la lumière directe et maintenez-la éloignée de l'humidité. Si votre modèle est structuré, garnissez-le légèrement pour conserver sa forme.</p>
+        </div>
+      </div>
+      <div class="care-item" role="listitem">
+        <button class="care-item__q" aria-expanded="false">
+          <span>Nettoyage</span>
+          <span class="care-item__icon" aria-hidden="true"></span>
+        </button>
+        <div class="care-item__a" role="region">
+          <p>Pour les poussières du quotidien, un chiffon doux et légèrement humide suffit. N'utilisez jamais de produits chimiques, d'alcool, de détergent ou de lingettes nettoyantes. Le cuir pleine fleur est vivant — les produits agressifs détruisent sa surface irrémédiablement.</p>
+        </div>
+      </div>
+      <div class="care-item" role="listitem">
+        <button class="care-item__q" aria-expanded="false">
+          <span>Conditionnement</span>
+          <span class="care-item__icon" aria-hidden="true"></span>
+        </button>
+        <div class="care-item__a" role="region">
+          <p>Appliquez une crème nourrissante naturelle à la lanoline ou à la cire d'abeille deux fois par an, ou dès que le cuir paraît légèrement sec. Travaillez en mouvements circulaires légers, laissez absorber vingt minutes, puis polissez doucement. N'appliquez jamais sur les coutures.</p>
+        </div>
+      </div>
+      <div class="care-item" role="listitem">
+        <button class="care-item__q" aria-expanded="false">
+          <span>Pluie &amp; eau</span>
+          <span class="care-item__icon" aria-hidden="true"></span>
+        </button>
+        <div class="care-item__a" role="region">
+          <p>En cas de pluie, tamponnez délicatement avec un chiffon doux pour absorber l'excès d'humidité. Laissez sécher à température ambiante, à l'abri du soleil, jamais près d'une source de chaleur. Une fois sec, le cuir pleine fleur retrouve naturellement sa souplesse.</p>
+        </div>
+      </div>
+      <div class="care-item" role="listitem">
+        <button class="care-item__q" aria-expanded="false">
+          <span>Vieillissement &amp; patine</span>
+          <span class="care-item__icon" aria-hidden="true"></span>
+        </button>
+        <div class="care-item__a" role="region">
+          <p>Le cuir pleine fleur développe avec le temps une patine unique — légèrement dorée sur les naturels, profonde sur les noirs, lumineuse sur le box. Ce vieillissement est la marque de votre usage, de votre histoire avec la pièce. C'est précisément pour cela que nous refusons les cuirs corrigés : ils ne savent pas vieillir.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     7. CTA DOUBLE
+══════════════════════════════════════ -->
+<section class="mat-cta" aria-labelledby="cta-heading">
+  <p class="mat-cta__label" data-tira-reveal>L'étape suivante</p>
+  <h2 class="mat-cta__title" id="cta-heading" data-tira-reveal>
+    Choisir votre matière,<br>choisir votre pièce
+  </h2>
+  <div class="mat-cta__links" data-tira-reveal>
+    <a href="/collections/sacs" class="mat-cta__link">Découvrir les modèles</a>
+    <div class="mat-cta__sep" aria-hidden="true"></div>
+    <a href="/pages/sur-mesure" class="mat-cta__link">Commander sur mesure</a>
+  </div>
+</section>
+</main>
+
+<!-- ══════════════════════════════════════
+     FOOTER
+══════════════════════════════════════ -->
+<footer class="ftr" aria-label="Pied de page">
+  <div class="ftr__grid">
+    <div class="ftr__brand">
+      <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738" alt="TIRABOSCHI Paris" loading="lazy">
+      <p class="ftr__tagline">Made in France, Only.<br>Since 1904</p>
+      <a href="https://instagram.com/boschi_paris" class="ftr__insta" target="_blank" rel="noopener">@boschi_paris</a>
+    </div>
+    <div class="ftr__col" id="ftr-col-2">
+      <p class="ftr__col-title" role="button" aria-expanded="false">Collections</p>
+      <nav class="ftr__links" aria-label="Collections">
+        <a href="/collections/fw25">FW25</a>
+        <a href="/collections/sacs">Sacs</a>
+        <a href="/collections/petite-maroquinerie">Petite Maroquinerie</a>
+        <a href="/collections/iconiques">Iconiques</a>
+        <a href="/collections/sur-mesure-exotiques">Sur Mesure &amp; Exotiques</a>
+      </nav>
+    </div>
+    <div class="ftr__col" id="ftr-col-3">
+      <p class="ftr__col-title" role="button" aria-expanded="false">La Maison</p>
+      <nav class="ftr__links" aria-label="La Maison">
+        <a href="/pages/histoire">Histoire</a>
+        <a href="/pages/savoir-faire">Savoir-Faire</a>
+        <a href="/pages/matieres-cuirs">Matières &amp; Cuirs</a>
+        <a href="/pages/la-societe">La Société</a>
+        <a href="/blogs/latelier">Blog L'Atelier</a>
+      </nav>
+    </div>
+    <div class="ftr__col" id="ftr-col-4">
+      <p class="ftr__col-title" role="button" aria-expanded="false">Service</p>
+      <nav class="ftr__links" aria-label="Service client">
+        <a href="/pages/contact">Contact</a>
+        <a href="/pages/prendrez-rendez-vous">Prendre RDV</a>
+        <a href="/pages/livraison">Livraison</a>
+        <a href="/pages/retours">Retours</a>
+        <a href="/pages/faq">FAQ</a>
+      </nav>
+    </div>
+  </div>
+  <div class="ftr__bottom">
+    <p class="ftr__copy">© 2025 TIRABOSCHI Paris — Tous droits réservés</p>
+    <div class="ftr__legal">
+      <a href="/pages/mentions-legales">Mentions légales</a>
+      <a href="/pages/confidentialite">Confidentialité</a>
+      <a href="/pages/cgv">CGV</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function() {
+  'use strict';
+
+  /* ── Curseur ── */
+  const dot  = document.getElementById('curDot');
+  const ring = document.getElementById('curRing');
+  let mx = -100, my = -100, rx = -100, ry = -100;
+  if (dot && ring) {
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    (function animCur() {
+      rx += (mx - rx) * 0.14;
+      ry += (my - ry) * 0.14;
+      dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(animCur);
+    })();
+    document.querySelectorAll('a, button, [role="button"], label, input, textarea, .mat-swatch').forEach(el => {
+      el.addEventListener('mouseenter', () => document.body.classList.add('on-hover'));
+      el.addEventListener('mouseleave', () => document.body.classList.remove('on-hover'));
+    });
+  }
+
+  /* ── Header directionnel ── */
+  const hdr = document.getElementById('hdr');
+  const searchBar = document.getElementById('hdrSearch');
+  let lastY = 0, ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        if (y > lastY && y > 80) {
+          hdr.classList.add('hidden');
+          searchBar && searchBar.classList.add('up');
+        } else {
+          hdr.classList.remove('hidden');
+          searchBar && searchBar.classList.remove('up');
+        }
+        lastY = y; ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+
+  /* ── Scroll reveal ── */
+  const revealObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('is-visible');
+        revealObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('[data-tira-reveal]').forEach(el => revealObs.observe(el));
+
+  /* ── Word reveal ── */
+  document.querySelectorAll('[data-tira-word-reveal]').forEach(el => {
+    el.innerHTML = el.textContent.trim().split(' ')
+      .map((w, i) => `<span style="--i:${i}">${w}</span>`).join(' ');
+  });
+  const wordObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('is-visible');
+        wordObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('[data-tira-word-reveal]').forEach(el => wordObs.observe(el));
+
+  /* ── Care accordion ── */
+  document.querySelectorAll('.care-item__q').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const item = this.closest('.care-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.care-item').forEach(i => {
+        i.classList.remove('open');
+        i.querySelector('.care-item__q').setAttribute('aria-expanded', 'false');
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        this.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+
+  /* ── Mobile nav drawer ── */
+  const navToggle  = document.getElementById('navToggle');
+  const navClose   = document.getElementById('navClose');
+  const navOverlay = document.getElementById('navOverlay');
+  const navDrawer  = document.getElementById('navDrawer');
+  function openNav() {
+    navOverlay.classList.add('open'); navOverlay.setAttribute('aria-hidden','false');
+    navDrawer.classList.add('open'); navDrawer.setAttribute('aria-hidden','false');
+    navToggle && navToggle.setAttribute('aria-expanded','true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeNav() {
+    navOverlay.classList.remove('open'); navOverlay.setAttribute('aria-hidden','true');
+    navDrawer.classList.remove('open'); navDrawer.setAttribute('aria-hidden','true');
+    navToggle && navToggle.setAttribute('aria-expanded','false');
+    document.body.style.overflow = '';
+  }
+  navToggle  && navToggle.addEventListener('click', openNav);
+  navClose   && navClose.addEventListener('click', closeNav);
+  navOverlay && navOverlay.addEventListener('click', closeNav);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeNav(); });
+
+  /* ── Footer accordion mobile ── */
+  document.querySelectorAll('.ftr__col-title').forEach(title => {
+    title.addEventListener('click', function() {
+      const col = this.closest('.ftr__col');
+      col.classList.toggle('open');
+      this.setAttribute('aria-expanded', col.classList.contains('open'));
+    });
+  });
+})();
+</script>
+</body>
+</html>
