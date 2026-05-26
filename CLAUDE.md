@@ -255,15 +255,43 @@ shopify theme list --store tiraboschi-paris.myshopify.com
 
 ## CRM & FIDÉLITÉ — SPECS COMPLÈTES
 
-### Programme La Société
-| Cercle | Seuil | Avantages clés |
+### The Society — Programme (renommé "The Society", pas "La Société")
+| Palier | Seuil CA cumulé | Avantages |
 |---|---|---|
-| I — Membre | 1er achat | Livraison prioritaire, early access, packaging cadeau |
-| II — Artisan | 2e achat ou > 5 000€ cumul | + carte physique, éditions limitées, visite atelier, WhatsApp direct |
-| III — Maison | Invitation fondatrice > 15 000€ | + relation directe fondatrice, pièce exclusive annuelle, consultation privée |
+| Palier 1 | 10 000€ | Accès en avant-première aux nouvelles collections |
+| Palier 2 | 20 000€ | Accès à des pièces exclusives non disponibles en boutique |
+| Palier 3 | 50 000€ | Accès à des matières exclusives non mises en vente |
+| Palier 4 | 100 000€ | Conception d'une pièce d'exception sur mesure dans la matière de son choix |
 
 **Règle absolue** : jamais "points", "remises", "barres de progression", "programme fidélité".
-**Langage** : "La Société", "vos privilèges", "votre cercle" — toujours.
+**Langage** : "The Society", "vos privilèges", "votre cercle" — toujours.
+**WhatsApp conseiller** : numéro exemple à afficher pour Palier 1 (à remplacer par le vrai numéro).
+
+### Décisions client confirmées (recette)
+| Sujet | Décision |
+|---|---|
+| Nom programme fidélité | **"The Society"** (pas "La Société") |
+| Adresse atelier | 96 Avenue de Clichy, 75017 Paris |
+| Type d'accueil | Showroom privé sur rendez-vous uniquement |
+| Système RDV | Formulaire simple (pas Calendly/Cal.com) |
+| Victoire — année création | **1908** (pas 1938) |
+| Weglot | Non → contenu EN natif dans le code, traductions autres langues plus tard |
+| Ordre marchés internationaux | FR → US → Europe → Japon |
+| Marché arabe RTL | Phase 3-4 |
+| Articles blog (3 supplémentaires) | À rédiger (OK) |
+| Presse | Exemples fictifs (à remplacer au lancement) |
+| Klaviyo | Compte existant (API Key Phase 4) |
+| Label EPV | Vérifier éligibilité (OK) |
+| Prochain drop | 15/08 → 30/08 · 3 modèles H26 · 10 pièces/modèle |
+| Galerie fiche produit | Scroll vertical (Miu Miu) — pas de thumbnails |
+| Swatches matières | Photos zoom cuir (pas cercles couleur) |
+| Avis clients sur fiche produit | À retirer |
+| Mini-header sticky fiche produit | À retirer (doublon sticky ATC) |
+| "Vous aimerez aussi" carousel | Remplacer par grille collection (infinite browsing) |
+| Tagline "Made in France, Only." | Peut être retiré si présent en standalone |
+| CTA newsletter | "Join the Society" + flèche → (plus de bouton "S'inscrire") |
+| Filtres collection | Retirer filtre prix |
+| Page Cadeaux | Regrouper par typologie produit (pas par prix) |
 
 ### 6 Flows Klaviyo
 | Flow | Déclencheur | Séquence | Objectif |
@@ -421,10 +449,12 @@ locales/ja.json                 → Strings JA draft (révision humaine requise)
 locales/ar.json                 → Strings AR draft RTL (traduction native OBLIGATOIRE)
 ```
 
-### 🔲 Phase actuelle — Recette (validation visuelle)
-- [ ] Recette page par page (voir `VALIDATION.md` — 26 pages + checklists)
-- [ ] **Fournir les contenus réels** (voir section CONTENUS À FOURNIR ci-dessous)
-- [ ] Corrections post-recette
+### ✅ Phase actuelle — Recette TERMINÉE — Corrections en cours
+- ✅ Recette page par page (Google Sheet) — terminée
+- ✅ Corrections post-recette : homepage, collection, cadeaux, 13 pages secondaires, fiche produit
+- ✅ Décisions client collectées (voir tableau "Décisions client confirmées" ci-dessus)
+- ✅ Contenus fictifs OK pour Phase 3 (remplacement back-office après lancement)
+- 🔲 Push final branch `claude/clever-archimedes-h8OmL` → PR vers main
 
 ### 🔲 Phase 3 — Intégration Shopify (dans l'ordre)
 ```
