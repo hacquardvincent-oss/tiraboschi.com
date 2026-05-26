@@ -69,7 +69,7 @@ html { scroll-behavior: smooth; }
   --tira-border:   #e8e8e8;
   --tira-ease:     cubic-bezier(0.16, 1, 0.3, 1);
   --tira-duration: 0.9s;
-  --header-h:      56px;
+  --header-h:      64px;
   --search-h:      44px;
 }
 
@@ -137,7 +137,7 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
   position: fixed; top: 0; left: 0; right: 0; z-index: 200;
   height: var(--header-h);
   border-bottom: 1px solid transparent;
-  transition: background .4s ease, border-color .4s ease, transform .4s var(--tira-ease);
+  transition: background .4s ease, border-color .4s ease, transform .35s var(--tira-ease);
 }
 .hdr.solid {
   background: var(--tira-white);
@@ -145,7 +145,7 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
 }
 .hdr.hidden { transform: translateY(-100%); }
 
-/* Desktop */
+/* ── Desktop layout : [nav gauche] · [logo centré] · [icons droite] ── */
 .hdr__d {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
@@ -156,86 +156,122 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
 }
 .hdr.solid .hdr__d { color: var(--tira-black); }
 
-.hdr__nav { display: flex; gap: 24px; }
+/* Navigation gauche — TOUS les liens ici dont La Maison */
+.hdr__nav {
+  display: flex; align-items: center; gap: 28px;
+}
 .hdr__nav a {
   font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
-  opacity: .75; transition: opacity .2s;
+  opacity: .75; transition: opacity .2s; white-space: nowrap;
 }
 .hdr__nav a:hover { opacity: 1; }
-
-.hdr__logo {
-  font-size: 12px; text-transform: uppercase; letter-spacing: .18em;
-  white-space: nowrap; text-align: center;
+.hdr__nav .nav-sep {
+  width: 1px; height: 12px;
+  background: currentColor; opacity: .2;
 }
 
+/* Logo centré */
+.hdr__logo {
+  text-align: center; white-space: nowrap;
+}
+/* Image logo (Shopify) — display: block quand src renseignée */
+.hdr__logo-img {
+  display: block; height: 22px; width: auto; margin: 0 auto;
+  /* Prototype : src="" → logo texte affiché en fallback */
+}
+/* Prototype fallback texte (masqué si image chargée) */
+.hdr__logo-text {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 2px; line-height: 1;
+}
+.hdr__logo-name {
+  font-size: 13px; text-transform: uppercase;
+  letter-spacing: .22em; font-weight: 400;
+}
+.hdr__logo-sub {
+  font-size: 7.5px; text-transform: uppercase;
+  letter-spacing: .18em; opacity: .65;
+}
+
+/* Icons droite */
 .hdr__icons {
   display: flex; align-items: center; justify-content: flex-end; gap: 20px;
 }
-.hdr__icons a, .hdr__icons button {
+.hdr__icons button {
   background: none; border: none; cursor: none;
-  font-family: inherit; font-size: 11px;
-  text-transform: uppercase; letter-spacing: .1em;
-  display: flex; align-items: center; gap: 5px;
+  display: flex; align-items: center;
   opacity: .8; transition: opacity .2s; color: inherit;
 }
-.hdr__icons a:hover, .hdr__icons button:hover { opacity: 1; }
+.hdr__icons button:hover { opacity: 1; }
 .hdr__icons svg {
   width: 20px; height: 20px; fill: none;
-  stroke: currentColor; stroke-width: 1.2;
-  stroke-linecap: round; stroke-linejoin: round;
+  stroke: currentColor; stroke-width: 1.5;
+  stroke-linecap: square; stroke-linejoin: miter;
 }
 
-/* Mobile */
+/* ── Mobile layout : [logo gauche] · [icons droite] · [menu] ── */
 .hdr__m {
   display: none;
   grid-template-columns: 1fr auto auto auto auto;
-  align-items: center; gap: 16px;
+  align-items: center; gap: 18px;
   height: 100%; padding: 0 20px;
   color: var(--tira-white);
   transition: color .4s ease;
 }
 .hdr.solid .hdr__m { color: var(--tira-black); }
-.hdr__m .logo {
-  font-size: 10px; text-transform: uppercase; letter-spacing: .16em;
-  line-height: 1.2;
-}
+
+/* Logo mobile — image Shopify + fallback texte */
+.hdr__m-logo { display: flex; align-items: center; }
+.hdr__m-logo .hdr__logo-img  { height: 18px; }
+.hdr__m-logo .hdr__logo-text { align-items: flex-start; }
+.hdr__m-logo .hdr__logo-name { font-size: 10.5px; letter-spacing: .18em; }
+.hdr__m-logo .hdr__logo-sub  { font-size: 6.5px; letter-spacing: .15em; }
+
 .hdr__m svg {
   width: 22px; height: 22px; fill: none;
-  stroke: currentColor; stroke-width: 1.2;
-  stroke-linecap: round; stroke-linejoin: round;
+  stroke: currentColor; stroke-width: 1.5;
+  stroke-linecap: square; stroke-linejoin: miter;
 }
-.hdr__m button { background: none; border: none; cursor: pointer; display: flex; color: inherit; }
+.hdr__m button {
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; color: inherit; padding: 2px;
+}
 
 @media (max-width: 900px) {
   .hdr__d { display: none; }
   .hdr__m { display: grid; }
 }
 
-/* Bande search sous header */
+/* ── Bande search — visible desktop ET mobile (sous header) ── */
 .hdr-search {
   position: fixed; top: var(--header-h); left: 0; right: 0; z-index: 199;
   display: flex; align-items: center;
   height: var(--search-h); padding: 0 40px;
   background: transparent; border-bottom: 1px solid transparent;
   transition: background .4s, border-color .4s;
+  pointer-events: none; /* invisible quand transparent */
 }
 .hdr-search.solid {
   background: var(--tira-white);
   border-color: var(--tira-border);
+  pointer-events: auto;
 }
 .hdr-search input {
   flex: 1; border: none; background: none; outline: none;
   font-family: inherit; font-size: 11px;
   text-transform: uppercase; letter-spacing: .1em; color: var(--tira-black);
+  border-bottom: 1px solid transparent;
+  transition: border-color .2s;
+  padding-bottom: 2px;
 }
+.hdr-search input:focus { border-color: var(--tira-black); }
 .hdr-search input::placeholder { opacity: .35; }
 .hdr-search svg {
-  width: 17px; height: 17px; fill: none;
-  stroke: var(--tira-black); stroke-width: 1.2; opacity: .45;
+  width: 16px; height: 16px; fill: none;
+  stroke: var(--tira-black); stroke-width: 1.2; opacity: .4;
 }
 @media (max-width: 900px) {
-  /* Sur mobile : la search est cachée par défaut, accessible via l'icône header */
-  .hdr-search { display: none; }
+  .hdr-search { padding: 0 20px; }
 }
 
 /* ════════════════════════════════════════════
@@ -758,6 +794,54 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
 }
 [data-words].visible span { opacity: 1; transform: none; }
 
+/* ════════════════════════════════════════════
+   MOBILE NAV DRAWER
+════════════════════════════════════════════ */
+.mobile-nav {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(10,10,10,.5);
+  opacity: 0; pointer-events: none;
+  transition: opacity .35s var(--tira-ease);
+}
+.mobile-nav.open {
+  opacity: 1; pointer-events: auto;
+}
+.mobile-nav__inner {
+  position: absolute; top: 0; right: 0; bottom: 0;
+  width: min(320px, 88vw);
+  background: var(--tira-white);
+  padding: 28px 32px 40px;
+  transform: translateX(100%);
+  transition: transform .4s var(--tira-ease);
+  overflow-y: auto;
+}
+.mobile-nav.open .mobile-nav__inner { transform: none; }
+
+.mobile-nav__close {
+  display: flex; margin-left: auto; margin-bottom: 40px;
+  background: none; border: none; cursor: pointer;
+  opacity: .5; transition: opacity .2s;
+}
+.mobile-nav__close:hover { opacity: 1; }
+.mobile-nav__close svg { width: 20px; height: 20px; stroke-width: 1.5; }
+
+.mobile-nav ul { list-style: none; padding: 0; margin: 0; }
+.mobile-nav li a {
+  display: block;
+  font-size: 13px; text-transform: uppercase; letter-spacing: .1em;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--tira-border);
+  transition: opacity .2s;
+  opacity: .75;
+}
+.mobile-nav li a:hover { opacity: 1; }
+.mobile-nav__sep {
+  height: 1px; background: transparent;
+  margin: 8px 0;
+}
+/* Bloquer scroll body quand nav ouverte */
+body.nav-open { overflow: hidden; }
+
 </style>
 </head>
 <body>
@@ -771,57 +855,83 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
 ════════════════════════════════════════════ -->
 <header class="hdr" id="hdr" role="banner">
 
-  <!-- Desktop : [nav gauche] · [logo centre] · [icons droite] -->
+  <!-- ═ DESKTOP : [nav gauche] · [logo centré] · [icons droite] ═ -->
   <div class="hdr__d">
-    <nav class="hdr__nav" aria-label="Collections">
-      <a href="#">Sacs</a>
-      <a href="#">Petite Maroquinerie</a>
-      <a href="#">Iconiques</a>
-      <a href="#">Sur Mesure</a>
+
+    <!-- Nav gauche : collections + La Maison -->
+    <nav class="hdr__nav" aria-label="Navigation principale">
+      <a href="/collections/sacs">Sacs</a>
+      <a href="/collections/petite-maroquinerie">Petite Maroquinerie</a>
+      <a href="/collections/iconiques">Iconiques</a>
+      <a href="/collections/sur-mesure-exotiques">Sur Mesure</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/pages/histoire">La Maison</a>
     </nav>
 
+    <!-- Logo centré
+         SHOPIFY : remplacer par
+         <img src="{{ settings.logo | img_url: '220x' }}" alt="{{ shop.name }}" height="22">
+         et logo_inverse pour hero transparent -->
     <div class="hdr__logo">
-      <a href="/" aria-label="TIRABOSCHI Paris — accueil">TIRABOSCHI · Since 1904</a>
+      <a href="/" aria-label="TIRABOSCHI Paris — accueil">
+        <span class="hdr__logo-text">
+          <span class="hdr__logo-name">Tiraboschi</span>
+          <span class="hdr__logo-sub">Paris · Since 1904</span>
+        </span>
+      </a>
     </div>
 
+    <!-- Icons droite : search · account · bag -->
     <div class="hdr__icons">
-      <a href="#">La Maison</a>
-      <button aria-label="Ouvrir la recherche">
+      <button aria-label="Ouvrir la recherche" id="search-toggle-d">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
       </button>
       <button aria-label="Mon compte">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.5" r="3.5"/><path d="M3.5 20c0-4.5 3.8-7 8.5-7s8.5 2.5 8.5 7"/></svg>
       </button>
-      <!-- ← Picto panier forme V TIRABOSCHI — récupérer le vrai SVG depuis snippets/icon-bag-tiraboschi.liquid -->
-      <button aria-label="Panier — 0 article">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M4.5 9.5h15l-1.8 12H6.3z"/>
-          <path d="M9 9.5V7.5a3 3 0 0 1 6 0v2"/>
-          <path d="M9 15l3 3 3-3"/>
+      <!-- Picto panier TIRABOSCHI — rectangle + anse en V (extrait de snippets/icon-bag-tiraboschi.liquid) -->
+      <button aria-label="Panier — 0 article" id="bag-btn-d">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none"
+             stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">
+          <rect x="2.5" y="9.5" width="19" height="12"/>
+          <path d="M7.5 9.5 L12 3.5 L16.5 9.5"/>
         </svg>
       </button>
     </div>
   </div>
 
-  <!-- Mobile : logo gauche · search · account · bag · menu -->
+  <!-- ═ MOBILE : [logo gauche] · [search · account · bag · menu] ═ -->
   <div class="hdr__m" aria-label="Navigation mobile">
-    <span class="logo">
-      <a href="/" aria-label="TIRABOSCHI Paris — accueil">TIRABOSCHI<br>· Since 1904</a>
-    </span>
-    <button aria-label="Recherche">
+
+    <!-- Logo gauche -->
+    <a href="/" class="hdr__m-logo" aria-label="TIRABOSCHI Paris — accueil">
+      <span class="hdr__logo-text">
+        <span class="hdr__logo-name">Tiraboschi</span>
+        <span class="hdr__logo-sub">Paris · Since 1904</span>
+      </span>
+    </a>
+
+    <!-- Icône search -->
+    <button aria-label="Recherche" id="search-toggle-m">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
     </button>
+
+    <!-- Icône compte -->
     <button aria-label="Mon compte">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/></svg>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.5" r="3.5"/><path d="M3.5 20c0-4.5 3.8-7 8.5-7s8.5 2.5 8.5 7"/></svg>
     </button>
-    <button aria-label="Panier">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M4.5 9.5h15l-1.8 12H6.3z"/>
-        <path d="M9 9.5V7.5a3 3 0 0 1 6 0v2"/>
-        <path d="M9 15l3 3 3-3"/>
+
+    <!-- Picto panier forme V TIRABOSCHI -->
+    <button aria-label="Panier — 0 article" id="bag-btn-m">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none"
+           stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">
+        <rect x="2.5" y="9.5" width="19" height="12"/>
+        <path d="M7.5 9.5 L12 3.5 L16.5 9.5"/>
       </svg>
     </button>
-    <button aria-label="Menu principal" aria-expanded="false">
+
+    <!-- Menu hamburger -->
+    <button aria-label="Menu principal" aria-expanded="false" id="mobile-menu-btn">
       <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
     </button>
   </div>
@@ -1353,23 +1463,37 @@ if (window.matchMedia('(hover: hover)').matches) {
 /* ── Header : transparent → opaque, sticky directionnel ── */
 const hdr    = document.getElementById('hdr');
 const search = document.getElementById('hdr-search');
-let lastScrollY = 0, ticking = false;
+let lastScrollY = window.scrollY;
+let ticking    = false;
+let lastDir    = 'up';
 
 function updateHeader() {
-  const y = window.scrollY;
+  const y     = window.scrollY;
   const heroH = window.innerHeight;
 
   /* Transparent ↔ solid (seuil : 85% du hero) */
   const isSolid = y >= heroH * 0.85;
   hdr.classList.toggle('solid', isSolid);
-  search.classList.toggle('solid', isSolid);
+  if (search) search.classList.toggle('solid', isSolid);
   document.body.classList.toggle('on-dark', !isSolid);
 
-  /* Directionnel : cacher scroll down (>300px), remonter scroll up */
-  if (y > lastScrollY && y > 300) {
-    hdr.classList.add('hidden');
+  /* Directionnel : cacher quand scroll down >120px depuis haut
+     → minimum 80px de delta pour éviter micro-rebonds mobile */
+  const delta = y - lastScrollY;
+  if (y > 120) {
+    if (delta > 4 && lastDir !== 'down') {
+      hdr.classList.add('hidden');
+      if (search) search.style.top = '0px'; /* search remonte avec header */
+      lastDir = 'down';
+    } else if (delta < -4 && lastDir !== 'up') {
+      hdr.classList.remove('hidden');
+      if (search) search.style.top = '';
+      lastDir = 'up';
+    }
   } else {
     hdr.classList.remove('hidden');
+    if (search) search.style.top = '';
+    lastDir = 'up';
   }
 
   lastScrollY = y;
@@ -1380,7 +1504,8 @@ window.addEventListener('scroll', () => {
   if (!ticking) { requestAnimationFrame(updateHeader); ticking = true; }
 }, { passive: true });
 
-updateHeader(); /* init */
+/* Init immédiat au chargement */
+updateHeader();
 
 /* ── Word reveal ── */
 document.querySelectorAll('[data-words]').forEach(el => {
@@ -1468,10 +1593,63 @@ document.querySelectorAll('.footer__col h4').forEach(h4 => {
 const heroVideo = document.getElementById('hero-video');
 if (heroVideo) {
   heroVideo.addEventListener('playing', () => {
-    heroVideo.style.animation = 'none'; /* stoppe ken-burns une fois la vidéo chargée */
+    heroVideo.style.animation = 'none';
   });
 }
 
+/* ── Menu mobile (hamburger → drawer) ── */
+const mobileMenuBtn  = document.getElementById('mobile-menu-btn');
+const mobileMenuNav  = document.getElementById('mobile-nav');
+function closeMobileMenu() {
+  if (!mobileMenuBtn || !mobileMenuNav) return;
+  mobileMenuBtn.setAttribute('aria-expanded', 'false');
+  mobileMenuNav.classList.remove('open');
+  mobileMenuNav.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('nav-open');
+}
+if (mobileMenuBtn && mobileMenuNav) {
+  mobileMenuBtn.addEventListener('click', () => {
+    const open = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
+    if (!open) {
+      mobileMenuBtn.setAttribute('aria-expanded', 'true');
+      mobileMenuNav.classList.add('open');
+      mobileMenuNav.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('nav-open');
+    } else { closeMobileMenu(); }
+  });
+  mobileMenuNav.addEventListener('click', e => {
+    if (e.target === mobileMenuNav) closeMobileMenu();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeMobileMenu();
+  });
+  const closeBtn = document.getElementById('mobile-nav-close');
+  if (closeBtn) closeBtn.addEventListener('click', closeMobileMenu);
+}
+
 </script>
+
+<!-- ═ MOBILE NAV DRAWER ═ -->
+<nav class="mobile-nav" id="mobile-nav" aria-label="Menu mobile" aria-hidden="true">
+  <div class="mobile-nav__inner">
+    <button class="mobile-nav__close" id="mobile-nav-close" aria-label="Fermer le menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+    </button>
+    <ul>
+      <li><a href="/collections/sacs">Sacs</a></li>
+      <li><a href="/collections/petite-maroquinerie">Petite Maroquinerie</a></li>
+      <li><a href="/collections/iconiques">Iconiques</a></li>
+      <li><a href="/collections/sur-mesure-exotiques">Sur Mesure</a></li>
+      <li class="mobile-nav__sep"></li>
+      <li><a href="/pages/histoire">Histoire</a></li>
+      <li><a href="/pages/savoir-faire">Savoir-Faire</a></li>
+      <li><a href="/pages/matieres-cuirs">Matières</a></li>
+      <li><a href="/pages/sur-mesure">Sur Mesure</a></li>
+      <li class="mobile-nav__sep"></li>
+      <li><a href="/blogs/latelier">L'Atelier</a></li>
+    </ul>
+  </div>
+</nav>
+
 </body>
 </html>
