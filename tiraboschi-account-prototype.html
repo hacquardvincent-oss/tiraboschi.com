@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mon Compte — TIRABOSCHI Paris</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap&subset=latin" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --tira-black: #0a0a0a; --tira-white: #ffffff; --tira-grey: #f7f5f2; --tira-border: #e8e8e8; --tira-ease: cubic-bezier(0.16, 1, 0.3, 1); --header-h: 64px; --search-h: 44px; }
+body { font-family: 'Playfair Display', Georgia, serif; font-weight: 400; background: var(--tira-white); color: var(--tira-black); overflow-x: hidden; cursor: none; }
+@media (hover: none) { body { cursor: auto; } }
+img { display: block; object-fit: cover; }
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 2px solid var(--tira-black); outline-offset: 3px; }
+
+.cur-dot, .cur-ring { position: fixed; border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); }
+.cur-dot { width: 6px; height: 6px; background: var(--tira-black); transition: width .3s var(--tira-ease), height .3s var(--tira-ease); }
+.cur-ring { width: 30px; height: 30px; border: 1px solid rgba(10,10,10,.38); transition: opacity .25s; }
+body.on-hover .cur-dot { width: 44px; height: 44px; background: rgba(10,10,10,.06); }
+body.on-hover .cur-ring { opacity: 0; }
+@media (hover: none) { .cur-dot, .cur-ring { display: none; } }
+
+/* Header */
+.hdr { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: var(--header-h); background: var(--tira-white); border-bottom: 1px solid var(--tira-border); transition: transform .35s var(--tira-ease); }
+.hdr.hidden { transform: translateY(-100%); }
+.hdr__d { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 40px; height: 100%; padding: 0 40px; }
+.hdr__logo a { display: block; line-height: 0; }
+.hdr__logo-img { display: block; height: 28px; width: auto; }
+.hdr__nav { display: flex; align-items: center; gap: 28px; }
+.hdr__nav a { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; opacity: .55; transition: opacity .2s; }
+.hdr__nav a:hover { opacity: 1; }
+.hdr__nav .nav-sep { width: 1px; height: 11px; background: currentColor; opacity: .2; }
+.hdr__icons { display: flex; align-items: center; gap: 18px; }
+.hdr__icons button { background: none; border: none; cursor: none; display: flex; align-items: center; opacity: .65; transition: opacity .2s; }
+.hdr__icons button:hover { opacity: 1; }
+.hdr__icons svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: square; stroke-linejoin: miter; }
+.tira-bag-icon { display: block; width: 22px; height: 22px; object-fit: contain; }
+.hdr__m { display: none; grid-template-columns: 1fr auto auto auto; align-items: center; gap: 14px; height: 100%; padding: 0 20px; }
+.hdr__m-logo { display: block; line-height: 0; }
+.hdr__m-logo .hdr__logo-img { height: 24px; }
+.hdr__m svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: square; stroke-linejoin: miter; }
+.hdr__m .tira-bag-icon { width: 24px; height: 24px; }
+.hdr__m button { background: none; border: none; cursor: pointer; display: flex; align-items: center; padding: 2px; }
+@media (max-width: 900px) { .hdr__d { display: none; } .hdr__m { display: grid; } }
+
+/* Search */
+.hdr-search { position: fixed; top: var(--header-h); left: 0; right: 0; z-index: 199; display: flex; align-items: center; justify-content: center; height: var(--search-h); padding: 0 40px; background: var(--tira-white); border-bottom: 1px solid var(--tira-border); transition: top .35s var(--tira-ease); }
+.hdr-search.sticky-mode { top: 0; }
+.hdr-search__field { display: flex; align-items: center; gap: 8px; width: 100%; max-width: 560px; }
+.hdr-search input { flex: 1; border: none; background: none; outline: none; font-family: inherit; font-size: 11px; text-transform: uppercase; letter-spacing: .12em; border-bottom: 1px solid var(--tira-border); padding-bottom: 3px; }
+.hdr-search input::placeholder { opacity: .35; }
+.hdr-search__icon svg { width: 15px; height: 15px; fill: none; stroke: var(--tira-black); stroke-width: 1.2; opacity: .4; }
+.hdr-search__actions { display: flex; align-items: center; gap: 20px; position: absolute; right: 40px; top: 50%; transform: translateY(-50%); opacity: 0; pointer-events: none; transition: opacity .3s; }
+.hdr-search.sticky-mode .hdr-search__actions { opacity: 1; pointer-events: auto; }
+.hdr-search__actions button { background: none; border: none; cursor: pointer; display: flex; align-items: center; opacity: .65; }
+.hdr-search__actions svg { width: 20px; height: 20px; fill: none; stroke: var(--tira-black); stroke-width: 1.5; stroke-linecap: square; stroke-linejoin: miter; }
+@media (max-width: 900px) { .hdr-search { padding: 0 20px; } .hdr-search__actions { right: 20px; } }
+
+/* ════════════════════════════════════
+   LAYOUT COMPTE CLIENT
+════════════════════════════════════ */
+.account-wrap {
+  padding-top: calc(var(--header-h) + var(--search-h));
+  min-height: 100vh;
+  display: grid; grid-template-columns: 260px 1fr;
+}
+@media (max-width: 900px) { .account-wrap { grid-template-columns: 1fr; } }
+
+/* ── Sidebar ── */
+.account-sidebar {
+  border-right: 1px solid var(--tira-border);
+  padding: 48px 32px;
+  position: sticky; top: calc(var(--header-h) + var(--search-h));
+  height: calc(100vh - var(--header-h) - var(--search-h));
+  overflow-y: auto;
+}
+.account-sidebar__avatar {
+  width: 52px; height: 52px;
+  background: var(--tira-grey);
+  border: 1px solid var(--tira-border);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 16px;
+}
+.account-sidebar__avatar span { font-size: 18px; opacity: .5; font-style: italic; }
+.account-sidebar__name { font-size: 14px; margin-bottom: 4px; }
+.account-sidebar__email { font-size: 10px; text-transform: uppercase; letter-spacing: .1em; opacity: .35; margin-bottom: 8px; }
+
+/* Badge La Société */
+.societe-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 12px; border: 1px solid var(--tira-border);
+  margin-bottom: 36px; margin-top: 4px;
+}
+.societe-badge__dot { width: 6px; height: 6px; background: var(--tira-black); border-radius: 50%; }
+.societe-badge__label { font-size: 9px; text-transform: uppercase; letter-spacing: .14em; opacity: .6; }
+
+/* Navigation sidebar */
+.account-nav { list-style: none; display: flex; flex-direction: column; gap: 0; }
+.account-nav li a {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+  padding: 14px 0; border-bottom: 1px solid var(--tira-border);
+  opacity: .5; transition: opacity .2s;
+}
+.account-nav li a:hover { opacity: 1; }
+.account-nav li a.active { opacity: 1; }
+.account-nav li a svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.3; flex-shrink: 0; }
+.account-nav li:last-child a { border-bottom: none; }
+
+.account-logout {
+  display: block; width: 100%; background: none; border: none;
+  margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--tira-border);
+  font-family: inherit; font-size: 10px; text-transform: uppercase; letter-spacing: .12em;
+  opacity: .3; text-align: left; cursor: none; transition: opacity .2s;
+}
+.account-logout:hover { opacity: .6; }
+
+@media (max-width: 900px) { .account-sidebar { display: none; } }
+
+/* Mobile sidebar toggle */
+.account-mobile-tabs {
+  display: none;
+  overflow-x: auto; scrollbar-width: none;
+  border-bottom: 1px solid var(--tira-border);
+  background: var(--tira-white);
+  position: sticky; top: calc(var(--header-h) + var(--search-h)); z-index: 10;
+}
+.account-mobile-tabs::-webkit-scrollbar { display: none; }
+.account-mobile-tabs__inner { display: flex; white-space: nowrap; }
+.account-mobile-tabs__btn {
+  background: none; border: none; border-bottom: 2px solid transparent;
+  padding: 14px 20px; font-family: inherit; font-size: 10px;
+  text-transform: uppercase; letter-spacing: .1em; opacity: .45;
+  transition: opacity .2s, border-color .2s; cursor: pointer;
+}
+.account-mobile-tabs__btn.active { opacity: 1; border-bottom-color: var(--tira-black); }
+@media (max-width: 900px) { .account-mobile-tabs { display: block; } }
+
+/* ── Contenu principal ── */
+.account-content { padding: 48px; }
+@media (max-width: 900px) { .account-content { padding: 32px 20px; } }
+
+/* En-tête section */
+.account-section-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 32px; padding-bottom: 20px;
+  border-bottom: 1px solid var(--tira-border);
+}
+.account-section-head h1 { font-size: clamp(28px, 3.5vw, 40px); }
+.account-section-head a {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .12em;
+  text-decoration: underline; text-underline-offset: 4px;
+  opacity: .4; transition: opacity .2s;
+}
+.account-section-head a:hover { opacity: .8; }
+
+/* ── Bloc La Société ── */
+.societe-block {
+  background: var(--tira-black); color: var(--tira-white);
+  padding: 36px 40px; margin-bottom: 40px;
+  display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center;
+}
+.societe-block__label { font-size: 9px; text-transform: uppercase; letter-spacing: .18em; opacity: .35; margin-bottom: 10px; }
+.societe-block__cercle { font-size: 22px; margin-bottom: 10px; }
+.societe-block__desc { font-size: 12px; opacity: .5; line-height: 1.7; max-width: 380px; }
+.societe-block__link {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .12em;
+  text-decoration: underline; text-underline-offset: 4px; opacity: .5;
+  transition: opacity .2s; white-space: nowrap;
+}
+.societe-block__link:hover { opacity: 1; }
+@media (max-width: 768px) { .societe-block { grid-template-columns: 1fr; padding: 28px 24px; } }
+
+/* ── Commandes ── */
+.orders-list { display: flex; flex-direction: column; gap: 0; }
+.order-item {
+  display: grid; grid-template-columns: auto 1fr auto auto;
+  align-items: center; gap: 24px;
+  padding: 24px 0; border-bottom: 1px solid var(--tira-border);
+}
+.order-item:last-child { border-bottom: none; }
+
+.order-item__img {
+  width: 72px; height: 96px; background: var(--tira-grey); flex-shrink: 0; overflow: hidden;
+}
+.order-item__img img { width: 100%; height: 100%; }
+
+.order-item__info { display: flex; flex-direction: column; gap: 4px; }
+.order-item__ref { font-size: 9px; text-transform: uppercase; letter-spacing: .14em; opacity: .3; }
+.order-item__name { font-size: 13px; }
+.order-item__date { font-size: 10px; opacity: .4; }
+
+.order-item__status {
+  font-size: 9px; text-transform: uppercase; letter-spacing: .12em;
+  padding: 5px 12px; border: 1px solid var(--tira-border); white-space: nowrap;
+}
+.order-item__status.status--delivered { border-color: #2d7a4f; color: #2d7a4f; }
+.order-item__status.status--transit { border-color: #c4874b; color: #c4874b; }
+.order-item__status.status--pending { opacity: .4; }
+
+.order-item__actions { display: flex; flex-direction: column; gap: 8px; text-align: right; }
+.order-item__actions a {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .1em;
+  opacity: .4; transition: opacity .2s; white-space: nowrap;
+}
+.order-item__actions a:hover { opacity: 1; }
+
+@media (max-width: 768px) {
+  .order-item { grid-template-columns: 56px 1fr; gap: 16px; }
+  .order-item__img { width: 56px; height: 75px; }
+  .order-item__status { display: none; }
+  .order-item__actions { grid-column: 2; flex-direction: row; }
+}
+
+/* Commandes vides */
+.orders-empty {
+  text-align: center; padding: 64px 0;
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+}
+.orders-empty svg { width: 40px; height: 40px; fill: none; stroke: currentColor; stroke-width: 1; opacity: .2; }
+.orders-empty__title { font-size: 18px; opacity: .6; }
+.orders-empty__text { font-size: 12px; opacity: .35; }
+.orders-empty__cta { font-size: 10px; text-transform: uppercase; letter-spacing: .14em; text-decoration: underline; text-underline-offset: 4px; opacity: .5; transition: opacity .2s; }
+.orders-empty__cta:hover { opacity: 1; }
+
+/* ── Adresses ── */
+.addresses-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.address-card {
+  border: 1px solid var(--tira-border); padding: 24px;
+  position: relative;
+}
+.address-card.is-default { border-color: var(--tira-black); }
+.address-card__default {
+  position: absolute; top: 12px; right: 12px;
+  font-size: 8px; text-transform: uppercase; letter-spacing: .12em;
+  opacity: .4;
+}
+.address-card p { font-size: 13px; line-height: 1.8; opacity: .65; }
+.address-card__actions { margin-top: 16px; display: flex; gap: 16px; }
+.address-card__actions button {
+  background: none; border: none; font-family: inherit; font-size: 10px;
+  text-transform: uppercase; letter-spacing: .1em; cursor: none;
+  text-decoration: underline; text-underline-offset: 3px; opacity: .4; transition: opacity .2s;
+}
+.address-card__actions button:hover { opacity: 1; }
+.address-add {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  border: 1px dashed var(--tira-border); padding: 32px; cursor: none;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .1em;
+  opacity: .35; transition: opacity .2s; background: none;
+  width: 100%;
+}
+.address-add:hover { opacity: .7; }
+.address-add svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+
+/* ── Profil ── */
+.profile-form { display: grid; grid-template-columns: 1fr 1fr; gap: 0; max-width: 600px; }
+.profile-field { padding: 0 0 28px; }
+.profile-field:nth-child(odd) { padding-right: 24px; }
+.profile-field label {
+  display: block; font-size: 9px; text-transform: uppercase; letter-spacing: .15em;
+  opacity: .38; margin-bottom: 8px;
+}
+.profile-field input {
+  width: 100%; border: none; border-bottom: 1px solid var(--tira-border);
+  padding: 10px 0; background: none; outline: none;
+  font-family: inherit; font-size: 13px; transition: border-color .2s;
+}
+.profile-field input:focus { border-color: var(--tira-black); }
+.profile-field--full { grid-column: 1 / -1; padding-right: 0; }
+.profile-save {
+  background: none; border: none; font-family: inherit;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .14em;
+  text-decoration: underline; text-underline-offset: 4px;
+  cursor: none; opacity: .6; transition: opacity .2s; margin-top: 8px;
+}
+.profile-save:hover { opacity: 1; }
+@media (max-width: 768px) { .profile-form { grid-template-columns: 1fr; } .profile-field:nth-child(odd) { padding-right: 0; } }
+
+/* Tabs switching — hidden sections */
+.account-panel { display: none; }
+.account-panel.active { display: block; }
+
+/* Mobile nav */
+.mobile-nav { position: fixed; inset: 0; z-index: 300; background: rgba(10,10,10,.5); opacity: 0; pointer-events: none; transition: opacity .35s var(--tira-ease); }
+.mobile-nav.open { opacity: 1; pointer-events: auto; }
+.mobile-nav__inner { position: absolute; top: 0; right: 0; bottom: 0; width: min(320px,88vw); background: var(--tira-white); padding: 28px 32px 40px; transform: translateX(100%); transition: transform .4s var(--tira-ease); overflow-y: auto; }
+.mobile-nav.open .mobile-nav__inner { transform: none; }
+.mobile-nav__close { display: flex; margin-left: auto; margin-bottom: 40px; background: none; border: none; cursor: pointer; opacity: .5; }
+.mobile-nav__close svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+.mobile-nav ul { list-style: none; }
+.mobile-nav li a { display: block; font-size: 13px; text-transform: uppercase; letter-spacing: .1em; padding: 14px 0; border-bottom: 1px solid var(--tira-border); opacity: .75; transition: opacity .2s; }
+body.nav-open { overflow: hidden; }
+
+/* Footer minimal */
+.footer { background: var(--tira-black); color: var(--tira-white); padding: 80px 48px 40px; }
+.footer__top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; padding-bottom: 64px; border-bottom: 1px solid rgba(255,255,255,.08); }
+.footer__brand-logo { font-size: 12px; text-transform: uppercase; letter-spacing: .2em; margin-bottom: 20px; }
+.footer__brand-text { font-size: 13px; opacity: .4; line-height: 1.75; max-width: 220px; }
+.footer__col h4 { font-size: 9px; text-transform: uppercase; letter-spacing: .16em; opacity: .3; margin-bottom: 22px; }
+.footer__col ul { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+.footer__col ul a { font-size: 13px; opacity: .6; transition: opacity .2s; }
+.footer__col ul a:hover { opacity: 1; }
+.footer__bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 32px; }
+.footer__copy { font-size: 10px; opacity: .22; text-transform: uppercase; letter-spacing: .1em; }
+.footer__policies { display: flex; gap: 24px; }
+.footer__policies a { font-size: 10px; opacity: .22; text-transform: uppercase; letter-spacing: .1em; transition: opacity .2s; }
+.footer__policies a:hover { opacity: .6; }
+@media (max-width: 900px) {
+  .footer { padding: 60px 24px 32px; } .footer__top { grid-template-columns: 1fr; gap: 0; }
+  .footer__col { border-top: 1px solid rgba(255,255,255,.08); }
+  .footer__col h4 { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; margin-bottom: 0; cursor: pointer; }
+  .footer__col h4::after { content: '+'; font-size: 16px; opacity: .4; transition: transform .3s; }
+  .footer__col.open h4::after { transform: rotate(45deg); }
+  .footer__col ul { max-height: 0; overflow: hidden; transition: max-height .4s var(--tira-ease); }
+  .footer__col.open ul { max-height: 320px; padding-bottom: 20px; }
+  .footer__bottom { flex-direction: column; gap: 16px; text-align: center; }
+  .footer__policies { flex-wrap: wrap; justify-content: center; gap: 16px; }
+}
+</style>
+</head>
+<body>
+<div class="cur-dot" id="cur-dot" aria-hidden="true"></div>
+<div class="cur-ring" id="cur-ring" aria-hidden="true"></div>
+
+<header class="hdr" id="hdr" role="banner">
+  <div class="hdr__d">
+    <div class="hdr__logo"><a href="/"><img class="hdr__logo-img" src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738" alt="TIRABOSCHI Paris" height="28"></a></div>
+    <nav class="hdr__nav"><a href="/collections/sacs">Sacs</a><a href="/collections/petite-maroquinerie">Petite Maroquinerie</a><a href="/collections/iconiques">Iconiques</a><a href="/collections/sur-mesure-exotiques">Sur Mesure</a><span class="nav-sep" aria-hidden="true"></span><a href="/pages/histoire">La Maison</a></nav>
+    <div class="hdr__icons">
+      <button aria-label="Mon compte" style="opacity:1"><svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="3.5"/><path d="M3.5 20c0-4.5 3.8-7 8.5-7s8.5 2.5 8.5 7"/></svg></button>
+      <button aria-label="Rechercher"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg></button>
+      <button aria-label="Panier"><img class="tira-bag-icon" src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050" alt="" width="22" height="22"></button>
+    </div>
+  </div>
+  <div class="hdr__m">
+    <a href="/" class="hdr__m-logo"><img class="hdr__logo-img" src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738" alt="TIRABOSCHI Paris" height="24"></a>
+    <button aria-label="Panier"><img class="tira-bag-icon" src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050" alt="" width="24" height="24"></button>
+    <button aria-label="Mon compte"><svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="3.5"/><path d="M3.5 20c0-4.5 3.8-7 8.5-7s8.5 2.5 8.5 7"/></svg></button>
+    <button aria-label="Menu" id="mobile-menu-btn"><svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+  </div>
+</header>
+
+<div class="hdr-search" id="hdr-search">
+  <div class="hdr-search__field">
+    <input type="search" placeholder="Demander à Tiraboschi" aria-label="Recherche">
+    <div class="hdr-search__icon"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg></div>
+  </div>
+  <div class="hdr-search__actions">
+    <button aria-label="Panier"><img class="tira-bag-icon" src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050" alt="" width="20" height="20"></button>
+  </div>
+</div>
+
+<!-- Mobile tabs -->
+<div class="account-mobile-tabs" id="mobile-tabs" role="tablist">
+  <div class="account-mobile-tabs__inner">
+    <button class="account-mobile-tabs__btn active" data-tab="orders" role="tab" aria-selected="true">Commandes</button>
+    <button class="account-mobile-tabs__btn" data-tab="societe" role="tab">La Société</button>
+    <button class="account-mobile-tabs__btn" data-tab="addresses" role="tab">Adresses</button>
+    <button class="account-mobile-tabs__btn" data-tab="profile" role="tab">Profil</button>
+  </div>
+</div>
+
+<!-- ════════ LAYOUT ════════ -->
+<div class="account-wrap">
+
+  <!-- ── Sidebar ── -->
+  <aside class="account-sidebar">
+    <div class="account-sidebar__avatar"><span>SV</span></div>
+    <p class="account-sidebar__name">Sophie Villeneuve</p>
+    <p class="account-sidebar__email">sophie.v@gmail.com</p>
+    <div class="societe-badge">
+      <span class="societe-badge__dot"></span>
+      <span class="societe-badge__label">La Société · Cercle I Membre</span>
+    </div>
+    <nav aria-label="Navigation compte">
+      <ul class="account-nav">
+        <li><a href="#" class="active" data-tab="orders">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          Mes commandes
+        </a></li>
+        <li><a href="#" data-tab="societe">
+          <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+          La Société
+        </a></li>
+        <li><a href="#" data-tab="addresses">
+          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Mes adresses
+        </a></li>
+        <li><a href="#" data-tab="profile">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="4.5"/><path d="M2.5 21c0-5 4.2-8 9.5-8s9.5 3 9.5 8"/></svg>
+          Mon profil
+        </a></li>
+      </ul>
+    </nav>
+    <button class="account-logout">Se déconnecter</button>
+  </aside>
+
+  <!-- ── Contenu ── -->
+  <main class="account-content">
+
+    <!-- Panel Commandes -->
+    <div class="account-panel active" id="panel-orders" role="tabpanel">
+      <div class="account-section-head">
+        <h1>Mes commandes</h1>
+        <a href="/collections/sacs">Continuer mes achats</a>
+      </div>
+
+      <!-- Bloc La Société -->
+      <div class="societe-block">
+        <div>
+          <p class="societe-block__label">La Société · Cercle I</p>
+          <p class="societe-block__cercle">Membre</p>
+          <p class="societe-block__desc">Livraison prioritaire, accès anticipé aux nouvelles collections, packaging cadeau sur chaque commande. Votre prochain achat vous ouvre les portes du Cercle II — Artisan.</p>
+        </div>
+        <a href="/pages/la-societe" class="societe-block__link">Vos privilèges →</a>
+      </div>
+
+      <!-- Liste commandes -->
+      <div class="orders-list" aria-label="Historique des commandes">
+
+        <div class="order-item">
+          <div class="order-item__img">
+            <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=200&q=75" alt="Sac Victoire" loading="lazy">
+          </div>
+          <div class="order-item__info">
+            <p class="order-item__ref">Commande #TBP-2025-0847</p>
+            <p class="order-item__name">Sac Victoire — Veau grainé noir</p>
+            <p class="order-item__date">12 novembre 2025 · 2 850 EUR</p>
+          </div>
+          <div class="order-item__status status--delivered">Livré</div>
+          <div class="order-item__actions">
+            <a href="#">Voir le détail</a>
+            <a href="#">Racheter</a>
+          </div>
+        </div>
+
+        <div class="order-item">
+          <div class="order-item__img">
+            <img src="https://images.unsplash.com/photo-1611923134239-b9be5816b23c?w=200&q=75" alt="Pochon" loading="lazy">
+          </div>
+          <div class="order-item__info">
+            <p class="order-item__ref">Commande #TBP-2025-0731</p>
+            <p class="order-item__name">Pochon — Cuir cognac</p>
+            <p class="order-item__date">3 septembre 2025 · 490 EUR</p>
+          </div>
+          <div class="order-item__status status--delivered">Livré</div>
+          <div class="order-item__actions">
+            <a href="#">Voir le détail</a>
+            <a href="#">Racheter</a>
+          </div>
+        </div>
+
+        <div class="order-item">
+          <div class="order-item__img" style="background:var(--tira-grey)"></div>
+          <div class="order-item__info">
+            <p class="order-item__ref">Commande #TBP-2025-0912</p>
+            <p class="order-item__name">Sac Rafael — Sur mesure caramel · En fabrication</p>
+            <p class="order-item__date">Commandé le 28 novembre 2025 · 3 200 EUR</p>
+          </div>
+          <div class="order-item__status status--transit">En atelier</div>
+          <div class="order-item__actions">
+            <a href="#">Voir le détail</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Panel La Société -->
+    <div class="account-panel" id="panel-societe" role="tabpanel">
+      <div class="account-section-head">
+        <h1>La Société</h1>
+        <a href="/pages/la-societe">En savoir plus</a>
+      </div>
+      <p style="font-size:14px;line-height:1.85;opacity:.6;max-width:560px;margin-bottom:40px">Vous êtes membre du <strong>Cercle I — Membre</strong> depuis votre premier achat. Votre prochain achat, ou un cumul de 5 000 EUR, vous ouvre l'accès au Cercle II — Artisan.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-bottom:40px">
+        <div style="padding:32px 28px;background:var(--tira-black);color:var(--tira-white)">
+          <p style="font-size:9px;text-transform:uppercase;letter-spacing:.18em;opacity:.35;margin-bottom:12px">Cercle I · Actif</p>
+          <p style="font-size:24px;font-style:italic;margin-bottom:16px">I</p>
+          <p style="font-size:13px;margin-bottom:20px">Membre</p>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:8px">
+            <li style="font-size:11px;opacity:.6">✓ Livraison prioritaire</li>
+            <li style="font-size:11px;opacity:.6">✓ Early access collections</li>
+            <li style="font-size:11px;opacity:.6">✓ Packaging cadeau</li>
+          </ul>
+        </div>
+        <div style="padding:32px 28px;background:var(--tira-grey);opacity:.6">
+          <p style="font-size:9px;text-transform:uppercase;letter-spacing:.18em;opacity:.35;margin-bottom:12px">Cercle II · À débloquer</p>
+          <p style="font-size:24px;font-style:italic;margin-bottom:16px">II</p>
+          <p style="font-size:13px;margin-bottom:20px">Artisan</p>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:8px">
+            <li style="font-size:11px;opacity:.5">Carte physique gravée</li>
+            <li style="font-size:11px;opacity:.5">Éditions limitées</li>
+            <li style="font-size:11px;opacity:.5">Visite atelier privée</li>
+          </ul>
+        </div>
+        <div style="padding:32px 28px;background:var(--tira-grey);opacity:.4">
+          <p style="font-size:9px;text-transform:uppercase;letter-spacing:.18em;opacity:.35;margin-bottom:12px">Cercle III · Sur invitation</p>
+          <p style="font-size:24px;font-style:italic;margin-bottom:16px">III</p>
+          <p style="font-size:13px;margin-bottom:20px">Maison</p>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:8px">
+            <li style="font-size:11px;opacity:.5">Relation directe fondatrice</li>
+            <li style="font-size:11px;opacity:.5">Pièce exclusive annuelle</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel Adresses -->
+    <div class="account-panel" id="panel-addresses" role="tabpanel">
+      <div class="account-section-head"><h1>Mes adresses</h1></div>
+      <div class="addresses-grid">
+        <div class="address-card is-default">
+          <p class="address-card__default">Adresse principale</p>
+          <p>Sophie Villeneuve<br>14 rue de Rivoli<br>75001 Paris<br>France</p>
+          <div class="address-card__actions">
+            <button>Modifier</button>
+            <button>Supprimer</button>
+          </div>
+        </div>
+        <div class="address-card">
+          <p>Sophie Villeneuve<br>8 allée des Roses<br>69006 Lyon<br>France</p>
+          <div class="address-card__actions">
+            <button>Modifier</button>
+            <button>Supprimer</button>
+            <button>Définir par défaut</button>
+          </div>
+        </div>
+      </div>
+      <button class="address-add">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Ajouter une adresse
+      </button>
+    </div>
+
+    <!-- Panel Profil -->
+    <div class="account-panel" id="panel-profile" role="tabpanel">
+      <div class="account-section-head"><h1>Mon profil</h1></div>
+      <form class="profile-form" novalidate>
+        <div class="profile-field">
+          <label for="first-name">Prénom</label>
+          <input type="text" id="first-name" value="Sophie" autocomplete="given-name">
+        </div>
+        <div class="profile-field">
+          <label for="last-name">Nom</label>
+          <input type="text" id="last-name" value="Villeneuve" autocomplete="family-name">
+        </div>
+        <div class="profile-field profile-field--full">
+          <label for="email">Email</label>
+          <input type="email" id="email" value="sophie.v@gmail.com" autocomplete="email">
+        </div>
+        <div class="profile-field">
+          <label for="phone">Téléphone</label>
+          <input type="tel" id="phone" value="+33 6 12 34 56 78" autocomplete="tel">
+        </div>
+        <div class="profile-field">
+          <label for="birthday">Date de naissance</label>
+          <input type="date" id="birthday" value="1988-03-15">
+        </div>
+        <div class="profile-field profile-field--full">
+          <label>Mot de passe</label>
+          <input type="password" placeholder="••••••••" autocomplete="new-password">
+        </div>
+        <div class="profile-field profile-field--full">
+          <button type="submit" class="profile-save">Enregistrer les modifications</button>
+        </div>
+      </form>
+    </div>
+
+  </main>
+</div>
+
+<!-- Footer -->
+<footer class="footer" role="contentinfo">
+  <div class="footer__top">
+    <div><p class="footer__brand-logo">TIRABOSCHI · Since 1904</p><p class="footer__brand-text">Maroquinerie de luxe française. Chaque pièce fabriquée à la main, par un seul artisan.</p></div>
+    <div class="footer__col"><h4>Collections</h4><ul><li><a href="#">Sacs</a></li><li><a href="#">Petite Maroquinerie</a></li><li><a href="#">Iconiques</a></li></ul></div>
+    <div class="footer__col"><h4>La Maison</h4><ul><li><a href="#">Histoire</a></li><li><a href="#">Savoir-Faire</a></li><li><a href="#">La Société</a></li></ul></div>
+    <div class="footer__col"><h4>Service</h4><ul><li><a href="#">Contact</a></li><li><a href="#">Livraison</a></li><li><a href="#">FAQ</a></li></ul></div>
+  </div>
+  <div class="footer__bottom">
+    <p class="footer__copy">© 2025 TIRABOSCHI Paris.</p>
+    <nav class="footer__policies"><a href="#">Mentions légales</a><a href="#">Confidentialité</a><a href="#">CGV</a></nav>
+  </div>
+</footer>
+
+<nav class="mobile-nav" id="mobile-nav" aria-hidden="true">
+  <div class="mobile-nav__inner">
+    <button class="mobile-nav__close" id="mobile-nav-close"><svg viewBox="0 0 24 24"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg></button>
+    <ul><li><a href="/collections/sacs">Sacs</a></li><li><a href="/collections/sur-mesure-exotiques">Sur Mesure</a></li><li><a href="/pages/histoire">La Maison</a></li></ul>
+  </div>
+</nav>
+
+<script>
+'use strict';
+const noMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (window.matchMedia('(hover: hover)').matches) {
+  const dot=document.getElementById('cur-dot'),ring=document.getElementById('cur-ring');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
+  if(!noMotion){(function fr(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(fr);})();}
+  document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('mouseenter',()=>document.body.classList.add('on-hover'));el.addEventListener('mouseleave',()=>document.body.classList.remove('on-hover'));});
+}
+
+// Header sticky
+const hdr=document.getElementById('hdr'),search=document.getElementById('hdr-search');
+let lastY=window.scrollY,ticking=false,lastDir='up';
+function updateHdr(){
+  const y=window.scrollY,d=y-lastY;
+  if(y>120){
+    if(d>4&&lastDir!=='down'){hdr.classList.add('hidden');if(search)search.classList.add('sticky-mode');lastDir='down';}
+    else if(d<-4&&lastDir!=='up'){hdr.classList.remove('hidden');if(search)search.classList.remove('sticky-mode');lastDir='up';}
+  } else {hdr.classList.remove('hidden');if(search)search.classList.remove('sticky-mode');lastDir='up';}
+  lastY=y;ticking=false;
+}
+window.addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(updateHdr);ticking=true;}},{passive:true});
+
+// Tabs switching
+function switchTab(tabId) {
+  // Sidebar nav
+  document.querySelectorAll('.account-nav a').forEach(a=>{a.classList.toggle('active',a.dataset.tab===tabId);});
+  // Mobile tabs
+  document.querySelectorAll('.account-mobile-tabs__btn').forEach(b=>{b.classList.toggle('active',b.dataset.tab===tabId);b.setAttribute('aria-selected',b.dataset.tab===tabId?'true':'false');});
+  // Panels
+  document.querySelectorAll('.account-panel').forEach(p=>{p.classList.toggle('active',p.id==='panel-'+tabId);});
+}
+
+document.querySelectorAll('[data-tab]').forEach(el=>{
+  el.addEventListener('click',e=>{e.preventDefault();switchTab(el.dataset.tab);});
+});
+
+// Mobile menu
+const mmBtn=document.getElementById('mobile-menu-btn'),mNav=document.getElementById('mobile-nav'),mnClose=document.getElementById('mobile-nav-close');
+mmBtn&&mmBtn.addEventListener('click',()=>{mNav.classList.add('open');mNav.setAttribute('aria-hidden','false');document.body.classList.add('nav-open');});
+[mnClose,mNav].forEach(el=>el&&el.addEventListener('click',e=>{if(e.target===mNav||e.target.closest('#mobile-nav-close')){mNav.classList.remove('open');mNav.setAttribute('aria-hidden','true');document.body.classList.remove('nav-open');}}));
+
+// Footer
+document.querySelectorAll('.footer__col h4').forEach(h=>h.addEventListener('click',()=>h.closest('.footer__col').classList.toggle('open')));
+</script>
+</body>
+</html>
