@@ -156,7 +156,7 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
 }
 .hdr.solid .hdr__d { color: var(--tira-black); }
 
-/* Navigation gauche — TOUS les liens ici dont La Maison */
+/* Navigation gauche — collections + La Maison */
 .hdr__nav {
   display: flex; align-items: center; gap: 28px;
 }
@@ -170,30 +170,23 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
   background: currentColor; opacity: .2;
 }
 
-/* Logo centré */
+/* Logo centré (desktop + mobile) */
 .hdr__logo {
   text-align: center; white-space: nowrap;
 }
-/* Image logo (Shopify) — display: block quand src renseignée */
-.hdr__logo-img {
-  display: block; height: 22px; width: auto; margin: 0 auto;
-  /* Prototype : src="" → logo texte affiché en fallback */
-}
-/* Prototype fallback texte (masqué si image chargée) */
-.hdr__logo-text {
-  display: flex; flex-direction: column; align-items: center;
-  gap: 2px; line-height: 1;
-}
+.hdr__logo a { display: inline-flex; flex-direction: column; align-items: center; gap: 3px; }
 .hdr__logo-name {
-  font-size: 13px; text-transform: uppercase;
-  letter-spacing: .22em; font-weight: 400;
+  display: block;
+  font-size: 15px; text-transform: uppercase;
+  letter-spacing: .25em; font-weight: 400; line-height: 1;
 }
 .hdr__logo-sub {
-  font-size: 7.5px; text-transform: uppercase;
-  letter-spacing: .18em; opacity: .65;
+  display: block;
+  font-size: 7px; text-transform: uppercase;
+  letter-spacing: .2em; opacity: .6; line-height: 1;
 }
 
-/* Icons droite */
+/* Icons droite (desktop) */
 .hdr__icons {
   display: flex; align-items: center; justify-content: flex-end; gap: 20px;
 }
@@ -209,23 +202,27 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
   stroke-linecap: square; stroke-linejoin: miter;
 }
 
-/* ── Mobile layout : [logo gauche] · [icons droite] · [menu] ── */
+/* ──────────────────────────────────────────────
+   MOBILE : [hamburger] · [LOGO CENTRÉ] · [bag] [account]
+   ────────────────────────────────────────────── */
 .hdr__m {
   display: none;
-  grid-template-columns: 1fr auto auto auto auto;
-  align-items: center; gap: 18px;
+  /* hamburger(auto) | logo(1fr centré) | bag(auto) | account(auto) */
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center; gap: 16px;
   height: 100%; padding: 0 20px;
   color: var(--tira-white);
   transition: color .4s ease;
 }
 .hdr.solid .hdr__m { color: var(--tira-black); }
 
-/* Logo mobile — image Shopify + fallback texte */
-.hdr__m-logo { display: flex; align-items: center; }
-.hdr__m-logo .hdr__logo-img  { height: 18px; }
-.hdr__m-logo .hdr__logo-text { align-items: flex-start; }
-.hdr__m-logo .hdr__logo-name { font-size: 10.5px; letter-spacing: .18em; }
-.hdr__m-logo .hdr__logo-sub  { font-size: 6.5px; letter-spacing: .15em; }
+/* Logo mobile — centré dans sa cellule 1fr */
+.hdr__m-logo {
+  display: flex; justify-content: center; align-items: center;
+  text-align: center;
+}
+.hdr__m-logo .hdr__logo-name { font-size: 13px; letter-spacing: .2em; }
+.hdr__m-logo .hdr__logo-sub  { font-size: 6px; letter-spacing: .18em; }
 
 .hdr__m svg {
   width: 22px; height: 22px; fill: none;
@@ -234,7 +231,7 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
 }
 .hdr__m button {
   background: none; border: none; cursor: pointer;
-  display: flex; align-items: center; color: inherit; padding: 2px;
+  display: flex; align-items: center; color: inherit; padding: 4px;
 }
 
 @media (max-width: 900px) {
@@ -242,19 +239,19 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
   .hdr__m { display: grid; }
 }
 
-/* ── Bande search — visible desktop ET mobile (sous header) ── */
+/* ── Bande search — TOUJOURS visible sous header, TOUJOURS blanche ── */
+/* Elle suit le header quand il se cache (translateY avec lui) */
 .hdr-search {
   position: fixed; top: var(--header-h); left: 0; right: 0; z-index: 199;
   display: flex; align-items: center;
   height: var(--search-h); padding: 0 40px;
-  background: transparent; border-bottom: 1px solid transparent;
-  transition: background .4s, border-color .4s;
-  pointer-events: none; /* invisible quand transparent */
-}
-.hdr-search.solid {
   background: var(--tira-white);
-  border-color: var(--tira-border);
-  pointer-events: auto;
+  border-bottom: 1px solid var(--tira-border);
+  transition: transform .35s var(--tira-ease);
+}
+/* Suit le header quand il disparaît */
+.hdr.hidden ~ .hdr-search {
+  transform: translateY(calc(-1 * var(--header-h)));
 }
 .hdr-search input {
   flex: 1; border: none; background: none; outline: none;
@@ -265,10 +262,10 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
   padding-bottom: 2px;
 }
 .hdr-search input:focus { border-color: var(--tira-black); }
-.hdr-search input::placeholder { opacity: .35; }
+.hdr-search input::placeholder { opacity: .3; }
 .hdr-search svg {
-  width: 16px; height: 16px; fill: none;
-  stroke: var(--tira-black); stroke-width: 1.2; opacity: .4;
+  width: 15px; height: 15px; fill: none;
+  stroke: var(--tira-black); stroke-width: 1.2; opacity: .35;
 }
 @media (max-width: 900px) {
   .hdr-search { padding: 0 20px; }
@@ -869,15 +866,12 @@ body.nav-open { overflow: hidden; }
     </nav>
 
     <!-- Logo centré
-         SHOPIFY : remplacer par
-         <img src="{{ settings.logo | img_url: '220x' }}" alt="{{ shop.name }}" height="22">
-         et logo_inverse pour hero transparent -->
+         SHOPIFY : remplacer par {{ settings.logo | img_tag: height: 22 }}
+         + filtre CSS invert(1) pour version blanche sur hero transparent -->
     <div class="hdr__logo">
       <a href="/" aria-label="TIRABOSCHI Paris — accueil">
-        <span class="hdr__logo-text">
-          <span class="hdr__logo-name">Tiraboschi</span>
-          <span class="hdr__logo-sub">Paris · Since 1904</span>
-        </span>
+        <span class="hdr__logo-name">Tiraboschi</span>
+        <span class="hdr__logo-sub">Paris · Since 1904</span>
       </a>
     </div>
 
@@ -900,29 +894,25 @@ body.nav-open { overflow: hidden; }
     </div>
   </div>
 
-  <!-- ═ MOBILE : [logo gauche] · [search · account · bag · menu] ═ -->
+  <!-- ═ MOBILE : [hamburger gauche] · [LOGO CENTRÉ] · [bag] [account] ═ -->
   <div class="hdr__m" aria-label="Navigation mobile">
 
-    <!-- Logo gauche -->
+    <!-- Hamburger — à gauche -->
+    <button aria-label="Menu principal" aria-expanded="false" id="mobile-menu-btn">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <line x1="3" y1="8" x2="21" y2="8"/>
+        <line x1="3" y1="16" x2="21" y2="16"/>
+      </svg>
+    </button>
+
+    <!-- Logo — centré dans sa colonne 1fr -->
     <a href="/" class="hdr__m-logo" aria-label="TIRABOSCHI Paris — accueil">
-      <span class="hdr__logo-text">
-        <span class="hdr__logo-name">Tiraboschi</span>
-        <span class="hdr__logo-sub">Paris · Since 1904</span>
-      </span>
+      <span class="hdr__logo-name">Tiraboschi</span>
+      <span class="hdr__logo-sub">Paris · Since 1904</span>
     </a>
 
-    <!-- Icône search -->
-    <button aria-label="Recherche" id="search-toggle-m">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
-    </button>
-
-    <!-- Icône compte -->
-    <button aria-label="Mon compte">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.5" r="3.5"/><path d="M3.5 20c0-4.5 3.8-7 8.5-7s8.5 2.5 8.5 7"/></svg>
-    </button>
-
-    <!-- Picto panier forme V TIRABOSCHI -->
-    <button aria-label="Panier — 0 article" id="bag-btn-m">
+    <!-- Picto panier TIRABOSCHI forme V — à droite -->
+    <button aria-label="Panier — 0 article">
       <svg viewBox="0 0 24 24" aria-hidden="true" fill="none"
            stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">
         <rect x="2.5" y="9.5" width="19" height="12"/>
@@ -930,9 +920,12 @@ body.nav-open { overflow: hidden; }
       </svg>
     </button>
 
-    <!-- Menu hamburger -->
-    <button aria-label="Menu principal" aria-expanded="false" id="mobile-menu-btn">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
+    <!-- Compte — à droite -->
+    <button aria-label="Mon compte">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="7.5" r="3.5"/>
+        <path d="M3.5 20c0-4.5 3.8-7 8.5-7s8.5 2.5 8.5 7"/>
+      </svg>
     </button>
   </div>
 </header>
@@ -1474,25 +1467,22 @@ function updateHeader() {
   /* Transparent ↔ solid (seuil : 85% du hero) */
   const isSolid = y >= heroH * 0.85;
   hdr.classList.toggle('solid', isSolid);
-  if (search) search.classList.toggle('solid', isSolid);
+  /* Note : .hdr-search est toujours blanche (pas de toggle solid) */
   document.body.classList.toggle('on-dark', !isSolid);
 
-  /* Directionnel : cacher quand scroll down >120px depuis haut
-     → minimum 80px de delta pour éviter micro-rebonds mobile */
+  /* Directionnel : cacher scroll down (delta > 4px, seuil 120px)
+     La search bar suit via CSS : .hdr.hidden ~ .hdr-search { transform... } */
   const delta = y - lastScrollY;
   if (y > 120) {
     if (delta > 4 && lastDir !== 'down') {
       hdr.classList.add('hidden');
-      if (search) search.style.top = '0px'; /* search remonte avec header */
       lastDir = 'down';
     } else if (delta < -4 && lastDir !== 'up') {
       hdr.classList.remove('hidden');
-      if (search) search.style.top = '';
       lastDir = 'up';
     }
   } else {
     hdr.classList.remove('hidden');
-    if (search) search.style.top = '';
     lastDir = 'up';
   }
 
