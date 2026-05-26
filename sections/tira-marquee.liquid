@@ -1,0 +1,60 @@
+{% comment %}
+  TIRABOSCHI — Marquee défilant horizontal seamless
+  Référence : tiraboschi-homepage-prototype.html L1166-1197
+{% endcomment %}
+
+<div class="marquee" aria-hidden="true" role="marquee">
+  <div class="marquee__track">
+    {%- if section.blocks.size > 0 -%}
+      {%- for block in section.blocks -%}
+        <span class="marquee__item" {{ block.shopify_attributes }}>{{ block.settings.text }}</span>
+      {%- endfor -%}
+      {% comment %} Répétition pour loop seamless {% endcomment %}
+      {%- for block in section.blocks -%}
+        <span class="marquee__item">{{ block.settings.text }}</span>
+      {%- endfor -%}
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Marquee",
+  "tag": "div",
+  "class": "tira-section tira-section--marquee",
+  "max_blocks": 24,
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Texte",
+          "default": "Made in France, Only."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Marquee TIRABOSCHI",
+      "blocks": [
+        { "type": "item", "settings": { "text": "Made in France, Only." } },
+        { "type": "item", "settings": { "text": "·" } },
+        { "type": "item", "settings": { "text": "Since 1904" } },
+        { "type": "item", "settings": { "text": "·" } },
+        { "type": "item", "settings": { "text": "Maroquinerie de Luxe" } },
+        { "type": "item", "settings": { "text": "·" } },
+        { "type": "item", "settings": { "text": "Paris" } },
+        { "type": "item", "settings": { "text": "·" } },
+        { "type": "item", "settings": { "text": "Artisanat d'Exception" } },
+        { "type": "item", "settings": { "text": "·" } },
+        { "type": "item", "settings": { "text": "Un Seul Artisan. De A à Z." } },
+        { "type": "item", "settings": { "text": "·" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

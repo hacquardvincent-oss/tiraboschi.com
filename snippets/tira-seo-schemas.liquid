@@ -1,0 +1,411 @@
+{%- comment -%}
+  snippets/tira-seo-schemas.liquid
+  TIRABOSCHI Paris — Structured Data centralisé
+
+  Injecte le JSON-LD correct selon le template Shopify actif.
+  Inclure dans layout/theme.liquid juste avant </head> :
+  {% render 'tira-seo-schemas' %}
+
+  Couvre :
+  - index       → Organization + WebSite + SearchAction
+  - product     → Product (avec countryOfOrigin, manufacturer, additionalProperty)
+  - collection  → CollectionPage + BreadcrumbList
+  - page        → Page ou AboutPage ou FAQPage selon handle
+  - blog        → Blog
+  - article     → Article + speakable + BreadcrumbList
+  - 404         → WebPage (minimal)
+{%- endcomment -%}
+
+{%- liquid
+  assign template_name = template.name
+  assign page_handle   = page.handle | default: ''
+-%}
+
+{%- capture schema_json -%}
+
+{%- if template_name == 'index' -%}
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "{{ shop.url }}/#organization",
+      "name": "TIRABOSCHI Paris",
+      "url": "{{ shop.url }}",
+      "foundingDate": "1904",
+      "foundingLocation": "Paris, France",
+      "description": "Maison de maroquinerie de luxe française fondée en 1904. Chaque pièce façonnée à la main par un seul artisan. 3 400 points de couture sellier. Made in France, Only.",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "{{ 'Logo_-_since_1904_-_vrai_noir.png' | file_img_url: '300x' }}"
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Paris",
+        "addressCountry": "FR"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "availableLanguage": ["French", "English"]
+      },
+      "sameAs": [
+        "https://www.instagram.com/boschi_paris"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "{{ shop.url }}/#website",
+      "name": "TIRABOSCHI Paris",
+      "url": "{{ shop.url }}",
+      "description": "{{ shop.description | escape }}",
+      "publisher": {"@id": "{{ shop.url }}/#organization"},
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "{{ shop.url }}/search?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+  ]
+}
+
+{%- elsif template_name == 'product' -%}
+{%- assign product_url = shop.url | append: product.url -%}
+{%- assign product_image = product.featured_image | img_url: '1200x' -%}
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "@id": "{{ product_url }}#product",
+  "name": "{{ product.title | escape }}",
+  "description": "{{ product.description | strip_html | truncate: 300 | escape }}",
+  "url": "{{ product_url }}",
+  "image": [
+    {%- for image in product.images limit: 5 -%}
+      "{{ image | img_url: '1200x' }}"{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ],
+  "brand": {
+    "@type": "Brand",
+    "name": "TIRABOSCHI Paris"
+  },
+  "manufacturer": {
+    "@type": "Organization",
+    "name": "TIRABOSCHI Paris",
+    "foundingDate": "1904",
+    "address": {"@type": "PostalAddress", "addressLocality": "Paris", "addressCountry": "FR"}
+  },
+  "countryOfOrigin": {
+    "@type": "Country",
+    "name": "France"
+  },
+  {%- if product.metafields.custom.composition != blank -%}
+  "material": "{{ product.metafields.custom.composition | escape }}",
+  {%- endif -%}
+  "additionalProperty": [
+    {"@type": "PropertyValue", "name": "Fabrication", "value": "Fait à la main par un seul artisan"},
+    {"@type": "PropertyValue", "name": "Points de couture", "value": "3 400 points sellier par sac"},
+    {"@type": "PropertyValue", "name": "Temps de fabrication", "value": "48 à 72 heures"},
+    {"@type": "PropertyValue", "name": "Origine", "value": "Made in France"}
+    {%- if product.metafields.custom.fabrication != blank -%}
+    ,{"@type": "PropertyValue", "name": "Atelier", "value": "{{ product.metafields.custom.fabrication | escape }}"}
+    {%- endif -%}
+    {%- if product.metafields.custom.contenances != blank -%}
+    ,{"@type": "PropertyValue", "name": "Contenances", "value": "{{ product.metafields.custom.contenances | escape }}"}
+    {%- endif -%}
+  ],
+  "offers": {
+    "@type": "Offer",
+    "price": "{{ product.price | money_without_currency | remove: ',' }}",
+    "priceCurrency": "{{ cart.currency.iso_code }}",
+    "availability": "https://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}",
+    "url": "{{ product_url }}",
+    "seller": {"@type": "Organization", "name": "TIRABOSCHI Paris"},
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingOrigin": {"@type": "DefinedRegion", "addressCountry": "FR"}
+    }
+  }
+  {%- if product.metafields.reviews.rating != blank -%}
+  ,"aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "{{ product.metafields.reviews.rating.value }}",
+    "reviewCount": "{{ product.metafields.reviews.rating_count }}",
+    "bestRating": "5",
+    "worstRating": "1"
+  }
+  {%- endif -%}
+  ,"breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type":"ListItem","position":1,"name":"Accueil","item":"{{ shop.url }}"},
+      {"@type":"ListItem","position":2,"name":"{{ product.type | default: 'Sacs' | escape }}","item":"{{ shop.url }}/collections/{{ product.type | handleize | default: 'sacs' }}"},
+      {"@type":"ListItem","position":3,"name":"{{ product.title | escape }}"}
+    ]
+  }
+}
+
+{%- elsif template_name == 'collection' -%}
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "{{ collection.title | escape }}",
+  "description": "{{ collection.description | strip_html | truncate: 200 | escape }}",
+  "url": "{{ shop.url }}{{ collection.url }}",
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type":"ListItem","position":1,"name":"Accueil","item":"{{ shop.url }}"},
+      {"@type":"ListItem","position":2,"name":"{{ collection.title | escape }}","item":"{{ shop.url }}{{ collection.url }}"}
+    ]
+  }
+}
+
+{%- elsif template_name == 'article' -%}
+{%- assign article_url = shop.url | append: article.url -%}
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "@id": "{{ article_url }}#article",
+      "headline": "{{ article.title | escape }}",
+      "description": "{{ article.excerpt | strip_html | truncate: 200 | escape }}",
+      "url": "{{ article_url }}",
+      "datePublished": "{{ article.published_at | date: '%Y-%m-%d' }}",
+      "dateModified": "{{ article.updated_at | date: '%Y-%m-%d' }}",
+      "author": {"@type": "Organization", "name": "TIRABOSCHI Paris"},
+      "publisher": {
+        "@type": "Organization",
+        "name": "TIRABOSCHI Paris",
+        "foundingDate": "1904",
+        "logo": {"@type": "ImageObject", "url": "{{ 'Logo_-_since_1904_-_vrai_noir.png' | file_img_url: '300x' }}"}
+      },
+      {%- if article.image -%}
+      "image": {
+        "@type": "ImageObject",
+        "url": "{{ article.image | img_url: '1200x' }}",
+        "width": 1200
+      },
+      {%- endif -%}
+      "speakable": {
+        "@type": "SpeakableSpecification",
+        "xPath": ["/html/head/title", "//h1", "//article//p[1]", "//blockquote"]
+      },
+      "about": {{ article.tags | json }},
+      "isPartOf": {"@type": "Blog", "name": "L'Atelier"}
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type":"ListItem","position":1,"name":"Accueil","item":"{{ shop.url }}"},
+        {"@type":"ListItem","position":2,"name":"L'Atelier","item":"{{ shop.url }}/blogs/{{ blog.handle }}"},
+        {"@type":"ListItem","position":3,"name":"{{ article.title | escape }}"}
+      ]
+    }
+  ]
+}
+
+{%- elsif template_name == 'blog' -%}
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "L'Atelier — TIRABOSCHI Paris",
+  "description": "Conseils entretien cuir, coulisses artisanat maroquinerie de luxe, guides et inspirations depuis 1904.",
+  "url": "{{ shop.url }}/blogs/{{ blog.handle }}",
+  "publisher": {"@type": "Organization", "name": "TIRABOSCHI Paris"}
+}
+
+{%- elsif template_name == 'page' -%}
+
+{%- comment -%} Page Contact → LocalBusiness {%- endcomment -%}
+{%- if page_handle == 'contact' or page_handle == 'prendrez-rendez-vous' -%}
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": ["LocalBusiness", "Store"],
+      "@id": "{{ shop.url }}/#localbusiness",
+      "name": "TIRABOSCHI Paris",
+      "description": "Atelier de maroquinerie de luxe fondé en 1904 à Paris. Sur rendez-vous.",
+      "url": "{{ shop.url }}",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Paris",
+        "addressCountry": "FR"
+      },
+      "telephone": "{{ shop.phone }}",
+      "email": "{{ shop.email }}",
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          "opens": "10:00",
+          "closes": "18:00"
+        }
+      ],
+      "priceRange": "€€€€",
+      "servesCuisine": null,
+      "currenciesAccepted": "EUR",
+      "paymentAccepted": "Carte bancaire, virement"
+    },
+    {
+      "@type": "ContactPage",
+      "name": "Contact & Rendez-vous — TIRABOSCHI Paris",
+      "url": "{{ shop.url }}/pages/contact"
+    }
+  ]
+}
+
+{%- comment -%} Page Sur Mesure → Service + FAQ {%- endcomment -%}
+{%- elsif page_handle == 'sur-mesure' -%}
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Service",
+      "name": "Sur Mesure — TIRABOSCHI Paris",
+      "description": "Service de maroquinerie sur mesure. Choix du cuir, de la couleur, des dimensions et des finitions. Chaque pièce unique façonnée par un artisan.",
+      "provider": {"@type": "Organization", "name": "TIRABOSCHI Paris"},
+      "serviceType": "Maroquinerie sur mesure",
+      "areaServed": {"@type": "Country", "name": "France"},
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Sur Mesure & Exotiques"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Quels sont les délais pour une pièce sur mesure TIRABOSCHI ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Une pièce sur mesure est façonnée en 6 à 10 semaines selon la complexité et les matières choisies. Vous serez informé à chaque étape de la fabrication."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quels cuirs sont disponibles pour le sur mesure ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Tous nos cuirs de collection sont disponibles, plus les cuirs exotiques (crocodile, autruche, stingray) sur devis. Nous travaillons exclusivement des cuirs certifiés d'origine traçable."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Comment se déroule un rendez-vous sur mesure ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Le rendez-vous se tient dans notre atelier parisien. Nous discutons de votre projet, choisissons ensemble le modèle de base, les cuirs et les finitions. Un acompte de 30% est demandé à la commande."
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{%- comment -%} Page Savoir-Faire → Article + FAQ {%- endcomment -%}
+{%- elsif page_handle == 'savoir-faire' -%}
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "Savoir-Faire TIRABOSCHI Paris — Maroquinerie Artisanale Depuis 1904",
+      "description": "{{ page.content | strip_html | truncate: 200 | escape }}",
+      "url": "{{ shop.url }}/pages/savoir-faire",
+      "author": {"@type": "Organization", "name": "TIRABOSCHI Paris"},
+      "speakable": {
+        "@type": "SpeakableSpecification",
+        "xPath": ["/html/head/title", "//h1", "//section[1]//p[1]"]
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Combien de temps faut-il pour fabriquer un sac TIRABOSCHI ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "48 à 72 heures de travail à la main par un seul artisan. Chaque sac compte 3 400 points de couture sellier réalisés avec deux aiguilles et un fil de lin ciré."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Qu'est-ce que la couture sellier ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "La couture sellier est la technique de couture à deux aiguilles utilisée par les maîtres maroquiniers. Elle garantit une solidité exceptionnelle. TIRABOSCHI applique 8 points au centimètre — la norme des grandes maisons de luxe."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Les sacs TIRABOSCHI sont-ils vraiment fabriqués en France ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Oui, intégralement. Chaque pièce est façonnée dans nos ateliers parisiens par un seul artisan, de la découpe du cuir à la finition des tranches. Made in France, Only — pas seulement conçu en France."
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{%- comment -%} Page Histoire → AboutPage {%- endcomment -%}
+{%- elsif page_handle == 'histoire' -%}
+{
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "name": "Notre Histoire — TIRABOSCHI Paris depuis 1904",
+  "url": "{{ shop.url }}/pages/histoire",
+  "about": {
+    "@type": "Organization",
+    "name": "TIRABOSCHI Paris",
+    "foundingDate": "1904",
+    "foundingLocation": "Paris, France",
+    "description": "Maison de maroquinerie de luxe française fondée en 1904. Chaque sac fabriqué à la main par un seul artisan. 3 400 points de couture sellier. Made in France, Only."
+  },
+  "speakable": {
+    "@type": "SpeakableSpecification",
+    "xPath": ["/html/head/title", "//h1", "//section[1]//p"]
+  }
+}
+
+{%- comment -%} Autres pages → WebPage générique {%- endcomment -%}
+{%- else -%}
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "{{ page.title | escape }} — TIRABOSCHI Paris",
+  "description": "{{ page.content | strip_html | truncate: 160 | escape }}",
+  "url": "{{ shop.url }}/pages/{{ page.handle }}",
+  "isPartOf": {"@type": "WebSite", "name": "TIRABOSCHI Paris", "url": "{{ shop.url }}"}
+}
+{%- endif -%}
+
+{%- endif -%}{# end template_name #}
+
+{%- endcapture -%}
+
+{%- if schema_json contains '"@type"' -%}
+<script type="application/ld+json">
+{{ schema_json }}
+</script>
+{%- endif -%}
+
+{%- comment -%} Hreflang — injecté si Shopify Markets actif {%- endcomment -%}
+{%- if localization.available_countries.size > 1 -%}
+  {%- for country in localization.available_countries -%}
+    {%- for locale in country.available_locales -%}
+      <link rel="alternate"
+            hreflang="{{ locale.iso_code }}-{{ country.iso_code | downcase }}"
+            href="{{ request.origin }}{{ request.path }}">
+    {%- endfor -%}
+  {%- endfor -%}
+  <link rel="alternate" hreflang="x-default" href="{{ request.origin }}{{ request.path }}">
+{%- endif -%}

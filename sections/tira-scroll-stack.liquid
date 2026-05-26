@@ -1,0 +1,161 @@
+{% comment %}
+  TIRABOSCHI — Scroll stack 5 panneaux sticky (style Miu Miu)
+  Référence : tiraboschi-homepage-prototype.html L1433-1521
+{% endcomment %}
+
+{%- assign total_panels = section.blocks.size -%}
+
+<div class="stack" aria-label="{{ section.settings.aria_label | default: 'L''univers TIRABOSCHI' | escape }}">
+  {%- for block in section.blocks -%}
+    {%- assign panel_num = forloop.index -%}
+    {%- assign panel_num_padded = panel_num | prepend: '0' | slice: -2, 2 -%}
+    {%- assign total_padded = total_panels | prepend: '0' | slice: -2, 2 -%}
+
+    <div class="stack__panel stack__panel--{{ block.settings.overlay_style | default: 'dark' }}" {{ block.shopify_attributes }}>
+      <div class="stack__bg">
+        {%- if block.settings.image -%}
+          <img src="{{ block.settings.image | image_url: width: 1920 }}"
+               srcset="{{ block.settings.image | image_url: width: 768 }} 768w,
+                       {{ block.settings.image | image_url: width: 1280 }} 1280w,
+                       {{ block.settings.image | image_url: width: 1920 }} 1920w"
+               sizes="100vw"
+               alt="{{ block.settings.image.alt | default: block.settings.title | escape }}"
+               width="1920" height="1080"
+               loading="lazy">
+        {%- endif -%}
+      </div>
+      <div class="stack__overlay"></div>
+      <div class="stack__body">
+        <p class="stack__num">{{ panel_num_padded }} / {{ total_padded }}</p>
+        {%- if block.settings.title != blank -%}
+          <h2 class="stack__title">{{ block.settings.title }}</h2>
+        {%- endif -%}
+        {%- if block.settings.text != blank -%}
+          <p class="stack__text">{{ block.settings.text }}</p>
+        {%- endif -%}
+        {%- if block.settings.link_label != blank -%}
+          <a href="{{ block.settings.link_url | default: '#' }}" class="stack__link">{{ block.settings.link_label }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "Scroll stack",
+  "tag": "div",
+  "class": "tira-section tira-section--stack",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "Aria-label",
+      "default": "L'univers TIRABOSCHI"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "panel",
+      "name": "Panneau",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titre",
+          "default": "Titre du panneau"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Texte"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image background"
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "Libellé lien"
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Lien"
+        },
+        {
+          "type": "select",
+          "id": "overlay_style",
+          "label": "Style overlay",
+          "options": [
+            { "value": "dark", "label": "Sombre" },
+            { "value": "light", "label": "Clair" },
+            { "value": "gradient", "label": "Dégradé" }
+          ],
+          "default": "dark"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Scroll stack TIRABOSCHI",
+      "blocks": [
+        {
+          "type": "panel",
+          "settings": {
+            "title": "L'Héritage",
+            "text": "Fondée à Paris en 1904, TIRABOSCHI perpétue les gestes ancestraux de la maroquinerie d'art. Quatre générations. Une seule obsession : la pièce parfaite.",
+            "link_label": "Notre histoire",
+            "link_url": "/pages/histoire",
+            "overlay_style": "dark"
+          }
+        },
+        {
+          "type": "panel",
+          "settings": {
+            "title": "Les Matières",
+            "text": "Veau grainé, cuir de buffle, agneau nappa — nos peaux proviennent exclusivement des meilleures tanneries françaises, sélectionnées à la main, une à une.",
+            "link_label": "Guide des matières",
+            "link_url": "/pages/matieres-cuirs",
+            "overlay_style": "dark"
+          }
+        },
+        {
+          "type": "panel",
+          "settings": {
+            "title": "Sur Mesure",
+            "text": "Votre sac, vos couleurs, votre cuir. Le programme sur mesure TIRABOSCHI vous ouvre les portes de l'atelier. Délai de réalisation : 6 à 8 semaines.",
+            "link_label": "Prendre rendez-vous",
+            "link_url": "/pages/sur-mesure",
+            "overlay_style": "dark"
+          }
+        },
+        {
+          "type": "panel",
+          "settings": {
+            "title": "The Society",
+            "text": "Dès votre premier achat, vous intégrez un cercle de privilèges exclusifs. Avant-premières, pièces réservées, matières inédites — des avantages jamais des points.",
+            "link_label": "Découvrir vos privilèges",
+            "link_url": "/pages/la-societe",
+            "overlay_style": "dark"
+          }
+        },
+        {
+          "type": "panel",
+          "settings": {
+            "title": "Le Savoir-Faire",
+            "text": "Un seul artisan. De A à Z. Quarante-huit à soixante-douze heures de travail. Trois mille quatre cents points de couture sellier. Depuis 1904, c'est notre seule méthode.",
+            "link_label": "Notre savoir-faire",
+            "link_url": "/pages/savoir-faire",
+            "overlay_style": "dark"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,165 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "TIRABOSCHI Bespoke",
+    "theme_version": "1.0.0",
+    "theme_author": "TIRABOSCHI Paris",
+    "theme_documentation_url": "https://tiraboschi-paris.com",
+    "theme_support_url": "https://tiraboschi-paris.com/pages/contact"
+  },
+  {
+    "name": "Identité",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon",
+        "info": "32×32px PNG noir sur transparent"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo_dark",
+        "label": "Logo noir (header solid)"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo_light",
+        "label": "Logo blanc (header transparent hero)"
+      }
+    ]
+  },
+  {
+    "name": "Expérience UX",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "lenis_smooth_scroll",
+        "label": "Smooth scrolling Lenis (desktop uniquement)",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "custom_cursor",
+        "label": "Curseur custom (desktop uniquement)",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "page_transitions",
+        "label": "Transitions entre pages (fondu blanc 350ms)",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "splash_screen",
+        "label": "Splash screen logo au 1er chargement de session",
+        "default": false
+      }
+    ]
+  },
+  {
+    "name": "Drop / Précommande",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "drop_active",
+        "label": "Drop en cours (active la barre site-wide)",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "drop_name",
+        "label": "Nom du drop (ex: FW25, H26)",
+        "default": "H26"
+      },
+      {
+        "type": "text",
+        "id": "drop_bar_text",
+        "label": "Texte barre annonce",
+        "default": "Drop H26 — Précommandes ouvertes"
+      },
+      {
+        "type": "text",
+        "id": "drop_cta_url",
+        "label": "URL CTA barre"
+      },
+      {
+        "type": "text",
+        "id": "drop_cta_label",
+        "label": "Label CTA barre",
+        "default": "Découvrir"
+      },
+      {
+        "type": "text",
+        "id": "drop_end_date",
+        "label": "Date clôture (ISO 8601, ex: 2026-08-30T23:59:00)",
+        "default": "2026-08-30T23:59:00"
+      }
+    ]
+  },
+  {
+    "name": "CRM",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "newsletter_popup_enabled",
+        "label": "Activer le popup newsletter",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Réseaux sociaux",
+    "settings": [
+      {
+        "type": "text",
+        "id": "social_instagram_link",
+        "label": "URL Instagram",
+        "default": "https://instagram.com/boschi_paris"
+      },
+      {
+        "type": "text",
+        "id": "social_linkedin_link",
+        "label": "URL LinkedIn"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube_link",
+        "label": "URL YouTube"
+      },
+      {
+        "type": "text",
+        "id": "social_pinterest_link",
+        "label": "URL Pinterest"
+      }
+    ]
+  },
+  {
+    "name": "Coordonnées",
+    "settings": [
+      {
+        "type": "text",
+        "id": "contact_address",
+        "label": "Adresse atelier",
+        "default": "96 Avenue de Clichy, 75017 Paris"
+      },
+      {
+        "type": "text",
+        "id": "contact_phone",
+        "label": "Téléphone (affichage public)"
+      },
+      {
+        "type": "text",
+        "id": "contact_email",
+        "label": "Email public",
+        "default": "contact@tiraboschi-paris.com"
+      },
+      {
+        "type": "text",
+        "id": "contact_hours",
+        "label": "Horaires (showroom sur RDV)",
+        "default": "Lundi—Vendredi, 10h—18h · Sur rendez-vous"
+      }
+    ]
+  }
+]
