@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Newsletter Popup — TIRABOSCHI Paris</title>
+<meta name="robots" content="noindex">
+
+<!-- ═══ FONTS ═══ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap&subset=latin" rel="stylesheet">
+
+<style>
+/* ════════════════════════════════════════════
+   RESET & DESIGN TOKENS
+════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --tira-black:    #0a0a0a;
+  --tira-white:    #ffffff;
+  --tira-grey:     #f7f5f2;
+  --tira-border:   #e8e8e8;
+  --tira-ease:     cubic-bezier(0.16, 1, 0.3, 1);
+  --tira-duration: 0.9s;
+  --header-h:      64px;
+  --popup-width:   600px;
+}
+
+body {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 400;
+  background: var(--tira-white);
+  color: var(--tira-black);
+  line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+/* ════════════════════════════════════════════
+   DEMO CONTROLS BAR — hors popup
+════════════════════════════════════════════ */
+.demo-controls {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  background: var(--tira-black);
+  color: var(--tira-white);
+  height: 48px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 0;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.demo-controls__label {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  opacity: 0.4;
+  margin-right: 20px;
+  flex-shrink: 0;
+  display: none;
+}
+@media (min-width: 640px) {
+  .demo-controls__label { display: block; }
+}
+.demo-controls__btn {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tira-white);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 16px;
+  height: 100%;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+  border-right: 1px solid rgba(255,255,255,0.1);
+  white-space: nowrap;
+}
+.demo-controls__btn:first-of-type { border-left: 1px solid rgba(255,255,255,0.1); }
+.demo-controls__btn:hover { opacity: 1; }
+.demo-controls__btn.active { opacity: 1; border-bottom: 2px solid rgba(200,169,110,0.8); }
+.demo-controls__info {
+  margin-left: auto;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  opacity: 0.3;
+  text-transform: uppercase;
+  display: none;
+}
+@media (min-width: 900px) {
+  .demo-controls__info { display: block; }
+}
+
+/* ════════════════════════════════════════════
+   PAGE BACKGROUND (simulated site content)
+════════════════════════════════════════════ */
+.bg-page {
+  padding-top: 48px; /* controls bar */
+  min-height: 300vh;
+  transition: filter 0.5s ease;
+}
+.bg-page.blurred { filter: blur(3px); }
+
+/* Simulated header */
+.bg-header {
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  border-bottom: 1px solid var(--tira-border);
+  position: sticky;
+  top: 48px;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+}
+.bg-header__logo {
+  font-size: 15px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.bg-header__nav, .bg-header__icons {
+  display: flex;
+  gap: 28px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+/* Simulated hero */
+.bg-hero {
+  height: 85vh;
+  background: linear-gradient(180deg, #1a0e06 0%, #3d2010 50%, #2c1a0e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 24px;
+  text-align: center;
+  color: var(--tira-white);
+  position: relative;
+  overflow: hidden;
+}
+.bg-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 60% 40%, rgba(200,169,110,0.15), transparent 60%);
+}
+.bg-hero__label {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.5;
+  position: relative;
+}
+.bg-hero__title {
+  font-size: clamp(48px, 8vw, 88px);
+  letter-spacing: -0.01em;
+  line-height: 1;
+  position: relative;
+}
+.bg-hero__title em { font-style: italic; }
+.bg-hero__tagline {
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.4;
+  position: relative;
+}
+
+/* Simulated content sections */
+.bg-section {
+  padding: 80px 40px;
+}
+.bg-section--grey { background: var(--tira-grey); }
+.bg-section__title {
+  font-size: 48px;
+  letter-spacing: -0.01em;
+  margin-bottom: 24px;
+  max-width: 600px;
+}
+.bg-section__body {
+  font-size: 14px;
+  opacity: 0.5;
+  max-width: 480px;
+  line-height: 2;
+}
+.bg-placeholder-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3px;
+  margin-top: 40px;
+}
+.bg-placeholder-card {
+  aspect-ratio: 3/4;
+  background: var(--tira-border);
+}
+.bg-placeholder-card:nth-child(1) { background: #e8ddd0; }
+.bg-placeholder-card:nth-child(2) { background: #d8d0c8; }
+.bg-placeholder-card:nth-child(3) { background: #e0dac8; }
+.bg-placeholder-card:nth-child(4) { background: #dbd3c0; }
+@media (max-width: 768px) {
+  .bg-section { padding: 48px 20px; }
+  .bg-section__title { font-size: 32px; }
+  .bg-placeholder-grid { grid-template-columns: 1fr 1fr; }
+  .bg-header { padding: 0 20px; }
+  .bg-header__nav { display: none; }
+}
+
+/* ════════════════════════════════════════════
+   POPUP — BACKDROP
+════════════════════════════════════════════ */
+#tira-popup-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: rgba(0,0,0,0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  pointer-events: none;
+  transition:
+    background 0.4s ease,
+    backdrop-filter 0.4s ease,
+    -webkit-backdrop-filter 0.4s ease;
+}
+#tira-popup-backdrop.visible {
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  pointer-events: all;
+}
+
+/* ════════════════════════════════════════════
+   POPUP — MODAL (DESKTOP)
+════════════════════════════════════════════ */
+#tira-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 9001;
+  width: min(var(--popup-width), calc(100vw - 32px));
+  transform: translate(-50%, calc(-50% + 24px));
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.45s var(--tira-ease),
+    transform 0.45s var(--tira-ease);
+  display: flex;
+  background: var(--tira-white);
+}
+#tira-popup.visible {
+  opacity: 1;
+  pointer-events: all;
+  transform: translate(-50%, -50%);
+}
+
+/* Desktop: 2 columns */
+.popup-col-image {
+  width: 40%;
+  flex-shrink: 0;
+  background: linear-gradient(160deg, #1a0e06 0%, #3d2010 40%, #2c1a0e 70%, #1a0c04 100%);
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  padding: 32px;
+  min-height: 460px;
+  overflow: hidden;
+}
+.popup-col-image::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 40% 30%, rgba(200,169,110,0.2), transparent 60%);
+}
+.popup-col-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 50%);
+}
+.popup-col-image__text {
+  position: relative;
+  z-index: 1;
+  color: var(--tira-white);
+}
+.popup-col-image__text em {
+  display: block;
+  font-size: 40px;
+  font-style: italic;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.popup-col-image__text span {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.5;
+  margin-top: 8px;
+}
+
+.popup-col-content {
+  flex: 1;
+  padding: 40px 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+/* Close button */
+.popup-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity 0.2s ease, transform 0.3s var(--tira-ease);
+  background: none;
+  border: none;
+  z-index: 2;
+}
+.popup-close:hover { opacity: 1; transform: rotate(90deg); }
+.popup-close svg { pointer-events: none; }
+
+/* Content */
+.popup-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.4;
+  margin-bottom: 12px;
+}
+.popup-title {
+  font-size: 28px;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+.popup-body {
+  font-size: 13px;
+  line-height: 1.9;
+  opacity: 0.6;
+  margin-bottom: 28px;
+}
+
+/* Form */
+.popup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.popup-input-wrap {
+  position: relative;
+  border-bottom: 1px solid var(--tira-black);
+  padding-bottom: 8px;
+  transition: border-color 0.3s ease;
+}
+.popup-input-wrap:focus-within {
+  border-color: var(--tira-black);
+}
+.popup-input {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 14px;
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 100%;
+  color: var(--tira-black);
+  padding-right: 32px;
+}
+.popup-input::placeholder { opacity: 0.3; }
+.popup-input-icon {
+  position: absolute;
+  right: 0;
+  top: 0;
+  opacity: 0.2;
+}
+
+.popup-checkbox-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+}
+.popup-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--tira-black);
+  flex-shrink: 0;
+  margin-top: 2px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s ease;
+}
+.popup-checkbox:checked {
+  background: var(--tira-black);
+}
+.popup-checkbox:checked::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 5px;
+  width: 4px;
+  height: 7px;
+  border: 1.5px solid white;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+}
+.popup-checkbox-label {
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  opacity: 0.5;
+  line-height: 1.6;
+  cursor: pointer;
+}
+
+.popup-submit {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  color: var(--tira-black);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+  transition: opacity 0.3s ease;
+  align-self: flex-start;
+}
+.popup-submit:hover { opacity: 0.5; }
+.popup-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Error state */
+.popup-error {
+  font-size: 11px;
+  color: #c0392b;
+  letter-spacing: 0.05em;
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+  transition: opacity 0.3s ease, height 0.3s ease;
+}
+.popup-error.visible {
+  opacity: 1;
+  height: 18px;
+}
+
+/* ════════════════════════════════════════════
+   SUCCESS STATE
+════════════════════════════════════════════ */
+.popup-success {
+  display: none;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 8px 0;
+}
+.popup-success.visible { display: flex; }
+
+.popup-success__icon {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--tira-black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.popup-success__title {
+  font-size: 22px;
+  letter-spacing: -0.01em;
+}
+.popup-success__body {
+  font-size: 13px;
+  opacity: 0.5;
+  line-height: 1.9;
+  max-width: 280px;
+}
+.popup-success__close {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+.popup-success__close:hover { opacity: 1; }
+
+/* ════════════════════════════════════════════
+   MOBILE — BOTTOM SHEET
+════════════════════════════════════════════ */
+@media (max-width: 640px) {
+  #tira-popup {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-height: 88vh;
+    transform: translateY(100%);
+    flex-direction: column;
+    transition:
+      opacity 0.45s var(--tira-ease),
+      transform 0.45s var(--tira-ease);
+  }
+  #tira-popup.visible {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  /* Image becomes top strip */
+  .popup-col-image {
+    width: 100%;
+    min-height: 180px;
+    padding: 24px;
+  }
+  .popup-col-image__text em { font-size: 32px; }
+
+  .popup-col-content {
+    padding: 28px 24px 36px;
+    overflow-y: auto;
+  }
+  .popup-title { font-size: 22px; }
+}
+
+/* ════════════════════════════════════════════
+   MOBILE PREVIEW MODE (class on body)
+════════════════════════════════════════════ */
+body.mobile-preview #tira-popup {
+  top: auto;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: 390px; /* iPhone 14 Pro width */
+  margin: 0 auto;
+  max-height: 80vh;
+  transform: translateY(100%);
+  flex-direction: column;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  /* Frame */
+  outline: 2px solid rgba(200,169,110,0.5);
+  outline-offset: 1px;
+}
+body.mobile-preview #tira-popup.visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+body.mobile-preview .popup-col-image {
+  width: 100%;
+  min-height: 160px;
+}
+body.mobile-preview .popup-col-image__text em { font-size: 30px; }
+body.mobile-preview .popup-col-content { padding: 24px 20px 32px; }
+body.mobile-preview .popup-title { font-size: 22px; }
+
+/* Mobile preview frame indicator */
+body.mobile-preview::after {
+  content: 'Mobile preview — 390px';
+  position: fixed;
+  bottom: calc(80vh + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(200,169,110,0.7);
+  z-index: 9002;
+  font-family: 'Playfair Display', Georgia, serif;
+  white-space: nowrap;
+}
+
+/* ════════════════════════════════════════════
+   CLOSED STATE INDICATOR
+════════════════════════════════════════════ */
+.popup-closed-indicator {
+  display: none;
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 500;
+  background: var(--tira-black);
+  color: var(--tira-white);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 14px 20px;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+  opacity: 0.7;
+}
+.popup-closed-indicator:hover { opacity: 1; }
+.popup-closed-indicator.visible { display: block; }
+
+/* ════════════════════════════════════════════
+   SCROLL INDICATOR
+════════════════════════════════════════════ */
+.scroll-trigger-bar {
+  position: fixed;
+  top: 48px;
+  left: 0;
+  height: 2px;
+  background: rgba(200,169,110,0.6);
+  width: 0%;
+  z-index: 300;
+  transition: width 0.1s linear;
+  pointer-events: none;
+}
+.scroll-trigger-bar.triggered {
+  background: rgba(200,169,110,1);
+}
+
+/* ════════════════════════════════════════════
+   COUNTDOWN (demo only)
+════════════════════════════════════════════ */
+.popup-countdown {
+  position: fixed;
+  top: 48px;
+  right: 0;
+  background: rgba(200,169,110,0.15);
+  border-left: 1px solid rgba(200,169,110,0.3);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tira-black);
+  padding: 6px 12px;
+  z-index: 300;
+  opacity: 0.7;
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     DEMO CONTROLS
+════════════════════════════════════════════ -->
+<div class="demo-controls">
+  <span class="demo-controls__label">Démo popup ·</span>
+  <button class="demo-controls__btn active" id="btnReopen" onclick="demoReopen()">Rouvrir la popup</button>
+  <button class="demo-controls__btn" id="btnSuccessState" onclick="demoSuccess()">État succès</button>
+  <button class="demo-controls__btn" id="btnCookieState" onclick="demoClosed()">Fermé (cookie)</button>
+  <button class="demo-controls__btn" id="btnMobile" onclick="demoToggleMobile()">Mode mobile</button>
+  <span class="demo-controls__info">Popup s'ouvre en 8s ou à 40% de scroll</span>
+</div>
+
+<!-- Scroll trigger progress bar -->
+<div class="scroll-trigger-bar" id="scrollBar"></div>
+
+<!-- Countdown for auto-open (demo uses 1s) -->
+<div class="popup-countdown" id="countdown" style="display:none;"></div>
+
+<!-- ═══════════════════════════════════════════
+     BACKGROUND PAGE CONTENT
+════════════════════════════════════════════ -->
+<div class="bg-page" id="bgPage">
+
+  <!-- Simulated header -->
+  <header class="bg-header">
+    <nav class="bg-header__nav">
+      <span>Collections</span>
+      <span>La Maison</span>
+      <span>Sur Mesure</span>
+    </nav>
+    <div class="bg-header__logo">TIRABOSCHI</div>
+    <div class="bg-header__icons">
+      <span>&#9906;</span>
+      <span>&#9788;</span>
+      <span>Panier (0)</span>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <div class="bg-hero">
+    <span class="bg-hero__label">FW25 — Nouvelle collection</span>
+    <h1 class="bg-hero__title">La <em>Victoire</em></h1>
+    <span class="bg-hero__tagline">Made in France, Only. · Since 1904</span>
+  </div>
+
+  <!-- Section 1 -->
+  <div class="bg-section">
+    <h2 class="bg-section__title">La Collection FW25</h2>
+    <p class="bg-section__body">Chaque pièce est fabriquée à la main par un seul artisan, dans nos ateliers parisiens. Du premier point de couture sellier à la pose des ferrures, un seul geste, une seule maîtrise.</p>
+    <div class="bg-placeholder-grid">
+      <div class="bg-placeholder-card"></div>
+      <div class="bg-placeholder-card"></div>
+      <div class="bg-placeholder-card"></div>
+      <div class="bg-placeholder-card"></div>
+    </div>
+  </div>
+
+  <!-- Section 2 -->
+  <div class="bg-section bg-section--grey">
+    <h2 class="bg-section__title">Savoir-Faire</h2>
+    <p class="bg-section__body">La maison TIRABOSCHI perpétue depuis 1904 les techniques de la grande maroquinerie parisienne. Couture sellier, fil de lin ciré, 32 points au centimètre — une exigence qui ne se mesure pas.</p>
+  </div>
+
+  <!-- Section 3 — long pour le scroll trigger -->
+  <div class="bg-section">
+    <h2 class="bg-section__title">Les Matières</h2>
+    <p class="bg-section__body">Veau grainé de France, agneau nappa d'Italie, veau box plongé, chevreau glacé. Chaque peau est sélectionnée à la main, en tanneries partenaires, selon des critères immuables depuis 1904.</p>
+    <div class="bg-placeholder-grid" style="margin-top:24px;">
+      <div class="bg-placeholder-card" style="background:#c8b89a;"></div>
+      <div class="bg-placeholder-card" style="background:#3c3028;"></div>
+      <div class="bg-placeholder-card" style="background:#8a6840;"></div>
+      <div class="bg-placeholder-card" style="background:#1a1a1a;"></div>
+    </div>
+  </div>
+
+  <!-- Section 4 -->
+  <div class="bg-section bg-section--grey">
+    <h2 class="bg-section__title">Sur Mesure</h2>
+    <p class="bg-section__body">Choisissez votre cuir, votre couleur, votre ferrure, votre doublure. Prenez rendez-vous à l'atelier et rencontrez l'artisan qui fabriquera votre pièce unique, en 6 à 8 semaines.</p>
+  </div>
+
+</div><!-- /.bg-page -->
+
+
+<!-- ═══════════════════════════════════════════
+     POPUP BACKDROP
+════════════════════════════════════════════ -->
+<div id="tira-popup-backdrop" onclick="demoBackdropClose()"></div>
+
+
+<!-- ═══════════════════════════════════════════
+     POPUP MODAL
+════════════════════════════════════════════ -->
+<div id="tira-popup" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
+
+  <!-- Left: Image column -->
+  <div class="popup-col-image">
+    <div class="popup-col-image__text">
+      <em>L'Atelier</em>
+      <span>TIRABOSCHI · Paris</span>
+    </div>
+  </div>
+
+  <!-- Right: Content column -->
+  <div class="popup-col-content">
+
+    <!-- Close button -->
+    <button class="popup-close" id="popupCloseBtn" aria-label="Fermer" onclick="closePopup()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+        <line x1="1" y1="1" x2="13" y2="13"/>
+        <line x1="13" y1="1" x2="1" y2="13"/>
+      </svg>
+    </button>
+
+    <!-- Default state: form -->
+    <div id="popupFormState">
+      <p class="popup-eyebrow">Bienvenue</p>
+      <h2 class="popup-title" id="popupTitle">Entrez dans<br>les coulisses.</h2>
+      <p class="popup-body">Récits d'artisans, nouveautés en avant-première, accès prioritaire aux éditions limitées. Une fois par mois.</p>
+
+      <form class="popup-form" id="popupForm" onsubmit="return handleSubmit(event)">
+
+        <div class="popup-input-wrap">
+          <input
+            type="email"
+            class="popup-input"
+            id="popupEmail"
+            placeholder="Votre adresse e-mail"
+            autocomplete="email"
+            required>
+          <svg class="popup-input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="2" y="4" width="20" height="16" rx="0"/>
+            <polyline points="2,4 12,13 22,4"/>
+          </svg>
+        </div>
+
+        <p class="popup-error" id="popupError">Veuillez entrer une adresse e-mail valide.</p>
+
+        <label class="popup-checkbox-wrap">
+          <input type="checkbox" class="popup-checkbox" id="popupConsent" required>
+          <span class="popup-checkbox-label">
+            J'accepte de recevoir les actualités TIRABOSCHI Paris. Désabonnement à tout moment.
+          </span>
+        </label>
+
+        <button type="submit" class="popup-submit" id="popupSubmitBtn">
+          Rejoindre L'Atelier →
+        </button>
+
+      </form>
+    </div>
+
+    <!-- Success state -->
+    <div class="popup-success" id="popupSuccessState">
+      <div class="popup-success__icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <h2 class="popup-success__title">Merci.</h2>
+      <p class="popup-success__body">
+        Votre première lettre arrive bientôt. En attendant, découvrez nos dernières pièces.
+      </p>
+      <button class="popup-success__close" onclick="closePopup(true)">Fermer</button>
+    </div>
+
+  </div><!-- /.popup-col-content -->
+
+</div><!-- /#tira-popup -->
+
+
+<!-- Closed indicator (appears when popup was dismissed) -->
+<div class="popup-closed-indicator" id="closedIndicator" onclick="demoReopen()">
+  Newsletter — Rouvrir ↑
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════ -->
+<script>
+/* ════════════════════════════════════════════
+   CONSTANTS
+════════════════════════════════════════════ */
+const STORAGE_KEY   = 'tira_newsletter_v1';
+const AUTO_DELAY_MS = 8000;   // 8 seconds in production
+const DEMO_DELAY_MS = 1500;   // 1.5 seconds for demo
+const SCROLL_RATIO  = 0.40;   // trigger at 40% scroll depth
+
+/* ════════════════════════════════════════════
+   ELEMENTS
+════════════════════════════════════════════ */
+const popup        = document.getElementById('tira-popup');
+const backdrop     = document.getElementById('tira-popup-backdrop');
+const bgPage       = document.getElementById('bgPage');
+const formState    = document.getElementById('popupFormState');
+const successState = document.getElementById('popupSuccessState');
+const popupEmail   = document.getElementById('popupEmail');
+const popupConsent = document.getElementById('popupConsent');
+const popupError   = document.getElementById('popupError');
+const closedInd    = document.getElementById('closedIndicator');
+const scrollBar    = document.getElementById('scrollBar');
+const countdown    = document.getElementById('countdown');
+
+/* ════════════════════════════════════════════
+   CORE POPUP LOGIC
+════════════════════════════════════════════ */
+
+/**
+ * Show popup if not already dismissed/subscribed.
+ * In production: check localStorage['tira_newsletter_v1']
+ */
+function showPopup() {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored) return; // closed or subscribed
+  _openPopup();
+}
+
+function _openPopup() {
+  popup.classList.add('visible');
+  backdrop.classList.add('visible');
+  bgPage.classList.add('blurred');
+  document.body.style.overflow = 'hidden';
+  closedInd.classList.remove('visible');
+  // Focus management for accessibility
+  setTimeout(() => popupEmail?.focus(), 450);
+  // Clear countdown
+  countdown.style.display = 'none';
+}
+
+/**
+ * Close popup.
+ * @param {boolean} subscribed — if true, mark as 'subscribed' in localStorage
+ */
+function closePopup(subscribed = false) {
+  popup.classList.remove('visible');
+  backdrop.classList.remove('visible');
+  bgPage.classList.remove('blurred');
+  document.body.style.overflow = '';
+
+  const value = subscribed ? 'subscribed' : 'closed';
+  localStorage.setItem(STORAGE_KEY, value);
+
+  if (!subscribed) {
+    closedInd.classList.add('visible');
+  }
+
+  // Reset to form state after animation
+  setTimeout(() => {
+    if (!subscribed) {
+      formState.style.display = '';
+      successState.classList.remove('visible');
+    }
+  }, 500);
+}
+
+/* ════════════════════════════════════════════
+   AUTO-OPEN TRIGGERS
+════════════════════════════════════════════ */
+
+// Trigger 1: time delay
+let countdownInterval;
+function startCountdown() {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored) return;
+
+  let remaining = Math.ceil(DEMO_DELAY_MS / 1000);
+  countdown.style.display = 'block';
+  countdown.textContent = `Popup dans ${remaining}s`;
+
+  countdownInterval = setInterval(() => {
+    remaining--;
+    countdown.textContent = `Popup dans ${remaining}s`;
+    if (remaining <= 0) {
+      clearInterval(countdownInterval);
+      countdown.style.display = 'none';
+    }
+  }, 1000);
+
+  setTimeout(() => {
+    showPopup();
+  }, DEMO_DELAY_MS);
+}
+
+// Trigger 2: scroll depth (40%)
+let scrollTriggered = false;
+window.addEventListener('scroll', function onScroll() {
+  const depth = (window.scrollY + window.innerHeight) / document.body.scrollHeight;
+  const ratio = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+
+  // Update scroll progress bar
+  const progress = Math.min(1, window.scrollY / (document.body.scrollHeight * SCROLL_RATIO / 2));
+  scrollBar.style.width = (progress * 100) + '%';
+
+  if (ratio >= SCROLL_RATIO && !scrollTriggered) {
+    scrollTriggered = true;
+    scrollBar.classList.add('triggered');
+    clearInterval(countdownInterval);
+    countdown.style.display = 'none';
+    showPopup();
+    window.removeEventListener('scroll', onScroll);
+  }
+}, { passive: true });
+
+/* ════════════════════════════════════════════
+   FORM SUBMISSION
+════════════════════════════════════════════ */
+function handleSubmit(e) {
+  e.preventDefault();
+
+  const email   = popupEmail.value.trim();
+  const consent = popupConsent.checked;
+  const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // Validate email
+  if (!emailRx.test(email)) {
+    popupError.classList.add('visible');
+    popupEmail.focus();
+    return false;
+  }
+  popupError.classList.remove('visible');
+
+  if (!consent) {
+    popupConsent.focus();
+    return false;
+  }
+
+  // Simulate API call (in production: POST to Klaviyo / Shopify Customer API)
+  const submitBtn = document.getElementById('popupSubmitBtn');
+  submitBtn.textContent = 'Envoi en cours…';
+  submitBtn.disabled = true;
+
+  setTimeout(() => {
+    // Show success state
+    formState.style.display = 'none';
+    successState.classList.add('visible');
+    // Store subscription
+    localStorage.setItem(STORAGE_KEY, 'subscribed');
+  }, 800);
+
+  return false;
+}
+
+/* Email input: clear error on change */
+popupEmail?.addEventListener('input', () => {
+  popupError.classList.remove('visible');
+});
+
+/* ════════════════════════════════════════════
+   KEYBOARD TRAP & ESC
+════════════════════════════════════════════ */
+document.addEventListener('keydown', e => {
+  if (!popup.classList.contains('visible')) return;
+
+  if (e.key === 'Escape') {
+    closePopup(false);
+    return;
+  }
+
+  // Focus trap
+  if (e.key === 'Tab') {
+    const focusable = popup.querySelectorAll(
+      'button, input, [tabindex]:not([tabindex="-1"])'
+    );
+    const first = focusable[0];
+    const last  = focusable[focusable.length - 1];
+
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+});
+
+/* ════════════════════════════════════════════
+   BACKDROP CLICK
+════════════════════════════════════════════ */
+function demoBackdropClose() {
+  closePopup(false);
+}
+
+/* ════════════════════════════════════════════
+   DEMO CONTROL FUNCTIONS
+════════════════════════════════════════════ */
+
+/** Reopen: clear localStorage + scroll state + re-show */
+function demoReopen() {
+  localStorage.removeItem(STORAGE_KEY);
+  scrollTriggered = false;
+  scrollBar.classList.remove('triggered');
+  scrollBar.style.width = '0%';
+
+  // Reset form
+  formState.style.display = '';
+  successState.classList.remove('visible');
+  if (popupEmail) popupEmail.value = '';
+  if (popupConsent) popupConsent.checked = false;
+  const submitBtn = document.getElementById('popupSubmitBtn');
+  if (submitBtn) { submitBtn.textContent = 'Rejoindre L\'Atelier →'; submitBtn.disabled = false; }
+  popupError.classList.remove('visible');
+
+  closedInd.classList.remove('visible');
+  _openPopup();
+
+  // Update active button
+  setActiveBtn('btnReopen');
+}
+
+/** Show success state directly */
+function demoSuccess() {
+  localStorage.removeItem(STORAGE_KEY);
+
+  // Open popup and immediately show success
+  _openPopup();
+  formState.style.display = 'none';
+  successState.classList.add('visible');
+
+  setActiveBtn('btnSuccessState');
+}
+
+/** Simulate closed (cookie set) */
+function demoClosed() {
+  if (popup.classList.contains('visible')) {
+    closePopup(false);
+  } else {
+    localStorage.setItem(STORAGE_KEY, 'closed');
+    closedInd.classList.add('visible');
+  }
+  clearInterval(countdownInterval);
+  countdown.style.display = 'none';
+
+  setActiveBtn('btnCookieState');
+}
+
+/** Toggle mobile preview mode */
+function demoToggleMobile() {
+  const isMobile = document.body.classList.toggle('mobile-preview');
+  document.getElementById('btnMobile').classList.toggle('active', isMobile);
+  document.getElementById('btnMobile').textContent = isMobile ? 'Mode desktop' : 'Mode mobile';
+
+  // If popup is closed, reopen so we see the mobile layout
+  if (!popup.classList.contains('visible') && isMobile) {
+    demoReopen();
+  }
+}
+
+function setActiveBtn(id) {
+  document.querySelectorAll('.demo-controls__btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id)?.classList.add('active');
+}
+
+/* ════════════════════════════════════════════
+   INIT — Start countdown on page load
+════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  const stored = localStorage.getItem(STORAGE_KEY);
+
+  if (stored === 'closed') {
+    // Show the reopener indicator
+    closedInd.classList.add('visible');
+  } else if (stored === 'subscribed') {
+    // Already subscribed, never show again (in production)
+    // For demo: just show indicator
+    closedInd.classList.add('visible');
+    closedInd.textContent = 'Déjà inscrit — Rouvrir pour démo ↑';
+  } else {
+    // Fresh visit: start countdown
+    startCountdown();
+  }
+});
+
+</script>
+
+<!-- ═══════════════════════════════════════════
+     CODE REFERENCE SECTION (below the fold)
+════════════════════════════════════════════ -->
+<style>
+.code-ref {
+  background: #111;
+  color: #e0ddd8;
+  font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.75;
+  padding: 48px 40px;
+  border-top: 3px solid #c8a96e;
+  overflow-x: auto;
+}
+.code-ref__title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 24px;
+  color: #c8a96e;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+.code-ref__sub {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 40px;
+}
+.code-ref h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 32px 0 12px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.code-ref h3:first-of-type { border-top: none; padding-top: 0; margin-top: 0; }
+.code-ref .kw  { color: #c8a96e; }
+.code-ref .str { color: #a0c8a0; }
+.code-ref .cm  { color: #555; font-style: italic; }
+.code-ref .fn  { color: #9eb8c4; }
+@media (max-width: 768px) {
+  .code-ref { padding: 40px 20px; }
+}
+</style>
+
+<div class="code-ref">
+  <div class="code-ref__title">Code de référence</div>
+  <div class="code-ref__sub">snippets/tira-newsletter-popup.liquid — Copier dans Shopify</div>
+
+<h3>1 — HTML Liquid (snippet)</h3>
+<pre><span class="cm">{% comment %}
+  snippets/tira-newsletter-popup.liquid
+  Inclure dans layout/theme.liquid avant &lt;/body&gt; :
+  {% render 'tira-newsletter-popup' %}
+{% endcomment %}</span>
+
+&lt;<span class="kw">div</span> id=<span class="str">"tira-popup-backdrop"</span> onclick=<span class="str">"tiraNLClose()"</span>&gt;&lt;/<span class="kw">div</span>&gt;
+&lt;<span class="kw">div</span> id=<span class="str">"tira-popup"</span> role=<span class="str">"dialog"</span> aria-modal=<span class="str">"true"</span>&gt;
+
+  &lt;<span class="kw">div</span> class=<span class="str">"popup-col-image"</span>&gt;
+    &lt;<span class="kw">div</span> class=<span class="str">"popup-col-image__text"</span>&gt;
+      &lt;<span class="kw">em</span>&gt;L'Atelier&lt;/<span class="kw">em</span>&gt;
+      &lt;<span class="kw">span</span>&gt;TIRABOSCHI · Paris&lt;/<span class="kw">span</span>&gt;
+    &lt;/<span class="kw">div</span>&gt;
+  &lt;/<span class="kw">div</span>&gt;
+
+  &lt;<span class="kw">div</span> class=<span class="str">"popup-col-content"</span>&gt;
+    &lt;<span class="kw">button</span> class=<span class="str">"popup-close"</span> onclick=<span class="str">"tiraNLClose()"</span>&gt;×&lt;/<span class="kw">button</span>&gt;
+
+    &lt;<span class="kw">div</span> id=<span class="str">"popup-form-state"</span>&gt;
+      &lt;<span class="kw">p</span> class=<span class="str">"popup-eyebrow"</span>&gt;Bienvenue&lt;/<span class="kw">p</span>&gt;
+      &lt;<span class="kw">h2</span> class=<span class="str">"popup-title"</span>&gt;Entrez dans les coulisses.&lt;/<span class="kw">h2</span>&gt;
+      &lt;<span class="kw">p</span> class=<span class="str">"popup-body"</span>&gt;Récits d'artisans, nouveautés en avant-première...&lt;/<span class="kw">p</span>&gt;
+      &lt;<span class="kw">form</span> id=<span class="str">"popup-form"</span>&gt;
+        &lt;<span class="kw">input</span> type=<span class="str">"email"</span> id=<span class="str">"popup-email"</span> required&gt;
+        &lt;<span class="kw">label</span>&gt;&lt;<span class="kw">input</span> type=<span class="str">"checkbox"</span> required&gt; Accepter les communications&lt;/<span class="kw">label</span>&gt;
+        &lt;<span class="kw">button</span> type=<span class="str">"submit"</span>&gt;Rejoindre L'Atelier →&lt;/<span class="kw">button</span>&gt;
+      &lt;/<span class="kw">form</span>&gt;
+    &lt;/<span class="kw">div</span>&gt;
+
+    &lt;<span class="kw">div</span> id=<span class="str">"popup-success-state"</span> style=<span class="str">"display:none"</span>&gt;
+      &lt;<span class="kw">h2</span>&gt;Merci.&lt;/<span class="kw">h2</span>&gt;
+      &lt;<span class="kw">p</span>&gt;Votre première lettre arrive bientôt.&lt;/<span class="kw">p</span>&gt;
+      &lt;<span class="kw">button</span> onclick=<span class="str">"tiraNLClose(true)"</span>&gt;Fermer&lt;/<span class="kw">button</span>&gt;
+    &lt;/<span class="kw">div</span>&gt;
+  &lt;/<span class="kw">div</span>&gt;
+&lt;/<span class="kw">div</span>&gt;</pre>
+
+<h3>2 — JavaScript (à mettre dans tiraboschi.js)</h3>
+<pre><span class="cm">/* ─── Newsletter Popup ─── */</span>
+(<span class="kw">function</span>() {
+  <span class="kw">const</span> STORAGE_KEY   = <span class="str">'tira_newsletter_v1'</span>;
+  <span class="kw">const</span> AUTO_DELAY_MS = 8000;   <span class="cm">// 8 secondes</span>
+  <span class="kw">const</span> SCROLL_RATIO  = 0.40;   <span class="cm">// 40% de profondeur de scroll</span>
+
+  <span class="kw">const</span> popup    = document.<span class="fn">getElementById</span>(<span class="str">'tira-popup'</span>);
+  <span class="kw">const</span> backdrop = document.<span class="fn">getElementById</span>(<span class="str">'tira-popup-backdrop'</span>);
+  <span class="kw">if</span> (!popup) <span class="kw">return</span>;
+
+  <span class="cm">// ── Afficher</span>
+  <span class="kw">function</span> <span class="fn">showPopup</span>() {
+    <span class="kw">if</span> (localStorage.<span class="fn">getItem</span>(STORAGE_KEY)) <span class="kw">return</span>;
+    popup.classList.<span class="fn">add</span>(<span class="str">'visible'</span>);
+    backdrop.classList.<span class="fn">add</span>(<span class="str">'visible'</span>);
+    document.body.style.overflow = <span class="str">'hidden'</span>;
+  }
+
+  <span class="cm">// ── Fermer</span>
+  window.<span class="fn">tiraNLClose</span> = <span class="kw">function</span>(subscribed = <span class="kw">false</span>) {
+    popup.classList.<span class="fn">remove</span>(<span class="str">'visible'</span>);
+    backdrop.classList.<span class="fn">remove</span>(<span class="str">'visible'</span>);
+    document.body.style.overflow = <span class="str">''</span>;
+    localStorage.<span class="fn">setItem</span>(STORAGE_KEY, subscribed ? <span class="str">'subscribed'</span> : <span class="str">'closed'</span>);
+  };
+
+  <span class="cm">// ── Trigger 1 : délai</span>
+  <span class="fn">setTimeout</span>(showPopup, AUTO_DELAY_MS);
+
+  <span class="cm">// ── Trigger 2 : scroll</span>
+  window.<span class="fn">addEventListener</span>(<span class="str">'scroll'</span>, <span class="kw">function</span> <span class="fn">onScroll</span>() {
+    <span class="kw">if</span> (window.scrollY / document.body.scrollHeight &gt; SCROLL_RATIO) {
+      <span class="fn">showPopup</span>();
+      window.<span class="fn">removeEventListener</span>(<span class="str">'scroll'</span>, onScroll);
+    }
+  }, { passive: <span class="kw">true</span> });
+
+  <span class="cm">// ── Soumission formulaire</span>
+  document.<span class="fn">getElementById</span>(<span class="str">'popup-form'</span>)?.<span class="fn">addEventListener</span>(<span class="str">'submit'</span>, <span class="kw">async</span> e =&gt; {
+    e.<span class="fn">preventDefault</span>();
+    <span class="kw">const</span> email = document.<span class="fn">getElementById</span>(<span class="str">'popup-email'</span>).value;
+
+    <span class="cm">// POST vers Klaviyo via Shopify Customer API ou proxy</span>
+    <span class="cm">// Remplacer par l'endpoint Klaviyo list subscribe</span>
+    <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'/contact#newsletter'</span>, {
+      method: <span class="str">'POST'</span>,
+      headers: { <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> },
+      body: JSON.<span class="fn">stringify</span>({ contact: { email, tags: <span class="str">'newsletter,atelier'</span> } })
+    });
+
+    document.<span class="fn">getElementById</span>(<span class="str">'popup-form-state'</span>).style.display = <span class="str">'none'</span>;
+    document.<span class="fn">getElementById</span>(<span class="str">'popup-success-state'</span>).style.display = <span class="str">'flex'</span>;
+    localStorage.<span class="fn">setItem</span>(STORAGE_KEY, <span class="str">'subscribed'</span>);
+  });
+
+  <span class="cm">// ── Fermeture ESC</span>
+  document.<span class="fn">addEventListener</span>(<span class="str">'keydown'</span>, e =&gt; {
+    <span class="kw">if</span> (e.key === <span class="str">'Escape'</span>) window.<span class="fn">tiraNLClose</span>();
+  });
+})();</pre>
+
+<h3>3 — Logique localStorage (durée 30 jours)</h3>
+<pre><span class="cm">// Version production avec expiry 30 jours</span>
+<span class="kw">function</span> <span class="fn">setWithExpiry</span>(key, value, days) {
+  <span class="kw">const</span> expiry = <span class="kw">new</span> <span class="fn">Date</span>();
+  expiry.<span class="fn">setDate</span>(expiry.<span class="fn">getDate</span>() + days);
+  localStorage.<span class="fn">setItem</span>(key, JSON.<span class="fn">stringify</span>({ value, expiry: expiry.<span class="fn">toISOString</span>() }));
+}
+
+<span class="kw">function</span> <span class="fn">getWithExpiry</span>(key) {
+  <span class="kw">const</span> item = localStorage.<span class="fn">getItem</span>(key);
+  <span class="kw">if</span> (!item) <span class="kw">return</span> <span class="kw">null</span>;
+  <span class="kw">const</span> parsed = JSON.<span class="fn">parse</span>(item);
+  <span class="kw">if</span> (parsed.value === <span class="str">'subscribed'</span>) <span class="kw">return</span> parsed.value; <span class="cm">// jamais expirer</span>
+  <span class="kw">if</span> (<span class="kw">new</span> <span class="fn">Date</span>() &gt; <span class="kw">new</span> <span class="fn">Date</span>(parsed.expiry)) {
+    localStorage.<span class="fn">removeItem</span>(key);
+    <span class="kw">return</span> <span class="kw">null</span>; <span class="cm">// expiré → réafficher</span>
+  }
+  <span class="kw">return</span> parsed.value;
+}
+
+<span class="cm">// Usage :</span>
+<span class="cm">// setWithExpiry('tira_newsletter_v1', 'closed', 30);</span>
+<span class="cm">// setWithExpiry('tira_newsletter_v1', 'subscribed', 9999);</span>
+<span class="cm">// const status = getWithExpiry('tira_newsletter_v1');</span></pre>
+
+</div>
+
+</body>
+</html>
