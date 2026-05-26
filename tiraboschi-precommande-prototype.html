@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TIRABOSCHI Paris — Drops & Précommandes · Démo de validation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── CSS TOKENS ─── */
+    :root {
+      --tira-black:    #0a0a0a;
+      --tira-white:    #ffffff;
+      --tira-grey:     #f7f5f2;
+      --tira-border:   #e8e8e8;
+      --tira-ease:     cubic-bezier(0.16, 1, 0.3, 1);
+      --tira-duration: 0.9s;
+    }
+
+    /* ─── RESET ─── */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      border-radius: 0 !important;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Playfair Display', Georgia, serif;
+      background: var(--tira-white);
+      color: var(--tira-black);
+      font-size: 14px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: 'Playfair Display', Georgia, serif;
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+
+    img { display: block; max-width: 100%; }
+
+    /* ─── SECTION LABELS ─── */
+    .section-label {
+      background: #1a1a2e;
+      color: #aaa;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      padding: 8px 20px;
+      text-align: center;
+    }
+
+    /* ═══════════════════════════════════════════
+       DEMO NAV (sticky)
+    ═══════════════════════════════════════════ */
+    .tira-demo-nav {
+      position: sticky;
+      top: 0;
+      z-index: 9000;
+      background: var(--tira-black);
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .tira-demo-nav__label {
+      color: rgba(255,255,255,0.35);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .tira-demo-nav a {
+      color: var(--tira-white);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .tira-demo-nav a:hover { opacity: 1; }
+
+    /* ═══════════════════════════════════════════
+       SECTION 1 — BARRE ANNONCE DROP
+    ═══════════════════════════════════════════ */
+    #section-barre { background: var(--tira-grey); padding: 60px 0; }
+
+    .tira-drop-bar {
+      background: var(--tira-black);
+      color: var(--tira-white);
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0 24px;
+    }
+
+    .tira-drop-bar__text {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tira-drop-bar__link {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      white-space: nowrap;
+      opacity: 0.85;
+      transition: opacity 0.2s;
+    }
+
+    .tira-drop-bar__link:hover { opacity: 1; }
+
+    .tira-drop-bar__sep {
+      opacity: 0.3;
+      font-size: 8px;
+    }
+
+    .tira-drop-bar__countdown {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      opacity: 0.7;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .section-demo-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    .section-demo-label {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .section-demo-caption {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #888;
+      margin-top: 16px;
+      text-align: center;
+    }
+
+    /* ═══════════════════════════════════════════
+       SECTION 2 — PAGE PRODUIT PRÉCOMMANDE
+    ═══════════════════════════════════════════ */
+    #section-produit {
+      background: var(--tira-white);
+      padding: 80px 0;
+    }
+
+    .tira-product {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+
+    /* Gallery */
+    .tira-product__gallery {
+      position: sticky;
+      top: 60px;
+    }
+
+    .tira-product__main-img {
+      width: 100%;
+      aspect-ratio: 3/4;
+      background: linear-gradient(160deg, #1a1a1a 0%, #2d2d2d 40%, #111 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tira-product__main-img::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 2px,
+          rgba(255,255,255,0.015) 2px,
+          rgba(255,255,255,0.015) 4px
+        );
+    }
+
+    .tira-product__img-label {
+      position: absolute;
+      bottom: 24px;
+      left: 24px;
+      color: rgba(255,255,255,0.5);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .tira-product__thumbnails {
+      display: flex;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .tira-product__thumb {
+      width: 60px;
+      height: 80px;
+      background: linear-gradient(160deg, #1a1a1a, #2d2d2d);
+      flex-shrink: 0;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: opacity 0.25s;
+      border: 1px solid transparent;
+    }
+
+    .tira-product__thumb:first-child {
+      opacity: 1;
+      border-color: var(--tira-black);
+    }
+
+    .tira-product__thumb:hover { opacity: 0.8; }
+
+    /* Product info */
+    .tira-product__info {}
+
+    /* Pre-order badge */
+    .tira-preorder-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--tira-black);
+      background: transparent;
+      padding: 6px 12px;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    @keyframes tira-pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+
+    .tira-preorder-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--tira-black);
+      display: inline-block;
+      animation: tira-pulse 1.5s ease-in-out infinite;
+    }
+
+    .tira-preorder-dot--white {
+      background: var(--tira-white);
+    }
+
+    /* Product name */
+    .tira-product__name {
+      font-size: 48px;
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      margin-bottom: 4px;
+    }
+
+    .tira-product__variant-name {
+      font-size: 16px;
+      font-weight: 400;
+      color: #555;
+      letter-spacing: 0.02em;
+      margin-bottom: 20px;
+    }
+
+    .tira-product__price {
+      font-size: 24px;
+      font-weight: 400;
+      margin-bottom: 4px;
+    }
+
+    .tira-product__price-note {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 28px;
+    }
+
+    /* Edition block */
+    .tira-edition-block {
+      background: var(--tira-grey);
+      padding: 16px 20px;
+      margin-bottom: 28px;
+    }
+
+    .tira-edition-block__title {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .tira-edition-block__bar-wrap {
+      height: 1px;
+      background: var(--tira-border);
+      margin-bottom: 8px;
+      position: relative;
+    }
+
+    .tira-edition-block__bar-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 57.5%;
+      background: var(--tira-black);
+    }
+
+    .tira-edition-block__stats {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #555;
+    }
+
+    /* Countdown */
+    .tira-countdown-label {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 12px;
+    }
+
+    .tira-countdown {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin-bottom: 28px;
+    }
+
+    .tira-countdown__unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tira-countdown__box {
+      width: 64px;
+      height: 64px;
+      border: 1px solid var(--tira-border);
+      background: var(--tira-grey);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 400;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+
+    .tira-countdown__sep {
+      font-size: 20px;
+      padding-top: 20px;
+      opacity: 0.3;
+    }
+
+    .tira-countdown__label {
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.45;
+    }
+
+    /* Swatches */
+    .tira-swatches {
+      margin-bottom: 28px;
+    }
+
+    .tira-swatches__label {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      color: #555;
+    }
+
+    .tira-swatches__list {
+      display: flex;
+      gap: 8px;
+    }
+
+    .tira-swatch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .tira-swatch__dot {
+      width: 24px;
+      height: 24px;
+      border: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+
+    .tira-swatch--active .tira-swatch__dot {
+      border-color: var(--tira-black);
+    }
+
+    .tira-swatch__dot--noir  { background: #0a0a0a; }
+    .tira-swatch__dot--camel { background: #c4956a; }
+    .tira-swatch__dot--bordeaux { background: #6b1a2b; }
+
+    .tira-swatch__name {
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.5;
+    }
+
+    /* CTA */
+    .tira-preorder-cta {
+      width: 100%;
+      background: var(--tira-white);
+      border: 1px solid var(--tira-black);
+      padding: 16px 24px;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.3s var(--tira-ease), color 0.3s var(--tira-ease);
+      margin-bottom: 10px;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .tira-preorder-cta:hover {
+      background: var(--tira-black);
+      color: var(--tira-white);
+    }
+
+    .tira-preorder-cta__arrow {
+      transition: transform 0.3s var(--tira-ease);
+    }
+
+    .tira-preorder-cta:hover .tira-preorder-cta__arrow {
+      transform: translateX(4px);
+    }
+
+    .tira-preorder-sub {
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #888;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    /* Timeline */
+    .tira-timeline {
+      margin-bottom: 32px;
+    }
+
+    .tira-timeline__intro {
+      font-size: 12px;
+      color: #555;
+      margin-bottom: 20px;
+      letter-spacing: 0.03em;
+    }
+
+    .tira-timeline__track {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      margin-bottom: 12px;
+    }
+
+    .tira-timeline__step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+
+    .tira-timeline__node {
+      width: 8px;
+      height: 8px;
+      border: 1px solid var(--tira-black);
+      background: var(--tira-white);
+      flex-shrink: 0;
+      margin-bottom: 10px;
+    }
+
+    .tira-timeline__node--filled {
+      background: var(--tira-black);
+    }
+
+    .tira-timeline__line {
+      flex: 1;
+      height: 1px;
+      background: var(--tira-border);
+      margin-top: 3.5px;
+    }
+
+    .tira-timeline__labels {
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .tira-timeline__label {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .tira-timeline__date {
+      font-size: 11px;
+      opacity: 0.45;
+      letter-spacing: 0.05em;
+    }
+
+    .tira-timeline__title {
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .tira-timeline__sub {
+      font-size: 10px;
+      opacity: 0.5;
+      text-align: center;
+    }
+
+    .tira-timeline__artisan {
+      font-size: 11px;
+      font-style: italic;
+      color: #888;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    /* Trust signals */
+    .tira-trust {
+      display: flex;
+      gap: 20px;
+      padding-top: 24px;
+      border-top: 1px solid var(--tira-border);
+    }
+
+    .tira-trust__item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .tira-trust__icon {
+      flex-shrink: 0;
+      color: var(--tira-black);
+    }
+
+    .tira-trust__text {
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      line-height: 1.4;
+    }
+
+    /* ═══════════════════════════════════════════
+       SECTION 3 — PAGE DROP CAMPAGNE
+    ═══════════════════════════════════════════ */
+    #section-campagne {
+      background: var(--tira-white);
+    }
+
+    /* Hero drop */
+    .tira-drop-hero {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: linear-gradient(160deg, #0d0d0d 0%, #1a1a1a 50%, #0a0a0a 100%);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .tira-drop-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 3px,
+          rgba(255,255,255,0.012) 3px,
+          rgba(255,255,255,0.012) 4px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 3px,
+          rgba(255,255,255,0.012) 3px,
+          rgba(255,255,255,0.012) 4px
+        );
+    }
+
+    .tira-drop-hero__content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: var(--tira-white);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .tira-drop-hero__label {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.5;
+    }
+
+    .tira-drop-hero__title {
+      font-size: 64px;
+      font-weight: 400;
+      line-height: 1.0;
+      letter-spacing: -0.01em;
+    }
+
+    /* Large hero countdown */
+    .tira-hero-countdown {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 8px 0;
+    }
+
+    .tira-hero-countdown__num {
+      font-size: 64px;
+      font-weight: 400;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tira-hero-countdown__sep {
+      font-size: 48px;
+      opacity: 0.3;
+      line-height: 1;
+      padding-bottom: 4px;
+    }
+
+    .tira-hero-countdown__unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .tira-hero-countdown__label {
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.4;
+      margin-top: 4px;
+    }
+
+    .tira-drop-hero__date {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.5;
+    }
+
+    .tira-drop-hero__cta {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      color: var(--tira-white);
+      opacity: 0.75;
+      transition: opacity 0.2s;
+    }
+
+    .tira-drop-hero__cta:hover { opacity: 1; }
+
+    /* Scroll indicator */
+    .tira-drop-hero__scroll {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      color: rgba(255,255,255,0.35);
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    @keyframes tira-bounce {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(5px); }
+    }
+
+    .tira-drop-hero__arrow {
+      animation: tira-bounce 1.8s ease-in-out infinite;
+    }
+
+    /* How it works */
+    .tira-how-it-works {
+      padding: 80px 40px;
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    .tira-how-it-works__headline {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 48px;
+      text-align: center;
+    }
+
+    .tira-how-it-works__steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+    }
+
+    .tira-hiw-step {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .tira-hiw-step__num {
+      font-size: 48px;
+      font-weight: 400;
+      line-height: 1;
+      opacity: 0.1;
+    }
+
+    .tira-hiw-step__title {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.3;
+    }
+
+    .tira-hiw-step__sub {
+      font-size: 12px;
+      color: #777;
+      line-height: 1.5;
+    }
+
+    /* Drop grid */
+    .tira-drop-grid-wrap {
+      background: var(--tira-grey);
+      padding: 80px 0;
+    }
+
+    .tira-drop-grid {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    .tira-drop-grid__header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 32px;
+    }
+
+    .tira-drop-grid__title {
+      font-size: 32px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+    }
+
+    .tira-drop-grid__sub {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #888;
+    }
+
+    .tira-drop-grid__products {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3px;
+    }
+
+    .tira-drop-card {
+      background: var(--tira-white);
+      cursor: pointer;
+    }
+
+    .tira-drop-card__img {
+      width: 100%;
+      aspect-ratio: 3/4;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tira-drop-card__img-bg {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(160deg, #1a1a1a 0%, #2d2d2d 50%, #111 100%);
+      transition: transform 0.6s var(--tira-ease);
+    }
+
+    .tira-drop-card:hover .tira-drop-card__img-bg {
+      transform: scale(1.04);
+    }
+
+    .tira-drop-card__badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: var(--tira-black);
+      color: var(--tira-white);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 4px 8px;
+    }
+
+    .tira-drop-card__qty {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      color: var(--tira-white);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+
+    .tira-drop-card__body {
+      padding: 12px;
+    }
+
+    .tira-drop-card__name {
+      font-size: 14px;
+      font-weight: 400;
+      margin-bottom: 2px;
+    }
+
+    .tira-drop-card__variant {
+      font-size: 11px;
+      color: #888;
+      margin-bottom: 8px;
+    }
+
+    .tira-drop-card__footer {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+
+    .tira-drop-card__price {
+      font-size: 14px;
+    }
+
+    .tira-drop-card__cta {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      color: var(--tira-black);
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .tira-drop-card__cta:hover { opacity: 0.5; }
+
+    /* FAQ */
+    .tira-faq-wrap {
+      padding: 80px 40px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .tira-faq__headline {
+      font-size: 32px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      margin-bottom: 40px;
+    }
+
+    .tira-faq__item {
+      border-top: 1px solid var(--tira-border);
+    }
+
+    .tira-faq__item:last-child {
+      border-bottom: 1px solid var(--tira-border);
+    }
+
+    .tira-faq__question {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 0;
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      text-align: left;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .tira-faq__icon {
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      position: relative;
+    }
+
+    .tira-faq__icon::before,
+    .tira-faq__icon::after {
+      content: '';
+      position: absolute;
+      background: var(--tira-black);
+      transition: transform 0.3s var(--tira-ease), opacity 0.3s;
+    }
+
+    .tira-faq__icon::before {
+      width: 16px;
+      height: 1px;
+      top: 50%;
+      left: 0;
+    }
+
+    .tira-faq__icon::after {
+      width: 1px;
+      height: 16px;
+      top: 0;
+      left: 50%;
+    }
+
+    .tira-faq__item.open .tira-faq__icon::after {
+      transform: rotate(90deg);
+      opacity: 0;
+    }
+
+    .tira-faq__answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s var(--tira-ease), padding 0.3s;
+    }
+
+    .tira-faq__item.open .tira-faq__answer {
+      max-height: 300px;
+    }
+
+    .tira-faq__answer-inner {
+      padding: 0 0 24px 0;
+      font-size: 13px;
+      color: #555;
+      line-height: 1.7;
+    }
+
+    /* Newsletter / waitlist */
+    .tira-waitlist {
+      background: var(--tira-black);
+      padding: 64px 40px;
+    }
+
+    .tira-waitlist__inner {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+      color: var(--tira-white);
+    }
+
+    .tira-waitlist__label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.4;
+      margin-bottom: 12px;
+    }
+
+    .tira-waitlist__title {
+      font-size: 28px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      margin-bottom: 8px;
+    }
+
+    .tira-waitlist__sub {
+      font-size: 12px;
+      opacity: 0.45;
+      letter-spacing: 0.05em;
+      margin-bottom: 28px;
+    }
+
+    .tira-waitlist__form {
+      display: flex;
+      gap: 0;
+      max-width: 440px;
+      margin: 0 auto 16px;
+    }
+
+    .tira-waitlist__input {
+      flex: 1;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.25);
+      border-right: none;
+      padding: 12px 16px;
+      font-size: 13px;
+      font-family: 'Playfair Display', serif;
+      color: var(--tira-white);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .tira-waitlist__input::placeholder {
+      color: rgba(255,255,255,0.3);
+    }
+
+    .tira-waitlist__input:focus {
+      border-color: rgba(255,255,255,0.6);
+    }
+
+    .tira-waitlist__btn {
+      background: var(--tira-white);
+      color: var(--tira-black);
+      border: 1px solid var(--tira-white);
+      padding: 12px 20px;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-family: 'Playfair Display', serif;
+      cursor: pointer;
+      transition: background 0.25s, color 0.25s;
+      white-space: nowrap;
+    }
+
+    .tira-waitlist__btn:hover {
+      background: transparent;
+      color: var(--tira-white);
+    }
+
+    .tira-waitlist__note {
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.3;
+    }
+
+    /* ─── Dividers ─── */
+    .tira-section-divider {
+      width: 100%;
+      height: 1px;
+      background: var(--tira-border);
+    }
+
+    /* ─── Page section title area ─── */
+    .tira-page-section-title {
+      text-align: center;
+      padding: 40px 40px 0;
+    }
+
+    .tira-page-section-title h2 {
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #bbb;
+    }
+
+    /* ═══════════════════════════════════════════
+       MOBILE
+    ═══════════════════════════════════════════ */
+    @media (max-width: 767px) {
+      .tira-demo-nav {
+        gap: 16px;
+        padding: 0 16px;
+        overflow-x: auto;
+      }
+
+      .tira-demo-nav__label { display: none; }
+
+      .tira-product {
+        grid-template-columns: 1fr;
+        gap: 32px;
+        padding: 0 20px;
+      }
+
+      .tira-product__gallery { position: static; }
+      .tira-product__name { font-size: 36px; }
+
+      .tira-countdown__box {
+        width: 52px;
+        height: 52px;
+        font-size: 24px;
+      }
+
+      .tira-trust {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .tira-drop-hero { aspect-ratio: 9/16; }
+
+      .tira-drop-hero__title { font-size: 36px; }
+
+      .tira-hero-countdown__num { font-size: 40px; }
+      .tira-hero-countdown__sep { font-size: 28px; }
+
+      .tira-how-it-works__steps {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      .tira-drop-grid__products {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .tira-drop-grid { padding: 0 16px; }
+      .tira-how-it-works { padding: 60px 20px; }
+      .tira-faq-wrap { padding: 60px 20px; }
+      .tira-waitlist { padding: 48px 20px; }
+
+      .tira-waitlist__form {
+        flex-direction: column;
+      }
+
+      .tira-waitlist__input {
+        border-right: 1px solid rgba(255,255,255,0.25);
+        border-bottom: none;
+      }
+
+      .tira-drop-bar__text {
+        font-size: 10px;
+        max-width: 65vw;
+      }
+
+      #section-barre { padding: 40px 0; }
+      #section-produit { padding: 48px 0; }
+
+      .section-demo-container { padding: 0 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     DEMO NAV — STICKY
+═══════════════════════════════════════════════════════════ -->
+<nav class="tira-demo-nav" aria-label="Navigation démo">
+  <span class="tira-demo-nav__label">Démonstration</span>
+  <a href="#section-barre">Barre drop</a>
+  <a href="#section-produit">Page produit</a>
+  <a href="#section-campagne">Page campagne</a>
+</nav>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION 1 — BARRE ANNONCE DROP
+═══════════════════════════════════════════════════════════ -->
+<div id="section-barre">
+  <div class="section-demo-container">
+    <p class="section-demo-label">Section 1 — Barre d'annonce drop (site-wide, au-dessus du header)</p>
+  </div>
+
+  <div class="tira-drop-bar" role="banner">
+    <div class="tira-drop-bar__text">
+      <span>Drop FW25</span>
+      <span class="tira-drop-bar__sep">·</span>
+      <span>Victoire Noir Verni</span>
+      <span class="tira-drop-bar__sep">·</span>
+      <span>Réservations ouvertes jusqu'au 15 juin —
+        <a href="#section-produit" class="tira-drop-bar__link">Réserver&nbsp;→</a>
+      </span>
+    </div>
+    <div class="tira-drop-bar__countdown" aria-live="polite" aria-label="Compte à rebours">
+      <span data-countdown="days-bar">14</span>j
+      <span data-countdown="hours-bar">23</span>h
+      <span data-countdown="mins-bar">11</span>m
+    </div>
+  </div>
+
+  <div class="section-demo-container">
+    <p class="section-demo-caption">44px · fond noir · texte 11px uppercase ls 0.12em · compte à rebours live</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION 2 — PAGE PRODUIT PRÉCOMMANDE
+═══════════════════════════════════════════════════════════ -->
+<div id="section-produit" style="border-top: 8px solid var(--tira-border);">
+  <div class="tira-page-section-title">
+    <h2>Section 2 — Page produit en état précommande</h2>
+  </div>
+
+  <section style="padding: 48px 0 80px;" aria-labelledby="produit-nom">
+    <div class="tira-product">
+
+      <!-- Galerie -->
+      <div class="tira-product__gallery">
+        <div class="tira-product__main-img">
+          <span class="tira-product__img-label">Victoire · Cuir Verni Noir</span>
+        </div>
+        <div class="tira-product__thumbnails">
+          <div class="tira-product__thumb"></div>
+          <div class="tira-product__thumb"></div>
+          <div class="tira-product__thumb"></div>
+          <div class="tira-product__thumb"></div>
+        </div>
+      </div>
+
+      <!-- Infos produit -->
+      <div class="tira-product__info">
+
+        <!-- Badge précommande -->
+        <div class="tira-preorder-badge" role="status" aria-label="Drop FW25 — Précommande en cours">
+          <span class="tira-preorder-dot" aria-hidden="true"></span>
+          Drop FW25
+          <span aria-hidden="true">·</span>
+          Précommande
+        </div>
+
+        <!-- Nom + prix -->
+        <h1 class="tira-product__name" id="produit-nom">Victoire</h1>
+        <p class="tira-product__variant-name">Cuir Verni Noir</p>
+        <p class="tira-product__price">2 850 €</p>
+        <p class="tira-product__price-note">Prix TTC · Livraison offerte en France</p>
+
+        <!-- Édition limitée -->
+        <div class="tira-edition-block" aria-label="Disponibilité de l'édition">
+          <p class="tira-edition-block__title">Édition limitée à 40 exemplaires</p>
+          <div class="tira-edition-block__bar-wrap" role="progressbar" aria-valuenow="57" aria-valuemin="0" aria-valuemax="100">
+            <div class="tira-edition-block__bar-fill"></div>
+          </div>
+          <p class="tira-edition-block__stats">23 réservées · 17 disponibles</p>
+        </div>
+
+        <!-- Compte à rebours produit -->
+        <p class="tira-countdown-label">Réservations closes dans</p>
+        <div class="tira-countdown" aria-label="Compte à rebours fermeture des réservations">
+          <div class="tira-countdown__unit">
+            <div class="tira-countdown__box" aria-label="Jours">
+              <span data-countdown="days">14</span>
+            </div>
+            <span class="tira-countdown__label">Jours</span>
+          </div>
+          <div class="tira-countdown__sep" aria-hidden="true">:</div>
+          <div class="tira-countdown__unit">
+            <div class="tira-countdown__box" aria-label="Heures">
+              <span data-countdown="hours">23</span>
+            </div>
+            <span class="tira-countdown__label">Heures</span>
+          </div>
+          <div class="tira-countdown__sep" aria-hidden="true">:</div>
+          <div class="tira-countdown__unit">
+            <div class="tira-countdown__box" aria-label="Minutes">
+              <span data-countdown="mins">11</span>
+            </div>
+            <span class="tira-countdown__label">Min</span>
+          </div>
+          <div class="tira-countdown__sep" aria-hidden="true">:</div>
+          <div class="tira-countdown__unit">
+            <div class="tira-countdown__box" aria-label="Secondes">
+              <span data-countdown="secs">47</span>
+            </div>
+            <span class="tira-countdown__label">Sec</span>
+          </div>
+        </div>
+
+        <!-- Swatches couleur -->
+        <div class="tira-swatches">
+          <p class="tira-swatches__label">Coloris — <span id="swatch-name">Noir Verni</span></p>
+          <div class="tira-swatches__list" role="radiogroup" aria-label="Choisir un coloris">
+            <div class="tira-swatch tira-swatch--active" data-swatch="Noir Verni" role="radio" aria-checked="true" tabindex="0">
+              <div class="tira-swatch__dot tira-swatch__dot--noir"></div>
+              <span class="tira-swatch__name">Noir</span>
+            </div>
+            <div class="tira-swatch" data-swatch="Camel Naturel" role="radio" aria-checked="false" tabindex="0">
+              <div class="tira-swatch__dot tira-swatch__dot--camel"></div>
+              <span class="tira-swatch__name">Camel</span>
+            </div>
+            <div class="tira-swatch" data-swatch="Bordeaux" role="radio" aria-checked="false" tabindex="0">
+              <div class="tira-swatch__dot tira-swatch__dot--bordeaux"></div>
+              <span class="tira-swatch__name">Bordeaux</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA principal -->
+        <button class="tira-preorder-cta" type="button" aria-label="Réserver ma pièce Victoire Cuir Verni Noir">
+          Réserver ma pièce
+          <span class="tira-preorder-cta__arrow" aria-hidden="true">→</span>
+        </button>
+        <p class="tira-preorder-sub">Paiement immédiat · Annulation gratuite avant le 15 juin</p>
+
+        <!-- Timeline fabrication -->
+        <div class="tira-timeline">
+          <p class="tira-timeline__intro">Votre pièce sera façonnée à la clôture de la commande</p>
+
+          <div class="tira-timeline__track">
+            <div class="tira-timeline__step">
+              <div class="tira-timeline__node tira-timeline__node--filled"></div>
+            </div>
+            <div class="tira-timeline__line"></div>
+            <div class="tira-timeline__step">
+              <div class="tira-timeline__node"></div>
+            </div>
+            <div class="tira-timeline__line"></div>
+            <div class="tira-timeline__step">
+              <div class="tira-timeline__node"></div>
+            </div>
+          </div>
+
+          <div class="tira-timeline__labels">
+            <div class="tira-timeline__label">
+              <span class="tira-timeline__date">15 juin</span>
+              <span class="tira-timeline__title">Clôture</span>
+              <span class="tira-timeline__sub">de la commande</span>
+            </div>
+            <div class="tira-timeline__label">
+              <span class="tira-timeline__date">Juillet</span>
+              <span class="tira-timeline__title">Façonnage</span>
+              <span class="tira-timeline__sub">(4–6 semaines)</span>
+            </div>
+            <div class="tira-timeline__label">
+              <span class="tira-timeline__date">Août 2025</span>
+              <span class="tira-timeline__title">Livraison</span>
+              <span class="tira-timeline__sub">estimée</span>
+            </div>
+          </div>
+
+          <p class="tira-timeline__artisan">1 artisan · 48h de travail à la main</p>
+        </div>
+
+        <!-- Gages de confiance -->
+        <div class="tira-trust">
+          <div class="tira-trust__item">
+            <svg class="tira-trust__icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="1 4 1 10 7 10"></polyline>
+              <path d="M3.51 15a9 9 0 1 0 .49-3.51"></path>
+            </svg>
+            <span class="tira-trust__text">Annulation gratuite avant clôture</span>
+          </div>
+          <div class="tira-trust__item">
+            <svg class="tira-trust__icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="11" width="18" height="11" rx="0" ry="0"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <span class="tira-trust__text">Paiement sécurisé Stripe</span>
+          </div>
+          <div class="tira-trust__item">
+            <svg class="tira-trust__icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <span class="tira-trust__text">Livraison offerte en France</span>
+          </div>
+        </div>
+
+      </div><!-- /.tira-product__info -->
+    </div><!-- /.tira-product -->
+  </section>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION 3 — PAGE DROP / CAMPAGNE
+═══════════════════════════════════════════════════════════ -->
+<div id="section-campagne" style="border-top: 8px solid var(--tira-border);">
+  <div class="tira-page-section-title" style="padding-bottom: 32px;">
+    <h2>Section 3 — Page drop / campagne</h2>
+  </div>
+
+  <!-- Hero -->
+  <div class="tira-drop-hero" role="banner">
+    <div class="tira-drop-hero__content">
+      <p class="tira-drop-hero__label">Automne — Hiver 2025</p>
+      <h2 class="tira-drop-hero__title">Drop FW25<br><em>Victoire Noir Verni</em></h2>
+
+      <!-- Large countdown -->
+      <div class="tira-hero-countdown" aria-label="Compte à rebours" role="timer">
+        <div class="tira-hero-countdown__unit">
+          <span class="tira-hero-countdown__num" data-countdown="days-hero">14</span>
+          <span class="tira-hero-countdown__label">J</span>
+        </div>
+        <span class="tira-hero-countdown__sep" aria-hidden="true">:</span>
+        <div class="tira-hero-countdown__unit">
+          <span class="tira-hero-countdown__num" data-countdown="hours-hero">23</span>
+          <span class="tira-hero-countdown__label">H</span>
+        </div>
+        <span class="tira-hero-countdown__sep" aria-hidden="true">:</span>
+        <div class="tira-hero-countdown__unit">
+          <span class="tira-hero-countdown__num" data-countdown="mins-hero">11</span>
+          <span class="tira-hero-countdown__label">M</span>
+        </div>
+        <span class="tira-hero-countdown__sep" aria-hidden="true">:</span>
+        <div class="tira-hero-countdown__unit">
+          <span class="tira-hero-countdown__num" data-countdown="secs-hero">47</span>
+          <span class="tira-hero-countdown__label">S</span>
+        </div>
+      </div>
+
+      <p class="tira-drop-hero__date">Réservations ouvertes jusqu'au 15 juin 2025</p>
+      <a href="#section-produit" class="tira-drop-hero__cta">Réserver maintenant →</a>
+    </div>
+
+    <div class="tira-drop-hero__scroll" aria-hidden="true">
+      <span>Découvrir</span>
+      <svg class="tira-drop-hero__arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <polyline points="19 12 12 19 5 12"></polyline>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Comment ça fonctionne -->
+  <section class="tira-how-it-works" aria-labelledby="hiw-title">
+    <p class="tira-how-it-works__headline" id="hiw-title">Comment fonctionne un drop Tiraboschi</p>
+    <div class="tira-how-it-works__steps">
+      <div class="tira-hiw-step">
+        <span class="tira-hiw-step__num" aria-hidden="true">01</span>
+        <h3 class="tira-hiw-step__title">Vous réservez</h3>
+        <p class="tira-hiw-step__sub">Jusqu'au 15 juin. Votre paiement confirme la commande — votre pièce vous est réservée.</p>
+      </div>
+      <div class="tira-hiw-step">
+        <span class="tira-hiw-step__num" aria-hidden="true">02</span>
+        <h3 class="tira-hiw-step__title">On façonne</h3>
+        <p class="tira-hiw-step__sub">Selon vos commandes, à la clôture. 4–6 semaines de travail. Un artisan. 48 heures à la main.</p>
+      </div>
+      <div class="tira-hiw-step">
+        <span class="tira-hiw-step__num" aria-hidden="true">03</span>
+        <h3 class="tira-hiw-step__title">Livraison</h3>
+        <p class="tira-hiw-step__sub">Estimée août 2025. Emballage cadeau et suivi inclus. Livraison offerte en France.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="tira-section-divider"></div>
+
+  <!-- Grille produits du drop -->
+  <div class="tira-drop-grid-wrap">
+    <section class="tira-drop-grid" aria-labelledby="grid-title">
+      <div class="tira-drop-grid__header">
+        <h2 class="tira-drop-grid__title" id="grid-title">Les pièces du drop</h2>
+        <span class="tira-drop-grid__sub">FW25 · 4 créations</span>
+      </div>
+      <div class="tira-drop-grid__products">
+
+        <!-- Card 1 -->
+        <article class="tira-drop-card">
+          <div class="tira-drop-card__img">
+            <div class="tira-drop-card__img-bg"></div>
+            <span class="tira-drop-card__badge">Pré-commande</span>
+            <span class="tira-drop-card__qty">17 disponibles</span>
+          </div>
+          <div class="tira-drop-card__body">
+            <p class="tira-drop-card__name">Victoire</p>
+            <p class="tira-drop-card__variant">Noir Verni</p>
+            <div class="tira-drop-card__footer">
+              <span class="tira-drop-card__price">2 850 €</span>
+              <a href="#section-produit" class="tira-drop-card__cta">Réserver →</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="tira-drop-card">
+          <div class="tira-drop-card__img">
+            <div class="tira-drop-card__img-bg" style="background: linear-gradient(160deg,#1a1614,#2a2420,#0e0c0b);"></div>
+            <span class="tira-drop-card__badge">Pré-commande</span>
+            <span class="tira-drop-card__qty">24 disponibles</span>
+          </div>
+          <div class="tira-drop-card__body">
+            <p class="tira-drop-card__name">Colette Mini</p>
+            <p class="tira-drop-card__variant">Verni Noir</p>
+            <div class="tira-drop-card__footer">
+              <span class="tira-drop-card__price">2 290 €</span>
+              <a href="#section-produit" class="tira-drop-card__cta">Réserver →</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="tira-drop-card">
+          <div class="tira-drop-card__img">
+            <div class="tira-drop-card__img-bg" style="background: linear-gradient(160deg,#1a1208,#2a1e0e,#0e0a04);"></div>
+            <span class="tira-drop-card__badge">Pré-commande</span>
+            <span class="tira-drop-card__qty">12 disponibles</span>
+          </div>
+          <div class="tira-drop-card__body">
+            <p class="tira-drop-card__name">Rafael</p>
+            <p class="tira-drop-card__variant">Cordovan</p>
+            <div class="tira-drop-card__footer">
+              <span class="tira-drop-card__price">3 200 €</span>
+              <a href="#section-produit" class="tira-drop-card__cta">Réserver →</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 4 -->
+        <article class="tira-drop-card">
+          <div class="tira-drop-card__img">
+            <div class="tira-drop-card__img-bg" style="background: linear-gradient(160deg,#1a1a1a,#282828,#111);"></div>
+            <span class="tira-drop-card__badge">Pré-commande</span>
+            <span class="tira-drop-card__qty">31 disponibles</span>
+          </div>
+          <div class="tira-drop-card__body">
+            <p class="tira-drop-card__name">Pochon</p>
+            <p class="tira-drop-card__variant">Verni Noir</p>
+            <div class="tira-drop-card__footer">
+              <span class="tira-drop-card__price">490 €</span>
+              <a href="#section-produit" class="tira-drop-card__cta">Réserver →</a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+  </div>
+
+  <!-- FAQ -->
+  <section class="tira-faq-wrap" aria-labelledby="faq-title">
+    <h2 class="tira-faq__headline" id="faq-title">Questions fréquentes</h2>
+
+    <div class="tira-faq__item" itemscope itemtype="https://schema.org/Question">
+      <button class="tira-faq__question" aria-expanded="false" aria-controls="faq-answer-1" itemprop="name">
+        Pourquoi une précommande ?
+        <span class="tira-faq__icon" aria-hidden="true"></span>
+      </button>
+      <div class="tira-faq__answer" id="faq-answer-1" role="region" itemscope itemtype="https://schema.org/Answer">
+        <p class="tira-faq__answer-inner" itemprop="text">
+          Nous façonnons chaque sac après la clôture des réservations. Cela nous permet de produire exactement ce qui est demandé — sans surplus, sans compromis sur la qualité. Chaque pièce est taillée, cousue et finalisée par un seul artisan, à la main.
+        </p>
+      </div>
+    </div>
+
+    <div class="tira-faq__item" itemscope itemtype="https://schema.org/Question">
+      <button class="tira-faq__question" aria-expanded="false" aria-controls="faq-answer-2" itemprop="name">
+        Puis-je annuler ma réservation ?
+        <span class="tira-faq__icon" aria-hidden="true"></span>
+      </button>
+      <div class="tira-faq__answer" id="faq-answer-2" role="region" itemscope itemtype="https://schema.org/Answer">
+        <p class="tira-faq__answer-inner" itemprop="text">
+          Oui, gratuitement jusqu'à la clôture le 15 juin. Après cette date, la fabrication commence — votre artisan y consacre 48 heures — et la commande ne peut plus être annulée. Vous êtes remboursé intégralement en cas d'annulation avant clôture.
+        </p>
+      </div>
+    </div>
+
+    <div class="tira-faq__item" itemscope itemtype="https://schema.org/Question">
+      <button class="tira-faq__question" aria-expanded="false" aria-controls="faq-answer-3" itemprop="name">
+        Quand vais-je recevoir ma pièce ?
+        <span class="tira-faq__icon" aria-hidden="true"></span>
+      </button>
+      <div class="tira-faq__answer" id="faq-answer-3" role="region" itemscope itemtype="https://schema.org/Answer">
+        <p class="tira-faq__answer-inner" itemprop="text">
+          Livraison estimée en août 2025, après 4 à 6 semaines de façonnage. Vous recevrez un email de confirmation à la clôture, puis un suivi dès l'expédition. L'emballage cadeau Tiraboschi est inclus.
+        </p>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Waitlist -->
+  <div class="tira-waitlist">
+    <div class="tira-waitlist__inner">
+      <p class="tira-waitlist__label">Prochains drops</p>
+      <h2 class="tira-waitlist__title">Être notifié en avant-première</h2>
+      <p class="tira-waitlist__sub">Nous vous prévenons 48h avant l'ouverture de chaque drop.</p>
+      <form class="tira-waitlist__form" novalidate>
+        <input
+          class="tira-waitlist__input"
+          type="email"
+          placeholder="votre email"
+          aria-label="Adresse email pour être notifié"
+          autocomplete="email"
+        >
+        <button class="tira-waitlist__btn" type="submit">Rejoindre</button>
+      </form>
+      <p class="tira-waitlist__note">Aucune promotion. Que des informations sur les nouvelles créations.</p>
+    </div>
+  </div>
+
+</div><!-- /#section-campagne -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════════════════ -->
+<script>
+  /* ─── COUNTDOWN ─── */
+  function updateCountdowns() {
+    const target = new Date('2025-06-15T23:59:00');
+    const now    = new Date();
+    const diff   = target - now;
+
+    if (diff <= 0) {
+      document.querySelectorAll('.tira-drop-status').forEach(el => {
+        el.textContent = 'Précommandes closes';
+      });
+      // Freeze all countdowns at 0
+      ['days','hours','mins','secs'].forEach(u => {
+        document.querySelectorAll('[data-countdown="' + u + '"]').forEach(el => {
+          el.textContent = '00';
+        });
+      });
+      // Bar variants
+      ['days-bar','hours-bar','mins-bar'].forEach(u => {
+        document.querySelectorAll('[data-countdown="' + u + '"]').forEach(el => {
+          el.textContent = '00';
+        });
+      });
+      ['days-hero','hours-hero','mins-hero','secs-hero'].forEach(u => {
+        document.querySelectorAll('[data-countdown="' + u + '"]').forEach(el => {
+          el.textContent = '00';
+        });
+      });
+      return;
+    }
+
+    const days  = Math.floor(diff / (1000*60*60*24));
+    const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+    const mins  = Math.floor((diff % (1000*60*60)) / (1000*60));
+    const secs  = Math.floor((diff % (1000*60)) / 1000);
+
+    const pad = n => String(n).padStart(2,'0');
+
+    // Product page countdown (all 4 units)
+    document.querySelectorAll('[data-countdown="days"]').forEach(el   => el.textContent = pad(days));
+    document.querySelectorAll('[data-countdown="hours"]').forEach(el  => el.textContent = pad(hours));
+    document.querySelectorAll('[data-countdown="mins"]').forEach(el   => el.textContent = pad(mins));
+    document.querySelectorAll('[data-countdown="secs"]').forEach(el   => el.textContent = pad(secs));
+
+    // Announcement bar (d/h/m only)
+    document.querySelectorAll('[data-countdown="days-bar"]').forEach(el  => el.textContent = pad(days));
+    document.querySelectorAll('[data-countdown="hours-bar"]').forEach(el => el.textContent = pad(hours));
+    document.querySelectorAll('[data-countdown="mins-bar"]').forEach(el  => el.textContent = pad(mins));
+
+    // Hero large countdown
+    document.querySelectorAll('[data-countdown="days-hero"]').forEach(el  => el.textContent = pad(days));
+    document.querySelectorAll('[data-countdown="hours-hero"]').forEach(el => el.textContent = pad(hours));
+    document.querySelectorAll('[data-countdown="mins-hero"]').forEach(el  => el.textContent = pad(mins));
+    document.querySelectorAll('[data-countdown="secs-hero"]').forEach(el  => el.textContent = pad(secs));
+  }
+
+  setInterval(updateCountdowns, 1000);
+  updateCountdowns();
+
+  /* ─── FAQ ACCORDION ─── */
+  document.querySelectorAll('.tira-faq__question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item   = btn.closest('.tira-faq__item');
+      const isOpen = item.classList.contains('open');
+
+      // Close all
+      document.querySelectorAll('.tira-faq__item').forEach(i => {
+        i.classList.remove('open');
+        i.querySelector('.tira-faq__question').setAttribute('aria-expanded', 'false');
+      });
+
+      // Toggle current
+      if (!isOpen) {
+        item.classList.add('open');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+
+  /* ─── SWATCHES ─── */
+  document.querySelectorAll('.tira-swatch').forEach(swatch => {
+    swatch.addEventListener('click', () => {
+      document.querySelectorAll('.tira-swatch').forEach(s => {
+        s.classList.remove('tira-swatch--active');
+        s.setAttribute('aria-checked', 'false');
+      });
+      swatch.classList.add('tira-swatch--active');
+      swatch.setAttribute('aria-checked', 'true');
+      const nameEl = document.getElementById('swatch-name');
+      if (nameEl) nameEl.textContent = swatch.dataset.swatch;
+    });
+
+    swatch.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        swatch.click();
+      }
+    });
+  });
+
+  /* ─── GALLERY THUMBNAILS ─── */
+  document.querySelectorAll('.tira-product__thumb').forEach((thumb, i) => {
+    thumb.addEventListener('click', () => {
+      document.querySelectorAll('.tira-product__thumb').forEach(t => {
+        t.style.opacity = '0.5';
+        t.style.borderColor = 'transparent';
+      });
+      thumb.style.opacity = '1';
+      thumb.style.borderColor = 'var(--tira-black)';
+    });
+  });
+
+  /* ─── WAITLIST FORM ─── */
+  const waitlistForm = document.querySelector('.tira-waitlist__form');
+  if (waitlistForm) {
+    waitlistForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const input = waitlistForm.querySelector('.tira-waitlist__input');
+      const btn   = waitlistForm.querySelector('.tira-waitlist__btn');
+      if (input && input.value && input.value.includes('@')) {
+        btn.textContent = 'Confirmé ✓';
+        btn.style.background = 'transparent';
+        btn.style.color = 'var(--tira-white)';
+        input.value = '';
+        input.placeholder = 'Vous êtes inscrit·e';
+        btn.disabled = true;
+      }
+    });
+  }
+
+  /* ─── DEMO NAV ACTIVE STATE ─── */
+  const sections = ['section-barre','section-produit','section-campagne'];
+  const navLinks  = document.querySelectorAll('.tira-demo-nav a');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        navLinks.forEach(link => {
+          const isActive = link.getAttribute('href') === '#' + id;
+          link.style.opacity = isActive ? '1' : '0.5';
+          link.style.textDecoration = isActive ? 'underline' : 'none';
+        });
+      }
+    });
+  }, { threshold: 0.3 });
+
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el);
+  });
+
+</script>
+
+</body>
+</html>
