@@ -145,18 +145,51 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
 }
 .hdr.hidden { transform: translateY(-100%); }
 
-/* ── Desktop layout : [nav gauche] · [logo centré] · [icons droite] ── */
+/* ════════════════════════════════════════════
+   HEADER — Transparent toujours (style TIRABOSCHI)
+   Desktop : [logo gauche] [nav...] [account|search|bag]
+   Mobile  : [logo 1fr] [bag] [account] [hamburger]
+════════════════════════════════════════════ */
+.hdr {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: var(--header-h);
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background .5s ease, border-color .5s ease, transform .35s var(--tira-ease);
+}
+/* Sur hero : transparent. Après scroll : blanc */
+.hdr.solid {
+  background: var(--tira-white);
+  border-bottom-color: var(--tira-border);
+}
+.hdr.hidden { transform: translateY(-100%); }
+
+/* ─── Desktop ─── */
 .hdr__d {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
+  grid-template-columns: auto 1fr auto;   /* logo | nav | icons */
+  align-items: center; gap: 40px;
   height: 100%; padding: 0 40px;
   color: var(--tira-white);
-  transition: color .4s ease;
+  transition: color .5s ease;
 }
 .hdr.solid .hdr__d { color: var(--tira-black); }
 
-/* Navigation gauche — collections + La Maison */
+/* Logo desktop — gauche */
+.hdr__logo a {
+  display: inline-flex; flex-direction: column;
+  align-items: flex-start; gap: 3px;
+}
+.hdr__logo-name {
+  display: block; font-size: 14px; text-transform: uppercase;
+  letter-spacing: .24em; font-weight: 400; line-height: 1;
+}
+.hdr__logo-sub {
+  display: block; font-size: 7px; text-transform: uppercase;
+  letter-spacing: .2em; opacity: .55; line-height: 1;
+}
+
+/* Navigation desktop — centrée dans 1fr */
 .hdr__nav {
   display: flex; align-items: center; gap: 28px;
 }
@@ -166,34 +199,18 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
 }
 .hdr__nav a:hover { opacity: 1; }
 .hdr__nav .nav-sep {
-  width: 1px; height: 12px;
-  background: currentColor; opacity: .2;
+  width: 1px; height: 11px; background: currentColor; opacity: .2;
 }
 
-/* Logo centré (desktop + mobile) */
-.hdr__logo {
-  text-align: center; white-space: nowrap;
-}
-.hdr__logo a { display: inline-flex; flex-direction: column; align-items: center; gap: 3px; }
-.hdr__logo-name {
-  display: block;
-  font-size: 15px; text-transform: uppercase;
-  letter-spacing: .25em; font-weight: 400; line-height: 1;
-}
-.hdr__logo-sub {
-  display: block;
-  font-size: 7px; text-transform: uppercase;
-  letter-spacing: .2em; opacity: .6; line-height: 1;
-}
-
-/* Icons droite (desktop) */
+/* Icons desktop — droite : [account] [search] [bag]
+   Ordre Miu Miu : account → search → (wishlist) → bag */
 .hdr__icons {
-  display: flex; align-items: center; justify-content: flex-end; gap: 20px;
+  display: flex; align-items: center; justify-content: flex-end; gap: 18px;
 }
 .hdr__icons button {
   background: none; border: none; cursor: none;
-  display: flex; align-items: center;
-  opacity: .8; transition: opacity .2s; color: inherit;
+  display: flex; align-items: center; color: inherit;
+  opacity: .75; transition: opacity .2s;
 }
 .hdr__icons button:hover { opacity: 1; }
 .hdr__icons svg {
@@ -202,36 +219,30 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
   stroke-linecap: square; stroke-linejoin: miter;
 }
 
-/* ──────────────────────────────────────────────
-   MOBILE : [LOGO gauche] · [account] [bag] [hamburger]
-   ────────────────────────────────────────────── */
+/* ─── Mobile : [logo 1fr] [bag] [account] [hamburger] ─── */
 .hdr__m {
   display: none;
-  /* logo(1fr) | account(auto) | bag(auto) | hamburger(auto) */
   grid-template-columns: 1fr auto auto auto;
   align-items: center; gap: 18px;
   height: 100%; padding: 0 20px;
   color: var(--tira-white);
-  transition: color .4s ease;
+  transition: color .5s ease;
 }
 .hdr.solid .hdr__m { color: var(--tira-black); }
-
-/* Logo mobile — aligné à gauche */
 .hdr__m-logo {
-  display: flex; flex-direction: column; align-items: flex-start;
-  gap: 3px;
+  display: inline-flex; flex-direction: column;
+  align-items: flex-start; gap: 2px;
 }
 .hdr__m-logo .hdr__logo-name { font-size: 13px; letter-spacing: .2em; }
-.hdr__m-logo .hdr__logo-sub  { font-size: 6px; letter-spacing: .18em; }
-
+.hdr__m-logo .hdr__logo-sub  { font-size: 6px;  letter-spacing: .16em; }
 .hdr__m svg {
-  width: 22px; height: 22px; fill: none;
+  width: 21px; height: 21px; fill: none;
   stroke: currentColor; stroke-width: 1.5;
   stroke-linecap: square; stroke-linejoin: miter;
 }
 .hdr__m button {
   background: none; border: none; cursor: pointer;
-  display: flex; align-items: center; color: inherit; padding: 4px;
+  display: flex; align-items: center; color: inherit; padding: 3px;
 }
 
 @media (max-width: 900px) {
@@ -239,50 +250,84 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
   .hdr__m { display: grid; }
 }
 
-/* ── Bande search — transparente sur hero, blanche après scroll ── */
-/* Elle suit le header (disparaît avec lui via sibling selector CSS) */
+/* ════════════════════════════════════════════
+   SEARCH BAR — sous header
+   • État 1 (hero)    : transparente, texte blanc
+   • État 2 (scroll)  : fond blanc, texte noir
+   • État 3 (sticky)  : remonte à top:0, fond blanc, + icônes bag+account
+════════════════════════════════════════════ */
 .hdr-search {
   position: fixed; top: var(--header-h); left: 0; right: 0; z-index: 199;
-  display: flex; align-items: center;
+  display: flex; align-items: center; gap: 16px;
   height: var(--search-h); padding: 0 40px;
   background: transparent;
-  border-bottom: 1px solid transparent;
-  transition: background .4s ease, border-color .4s ease, transform .35s var(--tira-ease);
-  pointer-events: none;
+  border-bottom: 1px solid rgba(255,255,255,.15);
+  transition: top .35s var(--tira-ease),
+              background .5s ease,
+              border-color .5s ease;
 }
-/* Sur hero transparent : input blanc, placeholder visible */
-.hdr-search input { color: var(--tira-white); }
-.hdr-search svg   { stroke: var(--tira-white); }
-
-/* Solid (après scroll) : fond blanc, texte noir */
+/* État 2 : header solid → search blanche */
 .hdr-search.solid {
   background: var(--tira-white);
   border-bottom-color: var(--tira-border);
-  pointer-events: auto;
 }
-.hdr-search.solid input { color: var(--tira-black); }
-.hdr-search.solid svg   { stroke: var(--tira-black); }
-
-/* Suit le header quand il disparaît */
-.hdr.hidden ~ .hdr-search {
-  transform: translateY(calc(-1 * var(--header-h)));
+/* État 3 : header caché → search remonte en haut, fond blanc, affiche icônes */
+.hdr-search.sticky-mode {
+  top: 0;
+  background: var(--tira-white);
+  border-bottom-color: var(--tira-border);
 }
 
+/* Input search */
 .hdr-search input {
   flex: 1; border: none; background: none; outline: none;
   font-family: inherit; font-size: 11px;
-  text-transform: uppercase; letter-spacing: .1em;
-  border-bottom: 1px solid transparent;
-  transition: border-color .2s, color .4s;
-  padding-bottom: 2px;
+  text-transform: uppercase; letter-spacing: .12em;
+  color: var(--tira-white);
+  border-bottom: 1px solid rgba(255,255,255,.35);
+  transition: color .4s, border-color .4s;
+  padding-bottom: 3px;
 }
-.hdr-search.solid input:focus { border-bottom-color: var(--tira-black); }
+.hdr-search.solid input,
+.hdr-search.sticky-mode input {
+  color: var(--tira-black);
+  border-bottom-color: var(--tira-border);
+}
+.hdr-search.solid input:focus,
+.hdr-search.sticky-mode input:focus { border-bottom-color: var(--tira-black); }
 .hdr-search input::placeholder { opacity: .4; }
-.hdr-search svg {
+
+/* Icône loupe — droite du champ */
+.hdr-search__icon svg {
   width: 15px; height: 15px; fill: none;
-  stroke-width: 1.2; opacity: .5;
+  stroke: var(--tira-white); stroke-width: 1.2; opacity: .5;
   transition: stroke .4s;
 }
+.hdr-search.solid .hdr-search__icon svg,
+.hdr-search.sticky-mode .hdr-search__icon svg { stroke: var(--tira-black); }
+
+/* Icônes bag + account — n'apparaissent QUE en sticky-mode */
+.hdr-search__actions {
+  display: flex; align-items: center; gap: 16px;
+  opacity: 0; pointer-events: none;
+  transition: opacity .25s var(--tira-ease);
+  flex-shrink: 0;
+}
+.hdr-search.sticky-mode .hdr-search__actions {
+  opacity: 1; pointer-events: auto;
+}
+.hdr-search__actions button {
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; color: var(--tira-black);
+  opacity: .7; transition: opacity .2s;
+}
+.hdr-search__actions button:hover { opacity: 1; }
+.hdr-search__actions svg {
+  width: 20px; height: 20px; fill: none;
+  stroke: currentColor; stroke-width: 1.5;
+  stroke-linecap: square; stroke-linejoin: miter;
+}
+
 @media (max-width: 900px) {
   .hdr-search { padding: 0 20px; }
 }
@@ -868,10 +913,21 @@ body.nav-open { overflow: hidden; }
 ════════════════════════════════════════════ -->
 <header class="hdr" id="hdr" role="banner">
 
-  <!-- ═ DESKTOP : [nav gauche] · [logo centré] · [icons droite] ═ -->
+  <!-- ═══ DESKTOP : [logo gauche] [nav 1fr] [account|search|bag droite] ═══
+       Ordre icônes inspiré Miu Miu : account → search → bag             -->
   <div class="hdr__d">
 
-    <!-- Nav gauche : collections + La Maison -->
+    <!-- Logo — gauche
+         SHOPIFY : {{ settings.logo_inverse | img_tag: height: 22 }} sur hero
+                   {{ settings.logo | img_tag: height: 22 }} après scroll -->
+    <div class="hdr__logo">
+      <a href="/" aria-label="TIRABOSCHI Paris — accueil">
+        <span class="hdr__logo-name">Tiraboschi</span>
+        <span class="hdr__logo-sub">Paris · Since 1904</span>
+      </a>
+    </div>
+
+    <!-- Navigation — centrée -->
     <nav class="hdr__nav" aria-label="Navigation principale">
       <a href="/collections/sacs">Sacs</a>
       <a href="/collections/petite-maroquinerie">Petite Maroquinerie</a>
@@ -881,26 +937,16 @@ body.nav-open { overflow: hidden; }
       <a href="/pages/histoire">La Maison</a>
     </nav>
 
-    <!-- Logo centré
-         SHOPIFY : remplacer par {{ settings.logo | img_tag: height: 22 }}
-         + filtre CSS invert(1) pour version blanche sur hero transparent -->
-    <div class="hdr__logo">
-      <a href="/" aria-label="TIRABOSCHI Paris — accueil">
-        <span class="hdr__logo-name">Tiraboschi</span>
-        <span class="hdr__logo-sub">Paris · Since 1904</span>
-      </a>
-    </div>
-
-    <!-- Icons droite : search · account · bag -->
+    <!-- Icons droite : [account] [search] [bag] -->
     <div class="hdr__icons">
-      <button aria-label="Ouvrir la recherche" id="search-toggle-d">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
-      </button>
       <button aria-label="Mon compte">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.5" r="3.5"/><path d="M3.5 20c0-4.5 3.8-7 8.5-7s8.5 2.5 8.5 7"/></svg>
       </button>
-      <!-- Picto panier TIRABOSCHI — rectangle + anse en V (extrait de snippets/icon-bag-tiraboschi.liquid) -->
-      <button aria-label="Panier — 0 article" id="bag-btn-d">
+      <button aria-label="Ouvrir la recherche">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
+      </button>
+      <!-- Picto bag TIRABOSCHI : rect + anse en V — extrait de snippets/icon-bag-tiraboschi.liquid -->
+      <button aria-label="Panier — 0 article">
         <svg viewBox="0 0 24 24" aria-hidden="true" fill="none"
              stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">
           <rect x="2.5" y="9.5" width="19" height="12"/>
@@ -910,24 +956,16 @@ body.nav-open { overflow: hidden; }
     </div>
   </div>
 
-  <!-- ═ MOBILE : [LOGO gauche] · [account] [bag] [hamburger] ═ -->
+  <!-- ═══ MOBILE : [logo 1fr] [bag] [account] [hamburger] ═══
+       Ordre : logo gauche, puis bag → account → menu (inspiré Miu Miu) -->
   <div class="hdr__m" aria-label="Navigation mobile">
 
-    <!-- Logo — gauche (1fr) -->
     <a href="/" class="hdr__m-logo" aria-label="TIRABOSCHI Paris — accueil">
       <span class="hdr__logo-name">Tiraboschi</span>
       <span class="hdr__logo-sub">Paris · Since 1904</span>
     </a>
 
-    <!-- Compte -->
-    <button aria-label="Mon compte">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <circle cx="12" cy="7.5" r="3.5"/>
-        <path d="M3.5 20c0-4.5 3.8-7 8.5-7s8.5 2.5 8.5 7"/>
-      </svg>
-    </button>
-
-    <!-- Picto panier TIRABOSCHI — rect + anse en V -->
+    <!-- Bag -->
     <button aria-label="Panier — 0 article">
       <svg viewBox="0 0 24 24" aria-hidden="true" fill="none"
            stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">
@@ -936,7 +974,15 @@ body.nav-open { overflow: hidden; }
       </svg>
     </button>
 
-    <!-- Hamburger — tout à droite -->
+    <!-- Account -->
+    <button aria-label="Mon compte">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="7.5" r="3.5"/>
+        <path d="M3.5 20c0-4.5 3.8-7 8.5-7s8.5 2.5 8.5 7"/>
+      </svg>
+    </button>
+
+    <!-- Hamburger -->
     <button aria-label="Menu principal" aria-expanded="false" id="mobile-menu-btn">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <line x1="3" y1="8" x2="21" y2="8"/>
@@ -946,10 +992,30 @@ body.nav-open { overflow: hidden; }
   </div>
 </header>
 
-<!-- Bande de recherche sous header (desktop) -->
-<div class="hdr-search" id="hdr-search" role="search">
-  <input type="search" placeholder="Rechercher un modèle, une matière, une couleur…" aria-label="Recherche">
-  <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
+<!-- ═══════════════════════════════════════════
+     SEARCH BAR — fixe sous header
+     • États : transparent (hero) → blanc (scroll) → sticky top:0 + icônes (header caché)
+═══════════════════════════════════════════ -->
+<div class="hdr-search" id="hdr-search" role="search" aria-label="Recherche">
+  <input type="search" placeholder="Rechercher un modèle, une matière…" aria-label="Recherche">
+
+  <!-- Icône loupe — toujours visible -->
+  <div class="hdr-search__icon" aria-hidden="true">
+    <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
+  </div>
+
+  <!-- Actions (bag + account) — n'apparaissent qu'en sticky-mode (header caché) -->
+  <div class="hdr-search__actions" aria-hidden="true">
+    <button aria-label="Mon compte">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="3.5"/><path d="M3.5 20c0-4.5 3.8-7 8.5-7s8.5 2.5 8.5 7"/></svg>
+    </button>
+    <button aria-label="Panier">
+      <svg viewBox="0 0 24 24" fill="none" stroke-linecap="square" stroke-linejoin="miter">
+        <rect x="2.5" y="9.5" width="19" height="12"/>
+        <path d="M7.5 9.5 L12 3.5 L16.5 9.5"/>
+      </svg>
+    </button>
+  </div>
 </div>
 
 <!-- ════════════════════════════════════════════
@@ -1480,25 +1546,41 @@ function updateHeader() {
   const y     = window.scrollY;
   const heroH = window.innerHeight;
 
-  /* Transparent ↔ solid (seuil : 85% du hero) */
+  /* ── 1. Transparent ↔ solid (seuil : 85% du hero) ── */
   const isSolid = y >= heroH * 0.85;
   hdr.classList.toggle('solid', isSolid);
-  if (search) search.classList.toggle('solid', isSolid);
+  if (search && !search.classList.contains('sticky-mode')) {
+    search.classList.toggle('solid', isSolid);
+  }
   document.body.classList.toggle('on-dark', !isSolid);
 
-  /* Directionnel : cacher scroll down (delta > 4px, seuil 120px)
-     La search bar suit via CSS : .hdr.hidden ~ .hdr-search { transform... } */
+  /* ── 2. Header directionnel ── */
   const delta = y - lastScrollY;
   if (y > 120) {
     if (delta > 4 && lastDir !== 'down') {
       hdr.classList.add('hidden');
+      /* Search bar monte en top:0, fond blanc, icônes apparaissent */
+      if (search) {
+        search.classList.add('sticky-mode');
+        search.classList.remove('solid');
+        search.setAttribute('aria-hidden', 'false');
+      }
       lastDir = 'down';
     } else if (delta < -4 && lastDir !== 'up') {
       hdr.classList.remove('hidden');
+      /* Search bar retourne sous le header */
+      if (search) {
+        search.classList.remove('sticky-mode');
+        search.classList.toggle('solid', isSolid);
+      }
       lastDir = 'up';
     }
   } else {
     hdr.classList.remove('hidden');
+    if (search) {
+      search.classList.remove('sticky-mode');
+      search.classList.toggle('solid', isSolid);
+    }
     lastDir = 'up';
   }
 
