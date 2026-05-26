@@ -343,9 +343,29 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
   stroke: currentColor; stroke-width: 1.5;
   stroke-linecap: square; stroke-linejoin: miter;
 }
+/* Mobile : masquer les actions en sticky (se superposent au champ) */
 @media (max-width: 900px) {
-  .hdr-search__actions { right: 20px; gap: 16px; }
+  .hdr-search__actions { display: none; }
 }
+
+/* Bouton submit search — flèche à droite du champ */
+.hdr-search__submit {
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; flex-shrink: 0;
+  padding: 0 0 0 10px; color: var(--tira-white);
+  opacity: .6; transition: opacity .2s, color .4s;
+}
+.hdr-search__submit:hover { opacity: 1; }
+.hdr-search__submit svg {
+  width: 15px; height: 15px; fill: none;
+  stroke: currentColor; stroke-width: 1.5;
+}
+.hdr-search.solid .hdr-search__submit,
+.hdr-search.sticky-mode .hdr-search__submit { color: var(--tira-black); }
+
+/* Masquer le bouton clear natif des navigateurs sur input[type=search] */
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration { -webkit-appearance: none; appearance: none; }
 
 @media (max-width: 900px) {
   .hdr-search { padding: 0 20px; }
@@ -506,18 +526,23 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
 
 .card__wish {
   align-self: flex-end; width: 32px; height: 32px;
-  background: rgba(255,255,255,.92);
-  border: 1px solid var(--tira-border);
+  background: transparent; border: none;
   display: flex; align-items: center; justify-content: center;
   cursor: none; border-radius: 0;
-  transition: background .2s;
 }
-.card__wish:hover { background: var(--tira-white); }
 .card__wish svg {
-  width: 15px; height: 15px; fill: none;
-  stroke: var(--tira-black); stroke-width: 1.3;
+  width: 18px; height: 18px; fill: none;
+  stroke: var(--tira-white); stroke-width: 1.5;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,.55));
+  transition: fill .2s, stroke .2s;
 }
-.card__wish.active svg { fill: var(--tira-black); }
+.card__wish.active svg { fill: var(--tira-white); }
+
+/* Mobile : wishlist toujours visible, ATC masqué (tap = page produit) */
+@media (hover: none) {
+  .card__actions { opacity: 1; }
+  .card__atc { display: none; }
+}
 
 .card__atc {
   background: rgba(10,10,10,.88); color: var(--tira-white);
@@ -649,6 +674,8 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
 .stack__panel:nth-child(1) { z-index: 1; }
 .stack__panel:nth-child(2) { z-index: 2; }
 .stack__panel:nth-child(3) { z-index: 3; }
+.stack__panel:nth-child(4) { z-index: 4; }
+.stack__panel:nth-child(5) { z-index: 5; }
 
 .stack__bg { position: absolute; inset: 0; }
 .stack__bg img { width: 100%; height: 100%; }
@@ -664,6 +691,12 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
 .stack__panel:nth-child(3) .stack__overlay {
   background: linear-gradient(to left, rgba(0,0,0,.6) 0%, rgba(0,0,0,.15) 55%, transparent 100%);
 }
+.stack__panel:nth-child(4) .stack__overlay {
+  background: linear-gradient(to right, rgba(0,0,0,.55) 0%, rgba(0,0,0,.12) 55%, transparent 100%);
+}
+.stack__panel:nth-child(5) .stack__overlay {
+  background: linear-gradient(135deg, rgba(10,10,10,.92) 0%, rgba(10,10,10,.5) 100%);
+}
 
 .stack__body {
   position: relative; z-index: 2;
@@ -674,11 +707,13 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
   color: var(--tira-black); margin: auto; text-align: center;
 }
 .stack__panel:nth-child(3) .stack__body { margin-left: auto; }
+.stack__panel:nth-child(5) .stack__body { margin: auto; text-align: center; }
 
 @media (max-width: 768px) {
   .stack__body { padding: 36px 24px; max-width: 100%; }
   .stack__panel:nth-child(2) .stack__body { margin: auto 0; text-align: left; }
   .stack__panel:nth-child(3) .stack__body { margin-left: 0; }
+  .stack__panel:nth-child(5) .stack__body { margin: auto 0; text-align: left; }
   .stack__panel .stack__overlay {
     background: linear-gradient(to top, rgba(0,0,0,.65) 0%, rgba(0,0,0,.15) 55%, transparent 100%) !important;
   }
@@ -730,48 +765,75 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
 @media (max-width: 768px) { .quote { padding: 80px 24px; } }
 
 /* ════════════════════════════════════════════
-   NEWSLETTER
+   JOIN THE SOCIETY — CRM + Réseaux sociaux
 ════════════════════════════════════════════ */
-.newsletter {
+.society-crm {
   display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
   align-items: center; padding: 80px 48px;
   border-top: 1px solid var(--tira-border);
   border-bottom: 1px solid var(--tira-border);
 }
-.newsletter__title { font-size: clamp(24px, 3vw, 38px); margin-bottom: 14px; }
-.newsletter__sub { font-size: 13px; opacity: .55; line-height: 1.75; }
-
-.newsletter__form { display: flex; flex-direction: column; }
-.newsletter__field { margin-bottom: 24px; }
-.newsletter__label {
-  display: block; font-size: 9px; text-transform: uppercase;
-  letter-spacing: .15em; opacity: .38; margin-bottom: 6px;
+.society-crm__title {
+  font-size: clamp(28px, 3.5vw, 52px); font-weight: 400;
+  line-height: 1.05; letter-spacing: -.01em;
 }
-.newsletter__input {
-  width: 100%; border: none; border-bottom: 1px solid var(--tira-border);
-  padding: 10px 0; background: none; outline: none;
-  font-family: inherit; font-size: 13px; transition: border-color .2s;
+.society-crm__right { display: flex; flex-direction: column; gap: 0; }
+.society-crm__field {
+  display: flex; align-items: center;
+  border-bottom: 1px solid var(--tira-border);
+  margin-bottom: 12px; transition: border-color .2s;
 }
-.newsletter__input:focus { border-color: var(--tira-black); }
-.newsletter__btn {
-  align-self: flex-start; background: none; border: none;
-  font-family: inherit; font-size: 10px;
-  text-transform: uppercase; letter-spacing: .14em;
-  text-decoration: underline; text-underline-offset: 4px;
-  cursor: none; opacity: .65; transition: opacity .2s;
+.society-crm__field:focus-within { border-bottom-color: var(--tira-black); }
+.society-crm__input {
+  flex: 1; border: none; background: none; outline: none;
+  font-family: inherit; font-size: 13px;
+  padding: 10px 0; color: var(--tira-black);
 }
-.newsletter__btn:hover { opacity: 1; }
-/* Confirmation */
-.newsletter__confirm {
-  display: none; font-size: 12px; opacity: .6;
-  letter-spacing: .06em; padding-top: 8px;
-  font-style: italic;
+.society-crm__input::placeholder { opacity: .38; }
+.society-crm__arrow {
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; flex-shrink: 0;
+  padding: 8px 0 8px 12px; color: var(--tira-black);
+  opacity: .5; transition: opacity .2s;
 }
-.newsletter__form.sent .newsletter__btn { display: none; }
-.newsletter__form.sent .newsletter__confirm { display: block; }
+.society-crm__arrow:hover { opacity: 1; }
+.society-crm__arrow svg {
+  width: 16px; height: 16px; fill: none;
+  stroke: currentColor; stroke-width: 1.5;
+}
+.society-crm__gdpr {
+  font-size: 10px; opacity: .35; line-height: 1.65;
+  margin-bottom: 36px;
+}
+.society-crm__gdpr a {
+  text-decoration: underline; text-underline-offset: 3px;
+  opacity: 1; transition: opacity .2s;
+}
+.society-crm__gdpr a:hover { opacity: .7; }
+.society-crm__confirm {
+  font-size: 12px; opacity: .6; font-style: italic;
+  margin-bottom: 36px;
+}
+.society-crm__social {
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+}
+.society-crm__social-label {
+  font-size: 9px; text-transform: uppercase; letter-spacing: .18em;
+  opacity: .35;
+}
+.society-crm__social-icons { display: flex; gap: 18px; }
+.society-crm__social-icons a {
+  display: flex; align-items: center;
+  opacity: .4; transition: opacity .2s;
+}
+.society-crm__social-icons a:hover { opacity: 1; }
+.society-crm__social-icons svg {
+  width: 20px; height: 20px; fill: none;
+  stroke: currentColor; stroke-width: 1.4;
+}
 
 @media (max-width: 768px) {
-  .newsletter { grid-template-columns: 1fr; padding: 60px 24px; gap: 44px; }
+  .society-crm { grid-template-columns: 1fr; padding: 60px 24px; gap: 44px; }
 }
 
 /* ════════════════════════════════════════════
@@ -824,6 +886,23 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
   transition: opacity .2s;
 }
 .footer__policies a:hover { opacity: .6; }
+
+/* Footer sitemap SEO (caché, style LV) */
+.footer__sitemap {
+  margin-top: 28px;
+}
+.footer__sitemap summary {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .12em;
+  opacity: .28; cursor: pointer; list-style: none;
+  transition: opacity .2s;
+}
+.footer__sitemap summary:hover { opacity: .5; }
+.footer__sitemap summary::-webkit-details-marker { display: none; }
+.footer__sitemap-links {
+  margin-top: 12px; font-size: 11px; opacity: .25; line-height: 2;
+}
+.footer__sitemap-links a { transition: opacity .2s; }
+.footer__sitemap-links a:hover { opacity: .6; }
 
 /* Footer mobile accordion */
 @media (max-width: 900px) {
@@ -1016,14 +1095,19 @@ body.nav-open { overflow: hidden; }
 ═══════════════════════════════════════════ -->
 <div class="hdr-search" id="hdr-search" role="search" aria-label="Recherche">
 
-  <!-- Champ centré — input + loupe ensemble -->
+  <!-- Champ centré — loupe + input + submit -->
   <div class="hdr-search__field">
-    <input type="search" placeholder="Demander à Tiraboschi" aria-label="Recherche">
-
     <!-- Icône loupe — toujours visible -->
     <div class="hdr-search__icon" aria-hidden="true">
       <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
     </div>
+
+    <input type="search" placeholder="Demander à Tiraboschi" aria-label="Recherche">
+
+    <!-- Bouton submit — flèche → -->
+    <button type="submit" class="hdr-search__submit" aria-label="Rechercher">
+      <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
+    </button>
   </div>
 
   <!-- Actions (account + bag) — n'apparaissent qu'en sticky-mode (header caché) -->
@@ -1361,7 +1445,7 @@ body.nav-open { overflow: hidden; }
     </div>
     <div class="stack__overlay"></div>
     <div class="stack__body">
-      <p class="stack__num">01 / 03</p>
+      <p class="stack__num">01 / 05</p>
       <h2 class="stack__title">L'Héritage</h2>
       <p class="stack__text">Fondée à Paris en 1904, TIRABOSCHI perpétue les gestes ancestraux de la maroquinerie d'art. Quatre générations. Une seule obsession : la pièce parfaite.</p>
       <a href="#" class="stack__link">Notre histoire</a>
@@ -1378,7 +1462,7 @@ body.nav-open { overflow: hidden; }
     </div>
     <div class="stack__overlay"></div>
     <div class="stack__body">
-      <p class="stack__num">02 / 03</p>
+      <p class="stack__num">02 / 05</p>
       <h2 class="stack__title">Les Matières</h2>
       <p class="stack__text">Veau grainé, cuir de buffle, agneau nappa — nos peaux proviennent exclusivement des meilleures tanneries françaises, sélectionnées à la main, une à une.</p>
       <a href="#" class="stack__link">Guide des matières</a>
@@ -1394,10 +1478,43 @@ body.nav-open { overflow: hidden; }
     </div>
     <div class="stack__overlay"></div>
     <div class="stack__body">
-      <p class="stack__num">03 / 03</p>
+      <p class="stack__num">03 / 05</p>
       <h2 class="stack__title">Sur Mesure</h2>
       <p class="stack__text">Votre sac, vos couleurs, votre cuir. Le programme sur mesure TIRABOSCHI vous ouvre les portes de l'atelier. Délai de réalisation : 6 à 8 semaines.</p>
-      <a href="#" class="stack__link">Prendre rendez-vous</a>
+      <a href="/pages/sur-mesure" class="stack__link">Prendre rendez-vous</a>
+    </div>
+  </div>
+
+  <!-- Panel 4 — The Society -->
+  <div class="stack__panel">
+    <div class="stack__bg">
+      <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1920&q=80"
+           alt="The Society TIRABOSCHI — programme de privilèges"
+           width="1920" height="1080" loading="lazy">
+    </div>
+    <div class="stack__overlay"></div>
+    <div class="stack__body">
+      <p class="stack__num">04 / 05</p>
+      <h2 class="stack__title">The Society</h2>
+      <p class="stack__text">Dès votre premier achat, vous intégrez un cercle de privilèges exclusifs. Avant-premières, pièces réservées, matières inédites — des avantages jamais des points.</p>
+      <a href="/pages/la-societe" class="stack__link">Découvrir vos privilèges</a>
+    </div>
+  </div>
+
+  <!-- Panel 5 — Le Savoir-Faire -->
+  <div class="stack__panel">
+    <div class="stack__bg">
+      <!-- Image → REMPLACER par shopify://shop_images/BOSCHI0154.jpg -->
+      <img src="https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=1920&q=80"
+           alt="Savoir-faire TIRABOSCHI Paris — artisan maroquinier"
+           width="1920" height="1080" loading="lazy">
+    </div>
+    <div class="stack__overlay"></div>
+    <div class="stack__body">
+      <p class="stack__num">05 / 05</p>
+      <h2 class="stack__title">3 400 Points</h2>
+      <p class="stack__text">Un seul artisan. De A à Z. Quarante-huit à soixante-douze heures de travail. Trois mille quatre cents points de couture sellier. Depuis 1904, c'est notre seule méthode.</p>
+      <a href="/pages/savoir-faire" class="stack__link">Notre savoir-faire</a>
     </div>
   </div>
 
@@ -1413,12 +1530,12 @@ body.nav-open { overflow: hidden; }
          width="1200" height="900" loading="lazy">
   </div>
   <div class="editorial__body">
-    <p class="editorial__label">La Société</p>
+    <p class="editorial__label">The Society</p>
     <h2 class="editorial__title" id="soc-title" data-words>Vos privilèges. Votre cercle.</h2>
     <p class="editorial__text">
-      Dès votre premier achat, vous rejoignez La Société TIRABOSCHI. Accès prioritaire aux nouvelles pièces, invitations privées à l'atelier, packaging d'exception. Des privilèges. Jamais des points.
+      Dès votre premier achat, vous intégrez The Society TIRABOSCHI. Avant-premières, pièces exclusives, matières inédites, et pour les membres les plus engagés, la création d'une pièce unique sur mesure. Des privilèges. Jamais des points.
     </p>
-    <a href="#" class="editorial__link">Découvrir vos privilèges</a>
+    <a href="/pages/la-societe" class="editorial__link">Découvrir vos privilèges</a>
   </div>
 </section>
 
@@ -1436,22 +1553,43 @@ body.nav-open { overflow: hidden; }
 <!-- ════════════════════════════════════════════
      NEWSLETTER
 ════════════════════════════════════════════ -->
-<section class="newsletter" data-reveal aria-labelledby="nl-title">
+<section class="society-crm" data-reveal aria-labelledby="society-title">
   <div>
-    <h2 class="newsletter__title" id="nl-title">La Lettre<br>de la Maison</h2>
-    <p class="newsletter__sub">Actualités de l'atelier, accès anticipé aux nouvelles collections, invitations privées. Sans publicité.</p>
+    <h2 class="society-crm__title" id="society-title">Join<br>the Society</h2>
   </div>
-  <form class="newsletter__form" id="nl-form" novalidate>
-    <div class="newsletter__field">
-      <label class="newsletter__label" for="nl-email">Adresse email</label>
-      <input class="newsletter__input" type="email" id="nl-email"
-             placeholder="votre@email.com" required autocomplete="email">
+  <div class="society-crm__right">
+    <form id="society-form" novalidate>
+      <div class="society-crm__field">
+        <input class="society-crm__input" type="email" id="society-email"
+               placeholder="email" required autocomplete="email">
+        <button type="submit" class="society-crm__arrow" aria-label="S'inscrire">
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
+        </button>
+      </div>
+      <p class="society-crm__gdpr">
+        En vous inscrivant, vous acceptez notre
+        <a href="/pages/confidentialite">politique de confidentialité</a>.
+        Vous pouvez vous désinscrire à tout moment.
+      </p>
+      <p class="society-crm__confirm" id="society-confirm" hidden aria-live="polite">
+        Bienvenue — votre inscription est confirmée.
+      </p>
+    </form>
+    <div class="society-crm__social">
+      <span class="society-crm__social-label">Suivez-nous</span>
+      <div class="society-crm__social-icons">
+        <a href="https://instagram.com/boschi_paris" target="_blank" rel="noopener" aria-label="Instagram @boschi_paris">
+          <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a href="#" target="_blank" rel="noopener" aria-label="LinkedIn TIRABOSCHI">
+          <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="3"/><path d="M7 10v7M7 7v.01M11 17v-4a2 2 0 0 1 4 0v4M11 10v7"/></svg>
+        </a>
+        <a href="#" target="_blank" rel="noopener" aria-label="YouTube TIRABOSCHI">
+          <svg viewBox="0 0 24 24"><path d="M22 8s-.3-2-1.2-2.8c-1.1-1.2-2.4-1.2-3-1.3C15.1 3.8 12 3.8 12 3.8s-3.1 0-5.8.1c-.6.1-1.9.1-3 1.3C2.3 6 2 8 2 8S1.8 10.3 1.8 12.6v2.1c0 2.3.2 4.6.2 4.6s.3 2 1.2 2.8c1.1 1.2 2.6 1.2 3.2 1.2C8.2 23.5 12 23.5 12 23.5s3.1 0 5.8-.3c.6-.1 1.9-.1 3-1.3.9-.8 1.2-2.8 1.2-2.8s.2-2.3.2-4.6v-2.1C22.2 10.3 22 8 22 8z"/><polygon points="9.5,15.5 15.5,12 9.5,8.5" fill="currentColor" stroke="none"/></svg>
+        </a>
+      </div>
     </div>
-    <button type="submit" class="newsletter__btn">S'inscrire à la lettre</button>
-    <p class="newsletter__confirm" aria-live="polite">
-      Bienvenue — votre inscription est confirmée.
-    </p>
-  </form>
+  </div>
 </section>
 
 <!-- ════════════════════════════════════════════
@@ -1463,42 +1601,52 @@ body.nav-open { overflow: hidden; }
     <div>
       <p class="footer__brand-logo">TIRABOSCHI · Since 1904</p>
       <p class="footer__brand-text">Maroquinerie de luxe française. Chaque pièce fabriquée à la main, par un seul artisan, dans nos ateliers parisiens.</p>
-      <div class="footer__social">
-        <a href="https://instagram.com/boschi_paris" target="_blank" rel="noopener" aria-label="Instagram TIRABOSCHI @boschi_paris">Instagram</a>
-        <a href="#" aria-label="Pinterest TIRABOSCHI">Pinterest</a>
-      </div>
+      <!-- Bloc SEO caché — style Louis Vuitton -->
+      <details class="footer__sitemap">
+        <summary>Plan du site</summary>
+        <div class="footer__sitemap-links">
+          <a href="/collections/sacs">Sacs</a> ·
+          <a href="/collections/petite-maroquinerie">Petite Maroquinerie</a> ·
+          <a href="/pages/histoire">Histoire</a> ·
+          <a href="/pages/savoir-faire">Savoir-Faire</a> ·
+          <a href="/pages/matieres-cuirs">Les Matières</a> ·
+          <a href="/pages/sur-mesure">Sur Mesure</a> ·
+          <a href="/pages/la-societe">The Society</a> ·
+          <a href="/pages/contact">Contact</a>
+        </div>
+      </details>
     </div>
 
     <div class="footer__col">
       <h4>Collections</h4>
       <ul>
-        <li><a href="#">Sacs</a></li>
-        <li><a href="#">Petite Maroquinerie</a></li>
-        <li><a href="#">Iconiques</a></li>
-        <li><a href="#">FW 2025</a></li>
-        <li><a href="#">Sur Mesure &amp; Exotiques</a></li>
+        <li><a href="/collections/sacs">Sacs</a></li>
+        <li><a href="/collections/petite-maroquinerie">Petite Maroquinerie</a></li>
+        <li><a href="/collections/iconiques">Iconiques</a></li>
+        <li><a href="/collections/fw25">FW 2025</a></li>
+        <li><a href="/collections/sur-mesure-exotiques">Sur Mesure &amp; Exotiques</a></li>
       </ul>
     </div>
 
     <div class="footer__col">
       <h4>La Maison</h4>
       <ul>
-        <li><a href="#">Notre Histoire</a></li>
-        <li><a href="#">Savoir-Faire</a></li>
-        <li><a href="#">Les Matières &amp; Cuirs</a></li>
-        <li><a href="/blogs/latelier">L'Atelier</a></li><!-- handle: latelier -->
-        <li><a href="#">La Société</a></li>
+        <li><a href="/pages/histoire">Notre Histoire</a></li>
+        <li><a href="/pages/savoir-faire">Savoir-Faire</a></li>
+        <li><a href="/pages/matieres-cuirs">Les Matières &amp; Cuirs</a></li>
+        <li><a href="/blogs/latelier">L'Atelier</a></li>
+        <li><a href="/pages/la-societe">The Society</a></li>
       </ul>
     </div>
 
     <div class="footer__col">
       <h4>Service</h4>
       <ul>
-        <li><a href="#">Contact</a></li>
+        <li><a href="/pages/contact">Contact</a></li>
         <li><a href="#">Livraison &amp; Retours</a></li>
-        <li><a href="#">Entretien du cuir</a></li>
+        <li><a href="/pages/entretien-reparation">Entretien du cuir</a></li>
         <li><a href="#">FAQ</a></li>
-        <li><a href="#">Prendre rendez-vous</a></li>
+        <li><a href="/pages/contact">Prendre rendez-vous</a></li>
       </ul>
     </div>
 
@@ -1680,12 +1828,21 @@ document.querySelectorAll('.card__wish').forEach(btn => {
 });
 
 /* ── Newsletter confirmation ── */
-document.getElementById('nl-form').addEventListener('submit', function(e) {
-  e.preventDefault();
-  const email = this.querySelector('input[type="email"]').value;
-  if (!email) return;
-  this.classList.add('sent');
-});
+/* ── Join the Society form ── */
+const societyForm = document.getElementById('society-form');
+if (societyForm) {
+  societyForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = this.querySelector('input[type="email"]').value;
+    if (!email) return;
+    const confirm = document.getElementById('society-confirm');
+    if (confirm) {
+      confirm.hidden = false;
+      this.querySelector('.society-crm__field').style.display = 'none';
+      this.querySelector('.society-crm__gdpr').style.display = 'none';
+    }
+  });
+}
 
 /* ── Footer accordion (mobile) ── */
 document.querySelectorAll('.footer__col h4').forEach(h4 => {

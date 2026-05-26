@@ -498,13 +498,95 @@ body.hdr-hidden .col-filters {
 
 .card__wish {
   align-self: flex-end; width: 32px; height: 32px;
-  background: rgba(255,255,255,.92); border: 1px solid var(--tira-border);
+  background: transparent; border: none;
   display: flex; align-items: center; justify-content: center;
-  cursor: none; transition: background .2s;
+  cursor: none;
 }
-.card__wish:hover { background: var(--tira-white); }
-.card__wish svg { width: 15px; height: 15px; fill: none; stroke: var(--tira-black); stroke-width: 1.3; }
-.card__wish.active svg { fill: var(--tira-black); }
+.card__wish svg {
+  width: 18px; height: 18px; fill: none;
+  stroke: var(--tira-white); stroke-width: 1.5;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,.55));
+  transition: fill .2s;
+}
+.card__wish.active svg { fill: var(--tira-white); }
+
+/* ════════════════════════════════════════════
+   ENCARTS ÉDITORIAUX dans la grille
+════════════════════════════════════════════ */
+/* Encart 2×2 (2 cols × 2 rows) */
+.col-editorial-2x2 {
+  grid-column: span 2;
+  grid-row: span 2;
+  position: relative; overflow: hidden;
+  background: var(--tira-black); cursor: pointer;
+}
+.col-editorial-2x2 img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform .9s var(--tira-ease);
+}
+.col-editorial-2x2:hover img { transform: scale(1.04); }
+.col-editorial-2x2__overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.6) 0%, rgba(0,0,0,.08) 50%, transparent 100%);
+}
+.col-editorial-2x2__body {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 32px; color: var(--tira-white); z-index: 2;
+}
+.col-editorial-2x2__label {
+  font-size: 9px; text-transform: uppercase; letter-spacing: .2em;
+  opacity: .6; margin-bottom: 8px;
+}
+.col-editorial-2x2__title {
+  font-size: clamp(22px, 2.5vw, 36px); line-height: 1.05;
+  margin-bottom: 16px;
+}
+.col-editorial-2x2__link {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .14em;
+  text-decoration: underline; text-underline-offset: 5px;
+  opacity: .8; transition: opacity .2s;
+}
+.col-editorial-2x2__link:hover { opacity: 1; }
+
+/* Encart 4×1 (full-width banner) */
+.col-editorial-4x1 {
+  grid-column: span 4;
+  position: relative; overflow: hidden;
+  background: var(--tira-grey); cursor: pointer;
+  display: flex; align-items: center;
+  min-height: 300px;
+}
+.col-editorial-4x1 img {
+  position: absolute; right: 0; top: 0;
+  height: 100%; width: 50%; object-fit: cover;
+  transition: transform .9s var(--tira-ease);
+}
+.col-editorial-4x1:hover img { transform: scale(1.03); }
+.col-editorial-4x1__body {
+  position: relative; z-index: 2;
+  padding: 60px 64px; max-width: 55%;
+}
+.col-editorial-4x1__label {
+  font-size: 9px; text-transform: uppercase; letter-spacing: .2em;
+  opacity: .4; margin-bottom: 12px;
+}
+.col-editorial-4x1__title {
+  font-size: clamp(24px, 3vw, 44px); line-height: 1.05;
+  margin-bottom: 20px;
+}
+.col-editorial-4x1__link {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .14em;
+  text-decoration: underline; text-underline-offset: 5px;
+  opacity: .6; transition: opacity .2s;
+}
+.col-editorial-4x1__link:hover { opacity: 1; }
+@media (max-width: 900px) {
+  .col-editorial-2x2 { grid-column: span 2; grid-row: span 1; aspect-ratio: 3/2; }
+  .col-editorial-4x1 { grid-column: span 2; min-height: 220px; }
+  .col-editorial-4x1 img { width: 100%; height: 100%; }
+  .col-editorial-4x1__body { max-width: 100%; padding: 36px 24px; }
+}
 
 .card__atc {
   background: rgba(10,10,10,.88); color: var(--tira-white);
@@ -950,22 +1032,6 @@ body.nav-open { overflow: hidden; }
         <button class="col-filter-apply">Appliquer</button>
       </div>
 
-      <!-- Filtre Prix -->
-      <button class="col-filter-btn" id="btn-prix" aria-expanded="false" aria-controls="panel-prix">
-        Prix
-        <svg viewBox="0 0 12 12" aria-hidden="true"><polyline points="2,4 6,8 10,4"/></svg>
-      </button>
-      <div class="col-filter-panel" id="panel-prix" role="region" aria-label="Filtrer par prix">
-        <div class="col-price-range">
-          <div class="col-price-labels">
-            <span>190 EUR</span>
-            <span>3 450 EUR</span>
-          </div>
-          <input type="range" min="190" max="3450" value="3450" step="10" aria-label="Prix maximum">
-        </div>
-        <button class="col-filter-apply">Appliquer</button>
-      </div>
-
     </div>
 
     <div class="col-filters__right">
@@ -1090,6 +1156,19 @@ body.nav-open { overflow: hidden; }
     </div>
   </article>
 
+  <!-- ── Encart éditorial 2×2 — Savoir-Faire ── -->
+  <a class="col-editorial-2x2" href="/pages/savoir-faire" data-reveal>
+    <img src="https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=1200&q=80"
+         alt="Savoir-faire TIRABOSCHI Paris — artisan maroquinier"
+         loading="lazy">
+    <div class="col-editorial-2x2__overlay"></div>
+    <div class="col-editorial-2x2__body">
+      <p class="col-editorial-2x2__label">Savoir-Faire</p>
+      <h3 class="col-editorial-2x2__title">3 400 points<br>de couture sellier</h3>
+      <span class="col-editorial-2x2__link">Découvrir l'atelier</span>
+    </div>
+  </a>
+
   <!-- 5. Jane — Sac à main — Marine -->
   <article class="card" data-reveal>
     <a href="/products/jane" aria-label="Voir le sac Jane">
@@ -1186,6 +1265,18 @@ body.nav-open { overflow: hidden; }
       <p class="card__price">190 EUR</p>
     </div>
   </article>
+
+  <!-- ── Encart éditorial 4×1 — The Society ── -->
+  <a class="col-editorial-4x1" href="/pages/la-societe" data-reveal>
+    <div class="col-editorial-4x1__body">
+      <p class="col-editorial-4x1__label">The Society · Privilèges</p>
+      <h3 class="col-editorial-4x1__title">Accédez aux pièces<br>non mises en vente</h3>
+      <span class="col-editorial-4x1__link">Découvrir The Society</span>
+    </div>
+    <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1200&q=80"
+         alt="The Society TIRABOSCHI — privilèges exclusifs"
+         loading="lazy">
+  </a>
 
   <!-- 9. Anse en Cuir — Accessoire — Caramel -->
   <article class="card" data-reveal>
