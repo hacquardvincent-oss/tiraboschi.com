@@ -789,53 +789,41 @@ body.on-hover .cur-ring { opacity: 0; }
 ════════════════════════════════════════ -->
 <div class="prd-main">
 
-  <!-- ─── GALERIE DESKTOP ─── -->
+  <!-- ─── GALERIE DESKTOP — scroll vertical (retour recette 3.1 + 3.2) ─── -->
   <div class="prd-gallery" id="prd-gallery" aria-label="Galerie produit Victoire">
 
-    <!-- Thumbnails verticaux -->
-    <div class="prd-gallery__thumbs" role="tablist" aria-label="Vues du produit">
-      <div class="prd-thumb active" role="tab" aria-selected="true" tabindex="0" data-img="0">
-        <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=120&q=75" alt="Vue 1 — Sac Victoire face" loading="eager">
-      </div>
-      <div class="prd-thumb" role="tab" aria-selected="false" tabindex="0" data-img="1">
-        <img src="https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=120&q=75" alt="Vue 2 — Sac Victoire côté" loading="lazy">
-      </div>
-      <div class="prd-thumb" role="tab" aria-selected="false" tabindex="0" data-img="2">
-        <img src="https://images.unsplash.com/photo-1584917865442-de89be41a0f3?w=120&q=75" alt="Vue 3 — Sac Victoire dos" loading="lazy">
-      </div>
-      <div class="prd-thumb" role="tab" aria-selected="false" tabindex="0" data-img="3">
-        <img src="https://images.unsplash.com/photo-1594938298603-c8148c4b4781?w=120&q=75" alt="Vue 4 — Détail couture" loading="lazy">
-      </div>
-      <div class="prd-thumb" role="tab" aria-selected="false" tabindex="0" data-img="4">
-        <img src="https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=120&q=75" alt="Vue 5 — Détail matière" loading="lazy">
-      </div>
+    <!-- Images empilées verticalement — l'utilisateur scrolle dans la galerie -->
+    <div class="prd-gallery__img" data-img="0">
+      <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=900&q=85" alt="Sac Victoire, cuir veau grainé noir — TIRABOSCHI Paris" loading="eager">
+    </div>
+    <div class="prd-gallery__img" data-img="1">
+      <img src="https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=900&q=85" alt="Sac Victoire côté — TIRABOSCHI Paris" loading="lazy">
+    </div>
+    <div class="prd-gallery__img" data-img="2">
+      <img src="https://images.unsplash.com/photo-1584917865442-de89be41a0f3?w=900&q=85" alt="Sac Victoire dos — TIRABOSCHI Paris" loading="lazy">
+    </div>
+    <div class="prd-gallery__img" data-img="3">
+      <img src="https://images.unsplash.com/photo-1594938298603-c8148c4b4781?w=900&q=85" alt="Détail couture sellier — TIRABOSCHI Paris" loading="lazy">
+    </div>
+    <div class="prd-gallery__img" data-img="4">
+      <img src="https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=900&q=85" alt="Détail matière cuir veau grainé — TIRABOSCHI Paris" loading="lazy">
     </div>
 
-    <!-- Image principale -->
-    <div class="prd-gallery__main" id="gallery-main">
-      <div class="prd-gallery__img active" data-img="0">
-        <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=900&q=85" alt="Sac Victoire, cuir veau grainé noir — TIRABOSCHI Paris" loading="eager">
-      </div>
-      <div class="prd-gallery__img" data-img="1">
-        <img src="https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=900&q=85" alt="Sac Victoire côté — TIRABOSCHI Paris" loading="lazy">
-      </div>
-      <div class="prd-gallery__img" data-img="2">
-        <img src="https://images.unsplash.com/photo-1584917865442-de89be41a0f3?w=900&q=85" alt="Sac Victoire dos — TIRABOSCHI Paris" loading="lazy">
-      </div>
-      <div class="prd-gallery__img" data-img="3">
-        <img src="https://images.unsplash.com/photo-1594938298603-c8148c4b4781?w=900&q=85" alt="Détail couture sellier — TIRABOSCHI Paris" loading="lazy">
-      </div>
-      <div class="prd-gallery__img" data-img="4">
-        <img src="https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=900&q=85" alt="Détail matière cuir veau grainé — TIRABOSCHI Paris" loading="lazy">
-      </div>
-      <div class="prd-gallery__zoom" aria-hidden="true">
-        <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/><line x1="10.5" y1="7.5" x2="10.5" y2="13.5"/><line x1="7.5" y1="10.5" x2="13.5" y2="10.5"/></svg>
-        Agrandir
-      </div>
-    </div>
+    <!-- Navigation produit précédent/suivant — retour recette 3.13 -->
+    <!-- TODO: Shopify Phase 3 — connecter aux produits adjacents via collection -->
+    <nav class="prd-nav" aria-label="Produit précédent / suivant">
+      <a href="/products/rafael" class="prd-nav__prev" aria-label="Produit précédent">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15,18 9,12 15,6"/></svg>
+        <span>Rafael</span>
+      </a>
+      <a href="/products/colette" class="prd-nav__next" aria-label="Produit suivant">
+        <span>Colette</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9,18 15,12 9,6"/></svg>
+      </a>
+    </nav>
   </div>
 
-  <!-- ─── GALERIE MOBILE (carousel swipe) ─── -->
+  <!-- ─── GALERIE MOBILE (carousel swipe) — barre de progression (retour recette 3.2) ─── -->
   <div class="prd-gallery--mobile" id="gallery-mobile" aria-label="Galerie mobile Victoire">
     <div class="prd-carousel" id="prd-carousel">
       <div class="prd-carousel__slide"><img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800&q=80" alt="Sac Victoire face" loading="eager"></div>
@@ -844,8 +832,9 @@ body.on-hover .cur-ring { opacity: 0; }
       <div class="prd-carousel__slide"><img src="https://images.unsplash.com/photo-1594938298603-c8148c4b4781?w=800&q=80" alt="Détail couture" loading="lazy"></div>
       <div class="prd-carousel__slide"><img src="https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=800&q=80" alt="Détail matière" loading="lazy"></div>
     </div>
-    <div class="prd-carousel__dots" aria-hidden="true">
-      <span class="active"></span><span></span><span></span><span></span><span></span>
+    <!-- Barre de progression mince — remplace dots ronds (retour recette 3.2) -->
+    <div class="prd-carousel__progress" aria-hidden="true">
+      <div class="prd-carousel__progress-bar" id="carousel-progress"></div>
     </div>
   </div>
 
@@ -864,40 +853,38 @@ body.on-hover .cur-ring { opacity: 0; }
     <h1 class="prd-name">Victoire</h1>
     <p class="prd-price">2 850 EUR</p>
 
-    <!-- Rating -->
-    <div class="prd-rating">
-      <div class="prd-rating__stars" aria-label="4.9 sur 5">
-        <svg viewBox="0 0 12 12" aria-hidden="true"><polygon points="6,1 7.5,4.5 11,4.8 8.5,7 9.3,10.5 6,8.5 2.7,10.5 3.5,7 1,4.8 4.5,4.5"/></svg>
-        <svg viewBox="0 0 12 12" aria-hidden="true"><polygon points="6,1 7.5,4.5 11,4.8 8.5,7 9.3,10.5 6,8.5 2.7,10.5 3.5,7 1,4.8 4.5,4.5"/></svg>
-        <svg viewBox="0 0 12 12" aria-hidden="true"><polygon points="6,1 7.5,4.5 11,4.8 8.5,7 9.3,10.5 6,8.5 2.7,10.5 3.5,7 1,4.8 4.5,4.5"/></svg>
-        <svg viewBox="0 0 12 12" aria-hidden="true"><polygon points="6,1 7.5,4.5 11,4.8 8.5,7 9.3,10.5 6,8.5 2.7,10.5 3.5,7 1,4.8 4.5,4.5"/></svg>
-        <svg viewBox="0 0 12 12" aria-hidden="true"><polygon points="6,1 7.5,4.5 11,4.8 8.5,7 9.3,10.5 6,8.5 2.7,10.5 3.5,7 1,4.8 4.5,4.5"/></svg>
-      </div>
-      <span class="prd-rating__score">4,9</span>
-      <span class="prd-rating__count">23 avis</span>
-    </div>
+    <!-- Avis clients supprimés — retour recette 3.14 -->
 
-    <!-- Couleurs -->
+    <!-- Matières — zooms texture cuir (retour recette 3.16 : remplace cercles couleur) -->
     <div class="prd-colors">
       <p class="prd-colors__label">
-        <span>Coloris</span>
+        <span>Matière</span>
         <span>Veau grainé Noir</span>
       </p>
-      <div class="prd-colors__swatches" role="radiogroup" aria-label="Choisir une couleur">
-        <label class="prd-color-swatch" aria-label="Noir">
+      <div class="prd-colors__swatches" role="radiogroup" aria-label="Choisir une matière">
+        <label class="prd-swatch" aria-label="Noir — veau grainé">
           <input type="radio" name="color" value="noir" checked>
-          <span class="prd-color-swatch__circle" style="background:#0a0a0a"></span>
-          <span class="prd-color-swatch__name">Noir</span>
+          <span class="prd-swatch__material">
+            <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=80&h=80&q=80&fit=crop"
+                 alt="Texture cuir veau grainé noir" width="40" height="40" loading="lazy">
+          </span>
+          <span class="prd-swatch__name">Noir</span>
         </label>
-        <label class="prd-color-swatch" aria-label="Caramel">
+        <label class="prd-swatch" aria-label="Cognac — veau grainé">
+          <input type="radio" name="color" value="cognac">
+          <span class="prd-swatch__material">
+            <img src="https://images.unsplash.com/photo-1584917865442-de89be41a0f3?w=80&h=80&q=80&fit=crop"
+                 alt="Texture cuir veau grainé cognac" width="40" height="40" loading="lazy">
+          </span>
+          <span class="prd-swatch__name">Cognac</span>
+        </label>
+        <label class="prd-swatch" aria-label="Caramel — veau grainé">
           <input type="radio" name="color" value="caramel">
-          <span class="prd-color-swatch__circle" style="background:#c4874b"></span>
-          <span class="prd-color-swatch__name">Caramel</span>
-        </label>
-        <label class="prd-color-swatch" aria-label="Marine">
-          <input type="radio" name="color" value="marine">
-          <span class="prd-color-swatch__circle" style="background:#1a2744"></span>
-          <span class="prd-color-swatch__name">Marine</span>
+          <span class="prd-swatch__material">
+            <img src="https://images.unsplash.com/photo-1590739293931-a8c0c85b5e24?w=80&h=80&q=80&fit=crop"
+                 alt="Texture cuir veau grainé caramel" width="40" height="40" loading="lazy">
+          </span>
+          <span class="prd-swatch__name">Caramel</span>
         </label>
       </div>
     </div>
@@ -912,9 +899,16 @@ body.on-hover .cur-ring { opacity: 0; }
       </div>
     </div>
 
-    <!-- ATC -->
+    <!-- ATC — avec état précommande (retour recette 3.9) -->
+    <!-- TODO: Shopify Phase 3 — afficher .prd-atc__btn--preorder si product.tags contains 'preorder', masquer .prd-atc normal -->
     <div class="prd-atc-wrap">
+      <!-- État normal -->
       <button class="prd-atc" id="atc-btn" aria-live="polite">Ajouter au panier</button>
+      <!-- État précommande (activé via tag Shopify 'preorder') -->
+      <button class="prd-atc__btn--preorder" type="submit" style="display:none" aria-hidden="true">
+        Réserver ma pièce →
+        <span class="prd-atc__preorder-note">Édition FW25 · 30 exemplaires</span>
+      </button>
     </div>
 
     <!-- Trust signals -->
@@ -1142,11 +1136,12 @@ body.on-hover .cur-ring { opacity: 0; }
 </div><!-- /prd-story -->
 
 <!-- ════════════════════════════════════════
-     Section 7 — Vous aimerez aussi
+     Section 7 — Complétez votre collection
+     Retour recette 3.8 : grille 4 cols, plus de carousel
 ════════════════════════════════════════ -->
 <section class="prd-related" aria-labelledby="related-title" data-reveal>
   <div class="prd-related__head">
-    <h2 id="related-title">Vous aimerez aussi</h2>
+    <h2 id="related-title">Complétez votre collection</h2>
     <a href="/collections/sacs">Voir tous les sacs</a>
   </div>
   <div class="prd-related__grid">
@@ -1241,10 +1236,14 @@ body.on-hover .cur-ring { opacity: 0; }
   </div>
 </footer>
 
-<!-- Sticky ATC mobile -->
+<!-- Sticky ATC mobile — avec état précommande (retour recette 3.6) -->
+<!-- TODO: Shopify Phase 3 — afficher .prd-sticky-atc__btn--preorder si product.tags contains 'preorder' -->
 <div class="prd-sticky-atc" id="sticky-atc" aria-hidden="true">
   <span class="prd-sticky-atc__price">2 850 EUR</span>
-  <button class="prd-sticky-atc__btn">Ajouter au panier</button>
+  <!-- CTA normal (défaut) -->
+  <button class="prd-sticky-atc__btn" data-atc-normal>Ajouter au panier</button>
+  <!-- CTA précommande (activé si product.tags contains 'preorder') -->
+  <a class="prd-sticky-atc__btn prd-sticky-atc__btn--preorder" href="#preorder" data-atc-preorder style="display:none;border:1px solid var(--tira-black)">Réserver ma pièce →</a>
 </div>
 
 <!-- Lightbox -->
@@ -1289,7 +1288,7 @@ if (window.matchMedia('(hover: hover)').matches) {
 /* ── Header sticky directionnel ── */
 const hdr = document.getElementById('hdr');
 const search = document.getElementById('hdr-search');
-const minibar = document.getElementById('prd-minibar');
+/* mini-header supprimé — retour recette 3.5 */
 let lastY = window.scrollY, ticking = false, lastDir = 'up';
 
 function updateHeader() {
@@ -1315,13 +1314,6 @@ function updateHeader() {
     lastDir = 'up';
   }
 
-  /* Mini-header : visible après 300px */
-  if (minibar) {
-    const showMini = y > 300;
-    minibar.classList.toggle('visible', showMini);
-    minibar.setAttribute('aria-hidden', showMini ? 'false' : 'true');
-  }
-
   lastY = y; ticking = false;
 }
 
@@ -1330,9 +1322,8 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 updateHeader();
 
-/* ── Galerie desktop — thumbnails ── */
-const thumbs  = document.querySelectorAll('.prd-thumb');
-const imgs    = document.querySelectorAll('.prd-gallery__img');
+/* ── Galerie desktop — scroll vertical (retour recette 3.1 + 3.2) ── */
+/* Thumbnails supprimés. Click sur n'importe quelle image → lightbox */
 const galleryImgSrcs = [
   'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=1800&q=90',
   'https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=1800&q=90',
@@ -1341,21 +1332,15 @@ const galleryImgSrcs = [
   'https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=1800&q=90',
 ];
 
-function setActiveImg(idx) {
-  thumbs.forEach((t, i) => { t.classList.toggle('active', i === idx); t.setAttribute('aria-selected', i === idx ? 'true' : 'false'); });
-  imgs.forEach((im, i) => im.classList.toggle('active', i === idx));
-}
-
-thumbs.forEach((thumb, idx) => {
-  thumb.addEventListener('click', () => setActiveImg(idx));
-  thumb.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') setActiveImg(idx); });
+const galleryImgEls = document.querySelectorAll('.prd-gallery .prd-gallery__img');
+galleryImgEls.forEach((imgEl, idx) => {
+  imgEl.addEventListener('click', () => openLightbox(idx));
 });
 
-/* Click sur image principale → lightbox */
-const galleryMain = document.getElementById('gallery-main');
-galleryMain && galleryMain.addEventListener('click', () => {
-  const activeIdx = [...imgs].findIndex(im => im.classList.contains('active'));
-  openLightbox(activeIdx);
+/* Curseur hover sur galerie */
+document.querySelectorAll('a, button, .card, .prd-swatch, .prd-gallery__img').forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('on-hover'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('on-hover'));
 });
 
 /* ── Lightbox ── */
@@ -1369,7 +1354,7 @@ let currentLbIdx = 0;
 function openLightbox(idx) {
   currentLbIdx = idx;
   lightboxImg.src = galleryImgSrcs[idx];
-  lightboxImg.alt = imgs[idx] ? imgs[idx].querySelector('img').alt : '';
+  lightboxImg.alt = galleryImgEls[idx] ? galleryImgEls[idx].querySelector('img').alt : '';
   lightbox.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -1380,7 +1365,6 @@ function closeLightbox() {
 function navLightbox(dir) {
   currentLbIdx = (currentLbIdx + dir + galleryImgSrcs.length) % galleryImgSrcs.length;
   lightboxImg.src = galleryImgSrcs[currentLbIdx];
-  setActiveImg(currentLbIdx);
 }
 
 lightboxClose && lightboxClose.addEventListener('click', closeLightbox);
@@ -1394,18 +1378,26 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight') navLightbox(1);
 });
 
-/* ── Carousel mobile — swipe ── */
+/* ── Carousel mobile — swipe + barre de progression (retour recette 3.2) ── */
 const carousel = document.getElementById('prd-carousel');
-const dots = document.querySelectorAll('.prd-carousel__dots span');
+const progressBar = document.getElementById('carousel-progress');
+const totalSlides = 5;
 let carouselIdx = 0, startX = 0, isDragging = false;
 
+function updateProgressBar() {
+  if (progressBar) {
+    progressBar.style.width = ((carouselIdx + 1) / totalSlides * 100) + '%';
+  }
+}
+
 function setCarouselIdx(idx) {
-  carouselIdx = Math.max(0, Math.min(idx, 4));
+  carouselIdx = Math.max(0, Math.min(idx, totalSlides - 1));
   carousel.style.transform = `translateX(-${carouselIdx * 100}%)`;
-  dots.forEach((d, i) => d.classList.toggle('active', i === carouselIdx));
+  updateProgressBar();
 }
 
 if (carousel) {
+  updateProgressBar(); /* initialiser à 1/5 */
   carousel.addEventListener('touchstart', e => { startX = e.touches[0].clientX; isDragging = true; }, { passive: true });
   carousel.addEventListener('touchend', e => {
     if (!isDragging) return;
