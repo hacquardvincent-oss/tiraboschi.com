@@ -1,0 +1,2280 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Savoir-Faire — Maroquinerie de Luxe | TIRABOSCHI Paris</title>
+  <meta name="description" content="Découvrez les 6 techniques ancestrales de maroquinerie artisanale TIRABOSCHI Paris. Couture sellier, teintures naturelles, assemblage à la main — Made in France depuis 1904.">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Savoir-Faire — TIRABOSCHI Paris">
+  <meta property="og:description" content="L'art de la maroquinerie transmis depuis 1904. 6 techniques ancestrales, 1 artisan par sac, Made in France.">
+  <meta property="og:image" content="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0919.jpg">
+
+  <!-- Preload hero image -->
+  <link rel="preload" as="image" href="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0919.jpg">
+
+  <!-- Google Fonts — Playfair Display only -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+
+  <!-- JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Article",
+        "@id": "https://tiraboschi-paris.myshopify.com/pages/savoir-faire#article",
+        "name": "Le Savoir-Faire TIRABOSCHI Paris",
+        "headline": "Savoir-Faire — L'art de la maroquinerie transmis depuis 1904",
+        "description": "Découvrez les 6 techniques ancestrales de maroquinerie artisanale TIRABOSCHI Paris. Couture sellier, teintures naturelles, assemblage à la main — Made in France depuis 1904.",
+        "image": "https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0919.jpg",
+        "author": {
+          "@type": "Organization",
+          "name": "TIRABOSCHI Paris",
+          "url": "https://tiraboschi-paris.myshopify.com"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "TIRABOSCHI Paris",
+          "foundingDate": "1904",
+          "url": "https://tiraboschi-paris.myshopify.com"
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Accueil",
+            "item": "https://tiraboschi-paris.myshopify.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Savoir-Faire",
+            "item": "https://tiraboschi-paris.myshopify.com/pages/savoir-faire"
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    /* =============================================
+       TOKENS & RESET
+    ============================================= */
+    :root {
+      --tira-black:    #0a0a0a;
+      --tira-white:    #ffffff;
+      --tira-grey:     #f7f5f2;
+      --tira-border:   #e8e8e8;
+      --tira-ease:     cubic-bezier(0.16, 1, 0.3, 1);
+      --tira-duration: 0.9s;
+      --header-h:      64px;
+      --search-h:      44px;
+      --offset-top:    calc(var(--header-h) + var(--search-h));
+    }
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 14px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 400;
+      color: var(--tira-black);
+      background: var(--tira-white);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    @media (hover: none) {
+      body { cursor: auto; }
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      object-fit: cover;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      background: none;
+      border: none;
+      cursor: none;
+      font-family: inherit;
+    }
+
+    /* =============================================
+       CURSOR
+    ============================================= */
+    .cursor-dot,
+    .cursor-ring {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.3s ease;
+    }
+
+    .cursor-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--tira-black);
+    }
+
+    .cursor-ring {
+      width: 30px;
+      height: 30px;
+      border: 1px solid var(--tira-black);
+      background: transparent;
+      transition: width 0.3s var(--tira-ease),
+                  height 0.3s var(--tira-ease),
+                  opacity 0.3s ease;
+    }
+
+    body.cursor-hover .cursor-ring {
+      width: 50px;
+      height: 50px;
+    }
+
+    @media (hover: none) {
+      .cursor-dot,
+      .cursor-ring { display: none; }
+    }
+
+    /* =============================================
+       HEADER
+    ============================================= */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 900;
+      height: var(--header-h);
+      background: var(--tira-white);
+      border-bottom: 1px solid var(--tira-border);
+      transition: transform 0.4s var(--tira-ease);
+    }
+
+    .site-header.header-hidden {
+      transform: translateY(calc(-1 * (var(--header-h) + var(--search-h))));
+    }
+
+    .header-inner {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 32px;
+    }
+
+    .header-nav {
+      position: absolute;
+      left: 32px;
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .header-nav a {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--tira-black);
+      transition: opacity 0.3s ease;
+    }
+
+    .header-nav a:hover {
+      opacity: 0.5;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .header-logo img {
+      height: 28px;
+      width: auto;
+      display: block;
+    }
+
+    .header-actions {
+      position: absolute;
+      right: 32px;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .header-actions a,
+    .header-actions button {
+      display: flex;
+      align-items: center;
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+
+    .header-actions a:hover,
+    .header-actions button:hover {
+      opacity: 0.5;
+    }
+
+    .header-actions svg {
+      stroke: var(--tira-black);
+      fill: none;
+      stroke-width: 1.2;
+    }
+
+    /* Search bar */
+    .search-bar {
+      position: fixed;
+      top: var(--header-h);
+      left: 0;
+      right: 0;
+      z-index: 899;
+      height: var(--search-h);
+      background: var(--tira-white);
+      border-bottom: 1px solid var(--tira-border);
+      display: flex;
+      align-items: center;
+      padding: 0 32px;
+      gap: 12px;
+      transition: transform 0.4s var(--tira-ease);
+    }
+
+    .site-header.header-hidden ~ .search-bar {
+      transform: translateY(calc(-1 * (var(--header-h) + var(--search-h))));
+    }
+
+    .search-bar input {
+      flex: 1;
+      border: none;
+      border-bottom: 1px solid transparent;
+      background: transparent;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--tira-black);
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+
+    .search-bar input:focus {
+      border-bottom-color: var(--tira-black);
+    }
+
+    .search-bar input::placeholder {
+      color: #999;
+    }
+
+    .search-bar svg {
+      stroke: var(--tira-black);
+      fill: none;
+      stroke-width: 1.2;
+      opacity: 0.5;
+    }
+
+    /* Mobile header */
+    .header-hamburger {
+      display: none;
+    }
+
+    @media (max-width: 1023px) {
+      .header-nav { display: none; }
+
+      .header-inner { justify-content: flex-start; padding: 0 20px; }
+
+      .header-logo { margin: 0; }
+
+      .header-actions {
+        right: 20px;
+        gap: 16px;
+      }
+
+      .header-hamburger {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        background: none;
+        border: none;
+        cursor: none;
+        padding: 4px;
+      }
+
+      .header-hamburger span {
+        display: block;
+        width: 20px;
+        height: 1px;
+        background: var(--tira-black);
+        transition: transform 0.3s var(--tira-ease), opacity 0.3s ease;
+      }
+
+      .search-bar { padding: 0 20px; }
+    }
+
+    /* =============================================
+       MOBILE NAV DRAWER
+    ============================================= */
+    .mobile-nav {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      max-width: 360px;
+      background: var(--tira-white);
+      z-index: 1000;
+      transform: translateX(100%);
+      transition: transform 0.5s var(--tira-ease);
+      padding: 80px 40px 40px;
+      border-left: 1px solid var(--tira-border);
+    }
+
+    .mobile-nav.is-open {
+      transform: translateX(0);
+    }
+
+    .mobile-nav-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      cursor: none;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--tira-black);
+    }
+
+    .mobile-nav-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .mobile-nav-links a {
+      font-size: 24px;
+      color: var(--tira-black);
+      display: block;
+      transition: opacity 0.3s ease;
+    }
+
+    .mobile-nav-links a:hover {
+      opacity: 0.5;
+    }
+
+    .mobile-nav-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10,10,10,0.4);
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .mobile-nav-overlay.is-visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* =============================================
+       PAGE OFFSET
+    ============================================= */
+    .page-content {
+      padding-top: var(--offset-top);
+    }
+
+    /* =============================================
+       BREADCRUMB
+    ============================================= */
+    .breadcrumb {
+      padding: 16px 32px;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #999;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      background: var(--tira-white);
+    }
+
+    .breadcrumb a {
+      color: #999;
+      transition: color 0.3s ease;
+    }
+
+    .breadcrumb a:hover {
+      color: var(--tira-black);
+    }
+
+    .breadcrumb span {
+      color: var(--tira-border);
+    }
+
+    @media (max-width: 767px) {
+      .breadcrumb { padding: 12px 20px; }
+    }
+
+    /* =============================================
+       HERO
+    ============================================= */
+    .hero {
+      position: relative;
+      height: 100vh;
+      min-height: 600px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0a0a0a;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .hero-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      animation: tira-kb 14s ease-in-out infinite alternate;
+      opacity: 0.6;
+    }
+
+    @keyframes tira-kb {
+      from { transform: scale(1); }
+      to   { transform: scale(1.07) translate(1.5%, -1%); }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: var(--tira-white);
+      padding: 0 40px;
+    }
+
+    .hero-overtitle {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.6;
+      margin-bottom: 24px;
+    }
+
+    .hero-title {
+      font-size: 88px;
+      line-height: 1;
+      letter-spacing: -0.01em;
+      color: var(--tira-white);
+      margin-bottom: 28px;
+    }
+
+    .hero-subtitle {
+      font-size: 18px;
+      font-style: italic;
+      opacity: 0.8;
+      line-height: 1.5;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--tira-white);
+      opacity: 0.5;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .hero-scroll-line {
+      width: 1px;
+      height: 40px;
+      background: var(--tira-white);
+      animation: scrollLine 1.8s ease-in-out infinite;
+    }
+
+    @keyframes scrollLine {
+      0%   { transform: scaleY(0); transform-origin: top; opacity: 1; }
+      50%  { transform: scaleY(1); transform-origin: top; opacity: 1; }
+      51%  { transform: scaleY(1); transform-origin: bottom; opacity: 1; }
+      100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+    }
+
+    @media (max-width: 767px) {
+      .hero-title { font-size: 56px; }
+      .hero-subtitle { font-size: 16px; }
+      .hero-content { padding: 0 24px; }
+    }
+
+    /* =============================================
+       WORD REVEAL
+    ============================================= */
+    [data-tira-word-reveal] span {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.6s var(--tira-ease) calc(var(--i) * 60ms),
+                  transform 0.6s var(--tira-ease) calc(var(--i) * 60ms);
+    }
+
+    [data-tira-word-reveal].is-visible span {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* =============================================
+       SCROLL REVEAL
+    ============================================= */
+    [data-tira-reveal] {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity var(--tira-duration) var(--tira-ease),
+                  transform var(--tira-duration) var(--tira-ease);
+    }
+
+    [data-tira-reveal].is-visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    .d1 { transition-delay: 0.1s !important; }
+    .d2 { transition-delay: 0.2s !important; }
+    .d3 { transition-delay: 0.3s !important; }
+    .d4 { transition-delay: 0.4s !important; }
+    .d5 { transition-delay: 0.5s !important; }
+
+    /* =============================================
+       SECTION INTRO
+    ============================================= */
+    .section-intro {
+      background: var(--tira-grey);
+      padding: 120px 40px;
+      text-align: center;
+    }
+
+    .section-intro__quote {
+      font-size: 32px;
+      font-style: italic;
+      line-height: 1.45;
+      max-width: 820px;
+      margin: 0 auto 48px;
+      color: var(--tira-black);
+    }
+
+    .section-intro__body {
+      font-size: 14px;
+      line-height: 1.8;
+      max-width: 580px;
+      margin: 0 auto 56px;
+      color: var(--tira-black);
+      opacity: 0.75;
+    }
+
+    .section-intro__data {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: wrap;
+      border-top: 1px solid var(--tira-border);
+      border-bottom: 1px solid var(--tira-border);
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    .section-intro__data-item {
+      padding: 24px 40px;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border-right: 1px solid var(--tira-border);
+      white-space: nowrap;
+    }
+
+    .section-intro__data-item:last-child {
+      border-right: none;
+    }
+
+    @media (max-width: 767px) {
+      .section-intro { padding: 80px 24px; }
+      .section-intro__quote { font-size: 22px; }
+      .section-intro__data { flex-direction: column; align-items: center; }
+      .section-intro__data-item {
+        border-right: none;
+        border-bottom: 1px solid var(--tira-border);
+        width: 100%;
+        text-align: center;
+      }
+      .section-intro__data-item:last-child { border-bottom: none; }
+    }
+
+    /* =============================================
+       LES 6 TECHNIQUES
+    ============================================= */
+    .section-techniques {
+      background: var(--tira-white);
+      padding: 120px 40px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .section-heading {
+      font-size: 48px;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      margin-bottom: 64px;
+    }
+
+    .techniques-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+    }
+
+    .technique-card {
+      position: relative;
+      padding: 48px 40px;
+      border-right: 1px solid var(--tira-border);
+      border-bottom: 1px solid var(--tira-border);
+      overflow: hidden;
+    }
+
+    .technique-card:nth-child(3),
+    .technique-card:nth-child(6) {
+      border-right: none;
+    }
+
+    .technique-card:nth-child(4),
+    .technique-card:nth-child(5),
+    .technique-card:nth-child(6) {
+      border-bottom: none;
+    }
+
+    .technique-card__number {
+      position: absolute;
+      top: -20px;
+      right: 24px;
+      font-size: 140px;
+      font-weight: 400;
+      color: var(--tira-black);
+      opacity: 0.04;
+      line-height: 1;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .technique-card__name {
+      font-size: 20px;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .technique-card__desc {
+      font-size: 13px;
+      line-height: 1.75;
+      color: var(--tira-black);
+      opacity: 0.65;
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (max-width: 1023px) {
+      .techniques-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .technique-card:nth-child(3) {
+        border-right: 1px solid var(--tira-border);
+      }
+
+      .technique-card:nth-child(2),
+      .technique-card:nth-child(4) {
+        border-right: none;
+      }
+
+      .technique-card:nth-child(4),
+      .technique-card:nth-child(5),
+      .technique-card:nth-child(6) {
+        border-bottom: 1px solid var(--tira-border);
+      }
+
+      .technique-card:nth-child(5),
+      .technique-card:nth-child(6) {
+        border-bottom: none;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .section-techniques { padding: 80px 24px; }
+      .section-heading { font-size: 32px; margin-bottom: 40px; }
+
+      .techniques-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .technique-card {
+        border-right: none;
+        border-bottom: 1px solid var(--tira-border);
+        padding: 36px 24px;
+      }
+
+      .technique-card:last-child {
+        border-bottom: none;
+      }
+    }
+
+    /* =============================================
+       LA TRANSMISSION — Alternating sections
+    ============================================= */
+    .section-transmission-title {
+      background: var(--tira-white);
+      padding: 80px 40px 40px;
+      text-align: center;
+    }
+
+    .transmission-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 60vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .transmission-section__image {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .transmission-section__image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    .transmission-section__image .image-placeholder {
+      width: 100%;
+      height: 100%;
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .transmission-section__text {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 64px;
+      overflow: hidden;
+    }
+
+    .transmission-section__watermark {
+      position: absolute;
+      font-size: 200px;
+      font-weight: 400;
+      opacity: 0.04;
+      user-select: none;
+      pointer-events: none;
+      line-height: 1;
+    }
+
+    .transmission-section__label {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 20px;
+    }
+
+    .transmission-section__heading {
+      font-size: 40px;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      margin-bottom: 28px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .transmission-section__body {
+      font-size: 14px;
+      line-height: 1.85;
+      opacity: 0.72;
+      position: relative;
+      z-index: 1;
+      max-width: 420px;
+    }
+
+    /* Section 1 — dark */
+    .transmission-1 {
+      background: var(--tira-black);
+    }
+
+    .transmission-1 .transmission-section__text {
+      background: var(--tira-black);
+      color: var(--tira-white);
+    }
+
+    .transmission-1 .transmission-section__label {
+      color: rgba(255,255,255,0.4);
+    }
+
+    .transmission-1 .transmission-section__watermark {
+      color: var(--tira-white);
+      right: -20px;
+      bottom: -40px;
+    }
+
+    .transmission-1 .transmission-section__body {
+      color: rgba(255,255,255,0.7);
+      opacity: 1;
+    }
+
+    /* Section 2 — grey */
+    .transmission-2 {
+      background: var(--tira-grey);
+    }
+
+    .transmission-2 .transmission-section__text {
+      background: var(--tira-grey);
+      order: -1;
+    }
+
+    .transmission-2 .transmission-section__watermark {
+      color: var(--tira-black);
+      left: -20px;
+      bottom: -40px;
+    }
+
+    /* Section 3 — white */
+    .transmission-3 {
+      background: var(--tira-white);
+    }
+
+    .transmission-3 .transmission-section__watermark {
+      color: var(--tira-black);
+      right: -10px;
+      bottom: -30px;
+    }
+
+    /* Leather texture CSS simulation */
+    .leather-texture {
+      background:
+        linear-gradient(135deg, rgba(0,0,0,0.03) 25%, transparent 25%) -10px 0,
+        linear-gradient(225deg, rgba(0,0,0,0.03) 25%, transparent 25%) -10px 0,
+        linear-gradient(315deg, rgba(0,0,0,0.03) 25%, transparent 25%),
+        linear-gradient(45deg,  rgba(0,0,0,0.03) 25%, transparent 25%);
+      background-size: 20px 20px;
+      background-color: #c8a882;
+      min-height: 60vh;
+      position: relative;
+    }
+
+    .leather-texture::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 40%, rgba(180,140,90,0.4) 0%, transparent 60%),
+                  radial-gradient(ellipse at 70% 70%, rgba(120,80,40,0.3) 0%, transparent 50%);
+    }
+
+    /* Product close-up placeholder */
+    .product-placeholder {
+      background: linear-gradient(160deg, #e8ddd0 0%, #c8b89a 40%, #a8906a 100%);
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .product-placeholder::before {
+      content: '';
+      position: absolute;
+      inset: 40px;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .product-placeholder__label {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+    }
+
+    @media (max-width: 767px) {
+      .section-transmission-title { padding: 60px 24px 32px; }
+
+      .transmission-section {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+
+      .transmission-section__image { min-height: 50vw; }
+
+      .transmission-section__image img,
+      .leather-texture,
+      .product-placeholder {
+        min-height: 280px;
+      }
+
+      .transmission-section__text {
+        padding: 48px 24px;
+        order: 1 !important;
+      }
+
+      .transmission-section__heading { font-size: 28px; }
+
+      .transmission-section__watermark { font-size: 120px; }
+
+      .transmission-2 .transmission-section__text {
+        order: 1 !important;
+      }
+    }
+
+    /* =============================================
+       VIDEO ATELIER
+    ============================================= */
+    .section-video {
+      background: var(--tira-black);
+      padding: 80px 40px;
+      text-align: center;
+      color: var(--tira-white);
+    }
+
+    .section-video__label {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 20px;
+    }
+
+    .section-video__title {
+      font-size: 40px;
+      margin-bottom: 48px;
+    }
+
+    .video-container {
+      position: relative;
+      max-width: 900px;
+      margin: 0 auto;
+      aspect-ratio: 16 / 9;
+      background: #1a1a1a;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .video-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .video-placeholder-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(160deg, #1a1414 0%, #0a0808 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    .video-play-btn {
+      width: 72px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255,255,255,0.3);
+      transition: border-color 0.3s ease, transform 0.3s var(--tira-ease);
+      cursor: none;
+    }
+
+    .video-play-btn:hover {
+      border-color: rgba(255,255,255,0.7);
+      transform: scale(1.05);
+    }
+
+    .video-play-btn svg {
+      stroke: var(--tira-white);
+      fill: none;
+      stroke-width: 1.2;
+      margin-left: 4px;
+    }
+
+    .video-placeholder-note {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+    }
+
+    @media (max-width: 767px) {
+      .section-video { padding: 60px 24px; }
+      .section-video__title { font-size: 28px; }
+    }
+
+    /* =============================================
+       CHIFFRES & HÉRITAGE
+    ============================================= */
+    .section-stats {
+      background: var(--tira-grey);
+      padding: 100px 40px;
+    }
+
+    .stats-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 1px solid var(--tira-border);
+    }
+
+    .stat-cell {
+      padding: 56px 40px;
+      text-align: center;
+      border-right: 1px solid var(--tira-border);
+      position: relative;
+    }
+
+    .stat-cell:last-child {
+      border-right: none;
+    }
+
+    .stat-cell__number {
+      font-size: 56px;
+      line-height: 1;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-cell__label {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #999;
+      line-height: 1.5;
+    }
+
+    .stat-cell__sublabel {
+      font-size: 12px;
+      font-style: italic;
+      color: #999;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 1023px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stat-cell:nth-child(2) { border-right: none; }
+      .stat-cell:nth-child(3),
+      .stat-cell:nth-child(4) {
+        border-top: 1px solid var(--tira-border);
+      }
+      .stat-cell:nth-child(4) { border-right: none; }
+    }
+
+    @media (max-width: 767px) {
+      .section-stats { padding: 60px 24px; }
+      .stats-header { margin-bottom: 40px; }
+      .stat-cell { padding: 40px 24px; }
+      .stat-cell__number { font-size: 44px; }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* =============================================
+       CTA SECTION
+    ============================================= */
+    .section-cta {
+      background: var(--tira-white);
+      padding: 120px 40px;
+      text-align: center;
+    }
+
+    .section-cta__heading {
+      font-size: 48px;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+
+    .section-cta__sub {
+      font-size: 14px;
+      font-style: italic;
+      color: #999;
+      margin-bottom: 56px;
+    }
+
+    .cta-group {
+      display: flex;
+      gap: 56px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .cta-link {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--tira-black);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      text-decoration-thickness: 1px;
+      transition: opacity 0.3s ease, text-underline-offset 0.3s ease;
+    }
+
+    .cta-link:hover {
+      opacity: 0.5;
+      text-underline-offset: 6px;
+    }
+
+    .cta-separator {
+      width: 1px;
+      height: 32px;
+      background: var(--tira-border);
+    }
+
+    @media (max-width: 767px) {
+      .section-cta { padding: 80px 24px; }
+      .section-cta__heading { font-size: 32px; }
+      .cta-group { flex-direction: column; gap: 28px; }
+      .cta-separator { width: 32px; height: 1px; }
+    }
+
+    /* =============================================
+       FOOTER
+    ============================================= */
+    .site-footer {
+      background: var(--tira-black);
+      color: var(--tira-white);
+      padding: 80px 40px 40px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .footer-main {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 60px;
+      margin-bottom: 60px;
+    }
+
+    .footer-col__logo {
+      height: 24px;
+      width: auto;
+      margin-bottom: 20px;
+      filter: brightness(0) invert(1);
+    }
+
+    .footer-tagline {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 24px;
+      line-height: 1.8;
+    }
+
+    .footer-instagram {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: color 0.3s ease;
+    }
+
+    .footer-instagram:hover {
+      color: var(--tira-white);
+    }
+
+    .footer-col__heading {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 20px;
+    }
+
+    .footer-col__links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-col__links a {
+      font-size: 13px;
+      color: rgba(255,255,255,0.65);
+      transition: color 0.3s ease;
+      display: block;
+    }
+
+    .footer-col__links a:hover {
+      color: var(--tira-white);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-copyright {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.25);
+    }
+
+    .footer-powered {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.25);
+    }
+
+    /* Mobile footer accordion */
+    .footer-col-accordion {
+      display: none;
+    }
+
+    @media (max-width: 1023px) {
+      .footer-main {
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .site-footer { padding: 60px 24px 32px; }
+
+      .footer-main {
+        display: none;
+      }
+
+      .footer-col-accordion {
+        display: block;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        margin-bottom: 40px;
+      }
+
+      .footer-accordion-brand {
+        padding: 32px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+      }
+
+      .footer-accordion-item {
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+      }
+
+      .footer-accordion-trigger {
+        width: 100%;
+        background: none;
+        border: none;
+        color: var(--tira-white);
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        text-align: left;
+        padding: 20px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: none;
+      }
+
+      .footer-accordion-icon {
+        width: 12px;
+        height: 12px;
+        position: relative;
+        flex-shrink: 0;
+      }
+
+      .footer-accordion-icon::before,
+      .footer-accordion-icon::after {
+        content: '';
+        position: absolute;
+        background: var(--tira-white);
+        transition: transform 0.3s var(--tira-ease);
+      }
+
+      .footer-accordion-icon::before {
+        width: 12px;
+        height: 1px;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+      }
+
+      .footer-accordion-icon::after {
+        width: 1px;
+        height: 12px;
+        left: 50%;
+        top: 0;
+        transform: translateX(-50%);
+      }
+
+      .footer-accordion-item.is-open .footer-accordion-icon::after {
+        transform: translateX(-50%) rotate(90deg);
+        opacity: 0;
+      }
+
+      .footer-accordion-content {
+        display: none;
+        padding-bottom: 20px;
+      }
+
+      .footer-accordion-content.is-open {
+        display: block;
+      }
+
+      .footer-accordion-content ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .footer-accordion-content ul a {
+        font-size: 14px;
+        color: rgba(255,255,255,0.5);
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+      }
+    }
+
+    /* =============================================
+       MARQUEE (above footer)
+    ============================================= */
+    .tira-marquee {
+      background: var(--tira-black);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      overflow: hidden;
+      padding: 16px 0;
+    }
+
+    .tira-marquee__track {
+      display: flex;
+      gap: 48px;
+      animation: marquee 24s linear infinite;
+      width: max-content;
+    }
+
+    .tira-marquee:hover .tira-marquee__track {
+      animation-play-state: paused;
+    }
+
+    .tira-marquee__item {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      white-space: nowrap;
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* =============================================
+       UTILITY
+    ============================================= */
+    .text-center { text-align: center; }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Custom cursor -->
+  <div class="cursor-dot" aria-hidden="true"></div>
+  <div class="cursor-ring" aria-hidden="true"></div>
+
+  <!-- Mobile nav overlay -->
+  <div class="mobile-nav-overlay" id="mobileNavOverlay" aria-hidden="true"></div>
+
+  <!-- Mobile nav drawer -->
+  <nav class="mobile-nav" id="mobileNav" aria-label="Navigation mobile">
+    <button class="mobile-nav-close" id="mobileNavClose" aria-label="Fermer le menu">Fermer</button>
+    <ul class="mobile-nav-links">
+      <li><a href="#">Collections</a></li>
+      <li><a href="#">FW25</a></li>
+      <li><a href="#">Sur Mesure</a></li>
+      <li><a href="#">Histoire</a></li>
+      <li><a href="#" aria-current="page">Savoir-Faire</a></li>
+      <li><a href="#">Matières</a></li>
+      <li><a href="#">L'Atelier</a></li>
+    </ul>
+  </nav>
+
+  <!-- Header -->
+  <header class="site-header" id="siteHeader" role="banner">
+    <div class="header-inner">
+      <!-- Nav left (desktop) -->
+      <nav class="header-nav" aria-label="Navigation principale">
+        <a href="#">Collections</a>
+        <a href="#">FW25</a>
+        <a href="#">Sur Mesure</a>
+        <a href="#">Histoire</a>
+        <a href="#" aria-current="page">Savoir-Faire</a>
+      </nav>
+
+      <!-- Logo center -->
+      <a href="#" class="header-logo" aria-label="TIRABOSCHI Paris — Accueil">
+        <img
+          src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738"
+          alt="TIRABOSCHI Paris — Since 1904"
+          height="28"
+          width="auto">
+      </a>
+
+      <!-- Actions right (desktop) -->
+      <div class="header-actions">
+        <!-- Search -->
+        <a href="#" aria-label="Rechercher">
+          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"/>
+            <line x1="16.5" y1="16.5" x2="22" y2="22"/>
+          </svg>
+        </a>
+        <!-- Account -->
+        <a href="#" aria-label="Mon compte">
+          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>
+        </a>
+        <!-- Bag -->
+        <a href="#" aria-label="Panier">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050"
+            width="22"
+            height="22"
+            alt="Panier"
+            aria-hidden="true">
+        </a>
+        <!-- Hamburger (mobile only) -->
+        <button
+          class="header-hamburger"
+          id="hamburgerBtn"
+          aria-label="Ouvrir le menu"
+          aria-expanded="false"
+          aria-controls="mobileNav">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Search bar -->
+  <div class="search-bar" role="search" id="searchBar">
+    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="11" cy="11" r="7"/>
+      <line x1="16.5" y1="16.5" x2="22" y2="22"/>
+    </svg>
+    <input
+      type="search"
+      placeholder="Rechercher une pièce, une matière…"
+      aria-label="Rechercher">
+  </div>
+
+  <!-- PAGE CONTENT -->
+  <main class="page-content" id="main-content">
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="Fil d'Ariane">
+      <a href="#">Accueil</a>
+      <span aria-hidden="true">—</span>
+      <span aria-current="page">Savoir-Faire</span>
+    </nav>
+
+    <!-- ==================== SECTION 1 — HERO ==================== -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-bg" aria-hidden="true">
+        <img
+          src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0919.jpg"
+          alt="Atelier TIRABOSCHI Paris — savoir-faire artisanal"
+          fetchpriority="high">
+      </div>
+
+      <div class="hero-content">
+        <p class="hero-overtitle" data-tira-reveal>La Maison · Depuis 1904</p>
+        <h1 class="hero-title" id="hero-title" data-tira-word-reveal>Savoir-Faire</h1>
+        <p class="hero-subtitle" data-tira-reveal class="d1">
+          L'art de la maroquinerie transmis depuis 1904
+        </p>
+      </div>
+
+      <div class="hero-scroll" aria-hidden="true">
+        <div class="hero-scroll-line"></div>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 2 — INTRO ==================== -->
+    <section class="section-intro" aria-label="Philosophie artisanale">
+      <blockquote data-tira-reveal>
+        <p class="section-intro__quote">
+          "Chaque sac naît des mains d'un seul artisan,<br>
+          de la première piqûre à la dernière finition."
+        </p>
+      </blockquote>
+
+      <p class="section-intro__body" data-tira-reveal>
+        Chez TIRABOSCHI, la maroquinerie est un acte singulier. Un artisan, une pièce,
+        du début à la fin. Ni chaîne de montage, ni division du travail — seulement
+        l'excellence d'un geste maîtrisé après des années d'apprentissage. Chaque
+        création exige entre 48 et 72 heures de travail, transmises de maître à élève
+        depuis trois générations dans nos ateliers parisiens.
+      </p>
+
+      <div class="section-intro__data" role="list" aria-label="Chiffres clés">
+        <div class="section-intro__data-item" data-tira-reveal role="listitem">48–72h par pièce</div>
+        <div class="section-intro__data-item" data-tira-reveal class="d1" role="listitem">1 artisan</div>
+        <div class="section-intro__data-item" data-tira-reveal class="d2" role="listitem">6 techniques ancestrales</div>
+        <div class="section-intro__data-item" data-tira-reveal class="d3" role="listitem">3 ateliers à Paris</div>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 3 — LES 6 TECHNIQUES ==================== -->
+    <section class="section-techniques" aria-labelledby="techniques-heading">
+      <div class="text-center" data-tira-reveal>
+        <span class="section-label">Expertise</span>
+        <h2 class="section-heading" id="techniques-heading">Les 6 Techniques</h2>
+      </div>
+
+      <div class="techniques-grid">
+
+        <article class="technique-card" data-tira-reveal>
+          <span class="technique-card__number" aria-hidden="true">01</span>
+          <h3 class="technique-card__name">Couture Sellier</h3>
+          <p class="technique-card__desc">
+            Point sellier à deux aiguilles, fil de lin ciré, 8 à 10 points
+            par centimètre. La couture la plus robuste qui soit — celle des
+            selliers de cour depuis le XVIII<sup>e</sup> siècle.
+          </p>
+        </article>
+
+        <article class="technique-card" data-tira-reveal class="d1">
+          <span class="technique-card__number" aria-hidden="true">02</span>
+          <h3 class="technique-card__name">Coupe & Gabarit</h3>
+          <p class="technique-card__desc">
+            Gabarits en bois centenaires, coupe entièrement à la main,
+            respect absolu du sens du grain. Chaque peau est lue avant
+            d'être taillée — aucune coupe n'est identique.
+          </p>
+        </article>
+
+        <article class="technique-card" data-tira-reveal class="d2">
+          <span class="technique-card__number" aria-hidden="true">03</span>
+          <h3 class="technique-card__name">Teinture & Finitions</h3>
+          <p class="technique-card__desc">
+            Teintures à l'eau naturelles, trois passes successives, séchage
+            de 24 heures entre chaque couche. La couleur pénètre la fibre
+            plutôt que de la recouvrir.
+          </p>
+        </article>
+
+        <article class="technique-card" data-tira-reveal>
+          <span class="technique-card__number" aria-hidden="true">04</span>
+          <h3 class="technique-card__name">Assemblage</h3>
+          <p class="technique-card__desc">
+            Collage à la colle de peau naturelle, martelage à main levée,
+            pressage à froid. L'assemblage définit la tenue de la pièce
+            pour les décennies à venir.
+          </p>
+        </article>
+
+        <article class="technique-card" data-tira-reveal class="d1">
+          <span class="technique-card__number" aria-hidden="true">05</span>
+          <h3 class="technique-card__name">Pose des Quincailleries</h3>
+          <p class="technique-card__desc">
+            Fermoirs, passants, anneaux — chaque quincaillerie est sertie
+            à la main, jamais à la machine. La précision au dixième de
+            millimètre, à l'œil et au toucher.
+          </p>
+        </article>
+
+        <article class="technique-card" data-tira-reveal class="d2">
+          <span class="technique-card__number" aria-hidden="true">06</span>
+          <h3 class="technique-card__name">Lustre & Contrôle</h3>
+          <p class="technique-card__desc">
+            Lustrage à la cire naturelle d'abeille, contrôle qualité en
+            32 points, livraison signée de la main de l'artisan.
+            Chaque pièce est unique — et certifiée telle.
+          </p>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 4 — LA TRANSMISSION ==================== -->
+    <section aria-labelledby="transmission-heading">
+      <div class="section-transmission-title">
+        <span class="section-label" data-tira-reveal>Héritage</span>
+        <h2 id="transmission-heading" class="section-heading" data-tira-reveal>La Transmission</h2>
+      </div>
+
+      <!-- Sub-section 1 — L'Apprentissage (dark) -->
+      <div class="transmission-section transmission-1">
+        <div class="transmission-section__image">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0154.jpg"
+            alt="Artisan TIRABOSCHI Paris dans l'atelier"
+            loading="lazy">
+        </div>
+        <div class="transmission-section__text">
+          <span class="transmission-section__watermark" aria-hidden="true">3</span>
+          <p class="transmission-section__label" data-tira-reveal>I. Héritage</p>
+          <h3 class="transmission-section__heading" data-tira-reveal>L'Apprentissage</h3>
+          <p class="transmission-section__body" data-tira-reveal>
+            Trois ans. C'est le temps minimum pour qu'un apprenti TIRABOSCHI
+            maîtrise les gestes fondamentaux. Il apprend aux côtés d'un maître
+            artisan — pas dans un manuel, pas devant un écran. La main guide la
+            main. Les erreurs se voient, se corrigent, se comprennent. Cette
+            transmission lente est notre assurance qualité la plus absolue.
+          </p>
+        </div>
+      </div>
+
+      <!-- Sub-section 2 — La Matière (grey) -->
+      <div class="transmission-section transmission-2">
+        <div class="transmission-section__image">
+          <div class="leather-texture" role="img" aria-label="Texture cuir pleine fleur TIRABOSCHI Paris"></div>
+        </div>
+        <div class="transmission-section__text">
+          <span class="transmission-section__watermark" aria-hidden="true">2%</span>
+          <p class="transmission-section__label" data-tira-reveal>II. Matière Première</p>
+          <h3 class="transmission-section__heading" data-tira-reveal>La Matière</h3>
+          <p class="transmission-section__body" data-tira-reveal>
+            Nous sélectionnons nos peaux directement en mégisserie, à quelques
+            heures de Paris. Cuir pleine fleur uniquement — la surface naturelle
+            de l'animal, non corrigée, non poncée. Seulement 2% des peaux
+            inspectées satisfont nos critères. La texture, la régularité du grain,
+            l'absence de cicatrices : chaque peau est une conversation.
+          </p>
+        </div>
+      </div>
+
+      <!-- Sub-section 3 — La Pièce (white) -->
+      <div class="transmission-section transmission-3">
+        <div class="transmission-section__image">
+          <div class="product-placeholder" role="img" aria-label="Sac TIRABOSCHI Paris — pièce finie">
+            <span class="product-placeholder__label">La Pièce — Photographie produit</span>
+          </div>
+        </div>
+        <div class="transmission-section__text">
+          <span class="transmission-section__watermark" aria-hidden="true">01</span>
+          <p class="transmission-section__label" data-tira-reveal>III. La Création</p>
+          <h3 class="transmission-section__heading" data-tira-reveal>La Pièce</h3>
+          <p class="transmission-section__body" data-tira-reveal>
+            Au terme de soixante-douze heures de travail, la pièce est achevée.
+            L'artisan y glisse un certificat numéroté et y appose sa signature.
+            Pas un numéro de série — un prénom, une date, une promesse. Vous ne
+            portez pas un sac : vous portez le travail d'une personne, que vous
+            pouvez nommer.
+          </p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== SECTION 5 — VIDEO ATELIER ==================== -->
+    <section class="section-video" aria-labelledby="video-heading">
+      <p class="section-video__label" data-tira-reveal>L'Atelier · Paris</p>
+      <h2 class="section-video__title" id="video-heading" data-tira-reveal>
+        L'Atelier en mouvement
+      </h2>
+
+      <div class="video-container" data-tira-reveal>
+        <!-- Shopify Liquid: <video data-tira-lazy poster="...webp" autoplay muted loop playsinline>
+             <source src="{{ 'VIDEO HOMEPAGE.mp4' | file_url }}" type="video/mp4">
+        </video> -->
+        <div class="video-placeholder-bg" aria-label="Vidéo atelier TIRABOSCHI Paris (chargement en production)">
+          <button class="video-play-btn" aria-label="Lire la vidéo" type="button">
+            <svg width="20" height="24" viewBox="0 0 20 24">
+              <polygon points="1,1 19,12 1,23" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <span class="video-placeholder-note">
+            <!-- Note de développement — supprimer en production -->
+            Référencer : VIDEO HOMEPAGE.mp4 via Shopify
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 6 — STATS ==================== -->
+    <section class="section-stats" aria-labelledby="stats-heading">
+      <div class="stats-header">
+        <span class="section-label" data-tira-reveal>En chiffres</span>
+        <h2 id="stats-heading" class="section-heading" data-tira-reveal>
+          Chiffres & Héritage
+        </h2>
+      </div>
+
+      <div class="stats-grid" role="list">
+
+        <div class="stat-cell" data-tira-reveal role="listitem">
+          <div class="stat-cell__number" data-tira-counter="1904">1904</div>
+          <div class="stat-cell__label">Année de fondation</div>
+          <div class="stat-cell__sublabel">Paris, France</div>
+        </div>
+
+        <div class="stat-cell" data-tira-reveal class="d1" role="listitem">
+          <div class="stat-cell__number">1 artisan</div>
+          <div class="stat-cell__label">Par sac, de A à Z</div>
+          <div class="stat-cell__sublabel">Jamais de chaîne de montage</div>
+        </div>
+
+        <div class="stat-cell" data-tira-reveal class="d2" role="listitem">
+          <div class="stat-cell__number" data-tira-counter="72">72h</div>
+          <div class="stat-cell__label">Temps moyen par pièce</div>
+          <div class="stat-cell__sublabel">De la coupe à la signature</div>
+        </div>
+
+        <div class="stat-cell" data-tira-reveal class="d3" role="listitem">
+          <div class="stat-cell__number">3<sup style="font-size:0.5em; vertical-align:top; padding-top:0.4em;">e</sup></div>
+          <div class="stat-cell__label">Génération de transmission</div>
+          <div class="stat-cell__sublabel">Du savoir-faire maison</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 7 — CTA ==================== -->
+    <section class="section-cta" aria-label="Découvrir la collection">
+      <span class="section-label" data-tira-reveal>La Création</span>
+      <h2 class="section-cta__heading" data-tira-reveal>Découvrez le résultat</h2>
+      <p class="section-cta__sub" data-tira-reveal>
+        Chaque pièce porte en elle ces heures de travail silencieux.
+      </p>
+
+      <div class="cta-group" data-tira-reveal>
+        <a href="#" class="cta-link">Explorer la collection</a>
+        <div class="cta-separator" aria-hidden="true"></div>
+        <a href="#" class="cta-link">Prendre rendez-vous</a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== MARQUEE ==================== -->
+  <div class="tira-marquee" aria-hidden="true">
+    <div class="tira-marquee__track">
+      <span class="tira-marquee__item">Made in France, Only.</span>
+      <span class="tira-marquee__item">·</span>
+      <span class="tira-marquee__item">Since 1904</span>
+      <span class="tira-marquee__item">·</span>
+      <span class="tira-marquee__item">Maroquinerie de Luxe</span>
+      <span class="tira-marquee__item">·</span>
+      <span class="tira-marquee__item">Paris</span>
+      <span class="tira-marquee__item">·</span>
+      <span class="tira-marquee__item">1 Artisan par Pièce</span>
+      <span class="tira-marquee__item">·</span>
+      <span class="tira-marquee__item">Couture Sellier</span>
+      <span class="tira-marquee__item">·</span>
+      <span class="tira-marquee__item">Cuir Pleine Fleur</span>
+      <span class="tira-marquee__item">·</span>
+      <!-- Repeat for seamless loop -->
+      <span class="tira-marquee__item">Made in France, Only.</span>
+      <span class="tira-marquee__item">·</span>
+      <span class="tira-marquee__item">Since 1904</span>
+      <span class="tira-marquee__item">·</span>
+      <span class="tira-marquee__item">Maroquinerie de Luxe</span>
+      <span class="tira-marquee__item">·</span>
+      <span class="tira-marquee__item">Paris</span>
+      <span class="tira-marquee__item">·</span>
+      <span class="tira-marquee__item">1 Artisan par Pièce</span>
+      <span class="tira-marquee__item">·</span>
+      <span class="tira-marquee__item">Couture Sellier</span>
+      <span class="tira-marquee__item">·</span>
+      <span class="tira-marquee__item">Cuir Pleine Fleur</span>
+      <span class="tira-marquee__item">·</span>
+    </div>
+  </div>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="site-footer" role="contentinfo">
+
+    <!-- Desktop footer -->
+    <div class="footer-main">
+
+      <!-- Col 1 — Brand -->
+      <div>
+        <img
+          src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738"
+          alt="TIRABOSCHI Paris"
+          height="24"
+          class="footer-col__logo">
+        <p class="footer-tagline">
+          Made in France, Only.<br>
+          Since 1904
+        </p>
+        <a href="https://instagram.com/boschi_paris" class="footer-instagram" target="_blank" rel="noopener noreferrer">
+          @boschi_paris
+        </a>
+      </div>
+
+      <!-- Col 2 — Collections -->
+      <div>
+        <p class="footer-col__heading">Collections</p>
+        <ul class="footer-col__links">
+          <li><a href="#">FW25</a></li>
+          <li><a href="#">Sacs</a></li>
+          <li><a href="#">Petite Maroquinerie</a></li>
+          <li><a href="#">Iconiques</a></li>
+          <li><a href="#">Sur Mesure & Exotiques</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 3 — La Maison -->
+      <div>
+        <p class="footer-col__heading">La Maison</p>
+        <ul class="footer-col__links">
+          <li><a href="#">Histoire</a></li>
+          <li><a href="#" aria-current="page">Savoir-Faire</a></li>
+          <li><a href="#">Matières & Cuirs</a></li>
+          <li><a href="#">La Société</a></li>
+          <li><a href="#">Blog L'Atelier</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 4 — Service -->
+      <div>
+        <p class="footer-col__heading">Service</p>
+        <ul class="footer-col__links">
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">Prendre RDV</a></li>
+          <li><a href="#">Livraison</a></li>
+          <li><a href="#">Retours</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Mobile footer accordion -->
+    <div class="footer-col-accordion">
+
+      <!-- Brand (always visible) -->
+      <div class="footer-accordion-brand">
+        <img
+          src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738"
+          alt="TIRABOSCHI Paris"
+          height="22"
+          style="filter: brightness(0) invert(1); margin-bottom: 16px;">
+        <p class="footer-tagline">Made in France, Only. · Since 1904</p>
+        <a href="https://instagram.com/boschi_paris" class="footer-instagram" target="_blank" rel="noopener noreferrer">@boschi_paris</a>
+      </div>
+
+      <!-- Collections -->
+      <div class="footer-accordion-item" id="acc-collections">
+        <button class="footer-accordion-trigger" aria-expanded="false" aria-controls="acc-collections-content">
+          Collections
+          <span class="footer-accordion-icon" aria-hidden="true"></span>
+        </button>
+        <div class="footer-accordion-content" id="acc-collections-content" role="region">
+          <ul>
+            <li><a href="#">FW25</a></li>
+            <li><a href="#">Sacs</a></li>
+            <li><a href="#">Petite Maroquinerie</a></li>
+            <li><a href="#">Iconiques</a></li>
+            <li><a href="#">Sur Mesure & Exotiques</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- La Maison -->
+      <div class="footer-accordion-item" id="acc-maison">
+        <button class="footer-accordion-trigger" aria-expanded="false" aria-controls="acc-maison-content">
+          La Maison
+          <span class="footer-accordion-icon" aria-hidden="true"></span>
+        </button>
+        <div class="footer-accordion-content" id="acc-maison-content" role="region">
+          <ul>
+            <li><a href="#">Histoire</a></li>
+            <li><a href="#">Savoir-Faire</a></li>
+            <li><a href="#">Matières & Cuirs</a></li>
+            <li><a href="#">La Société</a></li>
+            <li><a href="#">Blog L'Atelier</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Service -->
+      <div class="footer-accordion-item" id="acc-service">
+        <button class="footer-accordion-trigger" aria-expanded="false" aria-controls="acc-service-content">
+          Service
+          <span class="footer-accordion-icon" aria-hidden="true"></span>
+        </button>
+        <div class="footer-accordion-content" id="acc-service-content" role="region">
+          <ul>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">Prendre RDV</a></li>
+            <li><a href="#">Livraison</a></li>
+            <li><a href="#">Retours</a></li>
+            <li><a href="#">FAQ</a></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer bottom -->
+    <div class="footer-bottom">
+      <p class="footer-copyright">
+        &copy; 2025 TIRABOSCHI Paris. Tous droits réservés.
+      </p>
+      <p class="footer-powered">Powered by TIRABOSCHI</p>
+    </div>
+
+  </footer>
+
+  <!-- ==================== SCRIPTS ==================== -->
+  <script>
+    'use strict';
+
+    /* ================================================
+       CUSTOM CURSOR
+    ================================================ */
+    (function() {
+      const dot  = document.querySelector('.cursor-dot');
+      const ring = document.querySelector('.cursor-ring');
+      if (!dot || !ring) return;
+
+      // Skip on touch devices
+      if (!window.matchMedia('(hover: hover)').matches) return;
+
+      let mx = 0, my = 0; // mouse position
+      let rx = 0, ry = 0; // ring position (lagged)
+
+      document.addEventListener('mousemove', (e) => {
+        mx = e.clientX;
+        my = e.clientY;
+        dot.style.transform  = `translate(calc(${mx}px - 50%), calc(${my}px - 50%))`;
+      });
+
+      function lerp(a, b, t) { return a + (b - a) * t; }
+
+      function animateRing() {
+        rx = lerp(rx, mx, 0.12);
+        ry = lerp(ry, my, 0.12);
+        ring.style.transform = `translate(calc(${rx}px - 50%), calc(${ry}px - 50%))`;
+        requestAnimationFrame(animateRing);
+      }
+      animateRing();
+
+      // Hover enlargement
+      const hoverTargets = 'a, button, [role="button"]';
+      document.addEventListener('mouseover', (e) => {
+        if (e.target.closest(hoverTargets)) {
+          document.body.classList.add('cursor-hover');
+        }
+      });
+      document.addEventListener('mouseout', (e) => {
+        if (e.target.closest(hoverTargets)) {
+          document.body.classList.remove('cursor-hover');
+        }
+      });
+    })();
+
+    /* ================================================
+       DIRECTIONAL STICKY HEADER
+    ================================================ */
+    (function() {
+      const header    = document.getElementById('siteHeader');
+      const searchBar = document.getElementById('searchBar');
+      if (!header) return;
+
+      let lastScrollY  = 0;
+      let ticking      = false;
+
+      function updateHeader() {
+        const currentY = window.scrollY;
+        if (currentY > lastScrollY && currentY > 120) {
+          header.classList.add('header-hidden');
+          if (searchBar) searchBar.style.transform =
+            `translateY(calc(-1 * (var(--header-h) + var(--search-h))))`;
+        } else {
+          header.classList.remove('header-hidden');
+          if (searchBar) searchBar.style.transform = '';
+        }
+        lastScrollY = currentY;
+        ticking = false;
+      }
+
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          requestAnimationFrame(updateHeader);
+          ticking = true;
+        }
+      }, { passive: true });
+    })();
+
+    /* ================================================
+       MOBILE NAV
+    ================================================ */
+    (function() {
+      const hamburger = document.getElementById('hamburgerBtn');
+      const nav       = document.getElementById('mobileNav');
+      const overlay   = document.getElementById('mobileNavOverlay');
+      const closeBtn  = document.getElementById('mobileNavClose');
+      if (!hamburger || !nav) return;
+
+      function openNav() {
+        nav.classList.add('is-open');
+        overlay.classList.add('is-visible');
+        hamburger.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeNav() {
+        nav.classList.remove('is-open');
+        overlay.classList.remove('is-visible');
+        hamburger.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      }
+
+      hamburger.addEventListener('click', openNav);
+      if (closeBtn) closeBtn.addEventListener('click', closeNav);
+      overlay.addEventListener('click', closeNav);
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && nav.classList.contains('is-open')) {
+          closeNav();
+        }
+      });
+    })();
+
+    /* ================================================
+       FOOTER ACCORDION (mobile)
+    ================================================ */
+    (function() {
+      const triggers = document.querySelectorAll('.footer-accordion-trigger');
+      triggers.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item    = btn.closest('.footer-accordion-item');
+          const content = item.querySelector('.footer-accordion-content');
+          const isOpen  = item.classList.contains('is-open');
+
+          // Close all
+          document.querySelectorAll('.footer-accordion-item.is-open').forEach(el => {
+            el.classList.remove('is-open');
+            el.querySelector('.footer-accordion-content').classList.remove('is-open');
+            el.querySelector('.footer-accordion-trigger').setAttribute('aria-expanded', 'false');
+          });
+
+          // Open clicked if was closed
+          if (!isOpen) {
+            item.classList.add('is-open');
+            content.classList.add('is-open');
+            btn.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+    })();
+
+    /* ================================================
+       WORD REVEAL
+    ================================================ */
+    (function() {
+      document.querySelectorAll('[data-tira-word-reveal]').forEach(el => {
+        el.innerHTML = el.textContent.trim().split(' ')
+          .map((w, i) => `<span style="--i:${i}">${w}</span>`)
+          .join(' ');
+      });
+    })();
+
+    /* ================================================
+       SCROLL REVEAL — IntersectionObserver
+    ================================================ */
+    (function() {
+      const els = document.querySelectorAll('[data-tira-reveal], [data-tira-word-reveal]');
+      if (!els.length) return;
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            // Trigger word reveal immediately for hero
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.12,
+        rootMargin: '0px 0px -40px 0px'
+      });
+
+      els.forEach(el => observer.observe(el));
+
+      // Trigger hero elements immediately on load
+      document.querySelectorAll('.hero [data-tira-reveal], .hero [data-tira-word-reveal]').forEach(el => {
+        setTimeout(() => el.classList.add('is-visible'), 300);
+      });
+    })();
+
+    /* ================================================
+       STATS COUNTER
+    ================================================ */
+    (function() {
+      const counters = document.querySelectorAll('[data-tira-counter]');
+      if (!counters.length) return;
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const el     = entry.target;
+          const target = parseInt(el.dataset.tiraCounter, 10);
+          const suffix = el.textContent.replace(/\d/g, '').trim();
+          const duration = 1600;
+          const start  = Date.now();
+
+          function update() {
+            const elapsed  = Date.now() - start;
+            const progress = Math.min(elapsed / duration, 1);
+            // Ease out quad
+            const eased    = 1 - Math.pow(1 - progress, 2);
+            const current  = Math.floor(eased * target);
+            el.textContent = current + suffix;
+            if (progress < 1) requestAnimationFrame(update);
+            else el.textContent = target + suffix;
+          }
+
+          requestAnimationFrame(update);
+          observer.unobserve(el);
+        });
+      }, { threshold: 0.5 });
+
+      counters.forEach(el => observer.observe(el));
+    })();
+
+    /* ================================================
+       LAZY VIDEO
+    ================================================ */
+    (function() {
+      const lazyVideos = document.querySelectorAll('video[data-tira-lazy]');
+      if (!lazyVideos.length) return;
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const video = entry.target;
+          const src   = video.dataset.src;
+          if (src) {
+            video.src = src;
+            video.load();
+          }
+          video.querySelectorAll('source[data-src]').forEach(source => {
+            source.src = source.dataset.src;
+          });
+          video.load();
+          observer.unobserve(video);
+        });
+      }, { rootMargin: '200px' });
+
+      lazyVideos.forEach(v => observer.observe(v));
+    })();
+
+    /* ================================================
+       VIDEO PLAY/PAUSE — IntersectionObserver
+    ================================================ */
+    (function() {
+      const videos = document.querySelectorAll('video[autoplay]');
+      if (!videos.length) return;
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          const video = entry.target;
+          if (entry.isIntersecting) {
+            video.play().catch(() => {});
+          } else {
+            video.pause();
+          }
+        });
+      }, { threshold: 0.3 });
+
+      videos.forEach(v => observer.observe(v));
+    })();
+
+  </script>
+
+</body>
+</html>

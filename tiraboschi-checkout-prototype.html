@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Commande — TIRABOSCHI Paris</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+/* === TOKENS === */
+:root {
+  --tira-black: #0a0a0a;
+  --tira-white: #ffffff;
+  --tira-grey: #f7f5f2;
+  --tira-border: #e8e8e8;
+  --tira-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --tira-duration: 0.9s;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 14px; }
+
+body {
+  font-family: 'Playfair Display', serif;
+  color: var(--tira-black);
+  background: var(--tira-white);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* === CHECKOUT HEADER === */
+.chk-header {
+  background: var(--tira-white);
+  border-bottom: 1px solid var(--tira-border);
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.chk-header__logo img {
+  display: block;
+  height: 22px;
+  width: auto;
+}
+
+.chk-header__secure {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #888;
+}
+
+.chk-header__secure svg {
+  width: 14px;
+  height: 14px;
+  stroke: #888;
+  fill: none;
+}
+
+/* === STEPS === */
+.chk-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 20px 40px;
+  border-bottom: 1px solid var(--tira-border);
+  background: var(--tira-white);
+}
+
+.chk-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #bbb;
+  padding: 0 20px;
+  position: relative;
+}
+
+.chk-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 1px;
+  background: var(--tira-border);
+}
+
+.chk-step.active { color: var(--tira-black); }
+.chk-step.done { color: #888; }
+
+.chk-step__num {
+  width: 20px;
+  height: 20px;
+  border: 1px solid currentColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  flex-shrink: 0;
+}
+
+.chk-step.active .chk-step__num {
+  background: var(--tira-black);
+  color: var(--tira-white);
+  border-color: var(--tira-black);
+}
+
+.chk-step.done .chk-step__num {
+  background: transparent;
+  color: #888;
+}
+
+/* === MAIN LAYOUT === */
+.chk-main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 40px;
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 80px;
+  align-items: start;
+}
+
+/* === FORM SIDE === */
+.chk-form { }
+
+.chk-section {
+  margin-bottom: 48px;
+}
+
+.chk-section__title {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--tira-black);
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--tira-border);
+}
+
+/* === FORM FIELDS === */
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.field-row.single {
+  grid-template-columns: 1fr;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #888;
+}
+
+.field input,
+.field select,
+.field textarea {
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+  color: var(--tira-black);
+  background: var(--tira-white);
+  border: none;
+  border-bottom: 1px solid var(--tira-border);
+  padding: 10px 0;
+  outline: none;
+  width: 100%;
+  transition: border-color .3s ease;
+  border-radius: 0;
+  -webkit-appearance: none;
+}
+
+.field input:focus,
+.field select:focus {
+  border-bottom-color: var(--tira-black);
+}
+
+.field input::placeholder {
+  color: #bbb;
+}
+
+.field select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 4px center;
+  padding-right: 20px;
+}
+
+/* === RADIO OPTIONS === */
+.option-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--tira-border);
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--tira-border);
+  transition: background .2s ease;
+}
+
+.option-item:last-child { border-bottom: none; }
+
+.option-item:hover { background: var(--tira-grey); }
+
+.option-item.selected { background: var(--tira-grey); }
+
+.option-item input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--tira-border);
+  border-radius: 0;
+  -webkit-appearance: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.option-item.selected input[type="radio"]::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  background: var(--tira-black);
+}
+
+.option-content {
+  flex: 1;
+}
+
+.option-content__name {
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+
+.option-content__desc {
+  font-size: 11px;
+  color: #888;
+  letter-spacing: 0.05em;
+}
+
+.option-price {
+  font-size: 13px;
+  color: var(--tira-black);
+}
+
+/* === GIFT PACKAGING === */
+.gift-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  cursor: pointer;
+  border-bottom: 1px solid var(--tira-border);
+}
+
+.gift-toggle__text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.gift-toggle__label {
+  font-size: 13px;
+}
+
+.gift-toggle__desc {
+  font-size: 11px;
+  color: #888;
+}
+
+.gift-toggle__switch {
+  width: 40px;
+  height: 22px;
+  background: var(--tira-border);
+  border-radius: 0;
+  position: relative;
+  transition: background .3s ease;
+}
+
+.gift-toggle__switch::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  width: 18px;
+  height: 18px;
+  background: var(--tira-white);
+  transition: left .3s ease;
+}
+
+.gift-toggle.active .gift-toggle__switch {
+  background: var(--tira-black);
+}
+
+.gift-toggle.active .gift-toggle__switch::after {
+  left: 20px;
+}
+
+.gift-message {
+  margin-top: 16px;
+  display: none;
+}
+
+.gift-message.visible {
+  display: block;
+}
+
+.gift-message textarea {
+  width: 100%;
+  font-family: 'Playfair Display', serif;
+  font-size: 13px;
+  color: var(--tira-black);
+  border: none;
+  border-bottom: 1px solid var(--tira-border);
+  padding: 10px 0;
+  resize: none;
+  outline: none;
+  border-radius: 0;
+  background: transparent;
+  height: 80px;
+}
+
+.gift-message textarea:focus {
+  border-bottom-color: var(--tira-black);
+}
+
+/* === CTA === */
+.chk-cta {
+  margin-top: 32px;
+}
+
+.chk-btn-primary {
+  width: 100%;
+  background: var(--tira-black);
+  color: var(--tira-white);
+  border: none;
+  padding: 18px 40px;
+  font-family: 'Playfair Display', serif;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity .3s ease;
+  border-radius: 0;
+}
+
+.chk-btn-primary:hover { opacity: .85; }
+
+.chk-cta__note {
+  text-align: center;
+  font-size: 11px;
+  color: #888;
+  margin-top: 12px;
+  letter-spacing: 0.05em;
+}
+
+/* === ORDER SUMMARY === */
+.chk-summary {
+  position: sticky;
+  top: calc(64px + 60px + 20px);
+  background: var(--tira-grey);
+  padding: 32px;
+}
+
+.chk-summary__title {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--tira-border);
+}
+
+.chk-summary__toggle {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  margin-bottom: 0;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--tira-border);
+}
+
+.chk-summary__toggle-label {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.chk-summary__toggle-amount {
+  font-size: 15px;
+}
+
+/* Items */
+.chk-items {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.chk-item {
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  gap: 14px;
+  align-items: start;
+}
+
+.chk-item__img {
+  width: 72px;
+  height: 90px;
+  background: linear-gradient(135deg, #c8b9a0 0%, #a89070 100%);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.chk-item__img::after {
+  content: attr(data-qty);
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  background: var(--tira-black);
+  color: var(--tira-white);
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chk-item__info {}
+
+.chk-item__name {
+  font-size: 13px;
+  margin-bottom: 3px;
+}
+
+.chk-item__variant {
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 2px;
+}
+
+.chk-item__sku {
+  font-size: 10px;
+  color: #aaa;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.chk-item__price {
+  font-size: 14px;
+}
+
+/* Discount code */
+.chk-discount {
+  display: flex;
+  gap: 0;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--tira-border);
+  padding-bottom: 24px;
+}
+
+.chk-discount input {
+  flex: 1;
+  font-family: 'Playfair Display', serif;
+  font-size: 13px;
+  border: none;
+  border-bottom: 1px solid var(--tira-border);
+  padding: 10px 0;
+  outline: none;
+  background: transparent;
+  color: var(--tira-black);
+  border-radius: 0;
+}
+
+.chk-discount input::placeholder {
+  color: #bbb;
+  letter-spacing: 0.05em;
+}
+
+.chk-discount button {
+  background: none;
+  border: none;
+  font-family: 'Playfair Display', serif;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  cursor: pointer;
+  color: var(--tira-black);
+  padding-left: 16px;
+  flex-shrink: 0;
+}
+
+/* Totals */
+.chk-totals {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chk-total-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.chk-total-row.subtotal { color: #888; }
+
+.chk-total-row.shipping { color: #888; }
+
+.chk-total-row.discount { color: #888; }
+
+.chk-total-row.total {
+  font-size: 16px;
+  padding-top: 14px;
+  margin-top: 4px;
+  border-top: 1px solid var(--tira-border);
+}
+
+.chk-total-row .label { }
+.chk-total-row .amount { }
+
+/* Trust badges */
+.chk-trust {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chk-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #888;
+  letter-spacing: 0.05em;
+}
+
+.chk-trust-item svg {
+  width: 14px;
+  height: 14px;
+  stroke: #888;
+  fill: none;
+  flex-shrink: 0;
+}
+
+/* === CONFIRMATION PAGE (state 2) === */
+.chk-confirm {
+  display: none;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 80px 40px;
+  text-align: center;
+}
+
+.chk-confirm.visible { display: block; }
+
+.chk-confirm__icon {
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--tira-border);
+  margin: 0 auto 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chk-confirm__icon svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--tira-black);
+  fill: none;
+}
+
+.chk-confirm__order {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #888;
+  margin-bottom: 12px;
+}
+
+.chk-confirm__title {
+  font-size: 32px;
+  margin-bottom: 16px;
+}
+
+.chk-confirm__email {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 48px;
+  line-height: 1.7;
+}
+
+.chk-confirm__section {
+  text-align: left;
+  border-top: 1px solid var(--tira-border);
+  padding-top: 32px;
+  margin-bottom: 32px;
+}
+
+.chk-confirm__section-title {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  color: #888;
+}
+
+.chk-confirm__address {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--tira-black);
+}
+
+.chk-confirm__delivery {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  background: var(--tira-grey);
+  padding: 16px 20px;
+}
+
+.chk-confirm__delivery svg {
+  width: 20px;
+  height: 20px;
+  stroke: var(--tira-black);
+  fill: none;
+  flex-shrink: 0;
+}
+
+.chk-confirm__societe {
+  background: var(--tira-black);
+  color: var(--tira-white);
+  padding: 32px;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.chk-confirm__societe h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.chk-confirm__societe p {
+  font-size: 13px;
+  color: rgba(255,255,255,.7);
+  margin-bottom: 20px;
+  line-height: 1.7;
+}
+
+.chk-confirm__societe a {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  color: var(--tira-white);
+}
+
+.chk-confirm__actions {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.chk-confirm__btn-link {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  color: var(--tira-black);
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: 'Playfair Display', serif;
+}
+
+/* === NOTE PROTOTYPE === */
+.proto-note {
+  background: var(--tira-grey);
+  border: 1px solid var(--tira-border);
+  padding: 16px 24px;
+  margin: 40px;
+  font-size: 11px;
+  color: #888;
+  letter-spacing: 0.05em;
+  line-height: 1.6;
+}
+
+.proto-note strong {
+  color: var(--tira-black);
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.proto-switcher {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--tira-border);
+  margin: 40px;
+  width: fit-content;
+}
+
+.proto-switcher button {
+  background: none;
+  border: none;
+  font-family: 'Playfair Display', serif;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-right: 1px solid var(--tira-border);
+  color: #888;
+  transition: background .2s ease, color .2s ease;
+}
+
+.proto-switcher button:last-child { border-right: none; }
+
+.proto-switcher button.active {
+  background: var(--tira-black);
+  color: var(--tira-white);
+}
+
+/* === MOBILE === */
+@media (max-width: 768px) {
+  .chk-header { padding: 0 20px; }
+
+  .chk-steps { padding: 12px 20px; gap: 0; overflow-x: auto; }
+  .chk-step { padding: 0 12px; white-space: nowrap; }
+  .chk-step__label { display: none; }
+
+  .chk-main {
+    grid-template-columns: 1fr;
+    padding: 24px 20px;
+    gap: 0;
+  }
+
+  .chk-summary {
+    position: static;
+    padding: 24px 20px;
+    margin: 0 -20px;
+    order: -1;
+    background: var(--tira-grey);
+  }
+
+  .chk-summary__title { display: none; }
+  .chk-summary__toggle { display: flex; }
+
+  .chk-summary__body {
+    display: none;
+    padding-top: 20px;
+  }
+
+  .chk-summary__body.open { display: block; }
+
+  .field-row { grid-template-columns: 1fr; }
+
+  .option-item { padding: 14px 16px; }
+
+  .proto-note { margin: 20px; }
+  .proto-switcher { margin: 20px; }
+
+  .chk-confirm { padding: 48px 20px; }
+}
+
+/* === PAGE STATE TOGGLES === */
+.page-checkout { display: block; }
+.page-confirmation { display: none; }
+
+body.show-confirmation .page-checkout { display: none; }
+body.show-confirmation .page-confirmation { display: block; }
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor-dot" style="position:fixed;width:6px;height:6px;background:var(--tira-black);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:opacity .3s ease"></div>
+<div class="cursor-ring" style="position:fixed;width:30px;height:30px;border:1px solid rgba(10,10,10,.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:opacity .3s ease"></div>
+
+<!-- PROTOTYPE SWITCHER -->
+<div class="proto-switcher">
+  <button class="active" onclick="switchPage('checkout')">Étape 1 — Livraison</button>
+  <button onclick="switchPage('payment')">Étape 2 — Paiement</button>
+  <button onclick="switchPage('confirmation')">Confirmation commande</button>
+</div>
+
+<div class="proto-note">
+  <strong>Note de prototype · Checkout TIRABOSCHI</strong>
+  Le checkout Shopify standard est personnalisable via Checkout Editor (logo, couleurs, police, bannière) sur plan Shopify Basic+.
+  Ce prototype illustre le branding cible + les éléments custom possible (packaging cadeau, message, La Société onboarding post-commande).
+  La police et les couleurs sont injectées via CSS custom dans checkout.liquid (plan Shopify Plus) ou via Checkout Branding API.
+</div>
+
+<!-- ===== CHECKOUT PAGE ===== -->
+<div class="page-checkout">
+
+  <!-- HEADER -->
+  <header class="chk-header">
+    <div class="chk-header__logo">
+      <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738" alt="TIRABOSCHI Paris" height="22">
+    </div>
+    <div class="chk-header__secure">
+      <svg viewBox="0 0 24 24" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="0"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Paiement sécurisé
+    </div>
+  </header>
+
+  <!-- STEPS -->
+  <div class="chk-steps">
+    <div class="chk-step done">
+      <div class="chk-step__num">✓</div>
+      <span class="chk-step__label">Panier</span>
+    </div>
+    <div class="chk-step active">
+      <div class="chk-step__num">1</div>
+      <span class="chk-step__label">Livraison</span>
+    </div>
+    <div class="chk-step">
+      <div class="chk-step__num">2</div>
+      <span class="chk-step__label">Paiement</span>
+    </div>
+    <div class="chk-step">
+      <div class="chk-step__num">3</div>
+      <span class="chk-step__label">Confirmation</span>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="chk-main">
+
+    <!-- FORM -->
+    <div class="chk-form">
+
+      <!-- CONTACT -->
+      <div class="chk-section">
+        <div class="chk-section__title">Contact</div>
+        <div class="field-row single">
+          <div class="field">
+            <label>Email</label>
+            <input type="email" placeholder="votre@email.com" value="sophie.martin@gmail.com">
+          </div>
+        </div>
+      </div>
+
+      <!-- LIVRAISON -->
+      <div class="chk-section">
+        <div class="chk-section__title">Adresse de livraison</div>
+        <div class="field-row">
+          <div class="field">
+            <label>Prénom</label>
+            <input type="text" placeholder="" value="Sophie">
+          </div>
+          <div class="field">
+            <label>Nom</label>
+            <input type="text" placeholder="" value="Martin">
+          </div>
+        </div>
+        <div class="field-row single">
+          <div class="field">
+            <label>Adresse</label>
+            <input type="text" placeholder="" value="12 rue du Faubourg Saint-Honoré">
+          </div>
+        </div>
+        <div class="field-row single">
+          <div class="field">
+            <label>Complément d'adresse (optionnel)</label>
+            <input type="text" placeholder="">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Code postal</label>
+            <input type="text" placeholder="" value="75008">
+          </div>
+          <div class="field">
+            <label>Ville</label>
+            <input type="text" placeholder="" value="Paris">
+          </div>
+        </div>
+        <div class="field-row single">
+          <div class="field">
+            <label>Pays</label>
+            <select>
+              <option selected>France</option>
+              <option>Belgique</option>
+              <option>Suisse</option>
+              <option>Luxembourg</option>
+              <option>Italie</option>
+              <option>Espagne</option>
+              <option>Allemagne</option>
+              <option>États-Unis</option>
+              <option>Royaume-Uni</option>
+              <option>Japon</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row single" style="margin-top:8px">
+          <div class="field">
+            <label>Téléphone (pour le suivi de livraison)</label>
+            <input type="tel" placeholder="" value="+33 6 12 34 56 78">
+          </div>
+        </div>
+      </div>
+
+      <!-- MODE DE LIVRAISON -->
+      <div class="chk-section">
+        <div class="chk-section__title">Mode de livraison</div>
+        <div class="option-group">
+          <label class="option-item selected">
+            <input type="radio" name="shipping" checked>
+            <div class="option-content">
+              <div class="option-content__name">Livraison prioritaire</div>
+              <div class="option-content__desc">2–3 jours ouvrés · Suivi express · Coffret signature</div>
+            </div>
+            <div class="option-price">Offerte</div>
+          </label>
+          <label class="option-item">
+            <input type="radio" name="shipping">
+            <div class="option-content">
+              <div class="option-content__name">Livraison standard</div>
+              <div class="option-content__desc">5–7 jours ouvrés · Suivi postal</div>
+            </div>
+            <div class="option-price">Offerte</div>
+          </label>
+          <label class="option-item">
+            <input type="radio" name="shipping">
+            <div class="option-content">
+              <div class="option-content__name">Retrait en atelier — Paris 3e</div>
+              <div class="option-content__desc">Sur rendez-vous · 12 rue de Bretagne · Lun–Sam 10h–19h</div>
+            </div>
+            <div class="option-price">Gratuit</div>
+          </label>
+        </div>
+      </div>
+
+      <!-- PACKAGING CADEAU -->
+      <div class="chk-section">
+        <div class="chk-section__title">Packaging</div>
+
+        <div class="gift-toggle" id="gift-toggle">
+          <div class="gift-toggle__text">
+            <div class="gift-toggle__label">Emballage cadeau TIRABOSCHI</div>
+            <div class="gift-toggle__desc">Boîte signature · Papier de soie · Ruban noir · Message manuscrit</div>
+          </div>
+          <div class="gift-toggle__switch"></div>
+        </div>
+
+        <div class="gift-message" id="gift-message">
+          <div class="field" style="margin-top:12px">
+            <label>Message personnalisé (optionnel)</label>
+            <textarea placeholder="Votre message manuscrit..."></textarea>
+          </div>
+        </div>
+
+        <p style="font-size:11px;color:#888;margin-top:12px;line-height:1.6;letter-spacing:.05em">
+          Chaque pièce est livrée dans son pochon en coton naturel. L'emballage cadeau ajoute la boîte coffret noire mate gravée, le papier de soie et le ruban.
+        </p>
+      </div>
+
+      <!-- CTA -->
+      <div class="chk-cta">
+        <button class="chk-btn-primary" onclick="switchPage('payment')">
+          Continuer vers le paiement
+        </button>
+        <p class="chk-cta__note">Paiement 100% sécurisé · SSL · 3D Secure</p>
+      </div>
+
+    </div><!-- /chk-form -->
+
+    <!-- ORDER SUMMARY -->
+    <div class="chk-summary">
+      <div class="chk-summary__title">Votre commande</div>
+      <div class="chk-summary__toggle" onclick="this.nextElementSibling.classList.toggle('open')">
+        <span class="chk-summary__toggle-label">Voir ma commande (1 article)</span>
+        <span class="chk-summary__toggle-amount">2 850€</span>
+      </div>
+
+      <div class="chk-summary__body open">
+        <div class="chk-items" style="margin-top:20px">
+          <div class="chk-item">
+            <div class="chk-item__img" data-qty="1"></div>
+            <div class="chk-item__info">
+              <div class="chk-item__name">Victoire</div>
+              <div class="chk-item__variant">Veau Pleine Fleur · Noir</div>
+              <div class="chk-item__sku">TIR-VIC-VPF-N</div>
+            </div>
+            <div class="chk-item__price">2 850€</div>
+          </div>
+        </div>
+
+        <!-- Discount -->
+        <div class="chk-discount">
+          <input type="text" placeholder="Code promotionnel">
+          <button>Appliquer</button>
+        </div>
+
+        <!-- Totals -->
+        <div class="chk-totals">
+          <div class="chk-total-row subtotal">
+            <span class="label">Sous-total</span>
+            <span class="amount">2 850€</span>
+          </div>
+          <div class="chk-total-row shipping">
+            <span class="label">Livraison prioritaire</span>
+            <span class="amount">Offerte</span>
+          </div>
+          <div class="chk-total-row total">
+            <span class="label">Total</span>
+            <span class="amount">2 850€</span>
+          </div>
+        </div>
+
+        <!-- Trust -->
+        <div class="chk-trust" style="margin-top:20px">
+          <div class="chk-trust-item">
+            <svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Pièce authentifiée · certificat inclus
+          </div>
+          <div class="chk-trust-item">
+            <svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Retours gratuits sous 14 jours
+          </div>
+          <div class="chk-trust-item">
+            <svg viewBox="0 0 24 24" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+            Expédition sous 24–48h ouvrées
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /chk-main -->
+
+</div><!-- /page-checkout -->
+
+<!-- ===== PAYMENT PAGE (state 2) ===== -->
+<div class="page-payment" style="display:none">
+
+  <header class="chk-header">
+    <div class="chk-header__logo">
+      <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738" alt="TIRABOSCHI Paris" height="22">
+    </div>
+    <div class="chk-header__secure">
+      <svg viewBox="0 0 24 24" stroke-width="1.5" style="width:14px;height:14px;stroke:#888;fill:none"><rect x="3" y="11" width="18" height="11" rx="0"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Paiement sécurisé
+    </div>
+  </header>
+
+  <div class="chk-steps">
+    <div class="chk-step done"><div class="chk-step__num">✓</div><span class="chk-step__label">Panier</span></div>
+    <div class="chk-step done"><div class="chk-step__num">✓</div><span class="chk-step__label">Livraison</span></div>
+    <div class="chk-step active"><div class="chk-step__num">2</div><span class="chk-step__label">Paiement</span></div>
+    <div class="chk-step"><div class="chk-step__num">3</div><span class="chk-step__label">Confirmation</span></div>
+  </div>
+
+  <div class="chk-main">
+    <div class="chk-form">
+
+      <!-- RECAP LIVRAISON -->
+      <div class="chk-section">
+        <div class="chk-section__title">Récapitulatif</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:12px 0;border-bottom:1px solid var(--tira-border)">
+            <span style="color:#888;font-size:11px;letter-spacing:.1em;text-transform:uppercase">Contact</span>
+            <span>sophie.martin@gmail.com</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:12px 0;border-bottom:1px solid var(--tira-border)">
+            <span style="color:#888;font-size:11px;letter-spacing:.1em;text-transform:uppercase">Livraison</span>
+            <span>12 rue du Faubourg Saint-Honoré, 75008 Paris · Livraison prioritaire</span>
+          </div>
+        </div>
+        <div style="margin-top:12px">
+          <button onclick="switchPage('checkout')" style="background:none;border:none;font-family:'Playfair Display',serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;text-decoration:underline;cursor:pointer;color:#888">Modifier</button>
+        </div>
+      </div>
+
+      <!-- PAIEMENT -->
+      <div class="chk-section">
+        <div class="chk-section__title">Mode de paiement</div>
+
+        <!-- Express options -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px">
+          <div style="border:1px solid var(--tira-border);padding:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--tira-grey)">
+            <svg viewBox="0 0 24 24" width="32" height="20" style="fill:#000"><text x="0" y="16" font-family="Arial" font-size="11" font-weight="bold">APPLE</text><text x="0" y="26" font-family="Arial" font-size="9">PAY</text></svg>
+            <span style="font-size:12px;letter-spacing:.05em">Apple Pay</span>
+          </div>
+          <div style="border:1px solid var(--tira-border);padding:12px;display:flex;align-items:center;justify-content:center;cursor:pointer">
+            <span style="font-size:12px;letter-spacing:.05em;color:#003087">PayPal</span>
+          </div>
+          <div style="border:1px solid var(--tira-border);padding:12px;display:flex;align-items:center;justify-content:center;cursor:pointer">
+            <span style="font-size:12px;letter-spacing:.05em;color:#00457C">Klarna</span>
+          </div>
+        </div>
+
+        <div style="text-align:center;font-size:11px;color:#888;letter-spacing:.05em;margin-bottom:20px">— ou payer par carte —</div>
+
+        <div class="option-group" style="margin-bottom:20px">
+          <div class="option-item selected">
+            <input type="radio" name="payment" checked>
+            <div class="option-content">
+              <div class="option-content__name">Carte bancaire</div>
+              <div class="option-content__desc">Visa · Mastercard · Amex · 3D Secure</div>
+            </div>
+            <div style="display:flex;gap:4px">
+              <div style="width:30px;height:20px;background:#1a1a6c;display:flex;align-items:center;justify-content:center"><span style="color:#fff;font-size:7px;font-weight:bold">VISA</span></div>
+              <div style="width:30px;height:20px;background:linear-gradient(90deg,#eb001b,#f79e1b);"></div>
+            </div>
+          </div>
+          <div class="option-item">
+            <input type="radio" name="payment">
+            <div class="option-content">
+              <div class="option-content__name">Virement bancaire</div>
+              <div class="option-content__desc">Réservé aux commandes sur mesure · Délai 2–3 jours</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:var(--tira-grey);padding:20px">
+          <div class="field-row single" style="margin-bottom:16px">
+            <div class="field">
+              <label>Numéro de carte</label>
+              <input type="text" placeholder="1234 5678 9012 3456" style="letter-spacing:.08em">
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Date d'expiration</label>
+              <input type="text" placeholder="MM / AA">
+            </div>
+            <div class="field">
+              <label>Code de sécurité</label>
+              <input type="text" placeholder="CVV">
+            </div>
+          </div>
+          <div class="field-row single" style="margin-top:0">
+            <div class="field">
+              <label>Nom sur la carte</label>
+              <input type="text" placeholder="" value="Sophie Martin">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3× SANS FRAIS -->
+      <div class="chk-section">
+        <div style="background:var(--tira-grey);padding:16px 20px">
+          <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Facilité de paiement</div>
+          <div style="font-size:13px;margin-bottom:6px">3× sans frais — 950€ / mois</div>
+          <div style="font-size:11px;color:#888;line-height:1.6">Disponible pour les achats supérieurs à 500€. Votre pièce est fabriquée dès la 1ère échéance.</div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="chk-cta">
+        <button class="chk-btn-primary" onclick="switchPage('confirmation')">
+          Confirmer ma commande — 2 850€
+        </button>
+        <p class="chk-cta__note">En confirmant, vous acceptez nos <u>Conditions générales</u> · Livraison offerte</p>
+      </div>
+
+    </div>
+
+    <!-- ORDER SUMMARY (same) -->
+    <div class="chk-summary">
+      <div class="chk-summary__title">Votre commande</div>
+      <div class="chk-items">
+        <div class="chk-item">
+          <div class="chk-item__img" data-qty="1"></div>
+          <div class="chk-item__info">
+            <div class="chk-item__name">Victoire</div>
+            <div class="chk-item__variant">Veau Pleine Fleur · Noir</div>
+            <div class="chk-item__sku">TIR-VIC-VPF-N</div>
+          </div>
+          <div class="chk-item__price">2 850€</div>
+        </div>
+      </div>
+      <div class="chk-totals" style="margin-top:20px;padding-top:20px;border-top:1px solid var(--tira-border)">
+        <div class="chk-total-row subtotal"><span>Sous-total</span><span>2 850€</span></div>
+        <div class="chk-total-row shipping"><span>Livraison</span><span>Offerte</span></div>
+        <div class="chk-total-row total"><span>Total</span><span>2 850€</span></div>
+      </div>
+      <div class="chk-trust" style="margin-top:20px">
+        <div class="chk-trust-item">
+          <svg viewBox="0 0 24 24" stroke-width="1.5" style="width:14px;height:14px;stroke:#888;fill:none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Certificat d'authenticité inclus
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /page-payment -->
+
+<!-- ===== CONFIRMATION PAGE ===== -->
+<div class="page-confirmation" style="display:none">
+
+  <header class="chk-header">
+    <div class="chk-header__logo">
+      <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738" alt="TIRABOSCHI Paris" height="22">
+    </div>
+  </header>
+
+  <div class="chk-confirm visible">
+    <div class="chk-confirm__icon">
+      <svg viewBox="0 0 24 24" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+
+    <div class="chk-confirm__order">Commande #TIR-2025-0847</div>
+    <h1 class="chk-confirm__title">Merci, Sophie.</h1>
+    <p class="chk-confirm__email">
+      Un email de confirmation vous a été envoyé à<br>
+      <strong>sophie.martin@gmail.com</strong>
+    </p>
+
+    <!-- La Société onboarding — IMPORTANT UX -->
+    <div class="chk-confirm__societe">
+      <h3>Bienvenue dans La Société.</h3>
+      <p>
+        Votre première pièce TIRABOSCHI vous ouvre les portes<br>
+        du Cercle I — Membre. Vos privilèges commencent aujourd'hui.
+      </p>
+      <a href="#">Découvrir La Société →</a>
+    </div>
+
+    <!-- Livraison -->
+    <div class="chk-confirm__section">
+      <div class="chk-confirm__section-title">Livraison estimée</div>
+      <div class="chk-confirm__delivery">
+        <svg viewBox="0 0 24 24" stroke-width="1.5"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        <div>
+          <div style="font-size:13px">Mercredi 28 mai 2025</div>
+          <div style="font-size:11px;color:#888;margin-top:3px">Livraison prioritaire · Votre numéro de suivi vous sera envoyé sous 24h</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Adresse -->
+    <div class="chk-confirm__section">
+      <div class="chk-confirm__section-title">Adresse de livraison</div>
+      <div class="chk-confirm__address">
+        Sophie Martin<br>
+        12 rue du Faubourg Saint-Honoré<br>
+        75008 Paris<br>
+        France
+      </div>
+    </div>
+
+    <!-- Récap commande -->
+    <div class="chk-confirm__section">
+      <div class="chk-confirm__section-title">Votre pièce</div>
+      <div class="chk-item" style="display:grid;grid-template-columns:72px 1fr auto;gap:14px;align-items:start">
+        <div style="width:72px;height:90px;background:linear-gradient(135deg,#c8b9a0 0%,#a89070 100%)"></div>
+        <div>
+          <div style="font-size:13px;margin-bottom:3px">Victoire</div>
+          <div style="font-size:11px;color:#888;margin-bottom:2px">Veau Pleine Fleur · Noir</div>
+          <div style="font-size:11px;color:#aaa;letter-spacing:.08em;text-transform:uppercase">TIR-VIC-VPF-N</div>
+        </div>
+        <div style="font-size:14px">2 850€</div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="chk-confirm__actions">
+      <button class="chk-confirm__btn-link" onclick="location.href='#'">Suivre ma commande</button>
+      <button class="chk-confirm__btn-link" onclick="location.href='#'">Continuer ma visite</button>
+      <button class="chk-confirm__btn-link" onclick="location.href='#'">Retourner à l'accueil</button>
+    </div>
+
+  </div>
+</div><!-- /page-confirmation -->
+
+<script>
+// === CURSOR ===
+const dot = document.querySelector('.cursor-dot');
+const ring = document.querySelector('.cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+if (!('ontouchstart' in window)) {
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px';
+    dot.style.top = my + 'px';
+  });
+
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+} else {
+  dot.style.display = 'none';
+  ring.style.display = 'none';
+}
+
+// === GIFT TOGGLE ===
+const giftToggle = document.getElementById('gift-toggle');
+const giftMessage = document.getElementById('gift-message');
+if (giftToggle) {
+  giftToggle.addEventListener('click', () => {
+    giftToggle.classList.toggle('active');
+    giftMessage.classList.toggle('visible');
+  });
+}
+
+// === OPTION ITEMS ===
+document.querySelectorAll('.option-group').forEach(group => {
+  group.querySelectorAll('.option-item').forEach(item => {
+    item.addEventListener('click', () => {
+      group.querySelectorAll('.option-item').forEach(i => i.classList.remove('selected'));
+      item.classList.add('selected');
+    });
+  });
+});
+
+// === PAGE SWITCHER ===
+function switchPage(page) {
+  document.querySelectorAll('[class^="page-"], [class*=" page-"]').forEach(el => {
+    if (!el.classList.contains('proto-switcher') && !el.classList.contains('proto-note')) {
+      el.style.display = 'none';
+    }
+  });
+
+  const target = document.querySelector('.page-' + page);
+  if (target) target.style.display = 'block';
+
+  // Update switcher buttons
+  document.querySelectorAll('.proto-switcher button').forEach((btn, i) => {
+    btn.classList.remove('active');
+    const map = { 0: 'checkout', 1: 'payment', 2: 'confirmation' };
+    if (map[i] === page) btn.classList.add('active');
+  });
+
+  window.scrollTo(0, 0);
+}
+
+// Initialize
+switchPage('checkout');
+
+// === MOBILE SUMMARY TOGGLE ===
+document.querySelectorAll('.chk-summary__toggle').forEach(toggle => {
+  toggle.addEventListener('click', () => {
+    const body = toggle.nextElementSibling;
+    body.classList.toggle('open');
+  });
+});
+</script>
+</body>
+</html>
