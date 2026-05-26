@@ -20,13 +20,38 @@
   "@context": "https://schema.org",
   "@type": "Product",
   "name": "Sac Victoire",
-  "description": "Sac à main en veau grainé noir, fabriqué à la main par un seul artisan dans les ateliers TIRABOSCHI Paris. Made in France, Only.",
-  "brand": {"@type": "Brand", "name": "TIRABOSCHI Paris"},
+  "description": "Sac à main en veau grainé noir, fabriqué à la main par un seul artisan dans les ateliers TIRABOSCHI Paris. Made in France, Only. 3 400 points de couture sellier. 48 à 72 heures de fabrication.",
+  "brand": {
+    "@type": "Brand",
+    "name": "TIRABOSCHI Paris"
+  },
+  "manufacturer": {
+    "@type": "Organization",
+    "name": "TIRABOSCHI Paris",
+    "foundingDate": "1904",
+    "address": {"@type": "PostalAddress", "addressLocality": "Paris", "addressCountry": "FR"}
+  },
+  "countryOfOrigin": {
+    "@type": "Country",
+    "name": "France"
+  },
+  "material": "Cuir de veau pleine fleur",
+  "artForm": "Maroquinerie sellier",
+  "additionalProperty": [
+    {"@type": "PropertyValue", "name": "Fabrication", "value": "Fait à la main par un seul artisan"},
+    {"@type": "PropertyValue", "name": "Points de couture", "value": "3 400 points sellier par sac"},
+    {"@type": "PropertyValue", "name": "Temps de fabrication", "value": "48 à 72 heures"},
+    {"@type": "PropertyValue", "name": "Origine", "value": "Made in France"}
+  ],
   "offers": {
     "@type": "Offer",
     "price": "2850",
     "priceCurrency": "EUR",
-    "availability": "https://schema.org/InStock"
+    "availability": "https://schema.org/InStock",
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingOrigin": {"@type": "DefinedRegion", "addressCountry": "FR"}
+    }
   },
   "aggregateRating": {
     "@type": "AggregateRating",

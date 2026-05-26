@@ -10,23 +10,53 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap&subset=latin" rel="stylesheet">
 
+<!-- Open Graph -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="Notre Histoire — TIRABOSCHI Paris | Maroquinerie de Luxe Depuis 1904">
+<meta property="og:description" content="L'histoire de TIRABOSCHI Paris depuis 1904. Quatre générations d'artisans maroquiniers, une seule règle : un sac, un artisan, de A à Z. Made in France, Only.">
+<meta property="og:url" content="https://tiraboschi-paris.com/pages/histoire">
+<meta property="og:image" content="https://tiraboschi-paris.com/og-histoire.jpg">
+<meta property="og:site_name" content="TIRABOSCHI Paris">
+<meta property="og:locale" content="fr_FR">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Notre Histoire — TIRABOSCHI Paris">
+<meta name="twitter:description" content="Maroquinerie de luxe française fondée en 1904. Un seul artisan par sac. Made in France, Only.">
+<meta name="twitter:image" content="https://tiraboschi-paris.com/og-histoire.jpg">
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Article",
-  "headline": "Notre Histoire — TIRABOSCHI Paris depuis 1904",
-  "description": "L'histoire de la maison TIRABOSCHI Paris, fondée en 1904. Maroquinerie de luxe française, artisanat d'exception, Made in France, Only.",
-  "author": {"@type": "Organization", "name": "TIRABOSCHI Paris"},
-  "publisher": {"@type": "Organization", "name": "TIRABOSCHI Paris", "foundingDate": "1904"},
-  "datePublished": "2025-01-01",
-  "breadcrumb": {
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {"@type":"ListItem","position":1,"name":"Accueil","item":"https://tiraboschi-paris.com"},
-      {"@type":"ListItem","position":2,"name":"La Maison"},
-      {"@type":"ListItem","position":3,"name":"Notre Histoire"}
-    ]
-  }
+  "@graph": [
+    {
+      "@type": "AboutPage",
+      "name": "Notre Histoire — TIRABOSCHI Paris",
+      "description": "L'histoire de la maison TIRABOSCHI Paris, fondée en 1904. Maroquinerie de luxe française, artisanat d'exception, Made in France, Only.",
+      "url": "https://tiraboschi-paris.com/pages/histoire",
+      "about": {
+        "@type": "Organization",
+        "name": "TIRABOSCHI Paris",
+        "foundingDate": "1904",
+        "foundingLocation": "Paris, France",
+        "description": "Maison de maroquinerie de luxe française fondée en 1904. Chaque sac fabriqué à la main par un seul artisan. 3 400 points de couture sellier. Made in France, Only.",
+        "numberOfEmployees": {"@type": "QuantitativeValue", "value": "1", "description": "1 artisan par sac"},
+        "address": {"@type": "PostalAddress", "addressLocality": "Paris", "addressCountry": "FR"},
+        "sameAs": ["https://www.instagram.com/boschi_paris"]
+      },
+      "speakable": {
+        "@type": "SpeakableSpecification",
+        "xPath": ["/html/head/title", "//h1", "//section[@class='tira-hero']//p", "//blockquote"]
+      },
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type":"ListItem","position":1,"name":"Accueil","item":"https://tiraboschi-paris.com"},
+          {"@type":"ListItem","position":2,"name":"La Maison","item":"https://tiraboschi-paris.com/pages/la-maison"},
+          {"@type":"ListItem","position":3,"name":"Notre Histoire","item":"https://tiraboschi-paris.com/pages/histoire"}
+        ]
+      }
+    }
+  ]
 }
 </script>
 

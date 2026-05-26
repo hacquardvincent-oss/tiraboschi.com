@@ -33,12 +33,27 @@
     {
       "@type": "Product",
       "name": "La Victoire",
-      "description": "Sac iconique TIRABOSCHI Paris, créé en 1938. Fabriqué à la main par un seul artisan dans notre atelier parisien. Made in France, Only.",
+      "description": "Sac iconique TIRABOSCHI Paris, né en 1938. Fabriqué à la main par un seul artisan dans notre atelier parisien. 3 400 points de couture sellier. 48 à 72 heures de travail. Made in France, Only.",
       "brand": {
         "@type": "Brand",
         "name": "TIRABOSCHI Paris",
         "foundingDate": "1904"
       },
+      "manufacturer": {
+        "@type": "Organization",
+        "name": "TIRABOSCHI Paris",
+        "foundingDate": "1904",
+        "address": {"@type": "PostalAddress", "addressLocality": "Paris", "addressCountry": "FR"}
+      },
+      "countryOfOrigin": {"@type": "Country", "name": "France"},
+      "material": "Cuir pleine fleur",
+      "additionalProperty": [
+        {"@type": "PropertyValue", "name": "Année de création du modèle", "value": "1938"},
+        {"@type": "PropertyValue", "name": "Fabrication", "value": "Un seul artisan par pièce"},
+        {"@type": "PropertyValue", "name": "Points de couture", "value": "3 400 points sellier"},
+        {"@type": "PropertyValue", "name": "Temps de fabrication", "value": "48 à 72 heures"},
+        {"@type": "PropertyValue", "name": "Origine", "value": "Made in France"}
+      ],
       "offers": {
         "@type": "Offer",
         "priceCurrency": "EUR",
@@ -58,8 +73,37 @@
       "@type": "BreadcrumbList",
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://tiraboschi-paris.com/" },
-        { "@type": "ListItem", "position": 2, "name": "L'Atelier", "item": "https://tiraboschi-paris.com/blogs/latelier" },
+        { "@type": "ListItem", "position": 2, "name": "Icônes", "item": "https://tiraboschi-paris.com/collections/iconiques" },
         { "@type": "ListItem", "position": 3, "name": "La Victoire", "item": "https://tiraboschi-paris.com/pages/victoire" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Depuis quand existe le sac Victoire ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "La Victoire a été créée en 1938 par la maison TIRABOSCHI Paris, fondée en 1904. C'est l'un des sacs français les plus anciens encore fabriqués à l'identique, dans le même atelier parisien."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Comment est fabriqué le sac Victoire ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Chaque Victoire est façonnée de A à Z par un seul artisan. 48 à 72 heures de travail à la main, 3 400 points de couture sellier, cuir pleine fleur sélectionné chez des tanneurs certifiés. Made in France, Only."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "La Victoire existe-t-elle en plusieurs tailles et coloris ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "La Victoire est disponible dans une sélection de cuirs et coloris, dont le veau naturel, le veau grainé, le cuir verni et les exotiques sur mesure. Consultez notre page de personnalisation pour les options disponibles."
+          }
+        }
       ]
     }
   ]
