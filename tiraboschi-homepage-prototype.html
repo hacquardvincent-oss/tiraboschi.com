@@ -165,8 +165,8 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
   display: block; line-height: 0;
 }
 .hdr__logo-img {
-  display: block; height: 22px; width: auto;
-  filter: brightness(0) invert(1); /* blanc sur hero transparent */
+  display: block; height: 28px; width: auto;  /* ← agrandi (22→28) */
+  filter: brightness(0) invert(1);
   transition: filter .5s ease;
 }
 .hdr.solid .hdr__logo-img { filter: none; } /* noir sur fond blanc */
@@ -226,7 +226,7 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
   display: block; line-height: 0;
 }
 .hdr__m-logo .hdr__logo-img {
-  height: 22px;                          /* ← agrandi (18→22) */
+  height: 24px;                          /* ← agrandi (22→24) */
 }
 .hdr__m svg {
   width: 24px; height: 24px; fill: none; /* ← agrandi (21→24) */
@@ -254,11 +254,10 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
 ════════════════════════════════════════════ */
 .hdr-search {
   position: fixed; top: var(--header-h); left: 0; right: 0; z-index: 199;
-  display: flex; align-items: center;
+  display: flex; align-items: center; justify-content: center; /* ← champ toujours centré */
   height: var(--search-h); padding: 0 40px;
-  /* Léger fond pour distinguer du header, sans trait dur */
   background: rgba(0,0,0,.18);
-  border-bottom: none;                   /* ← trait supprimé */
+  border-bottom: none;
   transition: top .35s var(--tira-ease),
               background .5s ease;
 }
@@ -272,16 +271,15 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
   border-bottom: 1px solid var(--tira-border);
 }
 
-/* Champ centré (max 600px, margin auto) */
+/* Champ centré — input + loupe serrés ensemble */
 .hdr-search__field {
-  display: flex; align-items: center; gap: 14px;
-  margin: 0 auto;           /* ← centrage horizontal */
-  width: 100%; max-width: 600px;
-  transition: max-width .35s var(--tira-ease), margin .35s var(--tira-ease);
+  display: flex; align-items: center; gap: 8px; /* ← loupe rapprochée (14→8) */
+  margin: 0 auto;
+  width: 100%; max-width: 560px;
 }
-/* Sticky : le champ prend toute la largeur pour laisser place aux icônes */
+/* Sticky : champ toujours centré — actions absolues à droite */
 .hdr-search.sticky-mode .hdr-search__field {
-  max-width: none; margin: 0; flex: 1;
+  max-width: 560px; margin: 0 auto; flex: unset;
 }
 
 /* Input */
@@ -290,9 +288,15 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
   font-family: inherit; font-size: 11px;
   text-transform: uppercase; letter-spacing: .12em;
   color: var(--tira-white);
-  border-bottom: 1px solid rgba(255,255,255,.5); /* ← plus visible (.3→.5) */
+  border-bottom: 1px solid rgba(255,255,255,.5);
   transition: color .4s, border-color .4s;
   padding-bottom: 3px; text-align: center;
+}
+/* Placeholder blanc même visibilité que les items nav (.75) */
+.hdr-search input::placeholder {
+  color: rgba(255,255,255,.8);
+  opacity: 1;
+  letter-spacing: .1em;
 }
 .hdr-search.solid input,
 .hdr-search.sticky-mode input {
@@ -300,9 +304,13 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
   border-bottom-color: var(--tira-border);
   text-align: left;
 }
+.hdr-search.solid input::placeholder,
+.hdr-search.sticky-mode input::placeholder {
+  color: var(--tira-black);
+  opacity: .45;
+}
 .hdr-search.solid input:focus,
 .hdr-search.sticky-mode input:focus { border-bottom-color: var(--tira-black); }
-.hdr-search input::placeholder { opacity: .65; letter-spacing: .06em; } /* ← plus lisible (.45→.65) */
 
 /* Loupe — dans le champ, toujours visible */
 .hdr-search__icon { flex-shrink: 0; display: flex; align-items: center; }
@@ -314,14 +322,15 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
 .hdr-search.solid .hdr-search__icon svg,
 .hdr-search.sticky-mode .hdr-search__icon svg { stroke: var(--tira-black); opacity: .5; }
 
-/* Actions (bag + account) — à droite de la loupe, visible en sticky-mode uniquement */
+/* Actions (account + bag) — absolues à droite en sticky-mode */
 .hdr-search__actions {
-  display: flex; align-items: center; gap: 16px; flex-shrink: 0;
-  opacity: 0; pointer-events: none; width: 0; overflow: hidden;
-  transition: opacity .3s var(--tira-ease), width .35s var(--tira-ease);
+  display: flex; align-items: center; gap: 20px; flex-shrink: 0;
+  opacity: 0; pointer-events: none;
+  position: absolute; right: 40px; top: 50%; transform: translateY(-50%);
+  transition: opacity .3s var(--tira-ease);
 }
 .hdr-search.sticky-mode .hdr-search__actions {
-  opacity: 1; pointer-events: auto; width: auto; overflow: visible;
+  opacity: 1; pointer-events: auto;
 }
 .hdr-search__actions button {
   background: none; border: none; cursor: pointer;
@@ -333,6 +342,9 @@ body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
   width: 20px; height: 20px; fill: none;
   stroke: currentColor; stroke-width: 1.5;
   stroke-linecap: square; stroke-linejoin: miter;
+}
+@media (max-width: 900px) {
+  .hdr-search__actions { right: 20px; gap: 16px; }
 }
 
 @media (max-width: 900px) {
