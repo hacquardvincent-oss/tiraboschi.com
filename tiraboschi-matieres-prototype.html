@@ -325,70 +325,30 @@ body.on-dark .cur-ring { border-color: rgba(255,255,255,.38); }
 }
 .mat-card__swatch {
   width: 80px; height: 120px; flex-shrink: 0;
+  background-size: cover; background-position: center;
 }
-/* Swatches — gradients simulant les textures */
-/* Veau pleine fleur — beige chaud */
+/* Swatches — ZOOMS PHOTOS matière cuir (recette 6.6)
+   TODO Phase 3 : remplacer par les vraies macros matière fournies par la maison */
 .swatch-veau-pf {
-  background: linear-gradient(160deg, #c8b49a 0%, #a8906c 40%, #8c7250 100%);
+  background-image: url('https://images.unsplash.com/photo-1517438476312-10d79c077509?w=400&q=80&fit=crop');
 }
-/* Agneau nappa — très doux, crème */
 .swatch-agneau {
-  background: linear-gradient(160deg, #e8d8c0 0%, #d0bc9c 50%, #b89878 100%);
+  background-image: url('https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&q=80&fit=crop');
 }
-/* Veau box — brillant, noir avec reflets */
 .swatch-veau-box {
-  background: linear-gradient(
-    135deg,
-    #2a2a2a 0%, #1a1a1a 30%,
-    rgba(255,255,255,.12) 40%, rgba(255,255,255,.08) 45%,
-    #1a1a1a 55%, #0c0c0c 100%
-  );
+  background-image: url('https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=400&q=80&fit=crop');
 }
-/* Veau gras — légèrement grainé, châtain */
 .swatch-veau-gras {
-  background:
-    repeating-linear-gradient(
-      45deg,
-      rgba(0,0,0,.03) 0px, rgba(0,0,0,.03) 1px,
-      transparent 1px, transparent 6px
-    ),
-    linear-gradient(160deg, #b09060 0%, #907040 50%, #745030 100%);
+  background-image: url('https://images.unsplash.com/photo-1565060549770-cc7c63eaa6dc?w=400&q=80&fit=crop');
 }
-/* Python */
 .swatch-python {
-  background:
-    repeating-linear-gradient(
-      60deg, rgba(255,255,255,.05) 0px, rgba(255,255,255,.05) 2px,
-      transparent 2px, transparent 18px
-    ),
-    repeating-linear-gradient(
-      -60deg, rgba(255,255,255,.04) 0px, rgba(255,255,255,.04) 2px,
-      transparent 2px, transparent 18px
-    ),
-    linear-gradient(160deg, #3a3228 0%, #2a2218 50%, #1a1410 100%);
+  background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&q=80&fit=crop');
 }
-/* Lézard */
 .swatch-lezard {
-  background:
-    repeating-linear-gradient(
-      0deg, rgba(255,255,255,.06) 0px, rgba(255,255,255,.06) 1px,
-      transparent 1px, transparent 10px
-    ),
-    repeating-linear-gradient(
-      90deg, rgba(255,255,255,.06) 0px, rgba(255,255,255,.06) 1px,
-      transparent 1px, transparent 10px
-    ),
-    linear-gradient(160deg, #3c3424 0%, #2c2418 50%, #1c160e 100%);
+  background-image: url('https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?w=400&q=80&fit=crop');
 }
-/* Autruche */
 .swatch-autruche {
-  background:
-    radial-gradient(ellipse 10px 8px at 20% 20%, rgba(255,255,255,.1) 0%, transparent 70%),
-    radial-gradient(ellipse 10px 8px at 55% 50%, rgba(255,255,255,.08) 0%, transparent 70%),
-    radial-gradient(ellipse 10px 8px at 80% 25%, rgba(255,255,255,.09) 0%, transparent 70%),
-    radial-gradient(ellipse 10px 8px at 30% 75%, rgba(255,255,255,.07) 0%, transparent 70%),
-    radial-gradient(ellipse 10px 8px at 70% 80%, rgba(255,255,255,.08) 0%, transparent 70%),
-    linear-gradient(160deg, #242018 0%, #181410 50%, #0e0c08 100%);
+  background-image: url('https://images.unsplash.com/photo-1611425143678-08fc480cafde?w=400&q=80&fit=crop');
 }
 .mat-card__info {}
 .mat-card__name {
@@ -795,14 +755,16 @@ body.nav-open { overflow: hidden; }
 .mat-swatch__square {
   width: 100%; padding-bottom: 140%; position: relative;
   overflow: hidden;
+  background-size: cover; background-position: center;
 }
-.swatch-veau-pf .mat-swatch__square { background: #c8a882; }
-.swatch-agneau .mat-swatch__square { background: #8b6f5e; }
-.swatch-veau-box .mat-swatch__square { background: #2a1f1a; }
-.swatch-veau-gras .mat-swatch__square { background: #4a3728; }
-.swatch-python .mat-swatch__square { background: #d4c9b0; }
-.swatch-lezard .mat-swatch__square { background: #3d4a3e; }
-.swatch-autruche .mat-swatch__square { background: #8c7355; }
+/* Zooms matière (recette 6.6) — TODO Phase 3 : macros maison */
+.swatch-veau-pf .mat-swatch__square { background-image: url('https://images.unsplash.com/photo-1517438476312-10d79c077509?w=400&q=80&fit=crop'); }
+.swatch-agneau .mat-swatch__square { background-image: url('https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&q=80&fit=crop'); }
+.swatch-veau-box .mat-swatch__square { background-image: url('https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=400&q=80&fit=crop'); }
+.swatch-veau-gras .mat-swatch__square { background-image: url('https://images.unsplash.com/photo-1565060549770-cc7c63eaa6dc?w=400&q=80&fit=crop'); }
+.swatch-python .mat-swatch__square { background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&q=80&fit=crop'); }
+.swatch-lezard .mat-swatch__square { background-image: url('https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?w=400&q=80&fit=crop'); }
+.swatch-autruche .mat-swatch__square { background-image: url('https://images.unsplash.com/photo-1611425143678-08fc480cafde?w=400&q=80&fit=crop'); }
 </style>
 </head>
 
