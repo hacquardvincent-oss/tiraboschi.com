@@ -28,6 +28,18 @@ Une fois la page annotée, me la renvoyer ou me dicter les retours.
 | 4 | Histoire | `tiraboschi-histoire-prototype.html` | P2 | 🔲 |
 | 5 | Savoir-Faire | `tiraboschi-savoir-faire-prototype.html` | P2 | 🔲 |
 | 6 | Matières & Cuirs | `tiraboschi-matieres-prototype.html` | P2 | 🔲 |
+| **NOUVELLES PAGES (benchmark grandes maisons)** | | | | |
+| 15 | Icône Victoire | `tiraboschi-icone-victoire-prototype.html` | P2 | 🔲 |
+| 16 | Contact + Booking RDV | `tiraboschi-contact-prototype.html` | P2 | 🔲 |
+| 17 | Entretien & Réparation | `tiraboschi-entretien-prototype.html` | P2 | 🔲 |
+| 18 | Lookbook FW25 | `tiraboschi-lookbook-prototype.html` | P2 | 🔲 |
+| 19 | Cadeaux / Gift Guide | `tiraboschi-cadeaux-prototype.html` | P3 | 🔲 |
+| 20 | Wishlist | `tiraboschi-wishlist-prototype.html` | P3 | 🔲 |
+| 21 | Presse | `tiraboschi-presse-prototype.html` | P3 | 🔲 |
+| 22 | RSE / Engagement | `tiraboschi-rse-prototype.html` | P3 | 🔲 |
+| **COMPOSANTS** | | | | |
+| 23 | Newsletter popup | `tiraboschi-newsletter-popup-prototype.html` | P3 | 🔲 |
+| 24 | Animations premium | `tiraboschi-composants-prototype.html` | P3 | 🔲 |
 | 7 | Sur Mesure | `tiraboschi-sur-mesure-prototype.html` | P2 | 🔲 |
 | 8 | La Société | `tiraboschi-la-societe-prototype.html` | P2 | 🔲 |
 | 9 | Blog L'Atelier | `tiraboschi-blog-prototype.html` | P3 | 🔲 |
@@ -401,38 +413,296 @@ Une fois la page annotée, me la renvoyer ou me dicter les retours.
 
 ---
 
+---
+
+## PAGE 15 — ICÔNE VICTOIRE
+**Fichier :** `tiraboschi-icone-victoire-prototype.html`
+*Sert de template pour Colette et Rafael — même structure, contenu adapté.*
+
+### Checklist
+- [ ] Hero dark + filigrane "Victoire" : OK
+- [ ] Texte d'origine (histoire du modèle) : exact ou à corriger ?
+- [ ] Section "La Silhouette" : dimensions 28×35×12cm OK ?
+- [ ] "Contient : carnet A5, portefeuille, téléphone, clés" : exact ?
+- [ ] Les 4 matières proposées : OK ?
+- [ ] Palette 8 couleurs FW25 : correspond à votre offre réelle ?
+- [ ] "48 à 72h de travail · 14h couture sellier · 3 400 points" : exact ?
+- [ ] Témoignages : style OK (pas de notes/étoiles) ?
+- [ ] Section Sur Mesure : OK
+
+### Questions spécifiques
+1. Y a-t-il vraiment une histoire derrière le nom "Victoire" ? La nôtre est fictive — à corriger avec le vrai récit.
+2. Le prix affiché "À partir de 2 850€" — c'est le prix actuel ?
+3. Les 3 modèles dans "Découvrir aussi" (Colette, Colette Mini, Jane) — garder ou changer ?
+4. Une fois validé, créer Icône Colette et Icône Rafael depuis ce template ?
+
+**Retours →**
+
+**Statut →** 🔲
+
+---
+
+## PAGE 16 — CONTACT + BOOKING RDV
+**Fichier :** `tiraboschi-contact-prototype.html`
+
+### Checklist
+- [ ] Hero typographique (sans image) : OK
+- [ ] 3 motifs de visite (Conseil / Sur Mesure / Entretien) : OK
+- [ ] Adresse "12, rue de Bretagne · Paris 3e" : correcte ?
+- [ ] Horaires (Mardi–Vendredi 10h–18h30 / Samedi 10h–17h) : corrects ?
+- [ ] Accès métro "Arts & Métiers / Temple" : correct ?
+- [ ] Formulaire : champs suffisants ?
+- [ ] Section clients internationaux (visio) : OK
+
+### Questions spécifiques
+1. L'adresse est fictive — quelle est votre adresse réelle ?
+2. Les horaires sont fictifs — quels sont vos horaires réels ?
+3. Préférez-vous un embed Calendly/Doctolib pour le booking ou le formulaire HTML suffit ?
+4. Le téléphone "+33 1 XX XX XX XX" — à remplacer par votre vrai numéro ou laisser "sur demande" ?
+5. WhatsApp pour les clients Cercle II & III — c'est déjà le cas ?
+
+**Retours →**
+
+**Statut →** 🔲
+
+---
+
+## PAGE 17 — ENTRETIEN & RÉPARATION
+**Fichier :** `tiraboschi-entretien-prototype.html`
+
+### Checklist
+- [ ] Hero (BOSCHI0154) KB : OK
+- [ ] Citation "Nous réparons ce que nous fabriquons. Sans limitation de date." : OK
+- [ ] Les 6 services proposés : liste complète ? En manque-t-il ?
+- [ ] Les délais indiqués (5–21 jours selon intervention) : réalistes ?
+- [ ] Tarifs indicatifs (80–500€) : dans la bonne fourchette ?
+- [ ] Process 4 étapes : OK
+- [ ] "Garantie à vie si entretenue chez nous" : c'est votre engagement ?
+- [ ] Envoi postal disponible : c'est le cas ?
+
+### Questions spécifiques
+1. Proposez-vous réellement tous ces services ? Ou certains sont à terme ?
+2. Les tarifs sont fictifs — fourchette correcte ou à ajuster complètement ?
+3. La "garantie à vie" — c'est déjà votre politique officielle ?
+4. "Nous retrouvons votre pièce dans nos archives" — vous tenez vraiment un carnet de bord par pièce ?
+
+**Retours →**
+
+**Statut →** 🔲
+
+---
+
+## PAGE 18 — LOOKBOOK / CAMPAGNE FW25
+**Fichier :** `tiraboschi-lookbook-prototype.html`
+
+### Checklist
+- [ ] Hero transparent → solid (comme homepage) : OK
+- [ ] Nom de campagne "Permanence" : OK ou autre nom pour FW25 ?
+- [ ] Quote d'ouverture : OK
+- [ ] 3 looks narratifs (Victoire Noir / Colette Marine / Rafael Cognac) : OK
+- [ ] Image plein-écran "qui respire" (section 5) : OK
+- [ ] Grille collection complète FW25 : OK
+- [ ] Section "Coulisses" avec vidéo : OK
+- [ ] Teaser SS26 final : OK ou à supprimer pour l'instant ?
+
+### Questions spécifiques
+1. Avez-vous des photos de campagne FW25 réelles ? (actuellement tout est en placeholder)
+2. Le nom "Permanence" pour la campagne — c'est le bon ou vous avez un concept différent ?
+3. Les couleurs des 3 looks (Noir / Marine / Cognac) — c'est ce que vous voulez mettre en avant ?
+
+**Retours →**
+
+**Statut →** 🔲
+
+---
+
+## PAGE 19 — CADEAUX / GIFT GUIDE
+**Fichier :** `tiraboschi-cadeaux-prototype.html`
+
+### Checklist
+- [ ] 3 profils (Initier / Fidéliser / Marquer) avec référence Cercles I/II/III : OK ?
+- [ ] Suggestions de produits par profil : pertinentes ?
+- [ ] Packaging cadeau décrit : correspond à ce que vous proposez ?
+- [ ] "Sans supplément" pour l'emballage cadeau : c'est bien gratuit ?
+- [ ] Carte cadeau de 190€ à 5 000€ : vous la proposez déjà ?
+- [ ] "Livraison directe au destinataire sans facture" : vous le faites ?
+
+### Questions spécifiques
+1. Avez-vous déjà une carte cadeau Shopify active ?
+2. L'emballage cadeau — il y a un supplément ou c'est inclus ?
+3. Cette page est-elle permanente ou saisonnière (Noël / Fête des Mères) ?
+
+**Retours →**
+
+**Statut →** 🔲
+
+---
+
+## PAGE 20 — WISHLIST
+**Fichier :** `tiraboschi-wishlist-prototype.html`
+
+### Checklist
+- [ ] Grille wishlist (état avec items) : OK
+- [ ] Partage de liste par lien : OK
+- [ ] État vide : OK
+- [ ] Toast "Ajouté au panier" : OK
+- [ ] Suppression avec animation : OK
+
+### Questions spécifiques
+1. Wishlist en localStorage (invités) ou uniquement pour les comptes clients ?
+2. Notification si produit sauvegardé revient en stock : à activer (lié à Klaviyo) ?
+
+**Retours →**
+
+**Statut →** 🔲
+
+---
+
+## PAGE 21 — PRESSE
+**Fichier :** `tiraboschi-presse-prototype.html`
+
+### Checklist
+- [ ] Contact presse "Marie Lecomte" : à remplacer par vrai contact
+- [ ] 3 téléchargements (Communiqué / Photos / Biographie) : structure OK
+- [ ] 6 revues de presse listées : à remplacer par vos vraies retombées presse
+- [ ] Biographie courte : à corriger avec le vrai nom de la fondatrice
+
+### Questions spécifiques
+1. Avez-vous une attachée de presse ? Si oui, son nom et email ?
+2. Avez-vous déjà des retombées presse à afficher ?
+3. La biographie "Sophie Tiraboschi" — c'est votre prénom et parcours ? À corriger.
+4. Le kit presse existe-t-il déjà (PDF) ou est-il à créer ?
+
+**Retours →**
+
+**Statut →** 🔲
+
+---
+
+## PAGE 22 — RSE / ENGAGEMENT
+**Fichier :** `tiraboschi-rse-prototype.html`
+
+### Checklist
+- [ ] Ton : factuel + fier, jamais moralisateur : OK
+- [ ] 4 piliers (Made in France / 1 artisan / Cuirs éthiques / Réparable à vie) : exacts ?
+- [ ] "< 300km circuit de production" : exact ?
+- [ ] "Moins de 200 pièces par an" : exact ?
+- [ ] "50 ans de partenariat avec nos tanneurs" : exact ?
+- [ ] Section FAQ engagement (emballages / exotiques / rapport RSE) : OK
+- [ ] Ton de la FAQ : "Prenez rendez-vous" au lieu d'un rapport — OK ?
+
+### Questions spécifiques
+1. Les 3 tanneries mentionnées sont-elles vos vraies partenaires ?
+2. La production annuelle "moins de 200 pièces" — c'est le bon chiffre ?
+3. "Supprimé tout plastique en 2020" — c'est exact pour vos emballages ?
+
+**Retours →**
+
+**Statut →** 🔲
+
+---
+
+## PAGE 23 — NEWSLETTER POPUP (COMPOSANT)
+**Fichier :** `tiraboschi-newsletter-popup-prototype.html`
+
+### Checklist
+- [ ] Desktop (overlay centré 2-col) : OK
+- [ ] Mobile (bottom sheet) : OK
+- [ ] Wording "Entrez dans les coulisses" : OK
+- [ ] État succès après soumission : OK
+- [ ] Comportement cookie (1× / 30 jours) : OK
+
+### Questions spécifiques
+1. Le wording "Recevoir L'Atelier" ou "Rejoindre L'Atelier" — lequel préférez-vous ?
+2. Délai d'apparition : 8 secondes ou 40% scroll — ou les deux ?
+3. Champ "Prénom" en plus de l'email ? (mieux pour personnaliser les emails Klaviyo)
+
+**Retours →**
+
+**Statut →** 🔲
+
+---
+
+## PAGE 24 — ANIMATIONS PREMIUM (DÉMO COMPOSANTS)
+**Fichier :** `tiraboschi-composants-prototype.html`
+
+### Checklist — valider chaque animation
+- [ ] Lenis smooth scrolling : feel OK (momentum, poids) ?
+- [ ] Transitions entre pages (350ms fondu blanc) : trop long / trop court / OK ?
+- [ ] Splash screen logo (1.5s, stroke animation "T") : OK ou à supprimer ?
+- [ ] Mega-menu éditorial (image change au hover) : OK ?
+- [ ] Magnetic buttons (curseur attiré) : subtil OK ou trop prononcé ?
+- [ ] Video scrub on scroll (démo) : compris l'effet — à utiliser sur quelle section ?
+- [ ] Search autocomplete avec images : OK ?
+- [ ] Color scheme shift on scroll : OK ?
+
+**Retours →** *Indiquer pour chaque animation : Valider / Ajuster / Supprimer*
+
+**Statut →** 🔲
+
+---
+
 ## NOTES GLOBALES & DÉCISIONS EN SUSPENS
 
 *Utilisez cette section pour tout ce qui ne rentre pas dans les pages spécifiques.*
 
-### Contenu réel à fournir
+### Contenu réel à fournir (prioritaire avant Phase 3)
 - [ ] Photos produits HD (toutes les couleurs par modèle)
 - [ ] Textes définitifs fiches produit (composition, dimensions exactes)
-- [ ] Vraie vidéo atelier "couture sellier" pour la fiche produit
+- [ ] Vraie vidéo atelier "couture sellier" pour la fiche produit + video scrub
 - [ ] Citation(s) fondatrice à intégrer dans Histoire + Savoir-Faire
-- [ ] Palette couleurs officielle par modèle (noms + références)
+- [ ] Palette couleurs officielle par modèle (noms + références hex)
 - [ ] Tanneries partenaires — noms réels ou garder fictifs ?
+- [ ] Adresse réelle atelier + horaires
+- [ ] Vraie fondatrice : prénom, biographie courte, photo
+- [ ] Kit presse existant ou à créer
+- [ ] Retombées presse réelles à afficher
+- [ ] Chiffres de production (combien de pièces / an ?)
+- [ ] Photos de campagne FW25 pour le lookbook
 
 ### Décisions techniques à prendre
 - [ ] Shopify Standard vs Plus (impact checkout + emails + analytics avancés)
 - [ ] Prestataire 3× sans frais (Alma recommandé pour la France)
 - [ ] CRM email : Klaviyo ou autre ?
 - [ ] Consent banner RGPD : Axeptio (recommandé) ou autre ?
-- [ ] Avis clients : intégration (Judge.me, Okendo) ou pas d'avis affichés ?
+- [ ] Avis clients : Judge.me / Okendo ou pas d'avis affichés ?
+- [ ] Live chat concierge : Gorgias (~10€/mois) ou pas dans l'immédiat ?
+- [ ] Booking RDV : formulaire HTML, Calendly embed, ou autre ?
+- [ ] Wishlist : localStorage invités ou compte obligatoire ?
+
+### Animations à valider (voir Page 24)
+- [ ] Lenis smooth scrolling
+- [ ] Transitions entre pages
+- [ ] Splash screen logo
+- [ ] Mega-menu éditorial avec image
+- [ ] Magnetic buttons
+- [ ] Video scrub on scroll
+- [ ] Color scheme shift on scroll
 
 ### Ordre de priorité pour la Phase 3 (Intégration Shopify)
-> À confirmer ensemble avant de démarrer
+> À confirmer ensemble après validation des prototypes
 
 ```
-1. Header + Footer (socle commun)
-2. Homepage
-3. Collection + Fiche produit  ← génèrent du CA directement
-4. Pages éditoriales P2
-5. La Société + Espace client
-6. Blog + Articles
-7. Search + 404
-8. Checkout branding
-9. CRM + snippets fidélité
+3A — Socle
+  1. Header + Footer + Lenis + transitions + splash
+  2. Homepage
+  3. Collection + Fiche produit (+ swatches → changement gallery)
+
+3B — Pages P2
+  4. Pages éditoriales (Histoire, Savoir-Faire, Matières, Sur Mesure, La Société)
+  5. Pages Icônes (Victoire, Colette, Rafael)
+  6. Contact + Entretien & Réparation
+  7. Lookbook FW25
+
+3C — Pages P3
+  8. Blog + Articles + Search + 404
+  9. Cadeaux + Wishlist + Presse + RSE
+  10. Espace client + Checkout branding
+
+Phase 4 — CRM
+  11. Klaviyo 6 flows
+  12. Snippets (popup, back-in-stock, reviews)
+  13. Axeptio + GA4 + Clarity
 ```
 
 ---
