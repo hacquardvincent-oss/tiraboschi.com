@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ═══ SEO ═══ -->
+<title>Offrir TIRABOSCHI — Idées Cadeaux Luxe | TIRABOSCHI Paris</title>
+<meta name="description" content="Offrir TIRABOSCHI Paris : guide cadeaux de luxe, packaging écrin, carte cadeau de 190€ à 5 000€. Une pièce faite à la main, pour une vie. Livraison directe au destinataire, message manuscrit.">
+<link rel="canonical" href="https://tiraboschi-paris.com/pages/cadeaux">
+
+<!-- ═══ OPEN GRAPH ═══ -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://tiraboschi-paris.com/pages/cadeaux">
+<meta property="og:title" content="Offrir TIRABOSCHI — Le plus beau des cadeaux">
+<meta property="og:description" content="Une pièce faite à la main, pour une vie. Guide cadeaux, packaging écrin, carte cadeau disponible.">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ═══ FONTS ═══ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap&subset=latin" rel="stylesheet">
+
+<!-- ═══ PRELOAD HERO ═══ -->
+<link rel="preload" as="image" href="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/28092025-DSCF1828.jpg" fetchpriority="high">
+
+<!-- ═══ JSON-LD ═══ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "name": "Offrir TIRABOSCHI — Guide Cadeaux",
+      "url": "https://tiraboschi-paris.com/pages/cadeaux",
+      "description": "Guide cadeaux TIRABOSCHI Paris. Maroquinerie de luxe faite main, packaging écrin, carte cadeau.",
+      "publisher": { "@type": "Organization", "name": "TIRABOSCHI Paris" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://tiraboschi-paris.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Offrir TIRABOSCHI", "item": "https://tiraboschi-paris.com/pages/cadeaux" }
+      ]
+    }
+  ]
+}
+</script>
+
+<style>
+/* ════════════════════════════════════════════
+   RESET & DESIGN TOKENS
+════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --tira-black:    #0a0a0a;
+  --tira-white:    #ffffff;
+  --tira-grey:     #f7f5f2;
+  --tira-border:   #e8e8e8;
+  --tira-ease:     cubic-bezier(0.16, 1, 0.3, 1);
+  --tira-duration: 0.9s;
+  --header-h:      64px;
+  --search-h:      44px;
+}
+
+body {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 400;
+  background: var(--tira-white);
+  color: var(--tira-black);
+  overflow-x: hidden;
+  cursor: none;
+}
+@media (hover: none) { body { cursor: auto; } }
+img { display: block; object-fit: cover; }
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 2px solid var(--tira-black); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ════════════════════════════════════════════
+   CURSEUR CUSTOM
+════════════════════════════════════════════ */
+.cur-dot, .cur-ring {
+  position: fixed; border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%);
+  will-change: left, top;
+}
+.cur-dot {
+  width: 6px; height: 6px;
+  background: var(--tira-black);
+  transition: width .3s var(--tira-ease), height .3s var(--tira-ease), background .3s;
+}
+.cur-ring {
+  width: 30px; height: 30px;
+  border: 1px solid rgba(10,10,10,.38);
+  transition: opacity .25s, width .3s var(--tira-ease), height .3s var(--tira-ease);
+}
+body.on-hover .cur-dot  { width: 44px; height: 44px; background: rgba(10,10,10,.06); }
+body.on-hover .cur-ring { opacity: 0; }
+body.on-dark  .cur-dot  { background: var(--tira-white); }
+body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
+@media (hover: none) { .cur-dot, .cur-ring { display: none; } }
+
+/* ════════════════════════════════════════════
+   HEADER — Solid white
+════════════════════════════════════════════ */
+.hdr {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: var(--header-h);
+  background: var(--tira-white);
+  border-bottom: 1px solid var(--tira-border);
+  transition: transform .35s var(--tira-ease);
+}
+.hdr.hidden { transform: translateY(-100%); }
+.hdr__d {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  height: 100%; padding: 0 40px;
+}
+.hdr__nav {
+  display: flex; align-items: center; gap: 28px;
+}
+.hdr__nav a {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--tira-black); opacity: .7; transition: opacity .2s; white-space: nowrap;
+}
+.hdr__nav a:hover { opacity: 1; }
+.hdr__logo { display: flex; justify-content: center; }
+.hdr__logo img { height: 28px; width: auto; display: block; }
+.hdr__icons {
+  display: flex; align-items: center; justify-content: flex-end; gap: 18px;
+}
+.hdr__icons button {
+  background: none; border: none; cursor: none;
+  display: flex; align-items: center; opacity: .7; transition: opacity .2s;
+}
+.hdr__icons button:hover { opacity: 1; }
+.tira-bag-icon { display: block; width: 22px; height: 22px; object-fit: contain; }
+.hdr__m {
+  display: none;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center; gap: 14px;
+  height: 100%; padding: 0 20px;
+}
+.hdr__m-logo img { height: 24px; width: auto; }
+.hdr__m button { background: none; border: none; cursor: pointer; display: flex; align-items: center; padding: 2px; }
+.hdr__m svg { width: 24px; height: 24px; fill: none; stroke: var(--tira-black); stroke-width: 1.5; stroke-linecap: square; }
+.hdr__m .tira-bag-icon { width: 24px; height: 24px; }
+@media (max-width: 900px) { .hdr__d { display: none; } .hdr__m { display: grid; } }
+
+/* ════════════════════════════════════════════
+   SEARCH BAR
+════════════════════════════════════════════ */
+.hdr-search {
+  position: fixed; top: var(--header-h); left: 0; right: 0; z-index: 199;
+  display: flex; align-items: center; justify-content: center;
+  height: var(--search-h); padding: 0 40px;
+  background: var(--tira-white);
+  border-bottom: 1px solid var(--tira-border);
+  transition: top .35s var(--tira-ease);
+}
+.hdr-search.sticky-mode { top: 0; }
+.hdr-search__field { display: flex; align-items: center; gap: 8px; width: 100%; max-width: 560px; }
+.hdr-search input {
+  flex: 1; border: none; background: none; outline: none;
+  font-family: inherit; font-size: 11px;
+  text-transform: uppercase; letter-spacing: .12em;
+  color: var(--tira-black);
+  border-bottom: 1px solid var(--tira-border); padding-bottom: 3px;
+}
+.hdr-search input::placeholder { color: rgba(10,10,10,.4); opacity: 1; }
+.hdr-search input:focus { border-bottom-color: var(--tira-black); }
+.hdr-search__icon { flex-shrink: 0; display: flex; align-items: center; }
+.hdr-search__icon svg { width: 15px; height: 15px; fill: none; stroke: var(--tira-black); stroke-width: 1.2; opacity: .5; }
+@media (max-width: 900px) { .hdr-search { padding: 0 20px; } }
+
+/* ════════════════════════════════════════════
+   HERO — 70vh, dark, Ken Burns
+════════════════════════════════════════════ */
+.hero {
+  position: relative;
+  margin-top: calc(var(--header-h) + var(--search-h));
+  height: 70vh; min-height: 520px;
+  overflow: hidden; background: #0a0a0a;
+}
+.hero__img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+  animation: kb 14s ease-in-out infinite alternate;
+}
+@keyframes kb {
+  from { transform: scale(1); }
+  to   { transform: scale(1.07) translate(1.5%, -1%); }
+}
+.hero__overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.65) 0%, rgba(0,0,0,.1) 60%, transparent 100%);
+  z-index: 1;
+}
+.hero__content {
+  position: absolute; z-index: 2;
+  bottom: 56px; left: 56px; right: 56px;
+  color: var(--tira-white);
+}
+.hero__title {
+  font-size: clamp(42px, 6vw, 80px);
+  line-height: .95; letter-spacing: -.01em;
+  margin-bottom: 20px;
+}
+.hero__sub {
+  font-size: clamp(14px, 1.5vw, 18px);
+  opacity: .8; font-style: italic;
+  max-width: 480px;
+}
+@media (max-width: 768px) { .hero__content { bottom: 32px; left: 24px; right: 24px; } }
+
+/* ════════════════════════════════════════════
+   MARQUEE
+════════════════════════════════════════════ */
+.marquee {
+  overflow: hidden;
+  border-top: 1px solid var(--tira-border);
+  border-bottom: 1px solid var(--tira-border);
+  padding: 13px 0; background: var(--tira-white);
+}
+.marquee__track {
+  display: flex; width: max-content;
+  animation: marquee-run 26s linear infinite;
+}
+.marquee__item {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .14em;
+  white-space: nowrap; padding: 0 20px; opacity: .5;
+}
+@keyframes marquee-run { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.marquee:hover .marquee__track { animation-play-state: paused; }
+
+/* ════════════════════════════════════════════
+   PROFILS CADEAUX — 3 colonnes
+════════════════════════════════════════════ */
+.profils {
+  background: var(--tira-white);
+  padding: 100px 48px;
+}
+.profils__title {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .18em;
+  opacity: .4; margin-bottom: 56px; text-align: center;
+}
+.profils__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  max-width: 1200px; margin: 0 auto;
+}
+.profil-card {
+  padding: 48px 40px;
+  border: 1px solid var(--tira-border);
+  transition: border-color .3s;
+}
+.profil-card:hover { border-color: var(--tira-black); }
+.profil-card__circle {
+  width: 36px; height: 36px;
+  border: 1px solid var(--tira-black);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; letter-spacing: .05em;
+  margin-bottom: 28px; opacity: .5;
+}
+.profil-card__title {
+  font-size: 22px; margin-bottom: 16px; letter-spacing: -.01em;
+}
+.profil-card__body {
+  font-size: 13px; line-height: 1.8; opacity: .65;
+  margin-bottom: 32px; font-style: italic;
+}
+.profil-card__products { list-style: none; border-top: 1px solid var(--tira-border); }
+.profil-card__products li {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 12px 0; border-bottom: 1px solid var(--tira-border);
+}
+.profil-card__products li span:first-child { font-size: 14px; }
+.profil-card__products li span:last-child  { font-size: 13px; opacity: .5; }
+.profil-card__link {
+  display: block; margin-top: 24px;
+  font-size: 11px; text-transform: uppercase; letter-spacing: .12em;
+  text-decoration: underline; text-underline-offset: 5px;
+  opacity: .6; transition: opacity .2s;
+}
+.profil-card__link:hover { opacity: 1; }
+@media (max-width: 900px) {
+  .profils__grid { grid-template-columns: 1fr; }
+  .profils { padding: 72px 24px; }
+}
+
+/* ════════════════════════════════════════════
+   PACKAGING — 2 colonnes
+════════════════════════════════════════════ */
+.packaging {
+  background: var(--tira-grey);
+  padding: 0;
+}
+.packaging__inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 560px;
+}
+.packaging__visual {
+  position: relative; overflow: hidden;
+  background: linear-gradient(135deg, #2c2416 0%, #1a160e 40%, #3d2d1c 70%, #221a12 100%);
+  min-height: 420px;
+}
+.packaging__visual::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 200px; height: 260px;
+  background: linear-gradient(160deg, #1a1310 0%, #0d0b08 100%);
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 20px 60px rgba(0,0,0,.5);
+}
+.packaging__visual::after {
+  content: '';
+  position: absolute;
+  top: calc(50% - 130px); left: 50%; transform: translateX(-50%);
+  width: 1px; height: 50px;
+  background: rgba(255,255,255,.25);
+}
+.packaging__content {
+  background: var(--tira-white);
+  padding: 80px 64px;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.packaging__label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+  opacity: .4; margin-bottom: 24px;
+}
+.packaging__title {
+  font-size: clamp(26px, 2.5vw, 38px);
+  letter-spacing: -.01em; margin-bottom: 24px;
+}
+.packaging__body {
+  font-size: 14px; line-height: 1.85; opacity: .7;
+  margin-bottom: 36px;
+}
+.packaging__list { list-style: none; margin-bottom: 36px; }
+.packaging__list li {
+  font-size: 14px; opacity: .7;
+  padding: 10px 0; border-bottom: 1px solid var(--tira-border);
+  display: flex; align-items: center; gap: 12px;
+}
+.packaging__list li::before {
+  content: '—'; opacity: .3; flex-shrink: 0;
+}
+.packaging__note {
+  font-size: 12px; opacity: .45; font-style: italic;
+}
+@media (max-width: 900px) {
+  .packaging__inner { grid-template-columns: 1fr; }
+  .packaging__visual { min-height: 300px; }
+  .packaging__content { padding: 52px 28px; }
+}
+
+/* ════════════════════════════════════════════
+   CARTE CADEAU — Dark centered
+════════════════════════════════════════════ */
+.carte-cadeau {
+  background: var(--tira-black);
+  color: var(--tira-white);
+  padding: 100px 48px;
+  text-align: center;
+}
+.carte-cadeau__title {
+  font-size: clamp(28px, 3.5vw, 48px);
+  letter-spacing: -.01em; margin-bottom: 28px;
+}
+.carte-cadeau__body {
+  font-size: 14px; line-height: 1.85; opacity: .7;
+  max-width: 540px; margin: 0 auto 44px;
+}
+.btn-underline-white {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .14em;
+  text-decoration: underline; text-underline-offset: 5px;
+  opacity: .8; transition: opacity .2s; color: var(--tira-white); cursor: none;
+}
+.btn-underline-white:hover { opacity: 1; }
+.carte-cadeau__note {
+  display: block; margin-top: 20px;
+  font-size: 12px; opacity: .35; font-style: italic;
+}
+@media (max-width: 768px) { .carte-cadeau { padding: 72px 24px; } }
+
+/* ════════════════════════════════════════════
+   PRODUITS SUGGÉRÉS — 3-col grid
+════════════════════════════════════════════ */
+.produits {
+  background: var(--tira-white);
+  padding: 100px 48px;
+}
+.produits__title {
+  font-size: clamp(26px, 2.8vw, 38px);
+  letter-spacing: -.01em; margin-bottom: 48px; text-align: center;
+}
+.produits__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  max-width: 1200px; margin: 0 auto 0;
+}
+.pcard { cursor: none; }
+.pcard__img {
+  position: relative; aspect-ratio: 3/4; overflow: hidden;
+  background: var(--tira-grey);
+}
+.pcard__gradient {
+  position: absolute; inset: 0;
+  transition: transform .7s var(--tira-ease);
+}
+.pcard:hover .pcard__gradient { transform: scale(1.04); }
+.pcard__actions {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 16px;
+  background: linear-gradient(to top, rgba(255,255,255,.9) 0%, transparent 100%);
+  opacity: 0; transition: opacity .3s;
+}
+.pcard:hover .pcard__actions { opacity: 1; }
+.pcard__atc {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .12em;
+  text-decoration: underline; text-underline-offset: 4px; opacity: .8;
+  cursor: none; background: none; border: none;
+}
+.pcard__info { padding: 14px 0; }
+.pcard__name { font-size: 14px; margin-bottom: 4px; }
+.pcard__price { font-size: 13px; opacity: .55; }
+
+/* gradient couleurs par produit */
+.g-victoire  { background: linear-gradient(160deg, #1a1512 0%, #0d0b08 100%); }
+.g-colette   { background: linear-gradient(160deg, #1b2535 0%, #0d131e 100%); }
+.g-mini      { background: linear-gradient(160deg, #2a1f1a 0%, #180e0a 100%); }
+.g-pochon    { background: linear-gradient(160deg, #f0ebe4 0%, #d8cfc5 100%); }
+.g-chaine    { background: linear-gradient(160deg, #c5a96b 0%, #a08040 100%); }
+.g-olympe    { background: linear-gradient(160deg, #1e2820 0%, #111a12 100%); }
+
+@media (max-width: 900px) {
+  .produits__grid { grid-template-columns: repeat(2, 1fr); }
+  .produits { padding: 72px 24px; }
+}
+
+/* ════════════════════════════════════════════
+   LIVRAISON CADEAU — 3 items
+════════════════════════════════════════════ */
+.livraison {
+  background: var(--tira-grey);
+  padding: 80px 48px;
+}
+.livraison__title {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .18em;
+  opacity: .4; margin-bottom: 52px; text-align: center;
+}
+.livraison__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  max-width: 1100px; margin: 0 auto;
+}
+.liv-item {
+  background: var(--tira-white);
+  padding: 44px 40px;
+  border: 1px solid var(--tira-border);
+}
+.liv-item__icon {
+  width: 40px; height: 40px;
+  border: 1px solid var(--tira-border);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 24px;
+}
+.liv-item__icon svg { width: 20px; height: 20px; fill: none; stroke: var(--tira-black); stroke-width: 1.3; }
+.liv-item__title { font-size: 18px; margin-bottom: 12px; letter-spacing: -.01em; }
+.liv-item__desc  { font-size: 13px; line-height: 1.75; opacity: .65; }
+@media (max-width: 900px) {
+  .livraison__grid { grid-template-columns: 1fr; }
+  .livraison { padding: 56px 24px; }
+}
+
+/* ════════════════════════════════════════════
+   CONSEIL — Centered white
+════════════════════════════════════════════ */
+.conseil {
+  background: var(--tira-white);
+  padding: 100px 48px;
+  text-align: center;
+}
+.conseil__title {
+  font-size: clamp(22px, 2.5vw, 32px);
+  letter-spacing: -.01em; margin-bottom: 20px;
+}
+.conseil__body {
+  font-size: 14px; line-height: 1.8; opacity: .65;
+  max-width: 480px; margin: 0 auto 36px;
+}
+.btn-underline {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .14em;
+  text-decoration: underline; text-underline-offset: 5px;
+  opacity: .8; transition: opacity .2s; cursor: none;
+}
+.btn-underline:hover { opacity: 1; }
+@media (max-width: 768px) { .conseil { padding: 72px 24px; } }
+
+/* ════════════════════════════════════════════
+   FOOTER
+════════════════════════════════════════════ */
+.footer {
+  background: var(--tira-black);
+  color: var(--tira-white);
+  padding: 72px 48px 40px;
+}
+.footer__top {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 64px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  padding-bottom: 56px;
+}
+.footer__brand img { height: 24px; width: auto; filter: brightness(0) invert(1); margin-bottom: 20px; display: block; }
+.footer__tagline { font-size: 11px; text-transform: uppercase; letter-spacing: .14em; opacity: .4; margin-bottom: 12px; }
+.footer__insta { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; opacity: .4; text-decoration: underline; text-underline-offset: 4px; transition: opacity .2s; }
+.footer__insta:hover { opacity: .7; }
+.footer__col-title { font-size: 10px; text-transform: uppercase; letter-spacing: .18em; opacity: .35; margin-bottom: 20px; }
+.footer__col ul { list-style: none; }
+.footer__col li + li { margin-top: 12px; }
+.footer__col a { font-size: 13px; opacity: .55; transition: opacity .2s; }
+.footer__col a:hover { opacity: 1; }
+.footer__bottom { display: flex; justify-content: space-between; align-items: center; font-size: 11px; opacity: .3; text-transform: uppercase; letter-spacing: .1em; }
+@media (max-width: 900px) {
+  .footer__top { grid-template-columns: 1fr; gap: 40px; }
+  .footer { padding: 56px 24px 32px; }
+  .footer__bottom { flex-direction: column; gap: 12px; text-align: center; }
+}
+
+/* ════════════════════════════════════════════
+   ANIMATIONS SCROLL REVEAL
+════════════════════════════════════════════ */
+[data-tira-reveal] {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity var(--tira-duration) var(--tira-ease),
+              transform var(--tira-duration) var(--tira-ease);
+}
+[data-tira-reveal].is-visible { opacity: 1; transform: none; }
+[data-tira-reveal].d1 { transition-delay: .12s; }
+[data-tira-reveal].d2 { transition-delay: .24s; }
+[data-tira-reveal].d3 { transition-delay: .36s; }
+
+[data-tira-word-reveal] span {
+  display: inline-block; opacity: 0; transform: translateY(10px);
+  transition: opacity .5s var(--tira-ease) calc(var(--i) * 55ms),
+              transform .5s var(--tira-ease) calc(var(--i) * 55ms);
+}
+[data-tira-word-reveal].is-visible span { opacity: 1; transform: none; }
+</style>
+</head>
+
+<body>
+
+<!-- CURSEUR -->
+<div class="cur-dot" id="curDot"></div>
+<div class="cur-ring" id="curRing"></div>
+
+<!-- ════════════════════════════════════════════
+     HEADER
+════════════════════════════════════════════ -->
+<header class="hdr" id="hdr">
+  <div class="hdr__d">
+    <nav class="hdr__nav">
+      <a href="/collections/fw25">FW25</a>
+      <a href="/collections/sacs">Sacs</a>
+      <a href="/collections/petite-maroquinerie">Petite Maroquinerie</a>
+      <a href="/collections/iconiques">Iconiques</a>
+      <a href="/collections/sur-mesure-exotiques">Sur Mesure</a>
+    </nav>
+    <div class="hdr__logo">
+      <a href="/"><img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738" height="28" alt="TIRABOSCHI Paris"></a>
+    </div>
+    <div class="hdr__icons">
+      <button aria-label="Mon compte">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" width="20" height="20"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.582-7 8-7s8 3 8 7"/></svg>
+      </button>
+      <button aria-label="Panier">
+        <img class="tira-bag-icon" src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050" width="22" height="22" alt="Panier">
+      </button>
+    </div>
+  </div>
+  <div class="hdr__m">
+    <a class="hdr__m-logo" href="/"><img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738" height="24" alt="TIRABOSCHI Paris"></a>
+    <button aria-label="Panier"><img class="tira-bag-icon" src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050" width="24" height="24" alt="Panier"></button>
+    <button aria-label="Mon compte"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.582-7 8-7s8 3 8 7"/></svg></button>
+    <button aria-label="Menu"><svg viewBox="0 0 24 24"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="13" x2="21" y2="13"/><line x1="3" y1="19" x2="21" y2="19"/></svg></button>
+  </div>
+</header>
+
+<!-- SEARCH BAR -->
+<div class="hdr-search" id="hdrSearch">
+  <div class="hdr-search__field">
+    <div class="hdr-search__icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+    </div>
+    <input type="search" placeholder="Rechercher…" aria-label="Rechercher">
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════ -->
+<section class="hero">
+  <img class="hero__img" src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/28092025-DSCF1828.jpg" alt="TIRABOSCHI Paris — Offrir" fetchpriority="high">
+  <div class="hero__overlay"></div>
+  <div class="hero__content">
+    <h1 class="hero__title" data-tira-word-reveal>Offrir TIRABOSCHI</h1>
+    <p class="hero__sub">Une pièce faite à la main, pour une vie. Le plus beau des cadeaux.</p>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track">
+    <span class="marquee__item">Made in France, Only.</span>
+    <span class="marquee__item">·</span>
+    <span class="marquee__item">Since 1904</span>
+    <span class="marquee__item">·</span>
+    <span class="marquee__item">Livraison directe</span>
+    <span class="marquee__item">·</span>
+    <span class="marquee__item">Message manuscrit</span>
+    <span class="marquee__item">·</span>
+    <span class="marquee__item">Packaging cadeau</span>
+    <span class="marquee__item">·</span>
+    <span class="marquee__item">Made in France, Only.</span>
+    <span class="marquee__item">·</span>
+    <span class="marquee__item">Since 1904</span>
+    <span class="marquee__item">·</span>
+    <span class="marquee__item">Livraison directe</span>
+    <span class="marquee__item">·</span>
+    <span class="marquee__item">Message manuscrit</span>
+    <span class="marquee__item">·</span>
+    <span class="marquee__item">Packaging cadeau</span>
+    <span class="marquee__item">·</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     3 PROFILS CADEAUX
+════════════════════════════════════════════ -->
+<section class="profils">
+  <p class="profils__title" data-tira-reveal>Trouver le cadeau idéal</p>
+  <div class="profils__grid">
+
+    <div class="profil-card" data-tira-reveal>
+      <div class="profil-card__circle">I</div>
+      <h2 class="profil-card__title">Pour initier</h2>
+      <p class="profil-card__body">Elle ne connaît pas encore TIRABOSCHI. Offrez-lui quelque chose qu'elle gardera 20 ans.</p>
+      <ul class="profil-card__products">
+        <li><span>Pochon</span><span>490€</span></li>
+        <li><span>Chaine</span><span>190€</span></li>
+        <li><span>Colette Mini</span><span>1 890€</span></li>
+      </ul>
+      <a href="/collections/sacs" class="profil-card__link">Découvrir →</a>
+    </div>
+
+    <div class="profil-card" data-tira-reveal class="d1">
+      <div class="profil-card__circle">II</div>
+      <h2 class="profil-card__title">Pour fidéliser</h2>
+      <p class="profil-card__body">Elle connaît déjà la maison. Complétez sa collection ou surprenez-la avec une couleur qu'elle n'aurait pas osée.</p>
+      <ul class="profil-card__products">
+        <li><span>Colette</span><span>2 290€</span></li>
+        <li><span>Jane</span><span>2 650€</span></li>
+        <li><span>Victoire</span><span>2 850€</span></li>
+      </ul>
+      <a href="/collections/iconiques" class="profil-card__link">Découvrir →</a>
+    </div>
+
+    <div class="profil-card" data-tira-reveal class="d2">
+      <div class="profil-card__circle">III</div>
+      <h2 class="profil-card__title">Pour marquer</h2>
+      <p class="profil-card__body">Pour les grandes occasions. Une pièce sur mesure, ses initiales, son histoire.</p>
+      <ul class="profil-card__products">
+        <li><span>Rafael</span><span>3 200€</span></li>
+        <li><span>Olympe</span><span>3 450€</span></li>
+        <li><span>Sur Mesure</span><span>À partir de 4 500€</span></li>
+      </ul>
+      <a href="/collections/sur-mesure-exotiques" class="profil-card__link">Découvrir →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     PACKAGING CADEAU
+════════════════════════════════════════════ -->
+<section class="packaging">
+  <div class="packaging__inner">
+    <div class="packaging__visual" data-tira-reveal aria-hidden="true"></div>
+    <div class="packaging__content">
+      <p class="packaging__label" data-tira-reveal>L'attention qui compte</p>
+      <h2 class="packaging__title" data-tira-reveal>L'écrin TIRABOSCHI</h2>
+      <p class="packaging__body" data-tira-reveal class="d1">Chaque commande est livrée dans un pochon coton naturel. Pour les cadeaux, nous ajoutons la boîte noire mate, le papier de soie, le ruban et votre message manuscrit.</p>
+      <ul class="packaging__list" data-tira-reveal class="d2">
+        <li>Boîte coffret noire mate</li>
+        <li>Papier de soie blanc</li>
+        <li>Ruban noir satiné</li>
+        <li>Message manuscrit de votre choix</li>
+      </ul>
+      <p class="packaging__note" data-tira-reveal class="d3">Sélectionnable à l'étape de commande — sans supplément</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     CARTE CADEAU
+════════════════════════════════════════════ -->
+<section class="carte-cadeau">
+  <h2 class="carte-cadeau__title" data-tira-reveal>Vous hésitez ?</h2>
+  <p class="carte-cadeau__body" data-tira-reveal class="d1">La carte cadeau TIRABOSCHI lui laisse le choix du modèle, de la matière et de la couleur. Disponible de 190€ à 5 000€.</p>
+  <a href="/products/carte-cadeau" class="btn-underline-white" data-tira-reveal class="d2">Offrir une carte cadeau →</a>
+  <span class="carte-cadeau__note" data-tira-reveal class="d3">La carte est envoyée par email instantanément. Une version imprimable est disponible.</span>
+</section>
+
+<!-- ════════════════════════════════════════════
+     PRODUITS SUGGÉRÉS
+════════════════════════════════════════════ -->
+<section class="produits">
+  <h2 class="produits__title" data-tira-reveal>Nos idées cadeaux</h2>
+  <div class="produits__grid">
+
+    <div class="pcard" data-tira-reveal>
+      <div class="pcard__img">
+        <div class="pcard__gradient g-victoire"></div>
+        <div class="pcard__actions">
+          <button class="pcard__atc">Ajouter au panier</button>
+        </div>
+      </div>
+      <div class="pcard__info">
+        <p class="pcard__name">Victoire</p>
+        <p class="pcard__price">2 850€</p>
+      </div>
+    </div>
+
+    <div class="pcard" data-tira-reveal class="d1">
+      <div class="pcard__img">
+        <div class="pcard__gradient g-colette"></div>
+        <div class="pcard__actions">
+          <button class="pcard__atc">Ajouter au panier</button>
+        </div>
+      </div>
+      <div class="pcard__info">
+        <p class="pcard__name">Colette</p>
+        <p class="pcard__price">2 290€</p>
+      </div>
+    </div>
+
+    <div class="pcard" data-tira-reveal class="d2">
+      <div class="pcard__img">
+        <div class="pcard__gradient g-mini"></div>
+        <div class="pcard__actions">
+          <button class="pcard__atc">Ajouter au panier</button>
+        </div>
+      </div>
+      <div class="pcard__info">
+        <p class="pcard__name">Colette Mini</p>
+        <p class="pcard__price">1 890€</p>
+      </div>
+    </div>
+
+    <div class="pcard" data-tira-reveal>
+      <div class="pcard__img">
+        <div class="pcard__gradient g-pochon"></div>
+        <div class="pcard__actions">
+          <button class="pcard__atc">Ajouter au panier</button>
+        </div>
+      </div>
+      <div class="pcard__info">
+        <p class="pcard__name">Pochon</p>
+        <p class="pcard__price">490€</p>
+      </div>
+    </div>
+
+    <div class="pcard" data-tira-reveal class="d1">
+      <div class="pcard__img">
+        <div class="pcard__gradient g-chaine"></div>
+        <div class="pcard__actions">
+          <button class="pcard__atc">Ajouter au panier</button>
+        </div>
+      </div>
+      <div class="pcard__info">
+        <p class="pcard__name">Chaine</p>
+        <p class="pcard__price">190€</p>
+      </div>
+    </div>
+
+    <div class="pcard" data-tira-reveal class="d2">
+      <div class="pcard__img">
+        <div class="pcard__gradient g-olympe"></div>
+        <div class="pcard__actions">
+          <button class="pcard__atc">Ajouter au panier</button>
+        </div>
+      </div>
+      <div class="pcard__info">
+        <p class="pcard__name">Olympe</p>
+        <p class="pcard__price">3 450€</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     LIVRAISON CADEAU
+════════════════════════════════════════════ -->
+<section class="livraison">
+  <p class="livraison__title" data-tira-reveal>Livraison &amp; attentions</p>
+  <div class="livraison__grid">
+
+    <div class="liv-item" data-tira-reveal>
+      <div class="liv-item__icon">
+        <svg viewBox="0 0 24 24"><path d="M5 12H3l9-9 9 9h-2v8H5v-8z"/></svg>
+      </div>
+      <h3 class="liv-item__title">Livraison offerte</h3>
+      <p class="liv-item__desc">Pour toute commande, en livraison standard ou prioritaire. Sans minimum d'achat.</p>
+    </div>
+
+    <div class="liv-item" data-tira-reveal class="d1">
+      <div class="liv-item__icon">
+        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14"/><path d="M16 7V5a4 4 0 0 0-8 0v2"/></svg>
+      </div>
+      <h3 class="liv-item__title">Livraison directe</h3>
+      <p class="liv-item__desc">Nous livrons directement au destinataire de votre choix. Discret — aucune facture dans le colis.</p>
+    </div>
+
+    <div class="liv-item" data-tira-reveal class="d2">
+      <div class="liv-item__icon">
+        <svg viewBox="0 0 24 24"><path d="M12 20h-7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5"/><path d="M16 19l2 2 4-4"/><path d="M3 8h18"/></svg>
+      </div>
+      <h3 class="liv-item__title">Message manuscrit</h3>
+      <p class="liv-item__desc">Rédigé à la main par notre équipe sur papier vergé TIRABOSCHI. Votre texte, notre écriture.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     CONSEIL
+════════════════════════════════════════════ -->
+<section class="conseil">
+  <h3 class="conseil__title" data-tira-reveal>Un doute ?</h3>
+  <p class="conseil__body" data-tira-reveal class="d1">Notre équipe vous conseille par email ou sur rendez-vous pour trouver la pièce idéale — le bon modèle, la bonne matière, la bonne couleur.</p>
+  <a href="/pages/contact" class="btn-underline" data-tira-reveal class="d2">Contacter un conseiller →</a>
+</section>
+
+<!-- ════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="footer__top">
+    <div class="footer__brand">
+      <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738" alt="TIRABOSCHI Paris">
+      <p class="footer__tagline">Made in France, Only. · Since 1904</p>
+      <a href="https://instagram.com/boschi_paris" class="footer__insta" target="_blank" rel="noopener">@boschi_paris</a>
+    </div>
+    <div class="footer__col">
+      <p class="footer__col-title">Collections</p>
+      <ul>
+        <li><a href="/collections/fw25">FW25</a></li>
+        <li><a href="/collections/sacs">Sacs</a></li>
+        <li><a href="/collections/petite-maroquinerie">Petite Maroquinerie</a></li>
+        <li><a href="/collections/iconiques">Iconiques</a></li>
+        <li><a href="/collections/sur-mesure-exotiques">Sur Mesure &amp; Exotiques</a></li>
+      </ul>
+    </div>
+    <div class="footer__col">
+      <p class="footer__col-title">La Maison</p>
+      <ul>
+        <li><a href="/pages/histoire">Histoire</a></li>
+        <li><a href="/pages/savoir-faire">Savoir-Faire</a></li>
+        <li><a href="/pages/matieres-cuirs">Matières</a></li>
+        <li><a href="/pages/la-societe">La Société</a></li>
+        <li><a href="/blogs/latelier">L'Atelier</a></li>
+      </ul>
+    </div>
+    <div class="footer__col">
+      <p class="footer__col-title">Service</p>
+      <ul>
+        <li><a href="/pages/contact">Contact</a></li>
+        <li><a href="/pages/prendrez-rendez-vous">Prendre RDV</a></li>
+        <li><a href="/pages/entretien-reparation">Entretien &amp; Réparation</a></li>
+        <li><a href="/pages/livraison">Livraison</a></li>
+        <li><a href="/pages/faq">FAQ</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer__bottom">
+    <span>© 2025 TIRABOSCHI Paris</span>
+    <span>Mentions légales · Confidentialité · CGV</span>
+  </div>
+</footer>
+
+<!-- ════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════ -->
+<script>
+/* ─── CURSEUR ─── */
+(function() {
+  const dot  = document.getElementById('curDot');
+  const ring = document.getElementById('curRing');
+  if (!dot || !ring) return;
+  let mx = -100, my = -100, rx = -100, ry = -100;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  (function tick() {
+    dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+    rx += (mx - rx) * .12; ry += (my - ry) * .12;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(tick);
+  })();
+  document.querySelectorAll('a, button, input, [role="button"]').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('on-hover'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('on-hover'));
+  });
+})();
+
+/* ─── HEADER DIRECTIONNEL ─── */
+(function() {
+  const hdr = document.getElementById('hdr');
+  const sch = document.getElementById('hdrSearch');
+  if (!hdr) return;
+  let last = 0, ticking = false;
+  window.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const y = window.scrollY;
+      if (y > last && y > 160) {
+        hdr.classList.add('hidden');
+        if (sch) { sch.style.top = '0'; sch.classList.add('sticky-mode'); }
+      } else {
+        hdr.classList.remove('hidden');
+        if (sch) { sch.style.top = ''; sch.classList.remove('sticky-mode'); }
+      }
+      last = y; ticking = false;
+    });
+  }, { passive: true });
+})();
+
+/* ─── SCROLL REVEAL ─── */
+(function() {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('[data-tira-reveal], [data-tira-word-reveal]').forEach(el => {
+    if (el.hasAttribute('data-tira-word-reveal')) {
+      el.innerHTML = el.textContent.trim().split(' ')
+        .map((w, i) => `<span style="--i:${i}">${w}</span>`).join(' ');
+    }
+    io.observe(el);
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ═══ SEO ═══ -->
+<title>Contact & Atelier — Prendre Rendez-vous | TIRABOSCHI Paris</title>
+<meta name="description" content="Rencontrez TIRABOSCHI Paris dans notre atelier du Marais. Conseil & Essai, Sur Mesure, Entretien & Réparation. 12 rue de Bretagne, Paris 3e — sur rendez-vous.">
+<link rel="canonical" href="https://tiraboschi-paris.com/pages/contact">
+
+<!-- ═══ OPEN GRAPH ═══ -->
+<meta property="og:type"        content="website">
+<meta property="og:url"         content="https://tiraboschi-paris.com/pages/contact">
+<meta property="og:title"       content="Contact & Atelier | TIRABOSCHI Paris">
+<meta property="og:description" content="Notre atelier vous accueille sur rendez-vous, 12 rue de Bretagne, Paris 3e. Conseil, Sur Mesure, Entretien. Made in France, Only.">
+<meta property="og:locale"      content="fr_FR">
+<meta name="twitter:card"       content="summary_large_image">
+
+<!-- ═══ FONTS ═══ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap&subset=latin" rel="stylesheet">
+
+<!-- ═══ JSON-LD ═══ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "LocalBusiness",
+      "name": "TIRABOSCHI Paris",
+      "description": "Maison de maroquinerie de luxe française fondée en 1904. Atelier ouvert sur rendez-vous.",
+      "url": "https://tiraboschi-paris.com",
+      "telephone": "+33-1-XX-XX-XX-XX",
+      "email": "bonjour@tiraboschi-paris.com",
+      "foundingDate": "1904",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "12, rue de Bretagne",
+        "addressLocality": "Paris",
+        "postalCode": "75003",
+        "addressCountry": "FR"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "48.8614",
+        "longitude": "2.3600"
+      },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday"],
+          "opens": "10:00",
+          "closes": "18:30"
+        },
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Saturday",
+          "opens": "10:00",
+          "closes": "17:00"
+        }
+      ],
+      "sameAs": ["https://instagram.com/boschi_paris"]
+    },
+    {
+      "@type": "ContactPage",
+      "name": "Contact — TIRABOSCHI Paris",
+      "url": "https://tiraboschi-paris.com/pages/contact"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://tiraboschi-paris.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Contact", "item": "https://tiraboschi-paris.com/pages/contact" }
+      ]
+    }
+  ]
+}
+</script>
+
+<style>
+/* ════════════════════════════════════════════
+   RESET & DESIGN TOKENS
+════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --tira-black:    #0a0a0a;
+  --tira-white:    #ffffff;
+  --tira-grey:     #f7f5f2;
+  --tira-border:   #e8e8e8;
+  --tira-ease:     cubic-bezier(0.16, 1, 0.3, 1);
+  --tira-duration: 0.9s;
+  --header-h:      64px;
+  --search-h:      44px;
+}
+
+body {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 400;
+  background: var(--tira-white);
+  color: var(--tira-black);
+  overflow-x: hidden;
+  cursor: none;
+}
+@media (hover: none) { body { cursor: auto; } }
+
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+a { color: inherit; text-decoration: none; }
+button { cursor: none; }
+
+:focus-visible { outline: 2px solid var(--tira-black); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ════════════════════════════════════════════
+   CUSTOM CURSOR
+════════════════════════════════════════════ */
+.cursor-dot, .cursor-ring {
+  position: fixed; border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%);
+  will-change: left, top;
+}
+.cursor-dot {
+  width: 6px; height: 6px;
+  background: var(--tira-black);
+  transition: width .3s var(--tira-ease), height .3s var(--tira-ease), background .3s;
+}
+.cursor-ring {
+  width: 30px; height: 30px;
+  border: 1px solid rgba(10,10,10,.38);
+  transition: opacity .25s, width .3s var(--tira-ease), height .3s var(--tira-ease);
+}
+body.on-hover .cursor-dot  { width: 44px; height: 44px; background: rgba(10,10,10,.06); }
+body.on-hover .cursor-ring { opacity: 0; }
+body.on-dark  .cursor-dot  { background: var(--tira-white); }
+body.on-dark  .cursor-ring { border-color: rgba(255,255,255,.38); }
+@media (hover: none) { .cursor-dot, .cursor-ring { display: none; } }
+
+/* ════════════════════════════════════════════
+   HEADER — solid white (interior page)
+════════════════════════════════════════════ */
+.hdr {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: var(--header-h);
+  background: var(--tira-white);
+  border-bottom: 1px solid var(--tira-border);
+  transition: transform .35s var(--tira-ease);
+}
+.hdr.hdr-hidden { transform: translateY(-100%); }
+
+/* Desktop: logo centered, nav left, icons right */
+.hdr__d {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  height: 100%; padding: 0 40px;
+  gap: 40px;
+}
+.hdr__logo { display: flex; justify-content: center; }
+.hdr__logo a { display: block; line-height: 0; }
+.hdr__logo img { height: 28px; width: auto; display: block; }
+
+.hdr__nav {
+  display: flex; align-items: center; gap: 28px;
+}
+.hdr__nav a {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+  opacity: .75; transition: opacity .2s; white-space: nowrap;
+}
+.hdr__nav a:hover { opacity: 1; }
+
+.hdr__icons {
+  display: flex; align-items: center; justify-content: flex-end; gap: 18px;
+}
+.hdr__icons button {
+  background: none; border: none; cursor: none;
+  display: flex; align-items: center; color: var(--tira-black);
+  opacity: .75; transition: opacity .2s;
+}
+.hdr__icons button:hover { opacity: 1; }
+.hdr__icons svg {
+  width: 20px; height: 20px; fill: none;
+  stroke: currentColor; stroke-width: 1.5;
+  stroke-linecap: square; stroke-linejoin: miter;
+}
+.tira-bag-icon { display: block; width: 22px; height: 22px; object-fit: contain; }
+
+/* Mobile */
+.hdr__m {
+  display: none;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center; gap: 14px;
+  height: 100%; padding: 0 20px;
+}
+.hdr__m-logo { display: block; line-height: 0; }
+.hdr__m-logo img { height: 24px; width: auto; }
+.hdr__m svg {
+  width: 24px; height: 24px; fill: none;
+  stroke: var(--tira-black); stroke-width: 1.5;
+  stroke-linecap: square; stroke-linejoin: miter;
+}
+.hdr__m .tira-bag-icon { width: 24px; height: 24px; }
+.hdr__m button {
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; color: var(--tira-black); padding: 2px;
+}
+
+@media (max-width: 900px) {
+  .hdr__d { display: none; }
+  .hdr__m { display: grid; }
+}
+
+/* ════════════════════════════════════════════
+   SEARCH BAR — 44px, solid white
+════════════════════════════════════════════ */
+.hdr-search {
+  position: fixed; top: var(--header-h); left: 0; right: 0; z-index: 199;
+  display: flex; align-items: center; justify-content: center;
+  height: var(--search-h); padding: 0 40px;
+  background: var(--tira-white);
+  border-bottom: 1px solid var(--tira-border);
+  transition: top .35s var(--tira-ease);
+}
+.hdr-search__field {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; max-width: 560px;
+}
+.hdr-search svg {
+  width: 14px; height: 14px; flex-shrink: 0;
+  stroke: var(--tira-black); stroke-width: 1.5; fill: none;
+  opacity: .5;
+}
+.hdr-search input {
+  flex: 1; border: none; background: none; outline: none;
+  font-family: inherit; font-size: 11px;
+  text-transform: uppercase; letter-spacing: .12em;
+  color: var(--tira-black);
+  border-bottom: 1px solid var(--tira-border);
+  transition: border-color .3s;
+  padding-bottom: 3px; text-align: center;
+}
+.hdr-search input::placeholder { color: rgba(10,10,10,.4); opacity: 1; }
+.hdr-search input:focus { border-bottom-color: var(--tira-black); }
+
+/* ════════════════════════════════════════════
+   ANIMATIONS
+════════════════════════════════════════════ */
+[data-tira-reveal] {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity var(--tira-duration) var(--tira-ease),
+              transform var(--tira-duration) var(--tira-ease);
+}
+[data-tira-reveal].is-visible { opacity: 1; transform: none; }
+
+[data-tira-word-reveal] span {
+  display: inline-block; opacity: 0; transform: translateY(10px);
+  transition: opacity .5s var(--tira-ease) calc(var(--i) * 55ms),
+              transform  .5s var(--tira-ease) calc(var(--i) * 55ms);
+}
+[data-tira-word-reveal].is-visible span { opacity: 1; transform: none; }
+
+.d1 { transition-delay: 0.1s; }
+.d2 { transition-delay: 0.2s; }
+.d3 { transition-delay: 0.3s; }
+
+/* ════════════════════════════════════════════
+   REUSABLES
+════════════════════════════════════════════ */
+.section-label {
+  display: block;
+  font-size: 11px; text-transform: uppercase; letter-spacing: .15em;
+  opacity: .5; margin-bottom: 24px;
+}
+.tira-btn {
+  display: inline-block;
+  font-size: 11px; text-transform: uppercase; letter-spacing: .12em;
+  text-decoration: underline; text-underline-offset: 3px;
+  transition: opacity .2s; background: none; border: none;
+  font-family: inherit; cursor: none; padding: 0;
+}
+.tira-btn:hover { opacity: .55; }
+.tira-btn-lg { font-size: 13px; letter-spacing: .1em; }
+
+/* ════════════════════════════════════════════
+   1. HERO — 60vh, grey, typographic only
+════════════════════════════════════════════ */
+.hero {
+  background: var(--tira-grey);
+  min-height: 60vh;
+  padding-top: calc(var(--header-h) + var(--search-h));
+  display: flex; flex-direction: column; justify-content: center;
+  align-items: center; text-align: center;
+  padding-left: 40px; padding-right: 40px;
+  padding-bottom: 80px;
+  position: relative; overflow: hidden;
+}
+
+/* Large italic filigree text */
+.hero__filigree {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(80px, 14vw, 220px);
+  font-style: italic;
+  color: var(--tira-black);
+  opacity: .04;
+  white-space: nowrap;
+  pointer-events: none;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  z-index: 0;
+}
+
+.hero__content {
+  position: relative; z-index: 1;
+  max-width: 700px;
+}
+
+.hero__content h1 {
+  font-size: clamp(36px, 6vw, 56px);
+  letter-spacing: -0.01em; line-height: 1;
+  margin-bottom: 16px;
+}
+.hero__sub {
+  font-size: 13px; font-style: italic;
+  opacity: .55; margin-bottom: 48px; letter-spacing: .02em;
+}
+
+/* Contact chips */
+.hero__chips {
+  display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
+}
+.hero__chip {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+  padding: 10px 20px;
+  border: 1px solid var(--tira-border);
+  background: var(--tira-white);
+  opacity: .8;
+  transition: opacity .2s, background .2s;
+}
+.hero__chip:hover { opacity: 1; background: var(--tira-white); }
+.hero__chip a { color: inherit; }
+
+@media (max-width: 768px) {
+  .hero { padding-left: 20px; padding-right: 20px; }
+  .hero__chips { flex-direction: column; align-items: center; }
+}
+
+/* ════════════════════════════════════════════
+   2. LES 3 MOTIFS DE VISITE — white, 3-col
+════════════════════════════════════════════ */
+.motifs {
+  background: var(--tira-white);
+  padding: 100px 40px;
+}
+.motifs__header {
+  text-align: center; margin-bottom: 72px;
+}
+.motifs__header h2 {
+  font-size: clamp(28px, 3.5vw, 40px);
+  letter-spacing: -0.01em;
+}
+.motifs__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 1100px; margin: 0 auto;
+}
+.motif-card {
+  padding: 48px 40px;
+  border-left: 1px solid var(--tira-border);
+  transition: background .3s;
+}
+.motif-card:first-child { border-left: none; }
+.motif-card:hover { background: var(--tira-grey); }
+
+.motif-card__icon {
+  width: 32px; height: 32px; margin-bottom: 28px;
+  stroke: var(--tira-black); fill: none;
+  stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round;
+}
+.motif-card__title {
+  font-size: clamp(18px, 2.2vw, 24px);
+  letter-spacing: -0.01em; margin-bottom: 16px;
+}
+.motif-card__body {
+  font-size: 14px; line-height: 1.8; opacity: .7;
+  margin-bottom: 28px;
+}
+.motif-card .tira-btn { font-size: 12px; }
+
+@media (max-width: 900px) {
+  .motifs { padding: 72px 20px; }
+  .motifs__grid { grid-template-columns: 1fr; }
+  .motif-card {
+    border-left: none;
+    border-top: 1px solid var(--tira-border);
+    padding: 36px 0;
+  }
+  .motif-card:first-child { border-top: none; padding-top: 0; }
+}
+
+/* ════════════════════════════════════════════
+   3. L'ATELIER — dark, 2-col
+════════════════════════════════════════════ */
+.atelier {
+  background: var(--tira-black);
+  color: var(--tira-white);
+}
+.atelier__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 640px;
+}
+.atelier__img {
+  background: linear-gradient(135deg,
+    #2a1f14 0%, #3d2d1e 25%, #1e1610 50%, #32251a 75%, #1a1008 100%);
+  position: relative; overflow: hidden;
+}
+.atelier__img::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 40% 55%, rgba(180,120,60,.12) 0%, transparent 65%);
+}
+/* Subtle frame to suggest atelier photo */
+.atelier__img::after {
+  content: '12, rue de Bretagne · Paris 3e';
+  position: absolute; bottom: 32px; left: 32px;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .15em;
+  color: rgba(255,255,255,.25);
+}
+
+.atelier__content {
+  padding: 80px 72px;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.atelier__content .section-label { color: rgba(255,255,255,.4); }
+.atelier__content h2 {
+  font-size: clamp(24px, 3vw, 36px);
+  letter-spacing: -0.01em; line-height: 1.2;
+  margin-bottom: 24px;
+}
+.atelier__content > p {
+  font-size: 15px; line-height: 1.85; opacity: .7;
+  margin-bottom: 40px;
+}
+
+/* Horaires table */
+.atelier__horaires {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 32px;
+}
+.atelier__horaires tr {
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.atelier__horaires td {
+  padding: 10px 0;
+  font-size: 13px;
+}
+.atelier__horaires td:first-child {
+  opacity: .4; text-transform: uppercase; letter-spacing: .08em; font-size: 11px;
+  padding-right: 32px;
+}
+.atelier__horaires td:last-child { opacity: .75; }
+.atelier__horaires tr.fermé td:last-child { opacity: .3; font-style: italic; }
+
+.atelier__access {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+  opacity: .35; margin-bottom: 28px; line-height: 1.8;
+}
+.atelier__content .tira-btn {
+  color: var(--tira-white);
+  font-size: 12px;
+}
+
+@media (max-width: 900px) {
+  .atelier__grid { grid-template-columns: 1fr; }
+  .atelier__img { min-height: 300px; order: -1; }
+  .atelier__img::after { font-size: 9px; bottom: 20px; left: 20px; }
+  .atelier__content { padding: 56px 24px; }
+}
+
+/* ════════════════════════════════════════════
+   4. FORMULAIRE — grey
+════════════════════════════════════════════ */
+.formulaire {
+  background: var(--tira-grey);
+  padding: 100px 40px;
+}
+.formulaire__inner {
+  max-width: 720px; margin: 0 auto;
+}
+.formulaire__header {
+  margin-bottom: 56px;
+}
+.formulaire__header h2 {
+  font-size: clamp(32px, 4.5vw, 48px);
+  letter-spacing: -0.01em; margin-bottom: 8px;
+}
+.formulaire__header p {
+  font-size: 13px; opacity: .5; font-style: italic;
+}
+
+/* Form fields */
+.form-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  margin-bottom: 24px;
+}
+.form-group {
+  display: flex; flex-direction: column; gap: 8px;
+  margin-bottom: 24px;
+}
+.form-group label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .15em; opacity: .5;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  font-family: inherit;
+  font-size: 14px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--tira-border);
+  padding: 10px 0;
+  color: var(--tira-black);
+  outline: none;
+  transition: border-color .3s;
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.form-group input::placeholder,
+.form-group textarea::placeholder { opacity: .3; }
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus { border-bottom-color: var(--tira-black); }
+.form-group select { cursor: pointer; background-image: none; }
+.form-group textarea { resize: none; line-height: 1.7; }
+
+/* Custom select arrow */
+.select-wrapper {
+  position: relative;
+}
+.select-wrapper::after {
+  content: '↓';
+  position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+  font-size: 12px; opacity: .4; pointer-events: none;
+  transition: transform .3s;
+}
+
+/* GDPR checkbox */
+.form-gdpr {
+  display: flex; align-items: flex-start; gap: 14px;
+  margin-bottom: 40px; padding: 24px 0;
+  border-top: 1px solid var(--tira-border);
+}
+.form-gdpr input[type="checkbox"] {
+  width: 16px; height: 16px; flex-shrink: 0;
+  accent-color: var(--tira-black);
+  margin-top: 2px; cursor: pointer;
+}
+.form-gdpr label {
+  font-size: 11px; opacity: .55; line-height: 1.6; cursor: pointer;
+}
+
+/* Submit */
+.form-submit {
+  display: flex; align-items: center; gap: 32px; flex-wrap: wrap;
+}
+.form-submit button {
+  font-family: inherit;
+  font-size: 13px; text-transform: uppercase; letter-spacing: .12em;
+  text-decoration: underline; text-underline-offset: 3px;
+  background: none; border: none; padding: 0;
+  cursor: none; transition: opacity .2s;
+  color: var(--tira-black);
+}
+.form-submit button:hover { opacity: .5; }
+.form-submit .response-time {
+  font-size: 11px; opacity: .4; font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .formulaire { padding: 72px 20px; }
+  .form-row { grid-template-columns: 1fr; gap: 0; }
+}
+
+/* ════════════════════════════════════════════
+   5. CLIENTS INTERNATIONAUX — white, centered
+════════════════════════════════════════════ */
+.international {
+  background: var(--tira-white);
+  padding: 100px 40px;
+  text-align: center;
+}
+.international__inner {
+  max-width: 640px; margin: 0 auto;
+}
+.international h3 {
+  font-size: clamp(24px, 3.5vw, 32px);
+  letter-spacing: -0.01em; margin-bottom: 20px;
+}
+.international p {
+  font-size: 15px; line-height: 1.8; opacity: .75; margin-bottom: 40px;
+}
+.international__ctas {
+  display: flex; gap: 40px; justify-content: center; flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .international { padding: 72px 20px; }
+  .international__ctas { flex-direction: column; align-items: center; gap: 20px; }
+}
+
+/* ════════════════════════════════════════════
+   6. INFORMATIONS PRATIQUES — grey, 2-col
+════════════════════════════════════════════ */
+.infos {
+  background: var(--tira-grey);
+  padding: 100px 40px;
+}
+.infos__header {
+  margin-bottom: 64px;
+}
+.infos__header h2 {
+  font-size: clamp(24px, 3vw, 32px);
+  letter-spacing: -0.01em;
+}
+.infos__grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
+  max-width: 1000px;
+}
+.infos__col h3 {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .15em;
+  opacity: .4; margin-bottom: 32px;
+}
+.info-item {
+  padding: 20px 0;
+  border-bottom: 1px solid var(--tira-border);
+  display: grid; grid-template-columns: 140px 1fr; gap: 16px;
+}
+.info-item:first-of-type { border-top: 1px solid var(--tira-border); }
+.info-item__label {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .1em; opacity: .4;
+  padding-top: 2px;
+}
+.info-item__value {
+  font-size: 13px; line-height: 1.7; opacity: .8;
+}
+.info-item__value a {
+  text-decoration: underline; text-underline-offset: 3px;
+  transition: opacity .2s;
+}
+.info-item__value a:hover { opacity: .5; }
+
+/* Special badge for La Société */
+.societe-badge {
+  display: inline-block;
+  font-size: 9px; text-transform: uppercase; letter-spacing: .1em;
+  padding: 3px 8px;
+  border: 1px solid var(--tira-border);
+  margin-top: 4px;
+  opacity: .6;
+}
+
+@media (max-width: 768px) {
+  .infos { padding: 72px 20px; }
+  .infos__grid { grid-template-columns: 1fr; gap: 48px; }
+  .info-item { grid-template-columns: 1fr; gap: 4px; }
+}
+
+/* ════════════════════════════════════════════
+   FOOTER
+════════════════════════════════════════════ */
+.footer {
+  background: var(--tira-black);
+  color: var(--tira-white);
+  padding: 80px 40px 40px;
+}
+.footer__grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 64px;
+  margin-bottom: 64px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  padding-bottom: 64px;
+}
+.footer__brand img {
+  height: 24px; width: auto; margin-bottom: 20px;
+  filter: brightness(0) invert(1);
+}
+.footer__brand-tagline {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+  opacity: .4; margin-bottom: 16px; line-height: 1.6;
+}
+.footer__brand-instagram {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .08em;
+  opacity: .35; text-decoration: underline; text-underline-offset: 3px;
+}
+.footer__col-title {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .15em;
+  opacity: .3; margin-bottom: 20px;
+}
+.footer__col ul { list-style: none; }
+.footer__col ul li { margin-bottom: 10px; }
+.footer__col ul a {
+  font-size: 13px; opacity: .6;
+  transition: opacity .2s;
+}
+.footer__col ul a:hover { opacity: 1; }
+.footer__bottom {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.footer__copyright {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .08em; opacity: .25;
+}
+
+/* Footer accordion mobile */
+@media (max-width: 768px) {
+  .footer { padding: 56px 20px 32px; }
+  .footer__grid { grid-template-columns: 1fr; gap: 0; margin-bottom: 40px; padding-bottom: 40px; }
+  .footer__brand { padding-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,.08); }
+  .footer__col { border-bottom: 1px solid rgba(255,255,255,.08); }
+  .footer__col-title {
+    padding: 18px 0;
+    cursor: pointer; margin-bottom: 0;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer__col-title::after { content: '+'; font-size: 14px; opacity: .4; }
+  .footer__col.open .footer__col-title::after { content: '−'; }
+  .footer__col ul { max-height: 0; overflow: hidden; transition: max-height .4s var(--tira-ease); }
+  .footer__col.open ul { max-height: 400px; padding-bottom: 20px; }
+  .footer__bottom { flex-direction: column; gap: 12px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- Curseur custom -->
+<div class="cursor-dot" id="cur-dot"></div>
+<div class="cursor-ring" id="cur-ring"></div>
+
+<!-- ═══════════════════════════════════════
+     HEADER
+═══════════════════════════════════════ -->
+<header class="hdr" id="hdr">
+  <!-- Desktop -->
+  <div class="hdr__d">
+    <nav class="hdr__nav">
+      <a href="/collections/fw25">Collections</a>
+      <a href="/pages/histoire">La Maison</a>
+      <a href="/pages/sur-mesure">Sur Mesure</a>
+      <a href="/blogs/latelier">L'Atelier</a>
+    </nav>
+    <div class="hdr__logo">
+      <a href="/" aria-label="TIRABOSCHI Paris — Accueil">
+        <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738"
+             alt="TIRABOSCHI Paris" height="28" width="auto" loading="eager">
+      </a>
+    </div>
+    <div class="hdr__icons">
+      <button aria-label="Mon compte">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+        </svg>
+      </button>
+      <button aria-label="Panier">
+        <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050"
+             class="tira-bag-icon" alt="Panier" width="22" height="22" loading="eager">
+      </button>
+    </div>
+  </div>
+  <!-- Mobile -->
+  <div class="hdr__m">
+    <a class="hdr__m-logo" href="/" aria-label="TIRABOSCHI Paris — Accueil">
+      <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738"
+           alt="TIRABOSCHI Paris" height="24" width="auto" loading="eager">
+    </a>
+    <button aria-label="Mon compte">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+      </svg>
+    </button>
+    <button aria-label="Panier">
+      <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050"
+           class="tira-bag-icon" alt="Panier" width="24" height="24" loading="eager">
+    </button>
+    <button aria-label="Menu" id="mob-menu-btn">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════
+     SEARCH BAR
+═══════════════════════════════════════ -->
+<div class="hdr-search" id="hdr-search">
+  <div class="hdr-search__field">
+    <svg viewBox="0 0 24 24" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/>
+    </svg>
+    <input type="search" placeholder="Rechercher un modèle, une matière…" aria-label="Recherche">
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     1. HERO — 60vh, typographic, grey
+═══════════════════════════════════════ -->
+<section class="hero" aria-label="Contact TIRABOSCHI Paris">
+  <div class="hero__filigree" aria-hidden="true">Rencontrons-nous</div>
+
+  <div class="hero__content">
+    <h1 data-tira-word-reveal>Contact</h1>
+    <p class="hero__sub" data-tira-reveal class="d1">
+      Notre atelier vous accueille sur rendez-vous
+    </p>
+
+    <div class="hero__chips" data-tira-reveal class="d2">
+      <div class="hero__chip">Atelier Paris 3<sup>e</sup></div>
+      <div class="hero__chip"><a href="tel:+33100000000">+33 1 XX XX XX XX</a></div>
+      <div class="hero__chip"><a href="mailto:bonjour@tiraboschi-paris.com">bonjour@tiraboschi-paris.com</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     2. LES 3 MOTIFS DE VISITE
+═══════════════════════════════════════ -->
+<section class="motifs" aria-label="Motifs de visite">
+  <div class="motifs__header">
+    <span class="section-label" data-tira-reveal>L'Atelier</span>
+    <h2 data-tira-word-reveal>Nous rencontrer</h2>
+  </div>
+
+  <div class="motifs__grid">
+    <!-- Conseil & Essai -->
+    <article class="motif-card" data-tira-reveal>
+      <svg class="motif-card__icon" viewBox="0 0 32 32" aria-hidden="true">
+        <!-- Thin bag outline -->
+        <path d="M6 12h20l-2 14H8L6 12z"/>
+        <path d="M12 12V9a4 4 0 0 1 8 0v3"/>
+        <line x1="11" y1="19" x2="21" y2="19"/>
+      </svg>
+      <h3 class="motif-card__title">Conseil &amp; Essai</h3>
+      <p class="motif-card__body">
+        Venez découvrir nos modèles, toucher les matières, essayer les formats.
+        45 minutes, sans engagement. Notre équipe vous accueille avec plaisir.
+      </p>
+      <a href="/pages/prendrez-rendez-vous" class="tira-btn">Prendre rendez-vous →</a>
+    </article>
+
+    <!-- Sur Mesure -->
+    <article class="motif-card" data-tira-reveal class="d1">
+      <svg class="motif-card__icon" viewBox="0 0 32 32" aria-hidden="true">
+        <!-- Scissors thin -->
+        <circle cx="9" cy="10" r="3"/>
+        <circle cx="9" cy="22" r="3"/>
+        <line x1="11.8" y1="11.8" x2="26" y2="26"/>
+        <line x1="11.8" y1="20.2" x2="26" y2="6"/>
+      </svg>
+      <h3 class="motif-card__title">Créer sur Mesure</h3>
+      <p class="motif-card__body">
+        Première rencontre de 1h avec notre fondatrice pour définir votre pièce unique.
+        Matière, teinte, couture, quincaillerie, dimensions — chaque détail est le vôtre.
+        Délai 8–12 semaines.
+      </p>
+      <a href="/pages/prendrez-rendez-vous" class="tira-btn">Prendre rendez-vous →</a>
+    </article>
+
+    <!-- Entretien & Réparation -->
+    <article class="motif-card" data-tira-reveal class="d2">
+      <svg class="motif-card__icon" viewBox="0 0 32 32" aria-hidden="true">
+        <!-- Thread & needle -->
+        <path d="M8 24 L24 8" stroke-linecap="round"/>
+        <path d="M6 22 L6 26 L10 26" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="24" cy="8" r="2"/>
+        <line x1="22" y1="6" x2="24" y2="4"/>
+        <path d="M14 12 Q18 10 20 16 Q16 18 12 16" stroke-linecap="round"/>
+      </svg>
+      <h3 class="motif-card__title">Entretien &amp; Réparation</h3>
+      <p class="motif-card__body">
+        Apportez votre pièce TIRABOSCHI pour un bilan complet et gratuit.
+        Devis d'entretien ou de réparation établi sur place. Nous soignons toutes
+        les générations de la maison.
+      </p>
+      <a href="/pages/prendrez-rendez-vous" class="tira-btn">Prendre rendez-vous →</a>
+    </article>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     3. L'ATELIER — dark, 2-col
+═══════════════════════════════════════ -->
+<section class="atelier" aria-label="Notre atelier, Paris 3e">
+  <div class="atelier__grid">
+    <div class="atelier__img" aria-hidden="true"></div>
+    <div class="atelier__content">
+      <span class="section-label" data-tira-reveal>Nous trouver</span>
+      <h2 data-tira-word-reveal>12, rue de Bretagne<br>Paris 3<sup>e</sup></h2>
+      <p data-tira-reveal class="d1">
+        Notre atelier est installé dans le Marais depuis 1972, à la même adresse.
+        Vous pouvez sonner à l'interphone — nous ouvrons sur rendez-vous uniquement.
+        Pas de vitrine, pas d'enseigne lumineuse.
+      </p>
+
+      <table class="atelier__horaires" data-tira-reveal class="d2">
+        <tbody>
+          <tr class="fermé">
+            <td>Lundi</td>
+            <td>Fermé</td>
+          </tr>
+          <tr>
+            <td>Mardi – Vendredi</td>
+            <td>10h – 18h30</td>
+          </tr>
+          <tr>
+            <td>Samedi</td>
+            <td>10h – 17h00</td>
+          </tr>
+          <tr class="fermé">
+            <td>Dimanche</td>
+            <td>Fermé</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="atelier__access" data-tira-reveal class="d2">
+        Accès : Métro Arts &amp; Métiers (L3/L11) · Temple (L3)<br>
+        Parking : Parking Beaubourg, 5 min à pied
+      </p>
+
+      <a href="https://maps.google.com/?q=12+rue+de+Bretagne+Paris+75003"
+         class="tira-btn" target="_blank" rel="noopener"
+         data-tira-reveal class="d3">
+        Voir sur la carte →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     4. FORMULAIRE
+═══════════════════════════════════════ -->
+<section class="formulaire" aria-label="Formulaire de contact">
+  <div class="formulaire__inner">
+    <div class="formulaire__header">
+      <span class="section-label" data-tira-reveal>Nous écrire</span>
+      <h2 data-tira-word-reveal>Votre message</h2>
+      <p data-tira-reveal class="d1">Nous répondons sous 24h ouvrées</p>
+    </div>
+
+    <form data-tira-reveal class="d1" novalidate>
+      <!-- Prénom + Nom -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="f-prenom">Prénom</label>
+          <input type="text" id="f-prenom" name="prenom" placeholder="Marie" autocomplete="given-name">
+        </div>
+        <div class="form-group">
+          <label for="f-nom">Nom</label>
+          <input type="text" id="f-nom" name="nom" placeholder="Dupont" autocomplete="family-name">
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="form-group">
+        <label for="f-email">Email</label>
+        <input type="email" id="f-email" name="email" placeholder="marie.dupont@email.com" autocomplete="email">
+      </div>
+
+      <!-- Objet -->
+      <div class="form-group">
+        <label for="f-objet">Objet</label>
+        <div class="select-wrapper">
+          <select id="f-objet" name="objet">
+            <option value="" disabled selected>Choisir un motif</option>
+            <option value="conseil">Conseil &amp; Essai</option>
+            <option value="sur-mesure">Sur Mesure</option>
+            <option value="entretien">Entretien &amp; Réparation</option>
+            <option value="commande">Commande en cours</option>
+            <option value="autre">Autre demande</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Message -->
+      <div class="form-group">
+        <label for="f-message">Message</label>
+        <textarea id="f-message" name="message" rows="4"
+                  placeholder="Décrivez votre demande…"></textarea>
+      </div>
+
+      <!-- GDPR -->
+      <div class="form-gdpr">
+        <input type="checkbox" id="f-gdpr" name="gdpr" required>
+        <label for="f-gdpr">
+          J'accepte que mes données personnelles soient utilisées par TIRABOSCHI Paris
+          uniquement pour répondre à ma demande, conformément à notre politique de confidentialité.
+        </label>
+      </div>
+
+      <!-- Submit -->
+      <div class="form-submit">
+        <button type="submit">Envoyer ma demande →</button>
+        <span class="response-time">Réponse sous 24h ouvrées</span>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     5. CLIENTS INTERNATIONAUX
+═══════════════════════════════════════ -->
+<section class="international" aria-label="Clients internationaux">
+  <div class="international__inner">
+    <span class="section-label" data-tira-reveal>International</span>
+    <h3 data-tira-word-reveal>Vous n'êtes pas à Paris ?</h3>
+    <p data-tira-reveal class="d1">
+      La consultation Sur Mesure peut se faire en visioconférence — nous y avons recours
+      régulièrement avec nos clientes à l'international. L'envoi postal est disponible
+      dans 40 pays avec retours gratuits sous 14 jours.
+    </p>
+    <div class="international__ctas" data-tira-reveal class="d2">
+      <a href="/pages/prendrez-rendez-vous" class="tira-btn tira-btn-lg">
+        Consultation par vidéo →
+      </a>
+      <a href="/pages/livraison" class="tira-btn tira-btn-lg">
+        Informations livraison internationale →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     6. INFORMATIONS PRATIQUES
+═══════════════════════════════════════ -->
+<section class="infos" aria-label="Informations pratiques">
+  <div class="infos__header" data-tira-reveal>
+    <span class="section-label">Pratique</span>
+    <h2>Informations utiles</h2>
+  </div>
+
+  <div class="infos__grid">
+    <!-- Col gauche -->
+    <div class="infos__col" data-tira-reveal>
+      <h3>Accès &amp; Confort</h3>
+
+      <div class="info-item">
+        <span class="info-item__label">Parking</span>
+        <span class="info-item__value">Parking Beaubourg, 5 min à pied (accès rue Beaubourg)</span>
+      </div>
+      <div class="info-item">
+        <span class="info-item__label">Accessibilité</span>
+        <span class="info-item__value">Accès PMR par le 14, rue de la Corderie · Ascenseur disponible</span>
+      </div>
+      <div class="info-item">
+        <span class="info-item__label">Langues</span>
+        <span class="info-item__value">Français · English · Italiano</span>
+      </div>
+    </div>
+
+    <!-- Col droite -->
+    <div class="infos__col" data-tira-reveal class="d1">
+      <h3>Contacts Spéciaux</h3>
+
+      <div class="info-item">
+        <span class="info-item__label">Presse</span>
+        <span class="info-item__value">
+          <a href="mailto:presse@tiraboschi-paris.com">presse@tiraboschi-paris.com</a><br>
+          Attachée de presse, sur rendez-vous uniquement
+        </span>
+      </div>
+      <div class="info-item">
+        <span class="info-item__label">Pro &amp; Corporate</span>
+        <span class="info-item__value">
+          Commandes professionnelles sur devis.<br>
+          Contact direct fondatrice — <a href="mailto:bonjour@tiraboschi-paris.com">bonjour@tiraboschi-paris.com</a>
+        </span>
+      </div>
+      <div class="info-item">
+        <span class="info-item__label">Urgences</span>
+        <span class="info-item__value">
+          WhatsApp disponible pour les clients La Société
+          <span class="societe-badge">Cercle II &amp; III</span>
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════ -->
+<footer class="footer" aria-label="Pied de page TIRABOSCHI Paris">
+  <div class="footer__grid">
+    <!-- Col 1 : Brand -->
+    <div class="footer__brand">
+      <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738"
+           alt="TIRABOSCHI Paris" height="24" loading="lazy">
+      <p class="footer__brand-tagline">Made in France, Only.&nbsp;·&nbsp;Since 1904</p>
+      <a href="https://instagram.com/boschi_paris" class="footer__brand-instagram" target="_blank" rel="noopener">
+        @boschi_paris
+      </a>
+    </div>
+
+    <!-- Col 2 : Collections -->
+    <div class="footer__col">
+      <p class="footer__col-title">Collections</p>
+      <ul>
+        <li><a href="/collections/fw25">FW25</a></li>
+        <li><a href="/collections/sacs">Sacs</a></li>
+        <li><a href="/collections/petite-maroquinerie">Petite Maroquinerie</a></li>
+        <li><a href="/collections/iconiques">Iconiques</a></li>
+        <li><a href="/collections/sur-mesure-exotiques">Sur Mesure &amp; Exotiques</a></li>
+      </ul>
+    </div>
+
+    <!-- Col 3 : La Maison -->
+    <div class="footer__col">
+      <p class="footer__col-title">La Maison</p>
+      <ul>
+        <li><a href="/pages/histoire">Histoire</a></li>
+        <li><a href="/pages/savoir-faire">Savoir-Faire</a></li>
+        <li><a href="/pages/matieres-cuirs">Matières &amp; Cuirs</a></li>
+        <li><a href="/pages/la-societe">La Société</a></li>
+        <li><a href="/blogs/latelier">Blog L'Atelier</a></li>
+      </ul>
+    </div>
+
+    <!-- Col 4 : Service -->
+    <div class="footer__col">
+      <p class="footer__col-title">Service</p>
+      <ul>
+        <li><a href="/pages/contact">Contact</a></li>
+        <li><a href="/pages/prendrez-rendez-vous">Prendre RDV</a></li>
+        <li><a href="/pages/entretien">Entretien &amp; Réparation</a></li>
+        <li><a href="/pages/livraison">Livraison</a></li>
+        <li><a href="/pages/retours">Retours</a></li>
+        <li><a href="/pages/faq">FAQ</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer__bottom">
+    <p class="footer__copyright">&copy; 2025 TIRABOSCHI Paris. Tous droits réservés.</p>
+  </div>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════
+   CUSTOM CURSOR
+═══════════════════════════════════════ */
+(function() {
+  const dot  = document.getElementById('cur-dot');
+  const ring = document.getElementById('cur-ring');
+  if (!dot || !ring) return;
+  if (window.matchMedia('(hover: none)').matches) return;
+
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+  }, { passive: true });
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  (function loop() {
+    rx = lerp(rx, mx, 0.12); ry = lerp(ry, my, 0.12);
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(loop);
+  })();
+
+  document.querySelectorAll('a, button, [role="button"], label[for], select').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('on-hover'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('on-hover'));
+  });
+
+  // Dark section: atelier
+  const atelierSection = document.querySelector('.atelier');
+  if (atelierSection) {
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) document.body.classList.add('on-dark');
+        else document.body.classList.remove('on-dark');
+      });
+    }, { threshold: 0.3 });
+    obs.observe(atelierSection);
+  }
+})();
+
+/* ═══════════════════════════════════════
+   DIRECTIONAL STICKY HEADER
+═══════════════════════════════════════ */
+(function() {
+  const hdr    = document.getElementById('hdr');
+  const search = document.getElementById('hdr-search');
+  if (!hdr) return;
+
+  let lastY = 0, ticking = false;
+
+  window.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const y = window.scrollY;
+      if (y > lastY && y > 80) {
+        hdr.classList.add('hdr-hidden');
+        document.body.classList.add('hdr-hidden');
+        if (search) search.style.top = '0';
+      } else {
+        hdr.classList.remove('hdr-hidden');
+        document.body.classList.remove('hdr-hidden');
+        if (search) search.style.top = '';
+      }
+      lastY = y;
+      ticking = false;
+    });
+  }, { passive: true });
+})();
+
+/* ═══════════════════════════════════════
+   SCROLL REVEAL
+═══════════════════════════════════════ */
+(function() {
+  // Word reveal: split words
+  document.querySelectorAll('[data-tira-word-reveal]').forEach(el => {
+    el.innerHTML = el.textContent.split(' ')
+      .map((w, i) => `<span style="--i:${i}">${w}</span>`).join(' ');
+  });
+
+  const revealEls = document.querySelectorAll('[data-tira-reveal], [data-tira-word-reveal]');
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('is-visible');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  revealEls.forEach(el => obs.observe(el));
+})();
+
+/* ═══════════════════════════════════════
+   FORM — basic client-side validation
+═══════════════════════════════════════ */
+(function() {
+  const form = document.querySelector('form');
+  if (!form) return;
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+
+    const prenom = form.querySelector('#f-prenom').value.trim();
+    const email  = form.querySelector('#f-email').value.trim();
+    const gdpr   = form.querySelector('#f-gdpr').checked;
+
+    if (!prenom || !email || !gdpr) {
+      // Subtle visual feedback — no intrusive alerts
+      form.querySelectorAll('input:invalid, select:invalid').forEach(el => {
+        el.style.borderBottomColor = '#8b1a1a';
+        el.addEventListener('input', () => el.style.borderBottomColor = '', { once: true });
+      });
+      return;
+    }
+
+    // Placeholder success state
+    const btn = form.querySelector('button[type="submit"]');
+    const original = btn.textContent;
+    btn.textContent = 'Message envoyé —';
+    btn.disabled = true;
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.disabled = false;
+    }, 4000);
+  });
+})();
+
+/* ═══════════════════════════════════════
+   FOOTER ACCORDION (mobile)
+═══════════════════════════════════════ */
+(function() {
+  if (window.innerWidth > 768) return;
+  document.querySelectorAll('.footer__col-title').forEach(title => {
+    title.addEventListener('click', () => {
+      const col = title.closest('.footer__col');
+      col.classList.toggle('open');
+    });
+  });
+})();
+</script>
+</body>
+</html>

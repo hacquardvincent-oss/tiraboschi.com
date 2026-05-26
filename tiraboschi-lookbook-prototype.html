@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FW25 — Permanence | TIRABOSCHI Paris</title>
+<meta name="description" content="Collection FW25 Permanence — TIRABOSCHI Paris. Maroquinerie de luxe française, Made in France, Only. Since 1904.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root {
+  --tira-black:  #0a0a0a;
+  --tira-white:  #ffffff;
+  --tira-grey:   #f7f5f2;
+  --tira-border: #e8e8e8;
+  --tira-ease:   cubic-bezier(0.16, 1, 0.3, 1);
+  --tira-duration: 0.9s;
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 400;
+  background: var(--tira-white);
+  color: var(--tira-black);
+  cursor: none;
+  overflow-x: hidden;
+}
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+
+/* ============================================================
+   CUSTOM CURSOR
+   ============================================================ */
+.cursor-dot {
+  position: fixed; top: 0; left: 0; width: 6px; height: 6px;
+  background: var(--tira-black); border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: background 0.2s;
+}
+.cursor-ring {
+  position: fixed; top: 0; left: 0; width: 30px; height: 30px;
+  border: 1px solid var(--tira-black); border-radius: 50%;
+  pointer-events: none; z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s var(--tira-ease), height 0.3s var(--tira-ease),
+              border-color 0.2s, opacity 0.2s;
+}
+.cursor-ring.hovered { width: 48px; height: 48px; }
+body.hero-zone .cursor-dot { background: var(--tira-white); }
+body.hero-zone .cursor-ring { border-color: var(--tira-white); }
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.site-header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  transition: background 0.5s var(--tira-ease), box-shadow 0.5s var(--tira-ease);
+}
+.site-header.transparent { background: transparent; }
+.site-header.solid {
+  background: var(--tira-white);
+  box-shadow: 0 1px 0 var(--tira-border);
+}
+.site-header.hidden { transform: translateY(-100%); }
+.header-main {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px; height: 64px; position: relative;
+}
+.header-nav {
+  display: flex; gap: 32px; align-items: center;
+}
+.header-nav a {
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  transition: opacity 0.2s;
+}
+.header-nav a:hover { opacity: 0.5; }
+.site-header.transparent .header-nav a { color: var(--tira-white); }
+.site-header.solid .header-nav a { color: var(--tira-black); }
+.header-logo {
+  position: absolute; left: 50%; transform: translateX(-50%);
+}
+.header-logo img { height: 28px; width: auto; }
+.header-logo .logo-white { display: block; }
+.header-logo .logo-black { display: none; }
+.site-header.solid .header-logo .logo-white { display: none; }
+.site-header.solid .header-logo .logo-black { display: block; }
+.header-actions {
+  display: flex; align-items: center; gap: 24px;
+}
+.header-actions a {
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  transition: opacity 0.2s;
+}
+.site-header.transparent .header-actions a { color: var(--tira-white); }
+.site-header.solid .header-actions a { color: var(--tira-black); }
+.header-actions a:hover { opacity: 0.5; }
+.header-bag img { filter: invert(0); }
+.site-header.transparent .header-bag img { filter: invert(1); }
+
+/* Search bar — hidden until solid */
+.header-search {
+  height: 44px; border-top: 1px solid var(--tira-border);
+  display: flex; align-items: center; padding: 0 40px;
+  background: var(--tira-white);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.4s var(--tira-ease);
+}
+.site-header.solid .header-search { opacity: 1; pointer-events: auto; }
+.header-search input {
+  border: none; outline: none; background: transparent;
+  font-family: 'Playfair Display', serif; font-size: 13px;
+  border-bottom: 1px solid var(--tira-black); padding-bottom: 2px;
+  width: 240px; color: var(--tira-black);
+}
+.header-search input::placeholder { color: #999; font-style: italic; }
+
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+[data-tira-reveal] {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity var(--tira-duration) var(--tira-ease),
+              transform var(--tira-duration) var(--tira-ease);
+}
+[data-tira-reveal].is-visible { opacity: 1; transform: none; }
+[data-tira-reveal].d1 { transition-delay: 0.1s; }
+[data-tira-reveal].d2 { transition-delay: 0.25s; }
+[data-tira-reveal].d3 { transition-delay: 0.4s; }
+
+[data-tira-word-reveal] span {
+  display: inline-block; opacity: 0; transform: translateY(10px);
+  transition: opacity 0.5s var(--tira-ease) calc(var(--i) * 55ms),
+              transform 0.5s var(--tira-ease) calc(var(--i) * 55ms);
+}
+[data-tira-word-reveal].is-visible span { opacity: 1; transform: none; }
+
+/* ============================================================
+   SECTION 1 — HERO
+   ============================================================ */
+.hero {
+  position: relative; width: 100%; height: 100vh; overflow: hidden;
+  background: var(--tira-black);
+}
+.hero-img {
+  position: absolute; inset: 0;
+  background-image: url('https://cdn.shopify.com/s/files/1/0927/5890/1079/files/28092025-DSCF1828.jpg');
+  background-size: cover; background-position: center;
+  animation: tira-kb 14s ease-in-out infinite alternate;
+}
+@keyframes tira-kb {
+  from { transform: scale(1); }
+  to   { transform: scale(1.07) translate(1.5%, -1%); }
+}
+.hero-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.30);
+}
+.hero-label {
+  position: absolute; bottom: 80px; left: 40px;
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--tira-white); opacity: 0.8;
+}
+.hero-title {
+  position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%);
+  font-size: 80px; font-style: italic; color: var(--tira-white);
+  white-space: nowrap; letter-spacing: -0.01em; line-height: 1;
+  text-align: center;
+}
+.hero-scroll {
+  position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  color: var(--tira-white); font-size: 10px; letter-spacing: 0.15em;
+  text-transform: uppercase; opacity: 0.6;
+}
+.hero-scroll-line {
+  width: 1px; height: 40px; background: var(--tira-white);
+  animation: scroll-line 1.8s ease-in-out infinite;
+}
+@keyframes scroll-line {
+  0%, 100% { opacity: 0.3; transform: scaleY(0.5) translateY(-10px); }
+  50% { opacity: 1; transform: scaleY(1) translateY(0); }
+}
+
+/* ============================================================
+   SECTION 2 — OPENING STATEMENT
+   ============================================================ */
+.section-statement {
+  background: var(--tira-white);
+  padding: 120px 40px;
+  text-align: center;
+}
+.statement-quote {
+  font-size: 40px; font-style: italic; letter-spacing: -0.01em;
+  max-width: 720px; margin: 0 auto 40px; line-height: 1.2;
+}
+.statement-body {
+  font-size: 14px; line-height: 1.9; max-width: 600px;
+  margin: 0 auto 32px;
+}
+.statement-label {
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  opacity: 0.4;
+}
+
+/* ============================================================
+   SECTION 3 — LOOK 1: VICTOIRE
+   ============================================================ */
+.look-section {
+  display: grid; min-height: 60vh;
+}
+.look-victoire { grid-template-columns: 60fr 40fr; }
+.look-colette  { grid-template-columns: 40fr 60fr; }
+.look-rafael   { grid-template-columns: 60fr 40fr; }
+
+.look-image {
+  position: relative; overflow: hidden; background: #1a1a1a;
+  min-height: 60vh;
+  cursor: none;
+}
+/* gradient image placeholders with art direction feel */
+.look-victoire .look-image {
+  background: linear-gradient(135deg, #1a1614 0%, #2d2420 40%, #1a1614 100%);
+}
+.look-colette .look-image {
+  background: linear-gradient(135deg, #141618 0%, #1e2228 40%, #141618 100%);
+}
+.look-rafael .look-image {
+  background: linear-gradient(135deg, #1a1810 0%, #2a2418 40%, #1a1810 100%);
+}
+.look-image-plus {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 48px; height: 48px; border: 1px solid rgba(255,255,255,0.6);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: var(--tira-white);
+  opacity: 0; transition: opacity 0.3s var(--tira-ease);
+}
+.look-image-plus span {
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  position: absolute; bottom: -28px; left: 50%; transform: translateX(-50%);
+  white-space: nowrap; color: rgba(255,255,255,0.8);
+}
+.look-image:hover .look-image-plus { opacity: 1; }
+
+.look-content {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 80px 64px; background: var(--tira-white);
+}
+.look-grey .look-content { background: var(--tira-grey); }
+.look-season {
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  opacity: 0.4; margin-bottom: 24px;
+}
+.look-body {
+  font-size: 15px; line-height: 1.8; margin-bottom: 40px; max-width: 360px;
+}
+.look-product-card {
+  border-top: 1px solid var(--tira-border); padding-top: 32px;
+}
+.product-name {
+  font-size: 22px; margin-bottom: 8px; letter-spacing: -0.01em;
+}
+.product-price {
+  font-size: 13px; letter-spacing: 0.05em; margin-bottom: 4px;
+}
+.product-material {
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  opacity: 0.5; margin-bottom: 24px;
+}
+.btn-discover {
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  text-decoration: underline; text-underline-offset: 4px;
+  cursor: none; transition: opacity 0.2s;
+  background: none; border: none; padding: 0; font-family: inherit;
+}
+.btn-discover:hover { opacity: 0.5; }
+
+/* reversed layout for colette */
+.look-colette .look-content { order: -1; }
+
+/* ============================================================
+   SECTION 5 — FULL-WIDTH EDITORIAL
+   ============================================================ */
+.editorial-full {
+  position: relative; height: 100vh; overflow: hidden;
+  background: linear-gradient(160deg, #0f0d0b 0%, #1e1a16 50%, #0f0d0b 100%);
+}
+.editorial-full-caption {
+  position: absolute; bottom: 40px; left: 40px;
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+}
+
+/* ============================================================
+   SECTION 7 — DETAIL SEQUENCE
+   ============================================================ */
+.details-section {
+  background: var(--tira-white);
+  padding: 100px 40px;
+}
+.details-label {
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  opacity: 0.4; margin-bottom: 48px; text-align: center;
+}
+.details-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px;
+}
+.detail-item { position: relative; }
+.detail-image {
+  aspect-ratio: 1; overflow: hidden;
+}
+.detail-image-inner {
+  width: 100%; height: 100%;
+  transition: transform 0.6s var(--tira-ease);
+}
+.detail-item:hover .detail-image-inner { transform: scale(1.04); }
+.detail-d1 .detail-image-inner {
+  background: linear-gradient(135deg, #2a2520 0%, #3d3528 100%);
+}
+.detail-d2 .detail-image-inner {
+  background: linear-gradient(135deg, #1e1c1a 0%, #302c28 100%);
+}
+.detail-d3 .detail-image-inner {
+  background: linear-gradient(135deg, #2e2a22 0%, #3e3828 100%);
+}
+.detail-d4 .detail-image-inner {
+  background: linear-gradient(135deg, #1a1a18 0%, #2a2a24 100%);
+}
+.detail-caption {
+  margin-top: 12px;
+  font-size: 11px; font-style: italic; letter-spacing: 0.05em;
+  opacity: 0.6; text-align: center;
+}
+
+/* ============================================================
+   SECTION 8 — CAMPAIGN GRID
+   ============================================================ */
+.collection-section {
+  background: var(--tira-grey);
+  padding: 100px 40px;
+}
+.collection-header {
+  text-align: center; margin-bottom: 56px;
+}
+.collection-label {
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  opacity: 0.4; display: block; margin-bottom: 16px;
+}
+.collection-title {
+  font-size: 36px; letter-spacing: -0.01em;
+}
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3px;
+}
+.product-card {
+  background: var(--tira-white);
+  cursor: none;
+  position: relative; overflow: hidden;
+}
+.product-card-image {
+  aspect-ratio: 3/4; overflow: hidden; position: relative;
+}
+.product-card-img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.6s var(--tira-ease);
+}
+.product-card:hover .product-card-img { transform: scale(1.04); }
+.product-card-img-hover {
+  position: absolute; inset: 0;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.product-card:hover .product-card-img-hover { opacity: 1; }
+
+/* placeholder colors for grid cards */
+.pc-1 .product-card-image { background: linear-gradient(160deg, #2a2218 0%, #3d3020 100%); }
+.pc-2 .product-card-image { background: linear-gradient(160deg, #141618 0%, #202428 100%); }
+.pc-3 .product-card-image { background: linear-gradient(160deg, #1a1810 0%, #2a2618 100%); }
+.pc-4 .product-card-image { background: linear-gradient(160deg, #18140e 0%, #28201a 100%); }
+.pc-5 .product-card-image { background: linear-gradient(160deg, #0e1018 0%, #181c28 100%); }
+.pc-6 .product-card-image { background: linear-gradient(160deg, #201e1a 0%, #302c28 100%); }
+.pc-7 .product-card-image { background: linear-gradient(160deg, #1c1a14 0%, #2c2820 100%); }
+.pc-8 .product-card-image { background: linear-gradient(160deg, #16141e 0%, #26222e 100%); }
+.pc-9 .product-card-image { background: linear-gradient(160deg, #1e1812 0%, #2e241c 100%); }
+
+.product-card-wishlist {
+  position: absolute; top: 16px; right: 16px;
+  width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.2s;
+  cursor: none;
+}
+.product-card:hover .product-card-wishlist { opacity: 1; }
+.product-card-wishlist svg { stroke: var(--tira-white); stroke-width: 1; fill: none; }
+.product-card-atc {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: rgba(10,10,10,0.85);
+  color: var(--tira-white);
+  font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+  padding: 14px; text-align: center;
+  opacity: 0; transform: translateY(100%);
+  transition: opacity 0.3s var(--tira-ease), transform 0.3s var(--tira-ease);
+  cursor: none;
+}
+.product-card:hover .product-card-atc { opacity: 1; transform: none; }
+.product-card-info { padding: 16px 0 20px; }
+.product-card-name { font-size: 14px; margin-bottom: 4px; }
+.product-card-color {
+  font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  opacity: 0.5; margin-bottom: 6px;
+}
+.product-card-price { font-size: 13px; }
+
+/* ============================================================
+   SECTION 9 — BEHIND THE SCENES
+   ============================================================ */
+.bts-section {
+  background: var(--tira-black);
+  color: var(--tira-white);
+  padding: 120px 40px;
+  text-align: center;
+}
+.bts-label {
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  opacity: 0.4; margin-bottom: 24px;
+}
+.bts-title {
+  font-size: 48px; margin-bottom: 24px; letter-spacing: -0.01em;
+}
+.bts-body {
+  font-size: 14px; line-height: 1.9; max-width: 580px;
+  margin: 0 auto 56px; opacity: 0.75;
+}
+.video-placeholder {
+  position: relative; max-width: 800px; margin: 0 auto;
+  aspect-ratio: 16/9;
+  background: linear-gradient(135deg, #181410 0%, #282018 100%);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.video-play {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 72px; height: 72px; border: 1px solid rgba(255,255,255,0.5);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: none; transition: border-color 0.2s, transform 0.3s var(--tira-ease);
+}
+.video-play:hover { border-color: var(--tira-white); transform: translate(-50%, -50%) scale(1.1); }
+.video-play svg { stroke: rgba(255,255,255,0.8); stroke-width: 1; fill: none; margin-left: 4px; }
+.video-caption {
+  margin-top: 20px; font-size: 11px; letter-spacing: 0.12em;
+  text-transform: uppercase; opacity: 0.4;
+}
+
+/* ============================================================
+   SECTION 10 — NEXT TEASER
+   ============================================================ */
+.teaser-section {
+  background: var(--tira-white);
+  padding: 120px 40px;
+  text-align: center;
+}
+.teaser-label {
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  opacity: 0.4; margin-bottom: 24px;
+}
+.teaser-title {
+  font-size: 64px; font-style: italic; letter-spacing: -0.01em; margin-bottom: 40px;
+}
+.teaser-cta {
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  text-decoration: underline; text-underline-offset: 4px;
+  opacity: 0.6; transition: opacity 0.2s;
+}
+.teaser-cta:hover { opacity: 1; }
+
+/* ============================================================
+   MARQUEE
+   ============================================================ */
+.tira-marquee {
+  overflow: hidden; border-top: 1px solid var(--tira-border);
+  border-bottom: 1px solid var(--tira-border);
+  padding: 14px 0; background: var(--tira-white);
+}
+.tira-marquee__track {
+  display: flex; gap: 0; white-space: nowrap;
+  animation: marquee-scroll 18s linear infinite;
+}
+.tira-marquee:hover .tira-marquee__track { animation-play-state: paused; }
+.tira-marquee__item {
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  padding: 0 24px; opacity: 0.5;
+}
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.site-footer {
+  background: var(--tira-black); color: var(--tira-white);
+  padding: 80px 40px 40px;
+}
+.footer-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 48px;
+  margin-bottom: 64px;
+}
+.footer-col-title {
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  opacity: 0.4; margin-bottom: 24px;
+}
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.footer-col ul li a {
+  font-size: 13px; opacity: 0.7; transition: opacity 0.2s;
+}
+.footer-col ul li a:hover { opacity: 1; }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 32px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footer-copyright { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.3; }
+.footer-legal { display: flex; gap: 24px; }
+.footer-legal a { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.3; transition: opacity 0.2s; }
+.footer-legal a:hover { opacity: 0.7; }
+.footer-logo { text-align: center; margin-bottom: 48px; opacity: 0.2; }
+.footer-logo img { height: 24px; margin: 0 auto; filter: invert(1); }
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+@media (max-width: 767px) {
+  .header-main { padding: 0 20px; height: 56px; }
+  .header-logo { position: static; transform: none; }
+  .header-nav { display: none; }
+  .header-search { padding: 0 20px; }
+  .hero-title { font-size: 44px; bottom: 80px; }
+  .hero-label { bottom: 60px; left: 20px; }
+  .section-statement { padding: 72px 24px; }
+  .statement-quote { font-size: 26px; }
+  .look-section { grid-template-columns: 1fr !important; }
+  .look-image { min-height: 50vw; }
+  .look-colette .look-content { order: 0; }
+  .look-content { padding: 48px 24px; }
+  .details-grid { grid-template-columns: repeat(2, 1fr); }
+  .products-grid { grid-template-columns: repeat(2, 1fr); }
+  .bts-section { padding: 72px 24px; }
+  .bts-title { font-size: 32px; }
+  .teaser-section { padding: 72px 24px; }
+  .teaser-title { font-size: 40px; }
+  .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+  .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+  .collection-section { padding: 72px 20px; }
+  .details-section { padding: 72px 20px; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .products-grid { grid-template-columns: repeat(3, 1fr); }
+  .details-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "TIRABOSCHI Paris", "item": "https://tiraboschi-paris.myshopify.com" },
+        { "@type": "ListItem", "position": 2, "name": "FW25 — Permanence", "item": "https://tiraboschi-paris.myshopify.com/pages/fw25" }
+      ]
+    },
+    {
+      "@type": "WebPage",
+      "name": "FW25 — Permanence | TIRABOSCHI Paris",
+      "description": "Campagne FW25 Permanence — Maroquinerie de luxe française, Made in France, Only. Since 1904.",
+      "url": "https://tiraboschi-paris.myshopify.com/pages/fw25"
+    },
+    {
+      "@type": "VideoObject",
+      "name": "Coulisses FW25 — TIRABOSCHI Paris",
+      "description": "Vidéo en coulisses de la campagne FW25 Permanence, atelier TIRABOSCHI Paris.",
+      "thumbnailUrl": "https://cdn.shopify.com/s/files/1/0927/5890/1079/files/28092025-DSCF1828.jpg",
+      "uploadDate": "2025-10-01",
+      "duration": "PT3M"
+    }
+  ]
+}
+</script>
+</head>
+
+<body>
+<!-- CURSOR -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<header class="site-header transparent" id="siteHeader">
+  <div class="header-main">
+    <nav class="header-nav">
+      <a href="/collections/sacs">Sacs</a>
+      <a href="/collections/petite-maroquinerie">Petite Maroquinerie</a>
+      <a href="/pages/histoire">La Maison</a>
+    </nav>
+    <div class="header-logo">
+      <a href="/">
+        <img class="logo-white"
+             src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738"
+             height="28" alt="TIRABOSCHI Paris">
+        <img class="logo-black"
+             src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738"
+             height="28" alt="TIRABOSCHI Paris">
+      </a>
+    </div>
+    <div class="header-actions">
+      <a href="/pages/recherche" aria-label="Rechercher">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+      </a>
+      <a href="/account" aria-label="Compte">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+      </a>
+      <a href="/cart" class="header-bag" aria-label="Panier">
+        <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050"
+             width="22" height="22" alt="Panier">
+      </a>
+    </div>
+  </div>
+  <div class="header-search">
+    <input type="text" placeholder="Rechercher un modèle…" aria-label="Recherche">
+  </div>
+</header>
+
+<!-- ============================================================
+     SECTION 1 — HERO
+     ============================================================ -->
+<section class="hero" id="heroSection">
+  <div class="hero-img"></div>
+  <div class="hero-overlay"></div>
+  <p class="hero-label">Collection FW25</p>
+  <h1 class="hero-title">Permanence</h1>
+  <div class="hero-scroll">
+    <div class="hero-scroll-line"></div>
+    Défiler
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 2 — OPENING STATEMENT
+     ============================================================ -->
+<section class="section-statement">
+  <p class="statement-quote" data-tira-reveal>
+    "Certaines choses n'ont pas besoin<br>d'être réinventées."
+  </p>
+  <p class="statement-body" data-tira-reveal class="d1">
+    FW25 n'est pas une saison. C'est un point de vue. Celui d'une maison qui, depuis 1904, croit que la qualité est la seule tendance qui dure. Permanence est une collection de pièces conçues pour traverser les décennies — pas les saisons. Des formes épurées, des cuirs pleine fleur français, une fabrication artisanale à Paris.
+  </p>
+  <p class="statement-label" data-tira-reveal>FW25 · Hiver 2025</p>
+</section>
+
+<!-- MARQUEE -->
+<div class="tira-marquee" aria-hidden="true">
+  <div class="tira-marquee__track">
+    <span class="tira-marquee__item">Made in France, Only.</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Since 1904</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Maroquinerie de Luxe</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Paris</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">FW25 — Permanence</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Un artisan, une pièce</span>
+    <span class="tira-marquee__item">·</span>
+    <!-- repeat -->
+    <span class="tira-marquee__item">Made in France, Only.</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Since 1904</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Maroquinerie de Luxe</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Paris</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">FW25 — Permanence</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Un artisan, une pièce</span>
+    <span class="tira-marquee__item">·</span>
+  </div>
+</div>
+
+<!-- ============================================================
+     SECTION 3 — LOOK 1: LA VICTOIRE
+     ============================================================ -->
+<section class="look-section look-victoire">
+  <div class="look-image" role="img" aria-label="La Victoire — Campagne FW25">
+    <div class="look-image-plus">
+      +
+      <span>Voir le produit</span>
+    </div>
+  </div>
+  <div class="look-content">
+    <p class="look-season" data-tira-reveal>Premier regard · FW25</p>
+    <p class="look-body" data-tira-reveal class="d1">
+      La Victoire. Le sac qui a redéfini la silhouette de la maison en 2019. Forme structurée, anse courte, fermoir tourniquet en laiton brut. Une présence calme, assurée. Elle ne demande pas l'attention — elle l'obtient.
+    </p>
+    <div class="look-product-card" data-tira-reveal class="d2">
+      <p class="product-name">La Victoire</p>
+      <p class="product-price">2 850 €</p>
+      <p class="product-material">Veau Pleine Fleur · Noir</p>
+      <a href="/products/victoire" class="btn-discover">Découvrir</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 4 — LOOK 2: LA COLETTE
+     ============================================================ -->
+<section class="look-section look-colette">
+  <div class="look-image" role="img" aria-label="La Colette — Campagne FW25"></div>
+  <div class="look-content">
+    <p class="look-season" data-tira-reveal>Deuxième regard · FW25</p>
+    <p class="look-body" data-tira-reveal class="d1">
+      La Colette. Silhouette souple, cuir grainé marine profond. Le sac du quotidien qui refuse les compromis. Grande capacité, organisation intérieure réfléchie, bandoulière amovible. Elle accompagne sans s'effacer.
+    </p>
+    <div class="look-product-card" data-tira-reveal class="d2">
+      <p class="product-name">La Colette</p>
+      <p class="product-price">2 290 €</p>
+      <p class="product-material">Veau Grainé · Marine</p>
+      <a href="/products/colette" class="btn-discover">Découvrir</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 5 — FULL-WIDTH EDITORIAL
+     ============================================================ -->
+<div class="editorial-full">
+  <p class="editorial-full-caption">Atelier TIRABOSCHI Paris · FW25</p>
+</div>
+
+<!-- ============================================================
+     SECTION 6 — LOOK 3: LE RAFAEL
+     ============================================================ -->
+<section class="look-section look-rafael look-grey">
+  <div class="look-image" role="img" aria-label="Le Rafael — Campagne FW25"></div>
+  <div class="look-content" style="background: var(--tira-grey);">
+    <p class="look-season" data-tira-reveal>Troisième regard · FW25</p>
+    <p class="look-body" data-tira-reveal class="d1">
+      Le Rafael. La pièce masculine de la collection — ou plutôt, la pièce sans genre. Architecture structurée, cuir pleine fleur cognac, bords tranchés à la main. Une forme qui ne vieillit pas — elle se bonifie.
+    </p>
+    <div class="look-product-card" data-tira-reveal class="d2">
+      <p class="product-name">Le Rafael</p>
+      <p class="product-price">3 200 €</p>
+      <p class="product-material">Veau Pleine Fleur · Cognac</p>
+      <a href="/products/rafael" class="btn-discover">Découvrir</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 7 — DETAIL SEQUENCE
+     ============================================================ -->
+<section class="details-section">
+  <p class="details-label" data-tira-reveal>Les détails</p>
+  <div class="details-grid">
+    <div class="detail-item detail-d1" data-tira-reveal>
+      <div class="detail-image">
+        <div class="detail-image-inner"></div>
+      </div>
+      <p class="detail-caption">La quincaillerie</p>
+    </div>
+    <div class="detail-item detail-d2" data-tira-reveal class="d1">
+      <div class="detail-image">
+        <div class="detail-image-inner"></div>
+      </div>
+      <p class="detail-caption">La couture</p>
+    </div>
+    <div class="detail-item detail-d3" data-tira-reveal class="d2">
+      <div class="detail-image">
+        <div class="detail-image-inner"></div>
+      </div>
+      <p class="detail-caption">Le cuir</p>
+    </div>
+    <div class="detail-item detail-d4" data-tira-reveal class="d3">
+      <div class="detail-image">
+        <div class="detail-image-inner"></div>
+      </div>
+      <p class="detail-caption">La doublure</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 8 — CAMPAIGN GRID
+     ============================================================ -->
+<section class="collection-section">
+  <div class="collection-header">
+    <span class="collection-label" data-tira-reveal>Lookbook FW25</span>
+    <h2 class="collection-title" data-tira-reveal class="d1">La collection complète FW25</h2>
+  </div>
+  <div class="products-grid">
+
+    <article class="product-card pc-1" data-tira-reveal>
+      <div class="product-card-image">
+        <button class="product-card-wishlist" aria-label="Ajouter aux favoris">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+        <div class="product-card-atc">Ajouter au panier</div>
+      </div>
+      <div class="product-card-info">
+        <p class="product-card-name">La Victoire</p>
+        <p class="product-card-color">Noir</p>
+        <p class="product-card-price">2 850 €</p>
+      </div>
+    </article>
+
+    <article class="product-card pc-2" data-tira-reveal class="d1">
+      <div class="product-card-image">
+        <button class="product-card-wishlist" aria-label="Ajouter aux favoris">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+        <div class="product-card-atc">Ajouter au panier</div>
+      </div>
+      <div class="product-card-info">
+        <p class="product-card-name">La Colette</p>
+        <p class="product-card-color">Marine</p>
+        <p class="product-card-price">2 290 €</p>
+      </div>
+    </article>
+
+    <article class="product-card pc-3" data-tira-reveal class="d2">
+      <div class="product-card-image">
+        <button class="product-card-wishlist" aria-label="Ajouter aux favoris">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+        <div class="product-card-atc">Ajouter au panier</div>
+      </div>
+      <div class="product-card-info">
+        <p class="product-card-name">Le Rafael</p>
+        <p class="product-card-color">Cognac</p>
+        <p class="product-card-price">3 200 €</p>
+      </div>
+    </article>
+
+    <article class="product-card pc-4" data-tira-reveal class="d3">
+      <div class="product-card-image">
+        <button class="product-card-wishlist" aria-label="Ajouter aux favoris">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+        <div class="product-card-atc">Ajouter au panier</div>
+      </div>
+      <div class="product-card-info">
+        <p class="product-card-name">La Jane</p>
+        <p class="product-card-color">Havane</p>
+        <p class="product-card-price">1 850 €</p>
+      </div>
+    </article>
+
+    <article class="product-card pc-5" data-tira-reveal>
+      <div class="product-card-image">
+        <button class="product-card-wishlist" aria-label="Ajouter aux favoris">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+        <div class="product-card-atc">Ajouter au panier</div>
+      </div>
+      <div class="product-card-info">
+        <p class="product-card-name">L'Olympe</p>
+        <p class="product-card-color">Bordeaux</p>
+        <p class="product-card-price">2 100 €</p>
+      </div>
+    </article>
+
+    <article class="product-card pc-6" data-tira-reveal class="d1">
+      <div class="product-card-image">
+        <button class="product-card-wishlist" aria-label="Ajouter aux favoris">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+        <div class="product-card-atc">Ajouter au panier</div>
+      </div>
+      <div class="product-card-info">
+        <p class="product-card-name">La Colette Mini</p>
+        <p class="product-card-color">Ivoire</p>
+        <p class="product-card-price">1 490 €</p>
+      </div>
+    </article>
+
+    <article class="product-card pc-7" data-tira-reveal class="d2">
+      <div class="product-card-image">
+        <button class="product-card-wishlist" aria-label="Ajouter aux favoris">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+        <div class="product-card-atc">Ajouter au panier</div>
+      </div>
+      <div class="product-card-info">
+        <p class="product-card-name">Le Pochon</p>
+        <p class="product-card-color">Sable</p>
+        <p class="product-card-price">690 €</p>
+      </div>
+    </article>
+
+    <article class="product-card pc-8" data-tira-reveal class="d3">
+      <div class="product-card-image">
+        <button class="product-card-wishlist" aria-label="Ajouter aux favoris">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+        <div class="product-card-atc">Ajouter au panier</div>
+      </div>
+      <div class="product-card-info">
+        <p class="product-card-name">La Chaîne</p>
+        <p class="product-card-color">Or / Noir</p>
+        <p class="product-card-price">420 €</p>
+      </div>
+    </article>
+
+    <article class="product-card pc-9" data-tira-reveal>
+      <div class="product-card-image">
+        <button class="product-card-wishlist" aria-label="Ajouter aux favoris">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+        <div class="product-card-atc">Ajouter au panier</div>
+      </div>
+      <div class="product-card-info">
+        <p class="product-card-name">L'Anse en Cuir</p>
+        <p class="product-card-color">Naturel</p>
+        <p class="product-card-price">280 €</p>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 9 — BEHIND THE SCENES
+     ============================================================ -->
+<section class="bts-section">
+  <p class="bts-label" data-tira-reveal>Making of</p>
+  <h2 class="bts-title" data-tira-reveal class="d1">Coulisses FW25</h2>
+  <p class="bts-body" data-tira-reveal class="d2">
+    Le shooting FW25 s'est déroulé sur deux jours dans notre atelier du Marais, en lumière naturelle. Pas de retouche. Pas de décor artificiel. Les sacs sur les mêmes établis où ils ont été fabriqués.
+  </p>
+  <div class="video-placeholder" data-tira-reveal class="d3">
+    <div class="video-play">
+      <svg width="20" height="20" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    </div>
+  </div>
+  <p class="video-caption" data-tira-reveal>Vidéo en coulisses · 3 minutes</p>
+</section>
+
+<!-- ============================================================
+     SECTION 10 — NEXT TEASER
+     ============================================================ -->
+<section class="teaser-section">
+  <p class="teaser-label" data-tira-reveal>Prochain chapitre</p>
+  <p class="teaser-title" data-tira-reveal class="d1">SS26 · Printemps 2026</p>
+  <a href="/pages/la-societe" class="teaser-cta" data-tira-reveal class="d2">
+    Rejoindre La Société pour un accès en avant-première →
+  </a>
+</section>
+
+<!-- MARQUEE -->
+<div class="tira-marquee" aria-hidden="true">
+  <div class="tira-marquee__track">
+    <span class="tira-marquee__item">Made in France, Only.</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Since 1904</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Maroquinerie de Luxe</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Paris</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Made in France, Only.</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Since 1904</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Maroquinerie de Luxe</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Paris</span>
+    <span class="tira-marquee__item">·</span>
+  </div>
+</div>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="site-footer">
+  <div class="footer-logo">
+    <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738"
+         height="24" alt="TIRABOSCHI Paris">
+  </div>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <p class="footer-col-title">Collections</p>
+      <ul>
+        <li><a href="/collections/fw25">FW25 — Permanence</a></li>
+        <li><a href="/collections/sacs">Sacs</a></li>
+        <li><a href="/collections/petite-maroquinerie">Petite Maroquinerie</a></li>
+        <li><a href="/collections/iconiques">Les Iconiques</a></li>
+        <li><a href="/collections/sur-mesure-exotiques">Sur Mesure</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <p class="footer-col-title">La Maison</p>
+      <ul>
+        <li><a href="/pages/histoire">Notre Histoire</a></li>
+        <li><a href="/pages/savoir-faire">Savoir-Faire</a></li>
+        <li><a href="/pages/matieres-cuirs">Matières & Cuirs</a></li>
+        <li><a href="/pages/engagement">Notre Engagement</a></li>
+        <li><a href="/pages/presse">Presse</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <p class="footer-col-title">Service</p>
+      <ul>
+        <li><a href="/pages/contact">Contact</a></li>
+        <li><a href="/pages/prendrez-rendez-vous">Prendre RDV</a></li>
+        <li><a href="/pages/sur-mesure">Sur Mesure</a></li>
+        <li><a href="/pages/entretien">Entretien & Réparation</a></li>
+        <li><a href="/pages/la-societe">La Société</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <p class="footer-col-title">Suivre</p>
+      <ul>
+        <li><a href="https://instagram.com/boschi_paris" target="_blank" rel="noopener">@boschi_paris</a></li>
+        <li><a href="/blogs/latelier">L'Atelier — Blog</a></li>
+        <li><a href="/pages/newsletter">Newsletter</a></li>
+      </ul>
+      <div style="margin-top: 32px;">
+        <p class="footer-col-title">Newsletter</p>
+        <div style="display: flex; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 4px; margin-top: 8px;">
+          <input type="email" placeholder="votre@email.com"
+                 style="background: none; border: none; outline: none; font-family: inherit; font-size: 13px; color: #fff; width: 100%; opacity: 0.7;">
+          <button style="background: none; border: none; color: #fff; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; cursor: none; white-space: nowrap; opacity: 0.5;">→</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copyright">© 2025 TIRABOSCHI Paris · Tous droits réservés</p>
+    <nav class="footer-legal">
+      <a href="/pages/mentions-legales">Mentions légales</a>
+      <a href="/pages/confidentialite">Confidentialité</a>
+      <a href="/pages/cgv">CGV</a>
+    </nav>
+  </div>
+</footer>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+/* --- Custom Cursor --- */
+const dot  = document.getElementById('cursorDot');
+const ring = document.getElementById('cursorRing');
+let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX; mouseY = e.clientY;
+  dot.style.left = mouseX + 'px';
+  dot.style.top  = mouseY + 'px';
+});
+
+(function animRing() {
+  ringX += (mouseX - ringX) * 0.12;
+  ringY += (mouseY - ringY) * 0.12;
+  ring.style.left = ringX + 'px';
+  ring.style.top  = ringY + 'px';
+  requestAnimationFrame(animRing);
+})();
+
+document.querySelectorAll('a, button, [role="button"]').forEach(el => {
+  el.addEventListener('mouseenter', () => ring.classList.add('hovered'));
+  el.addEventListener('mouseleave', () => ring.classList.remove('hovered'));
+});
+
+/* --- Hero zone cursor color --- */
+const heroSection = document.getElementById('heroSection');
+const observer0 = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    document.body.classList.toggle('hero-zone', e.isIntersecting);
+  });
+}, { threshold: 0.3 });
+if (heroSection) observer0.observe(heroSection);
+
+/* --- Directional sticky header --- */
+const header = document.getElementById('siteHeader');
+let lastScroll = 0;
+let headerHeight = 0;
+
+function updateHeader() {
+  const scroll = window.scrollY;
+  headerHeight = header.offsetHeight;
+
+  if (scroll < 80) {
+    header.classList.add('transparent');
+    header.classList.remove('solid', 'hidden');
+  } else {
+    header.classList.remove('transparent');
+    header.classList.add('solid');
+    if (scroll > lastScroll + 4 && scroll > headerHeight) {
+      header.classList.add('hidden');
+    } else if (scroll < lastScroll - 4) {
+      header.classList.remove('hidden');
+    }
+  }
+  lastScroll = scroll;
+}
+window.addEventListener('scroll', updateHeader, { passive: true });
+updateHeader();
+
+/* --- Scroll reveal --- */
+const revealEls = document.querySelectorAll('[data-tira-reveal]');
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('is-visible');
+      revealObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.15 });
+revealEls.forEach(el => revealObs.observe(el));
+
+/* --- Word reveal --- */
+document.querySelectorAll('[data-tira-word-reveal]').forEach(el => {
+  el.innerHTML = el.textContent.trim().split(' ')
+    .map((w, i) => `<span style="--i:${i}">${w}</span>`).join(' ');
+});
+const wordEls = document.querySelectorAll('[data-tira-word-reveal]');
+const wordObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('is-visible');
+      wordObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.2 });
+wordEls.forEach(el => wordObs.observe(el));
+</script>
+</body>
+</html>
