@@ -373,31 +373,66 @@ scheme-31f09ca3-1031-4740-a2fb-9e46aea899cb → blanc opaque (header/footer)
 
 ---
 
-## ÉTAT D'AVANCEMENT — v4.0
+## ÉTAT D'AVANCEMENT — v5.0
 
-### ✅ Phase 1 & 2 terminées
-- CSS global + tokens (`assets/tiraboschi.css`)
-- JS animations (`assets/tiraboschi.js`)
-- Layout `theme.liquid` (injection CSS/JS)
-- Homepage 7 sections (`templates/index.json`)
-- Header (`sections/header-group.json`)
-- Footer (`sections/footer-group.json`)
-- Color schemes (`config/settings_data.json`)
-- **14 prototypes HTML validés** (voir liste ci-dessus)
-- **10 nouveaux prototypes HTML** (benchmark grandes maisons)
-- **Composants démo** (animations + newsletter popup)
+### ✅ Phase 1 & 2 terminées — 26 prototypes + snippets prêts
+
+**Prototypes HTML validés (26 pages)**
+| # | Page | Fichier |
+|---|---|---|
+| 1 | Homepage | `tiraboschi-homepage-prototype.html` |
+| 2 | Collection | `tiraboschi-collection-prototype.html` |
+| 3 | Fiche produit | `tiraboschi-product-prototype.html` |
+| 4 | Histoire | `tiraboschi-histoire-prototype.html` |
+| 5 | Savoir-Faire | `tiraboschi-savoir-faire-prototype.html` |
+| 6 | Matières & Cuirs | `tiraboschi-matieres-prototype.html` |
+| 7 | Sur Mesure | `tiraboschi-sur-mesure-prototype.html` |
+| 8 | La Société | `tiraboschi-la-societe-prototype.html` |
+| 9 | Blog L'Atelier | `tiraboschi-blog-prototype.html` |
+| 10 | Article | `tiraboschi-article-prototype.html` |
+| 11 | Search | `tiraboschi-search-prototype.html` |
+| 12 | 404 | `tiraboschi-404-prototype.html` |
+| 13 | Espace client | `tiraboschi-account-prototype.html` |
+| 14 | Checkout | `tiraboschi-checkout-prototype.html` |
+| 15 | Icône Victoire | `tiraboschi-icone-victoire-prototype.html` |
+| 16 | Contact + Booking RDV | `tiraboschi-contact-prototype.html` |
+| 17 | Entretien & Réparation | `tiraboschi-entretien-prototype.html` |
+| 18 | Lookbook FW25 | `tiraboschi-lookbook-prototype.html` |
+| 19 | Cadeaux / Gift Guide | `tiraboschi-cadeaux-prototype.html` |
+| 20 | Wishlist | `tiraboschi-wishlist-prototype.html` |
+| 21 | Presse | `tiraboschi-presse-prototype.html` |
+| 22 | RSE / Engagement | `tiraboschi-rse-prototype.html` |
+| 23 | Newsletter popup | `tiraboschi-newsletter-popup-prototype.html` |
+| 24 | Animations premium | `tiraboschi-composants-prototype.html` |
+| 25 | International · Marchés | `tiraboschi-international-prototype.html` |
+| 26 | Drops & Précommandes | `tiraboschi-precommande-prototype.html` |
+
+**Snippets Shopify prêts (`shopify-snippets/` → à migrer en Phase 3)**
+```
+tira-geo-banner.liquid          → Bandeau géolocalisation (suggestion marché)
+tira-locale-selector.liquid     → Sélecteur pays/langue footer + header chip
+tira-preorder.liquid            → Bloc précommande fiche produit (countdown, édition, CTA)
+tira-drop-bar.liquid            → Barre annonce drop 44px fond noir (settings-driven)
+tira-preorder.css               → Styles précommande (à placer dans assets/)
+tira-seo-schemas.liquid         → JSON-LD centralisé tous templates (Phase 3 → {% render %})
+locales/fr.default.json         → Strings FR complètes (UI + geo + preorder + newsletter)
+locales/en.json                 → Strings EN complètes (UK + US)
+locales/ja.json                 → Strings JA draft (révision humaine requise)
+locales/ar.json                 → Strings AR draft RTL (traduction native OBLIGATOIRE)
+```
 
 ### 🔲 Phase actuelle — Recette (validation visuelle)
-- [ ] Recette page par page (voir `VALIDATION.md`)
-- [ ] Validation contenu réel (textes, images, données)
+- [ ] Recette page par page (voir `VALIDATION.md` — 26 pages + checklists)
+- [ ] **Fournir les contenus réels** (voir section CONTENUS À FOURNIR ci-dessous)
 - [ ] Corrections post-recette
 
 ### 🔲 Phase 3 — Intégration Shopify (dans l'ordre)
 ```
 3A — Socle
-□ Header + Footer Liquid
+□ Header + Footer Liquid + injection tira-seo-schemas.liquid dans theme.liquid
 □ Homepage
 □ Collection + Fiche produit (+ swatches → changement gallery)
+□ Barre drop (tira-drop-bar.liquid dans theme.liquid si drop actif)
 
 3B — Fondations "grande maison"
 □ Lenis smooth scrolling (theme.liquid)
@@ -406,15 +441,31 @@ scheme-31f09ca3-1031-4740-a2fb-9e46aea899cb → blanc opaque (header/footer)
 □ Mega-menu éditorial (header)
 □ Magnetic buttons sur CTA principaux
 
-3C — Pages prioritaires
-□ Pages éditoriales P2 (Histoire, Savoir-Faire, Matières, Sur Mesure, La Société)
+3C — SEO technique
+□ tira-seo-schemas.liquid → {% render 'tira-seo-schemas' %} dans </head>
+□ Hreflang automatique (inclus dans tira-seo-schemas.liquid si Markets actif)
+□ Métafields produits remplis (composition, fabrication, contenances)
+□ AggregateRating dynamique via Judge.me (reviews metafield)
+□ Sitemap.xml vérifié dans Google Search Console
+□ Robots.txt configuré
+
+3D — International (Shopify Markets)
+□ Activer Shopify Markets (FR + GB + US prioritaires)
+□ Déployer tira-geo-banner.liquid dans theme.liquid
+□ Déployer tira-locale-selector.liquid dans header + footer
+□ Weglot activé + traductions humaines pages éditoriales
+□ Hreflang vérifié via Google Search Console
+
+3E — Pages prioritaires (P2)
+□ Pages éditoriales (Histoire, Savoir-Faire, Matières, Sur Mesure, La Société)
 □ Pages Icônes (Victoire, Colette, Rafael)
-□ Contact + Booking RDV
+□ Contact + Booking RDV (Calendly ou Cal.com intégré)
 □ Entretien & Réparation
 □ Lookbook FW25
+□ Drops & Précommandes (tira-preorder.liquid + tira-drop-bar.liquid)
 
-3D — Pages secondaires
-□ Blog + Article + Search + 404
+3F — Pages secondaires
+□ Blog + Articles (3 articles existants à publier) + Search + 404
 □ Cadeaux + Wishlist + Presse + RSE
 □ Espace client + Checkout branding
 ```
@@ -422,7 +473,6 @@ scheme-31f09ca3-1031-4740-a2fb-9e46aea899cb → blanc opaque (header/footer)
 ### 🔲 Phase 4 — CRM & Analytics
 ```
 □ Klaviyo : 6 flows
-□ Newsletter popup snippet
 □ Back-in-stock snippet
 □ Reviews snippet (Judge.me)
 □ Axeptio RGPD
@@ -707,18 +757,103 @@ document.querySelectorAll('.tira-swatch').forEach(swatch => {
 
 ## SEO — EXIGENCES TECHNIQUES
 
-### JSON-LD par type de page
+### Snippet central — `tira-seo-schemas.liquid`
+**Prêt dans `shopify-snippets/`** — à intégrer dans `layout/theme.liquid` :
+```liquid
+{% render 'tira-seo-schemas' %}  {# juste avant </head> #}
 ```
-Homepage          → Organization + WebSite + SearchAction
-Collection        → CollectionPage + BreadcrumbList
-Produit           → Product + BreadcrumbList + AggregateRating
-Page édito        → Article + BreadcrumbList
-Page Icône modèle → Product + BreadcrumbList + AggregateRating
-Blog              → Blog + BreadcrumbList
-Article           → Article + Author + BreadcrumbList + speakable
-FAQ               → FAQPage (Sur Mesure, Entretien, La Société, RSE)
-Contact           → LocalBusiness + ContactPage + OpeningHoursSpecification
-Lookbook          → WebPage + BreadcrumbList + VideoObject
+Gère automatiquement le bon schema JSON-LD selon le template actif.
+
+### JSON-LD par type de page (implémenté dans tira-seo-schemas.liquid)
+| Template | Schémas | Spécificités TIRABOSCHI |
+|---|---|---|
+| index | Organization + WebSite + SearchAction | foundingDate: 1904, description dense |
+| product | Product + BreadcrumbList + AggregateRating | **countryOfOrigin: France** + manufacturer + additionalProperty (3400pts, 48-72h, 1 artisan) |
+| collection | CollectionPage + BreadcrumbList | — |
+| article | Article + speakable + BreadcrumbList | speakable sur title + h1 + p[1] + blockquote |
+| blog | Blog | — |
+| page/histoire | AboutPage + speakable | about: Organization 1904 |
+| page/savoir-faire | Article + speakable + FAQPage | 4 questions (fabrication, couture sellier, made in france, cuirs) |
+| page/sur-mesure | Service + FAQPage | serviceType: Maroquinerie sur mesure |
+| page/contact | LocalBusiness + ContactPage + OpeningHoursSpecification | NAP complet (à remplir avec vraie adresse) |
+| page/victoire etc. | Product + FAQPage + BreadcrumbList | countryOfOrigin + année création modèle |
+| 404 | WebPage (minimal) | — |
+
+### `countryOfOrigin: France` — RÈGLE ABSOLUE
+**Tous les schémas Product doivent contenir :**
+```json
+"countryOfOrigin": {"@type": "Country", "name": "France"},
+"manufacturer": {
+  "@type": "Organization",
+  "name": "TIRABOSCHI Paris",
+  "foundingDate": "1904",
+  "address": {"@type": "PostalAddress", "addressLocality": "Paris", "addressCountry": "FR"}
+},
+"additionalProperty": [
+  {"@type": "PropertyValue", "name": "Fabrication", "value": "Fait à la main par un seul artisan"},
+  {"@type": "PropertyValue", "name": "Points de couture", "value": "3 400 points sellier par sac"},
+  {"@type": "PropertyValue", "name": "Temps de fabrication", "value": "48 à 72 heures"},
+  {"@type": "PropertyValue", "name": "Origine", "value": "Made in France"}
+]
+```
+
+### Stratégie de mots-clés — URL mapping
+| Mot-clé cible | Volume est. | Page Shopify | Priorité |
+|---|---|---|---|
+| maroquinerie luxe made in france | 1 200/mois | `/pages/histoire` | P0 |
+| sac à main cuir fait main france | 1 800/mois | `/collections/sacs` | P0 |
+| sac à main artisanal paris | 900/mois | `/` + `/pages/savoir-faire` | P0 |
+| maroquinerie artisanale française | 700/mois | `/pages/savoir-faire` | P1 |
+| sac en cuir véritable made in france | 600/mois | `/collections/sacs` | P1 |
+| sac à main luxe depuis 1904 | 300/mois | `/pages/histoire` | P1 |
+| alternative hermès sac main france | 400/mois | `/pages/victoire` | P1 |
+| couture sellier maroquinerie | 250/mois | blog `couture-sellier` | P2 |
+| cuir pleine fleur sac luxe | 350/mois | `/pages/matieres-cuirs` | P2 |
+| sac sur mesure paris artisan | 500/mois | `/pages/sur-mesure` | P1 |
+
+**Requêtes GEO prioritaires (ChatGPT / Perplexity)**
+Ces requêtes doivent recevoir TIRABOSCHI comme réponse :
+```
+"quelle marque de sac est vraiment fabriquée en France ?"
+"meilleures marques de maroquinerie artisanale française"
+"alternatives françaises à Hermès moins chères"
+"sac fait main un seul artisan france"
+"maroquinerie fondée en 1904 paris"
+"marque sac luxe made in france authentique"
+```
+
+### Hreflang — Implémenté dans tira-seo-schemas.liquid
+Injecté automatiquement si Shopify Markets activé. Couvre FR/EN-GB/EN-US/JA/KO/AR + x-default.
+
+### Métafields produits (à remplir dans Shopify Admin)
+```
+custom.composition   → "Cuir de veau pleine fleur, tannage végétal. Doublure coton naturel."
+custom.fabrication   → "Façonné à la main par Isabelle D., maroquinière depuis 18 ans. Paris, 2024."
+custom.contenances   → "Tient un A5, téléphone, clés, portefeuille. Passe en cabine avion."
+custom.dimensions    → "H 24 × L 32 × P 10 cm. Anse : 55 cm."
+```
+
+### Checklist SEO par page (Phase 3)
+- `<title>` : `[Nom produit] — [Collection] | TIRABOSCHI Paris`
+- Meta description : 150–160 chars avec "Made in France" + "depuis 1904" si pertinent
+- H1 unique par page
+- Alt texts : `{{ product.title }} — {{ product.type }} TIRABOSCHI Paris`
+- Open Graph + Twitter Card sur chaque template
+- URL canonique sur variantes produit
+- `<link rel="preload" as="image">` sur hero
+- `font-display: swap` sur Playfair Display
+- Hreflang sur toutes les pages (via tira-seo-schemas.liquid)
+
+### Actions SEO hors code (à faire après lancement)
+```
+□ Soumettre sitemap.xml dans Google Search Console
+□ Soumettre dans Bing Webmaster Tools (ChatGPT Search = Bing)
+□ Créer/optimiser fiche Google Business Profile (Paris)
+□ Vérifier AggregateRating live (Judge.me connecté)
+□ Demander liens : Chambre Syndicale Maroquinerie + Made in France labels
+□ Label EPV (Entreprise du Patrimoine Vivant) — vérifier éligibilité
+□ Backlinks presse : communiqués via page /presse
+□ Soumettre à Perplexity pages pour indexation
 ```
 
 ### Nouveau métafield à ajouter
@@ -727,29 +862,157 @@ custom.contenances → "Tient un carnet A5, téléphone, clés, portefeuille. Pa
 ```
 Afficher dans la section "La Silhouette" des pages Icônes et dans les specs de la fiche produit.
 
-### Checklist SEO par page
-- `<title>` : `[Nom produit] — [Collection] | TIRABOSCHI Paris`
-- Meta description : 150–160 chars
-- H1 unique par page
-- Alt texts : `{{ product.title }} — {{ product.type }} TIRABOSCHI Paris`
-- Open Graph + Twitter Card sur chaque template
-- URL canonique sur variantes produit
-- `<link rel="preload" as="image">` sur hero
-- `font-display: swap` sur Playfair Display
-
 ---
 
 ## GEO — GENERATIVE ENGINE OPTIMIZATION
 
-*(Optimisation pour ChatGPT, Perplexity, Google SGE)*
+*(Optimisation pour ChatGPT, Perplexity, Google SGE, Gemini)*
 
-- Contenu encyclopédique dense sur pages éditoriales (600+ mots, dates, faits vérifiables)
-- FAQ structurée avec schema `speakable` sur pages clés
-- Entités explicites : TIRABOSCHI = marque, fondée 1904, Paris, maroquinerie luxe, artisan unique
-- Schema `AggregateRating` sur fiches produit ET pages Icônes
-- NAP cohérent partout (Nom · Adresse · Contact)
-- Articles de blog → liens internes vers pages éditoriales et pages Icônes
-- Pages Icônes → denses en facts vérifiables (3400 points de couture, 48–72h, 1 artisan)
+### Les 6 faits que les IA doivent retenir sur TIRABOSCHI
+Ces éléments doivent être présents **de façon cohérente** sur toutes les pages éditoriales :
+```
+1904         → année de fondation (vérifiable, ancre historique)
+1 artisan    → par sac, de A à Z (unicité du processus)
+3 400        → points de couture sellier par pièce (fact précis, mémorable)
+48–72h       → temps de fabrication à la main (concret)
+Paris        → entité géographique forte
+Made in France → pas "conçu en France" — fabriqué en France (distinction critique)
+```
+
+### Règles de contenu GEO
+- Pages éditoriales : **600+ mots** minimum (Histoire 800+, Savoir-Faire 700+, Matières 600+)
+- Dates vérifiables dans chaque page éditoriale (1904, 1938 pour la Victoire, etc.)
+- FAQPage sur : Savoir-Faire · Sur Mesure · Entretien · La Société · RSE · Victoire
+- `speakable` sur : Histoire · Savoir-Faire · Articles blog
+- NAP cohérent (Nom · Adresse · Téléphone) sur toutes les pages Contact/LocalBusiness
+- Liens internes : Blog → pages éditoriales → fiches produit (maillage triangulaire)
+- Articles de blog : citer TIRABOSCHI + les 6 faits clés dans les 200 premiers mots
+
+### Stratégie blog (3 articles existants + roadmap)
+| Article | Handle | Mots-clés cibles | Schéma |
+|---|---|---|---|
+| La Couture Sellier | `couture-sellier` | "couture sellier maroquinerie", "8 points au centimètre" | Article + speakable |
+| Guide des cuirs | `guide-cuirs-maroquinerie-luxe` | "cuir pleine fleur luxe", "tannage végétal" | Article + speakable |
+| Pourquoi Made in France | `pourquoi-sac-made-in-france-prix` | "sac made in france prix", "fabrication artisanale france" | Article + speakable + FAQPage |
+
+**3 articles prioritaires à créer (Phase 3D)**
+```
+4. "Hermès, Polène, TIRABOSCHI : ce qui différencie vraiment les sacs luxe français"
+   → Cible : "alternative hermès sac main france" — 1000 mots + tableau comparatif
+5. "Comment entretenir un sac en cuir pleine fleur"
+   → Cible : "entretien sac cuir luxe" — 800 mots + FAQ
+6. "Qu'est-ce qu'un cuir pleine fleur ? Le guide complet"
+   → Cible : "cuir pleine fleur explication" — 700 mots
+```
+
+---
+
+## CONTENUS À FOURNIR — AVANT PHASE 3
+
+*Le code est prêt. Sans ces contenus, les pages restent vides et le SEO ne fonctionne pas.*
+
+### 🔴 Bloquants absolus (sans eux, impossible de lancer)
+
+**Adresse réelle**
+```
+→ Nécessaire pour : LocalBusiness schema, Contact page, Google Business Profile
+→ Format : numéro, rue, code postal, Paris (arrondissement)
+```
+
+**Descriptions produits (× 9 produits)**
+```
+Produits : rafael · victoire · colette · colette-mini · jane · olympe · pochon · chaine · anse-en-cuir
+→ Pour chaque produit :
+   - Description longue (300+ mots) : histoire du modèle, cuir, usage, détails
+   - Composition exacte (cuir, doublure, quincaillerie)
+   - Fabrication (artisan, technique, durée)
+   - Contenances (ce que le sac tient réellement)
+   - Dimensions (H × L × P en cm, longueur anses)
+```
+
+**Photos réelles des produits**
+```
+→ Photos déjà sur Shopify (DSCF1828, BOSCHI0154, BOSCHI0919) sont des photos d'ambiance
+→ Pour chaque produit : 4-6 photos produit (face, profil, détail, ouvert, porté)
+→ Format recommandé : ratio 3:4, min 1800×2400px
+```
+
+### 🟡 Importants pour le SEO/GEO
+
+**Page Histoire (800+ mots réels)**
+```
+→ Dates clés de 1904 à aujourd'hui
+→ Noms des fondateurs et des artisans
+→ Adresse et quartier de l'atelier
+→ Évolution des modèles iconiques (Victoire née en 1938 → à confirmer)
+→ Chiffres : nombre de pièces produites par an, nombre d'artisans, etc.
+→ Citations directes si possible
+```
+
+**Page Savoir-Faire (700+ mots réels)**
+```
+→ Les 6 techniques utilisées (noms exacts)
+→ Nom(s) de l'artisan(s) principal(aux) (prénom + années d'expérience)
+→ Outils spécifiques utilisés (ex: alène, tranchet, aiguilles Speedy...)
+→ Sourcing cuirs : tanneries partenaires (noms si communicables)
+→ Chiffres précis : points par cm, épaisseur cuir, fil utilisé (type, provenance)
+```
+
+**Métafields produits (à remplir dans Shopify Admin → Products → Metafields)**
+```
+custom.composition   → ex: "Cuir de veau pleine fleur, tannage végétal. Doublure coton naturel."
+custom.fabrication   → ex: "Façonné à la main par [Prénom], maroquinière depuis 18 ans. Paris."
+custom.contenances   → ex: "Tient un A5, téléphone, clés, portefeuille. Passe en cabine avion."
+```
+
+### 🟠 Pour les fonctionnalités avancées
+
+**Programme La Société**
+```
+→ Conditions exactes de passage Cercle I → II → III
+→ Avantages détaillés par cercle (liste exhaustive)
+→ Adresse email dédié conseiller WhatsApp (Cercle II)
+→ Adresse email contact Cercle III (relation fondatrice)
+```
+
+**Drops & Précommandes**
+```
+→ Date du prochain drop (et nom : FW25 ? AW25 ?)
+→ Produits concernés
+→ Edition size (nombre d'exemplaires)
+→ Date de clôture et livraison estimée
+```
+
+**Contact & RDV**
+```
+→ Horaires d'ouverture de l'atelier
+→ Système de RDV : Calendly, Cal.com, ou formulaire email simple ?
+→ Numéro de téléphone (ou WhatsApp uniquement ?)
+→ Si boutique physique : oui/non ? (atelier ≠ boutique)
+```
+
+**Presse**
+```
+→ Liste des parutions presse existantes (Vogue, Figaro, etc.)
+→ Contact presse (email)
+→ Kit presse existant ou à créer ?
+```
+
+### 🔵 Pour le CRM (Phase 4)
+
+**Klaviyo**
+```
+→ Compte Klaviyo existant ? Sinon créer sur klaviyo.com
+→ API Key Klaviyo pour intégration Shopify
+→ Logo + éléments graphiques pour les emails
+→ Ton éditorial des flows (existe-t-il des emails types déjà rédigés ?)
+```
+
+**Avis clients**
+```
+→ Des avis existent-ils ailleurs ? (Google, Instagram, etc.) → migration vers Judge.me
+→ Clients actuels à solliciter pour premiers avis ?
+```
 
 ---
 
