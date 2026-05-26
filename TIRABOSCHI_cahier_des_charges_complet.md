@@ -1,6 +1,51 @@
 # CAHIER DES CHARGES COMPLET — TIRABOSCHI Paris
-## Site e-commerce Shopify — Version définitive
-### Mai 2025 — Document de référence unique
+## Site e-commerce Shopify — Version 3.0
+### Mis à jour Mai 2025 — Document de référence unique
+
+> **v3.0** — Mise à jour majeure : périmètre étendu (toutes pages), références Miu Miu/Tag Heuer détaillées, mobile-first vidéo, SEO/GEO, data & analytics, UX recommendations, programme fidélité La Société, plan 4 phases.
+> Document de travail quotidien : voir `CLAUDE.md`
+> Prototype validé : `tiraboschi-homepage-prototype.html`
+
+---
+
+# PARTIE 0 — PLAN DE PROJET v3.0
+
+## 0.1 Périmètre complet
+
+| Page / Composant | Priorité | Statut |
+|---|---|---|
+| Header + Footer | P0 | ✅ Base faite, refonte en cours |
+| Homepage | P0 | ✅ Prototype validé (expérience) |
+| Collection | P1 | 🔲 À faire |
+| Fiche produit | P1 | 🔲 À faire |
+| Pages éditoriales (4) | P2 | 🔲 À faire |
+| La Société | P2 | 🔲 À faire |
+| Blog + Article | P3 | 🔲 À faire |
+| Recherche + 404 | P3 | 🔲 À faire |
+| Compte client | P4 | 🔲 À faire |
+| Checkout branding | P4 | 🔲 À faire |
+| CRM + Snippets | P4 | 🔲 À faire |
+| SEO/GEO/Performance | P5 | 🔲 À faire |
+| Data & Analytics | P5 | 🔲 À faire |
+
+## 0.2 Méthodologie — 4 phases
+
+```
+Phase 1 — Audit        : Comparer prototype vs specs → liste d'écarts précis
+Phase 2 — Prototype    : Corriger + compléter toutes pages en HTML pur
+Phase 3 — Shopify      : Convertir en Liquid + intégrer sur thème test ID 183983931735
+Phase 4 — Contenu réel : Brancher vraies images/vidéos/produits + tests + push live
+```
+
+**Principe** : Itérer sur HTML pur (instantané) → valider visuellement → convertir en Liquid.
+
+## 0.3 Règle absolue thèmes
+```
+THÈME LIVE    → ID 187554070871 (Phantom)  ← NE JAMAIS TOUCHER
+THÈME DE TEST → ID 183983931735 (Horizon)  ← Travailler ICI uniquement
+```
+
+---
 
 # PARTIE 1 — STRATÉGIE & POSITIONNEMENT
 ## 1.1 La marque
@@ -2972,3 +3017,427 @@ Total
 Investissement initial : quelques heures de développement (Claude Code). Économie annuelle : 1 900–4 500€.
 
 Section 24 ajoutée — Triggers, CRM & Fidélité 100% custom — Mai 2025
+
+---
+
+# PARTIE 25 — MOBILE FIRST & VIDÉO RESPONSIVE
+
+## 25.1 Stratégie vidéo par format
+
+TIRABOSCHI dispose de deux formats vidéo pour chaque tournage :
+- **16:9 desktop** : `VIDEO HOMEPAGE.mp4`, `TEST 16 9_4.mp4`
+- **9:16 mobile** : `TEST 9-16 Boschi 1_[id].mp4`
+
+Cette dualité est un asset majeur. Elle doit être exploitée sur TOUTES les sections vidéo.
+
+## 25.2 Implémentation HTML obligatoire
+
+```html
+<video autoplay muted loop playsinline poster="{{ 'hero-poster.webp' | asset_url }}">
+  <!-- Mobile en premier — mobile-first -->
+  <source media="(max-width: 768px)"
+          src="{{ 'TEST 9-16 Boschi 1_9407c299-0931-484a-a780-b09d560f2734.mp4' | file_url }}"
+          type="video/mp4">
+  <!-- Desktop -->
+  <source src="{{ 'VIDEO HOMEPAGE.mp4' | file_url }}"
+          type="video/mp4">
+</video>
+```
+
+## 25.3 Règles vidéo — 5 obligations
+
+| Règle | Raison |
+|---|---|
+| **Poster WebP obligatoire** | Évite le flash blanc pendant le chargement |
+| **`playsinline` toujours présent** | Sur iOS, sans cet attribut la vidéo s'ouvre en plein écran |
+| **Lazy load hors-fold** | `data-tira-lazy` + IntersectionObserver |
+| **Play/Pause selon viewport** | IntersectionObserver → pause si hors écran (batterie) |
+| **Fallback image connexion lente** | Détecter `navigator.connection.effectiveType === '2g'` |
+
+## 25.4 Stratégie vidéo par page
+
+| Page | Traitement vidéo | Format |
+|---|---|---|
+| Homepage hero | Autoplay muted loop, full-viewport | 9:16 mobile / 16:9 desktop |
+| Homepage section Atelier | Lazy, play au scroll | 16:9 |
+| Collection hero | Image fixe Ken Burns (pas de vidéo — perf) | N/A |
+| Fiche produit — Section Atelier | Play au scroll, son optionnel | 16:9 |
+| Sur Mesure | Ambiance loop silencieux | 16:9 |
+
+## 25.5 Breakpoints CSS — ordre mobile-first
+
+```css
+/* Base = mobile — toujours en premier */
+.element { /* styles mobile */ }
+
+@media (min-width: 768px)  { .element { /* tablet */ } }
+@media (min-width: 1024px) { .element { /* desktop */ } }
+@media (min-width: 1440px) { .element { /* large desktop */ } }
+```
+
+## 25.6 Comportements mobile spécifiques
+
+| Composant | Comportement mobile |
+|---|---|
+| Hero vidéo | 9:16, full-height avec `object-fit: cover` |
+| Galerie produit | Carousel swipe natif, pas de thumbnails |
+| Sticky ATC | `position: fixed; bottom: 0; width: 100%` |
+| Filtres collection | Bouton "Filtrer" → bottom sheet (translateY animation) |
+| Header search | Intégré dans le header, pas de bande séparée |
+| Navigation | Drawer depuis la droite, overlay fond |
+| Footer | Accordéon par colonne |
+| Scroll stack | Height: 90vh (pas 100vh — évite les barres navigateur) |
+
+---
+
+# PARTIE 26 — SEO & GEO
+
+## 26.1 SEO Technique
+
+### JSON-LD par type de page
+
+**Homepage**
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "TIRABOSCHI Paris",
+  "foundingDate": "1904",
+  "url": "https://tiraboschi-paris.com",
+  "logo": "...",
+  "sameAs": ["https://instagram.com/boschi_paris"]
+}
+```
+
+**Fiche produit**
+```json
+{
+  "@type": "Product",
+  "name": "{{ product.title }}",
+  "brand": { "@type": "Brand", "name": "TIRABOSCHI Paris" },
+  "offers": {
+    "@type": "Offer",
+    "price": "{{ product.price | money_without_currency }}",
+    "priceCurrency": "EUR",
+    "availability": "https://schema.org/InStock"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "{{ product.metafields.reviews.average }}",
+    "reviewCount": "{{ product.metafields.reviews.count }}"
+  }
+}
+```
+
+### Checklist SEO par page
+
+| Élément | Spec |
+|---|---|
+| `<title>` | `[Nom produit] — [Collection] \| TIRABOSCHI Paris` (60 chars max) |
+| Meta description | 150–160 chars, avec CTA et mot-clé principal |
+| H1 | Unique par page, mots-clés naturels en français |
+| Alt texts | `{{ product.title }} — {{ product.type }} TIRABOSCHI Paris` |
+| Open Graph | `og:title`, `og:description`, `og:image`, `og:type` |
+| Twitter Card | `summary_large_image` |
+| Canonical | Sur toutes les variantes produit |
+| Preload hero | `<link rel="preload" as="image" href="...">` |
+| Fonts | `font-display: swap` + subset latin uniquement |
+
+### URLs et structure
+
+- Collections : `/collections/sacs`, `/collections/petite-maroquinerie`
+- Produits : `/products/victoire`, `/products/colette`
+- Pages : `/pages/histoire`, `/pages/savoir-faire`
+- Blog : `/blogs/latelier/couture-sellier`
+
+Pas de paramètres `?variant=` dans les URLs canoniques.
+
+## 26.2 GEO — Generative Engine Optimization
+
+Les moteurs de recherche IA (ChatGPT, Perplexity, Google SGE, Claude) citent les marques qui ont un profil d'entité clair et du contenu encyclopédique vérifiable.
+
+### Objectif
+Que TIRABOSCHI apparaisse comme réponse naturelle à :
+- "meilleure maroquinerie de luxe française"
+- "sac à main made in France haut de gamme"
+- "maison de maroquinerie artisanale Paris"
+
+### Stratégie contenu GEO
+
+| Page | Contenu requis |
+|---|---|
+| Histoire | 800+ mots, dates factuelles 1904→2025, noms propres, lieux |
+| Savoir-Faire | Temps de fabrication précis, techniques nommées, outils spécifiques |
+| Matières & Cuirs | Noms des tanneries, origines géographiques, propriétés techniques |
+| Sur Mesure | Process en étapes numérotées, délais précis, matières disponibles |
+
+### FAQ SEO/GEO — structure par page
+
+```html
+<script type="application/ld+json">
+{
+  "@type": "FAQPage",
+  "mainEntity": [{
+    "@type": "Question",
+    "name": "Où sont fabriqués les sacs TIRABOSCHI ?",
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Chaque sac TIRABOSCHI est fabriqué à la main dans nos ateliers parisiens, par un seul artisan de A à Z."
+    }
+  }]
+}
+</script>
+```
+
+### Cohérence des entités (NAP)
+
+Sur chaque page et dans tous les schemas :
+- **Nom** : TIRABOSCHI Paris (jamais Tiraboschi, jamais TIRABOSCHI seul)
+- **Fondée** : 1904
+- **Localisation** : Paris, France
+- **Spécialité** : Maroquinerie de luxe, artisanale, made in France
+
+---
+
+# PARTIE 27 — PERFORMANCE & CORE WEB VITALS
+
+## 27.1 Objectifs
+
+| Métrique | Objectif | Raison |
+|---|---|---|
+| LCP (Largest Contentful Paint) | < 2.5s | Google ranking + UX |
+| CLS (Cumulative Layout Shift) | 0 | Pas de saut visuel |
+| FID (First Input Delay) | < 100ms | Réactivité perçue |
+| INP (Interaction to Next Paint) | < 200ms | Nouveau Core Web Vital |
+| Taille CSS custom | < 50kb minifié | Chargement initial |
+| Taille JS custom | < 30kb minifié | Parse time |
+
+## 27.2 Règles d'implémentation
+
+**Images**
+```html
+<!-- Toujours définir width + height pour éviter le CLS -->
+<img src="..." alt="..." width="600" height="800" loading="lazy">
+
+<!-- Hero : preload obligatoire -->
+<link rel="preload" as="image" href="{{ hero_image | img_url: '1920x' }}">
+```
+
+**Fonts**
+```html
+<!-- Preconnect en premier -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<!-- Subset latin uniquement + display swap -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap&subset=latin" rel="stylesheet">
+```
+
+**JavaScript**
+- Pas de jQuery — vanilla JS uniquement
+- Scripts non-critiques : `defer` ou `type="module"`
+- IntersectionObserver pour toutes les animations (pas de scroll event brut si possible)
+
+**Vidéos**
+- `preload="none"` sur les vidéos hors-fold
+- Poster WebP léger (< 50kb) sur chaque vidéo
+- Lazy load via IntersectionObserver
+
+---
+
+# PARTIE 28 — DATA & ANALYTICS
+
+## 28.1 Stack recommandé
+
+### Gratuit — installer immédiatement
+
+**Google Analytics 4**
+- Events e-commerce : `view_item`, `add_to_cart`, `begin_checkout`, `purchase`, `refund`
+- Conversion goals : achat, inscription newsletter, prise de RDV
+- Rapport device : mobile vs desktop (objectif : connaître la split réelle)
+
+**Microsoft Clarity**
+- Heatmaps de clics et de scroll (gratuit, illimité)
+- Session recordings (voir exactement où les utilisateurs bloquent)
+- Rage clicks = détection frustration UX
+- Intégration native GA4
+
+**Shopify Analytics natif**
+- Taux de conversion par source trafic
+- Gap produits vus vs achetés (= problème fiche produit)
+- Recherches internes → mots-clés manquants dans le SEO
+- Cohortes clients (LTV, répétition d'achat)
+
+### Payant — selon volume
+
+**Klaviyo** (~100€/mois)
+- Revenue attribué par email et par flow
+- Taux d'ouverture par segment La Société
+- A/B tests objets d'email
+
+**Axeptio** (~50€/mois)
+- CNIL-compliant, made in France
+- Design non-intrusif (crucial pour UX luxe)
+- Intégration Shopify Pixels API
+
+## 28.2 KPIs prioritaires
+
+| Métrique | Objectif | Fréquence de suivi |
+|---|---|---|
+| CVR (taux de conversion) | 1.5–2.5% | Quotidien |
+| AOV (panier moyen) | > 2 000€ | Quotidien |
+| LTV 12 mois | > 4 000€ | Mensuel |
+| Taux abandon panier | < 65% | Hebdo |
+| Scroll depth pages édito | > 70% | Hebdo |
+| Play rate vidéo hero | > 60% | Hebdo |
+| Temps moyen fiche produit | > 2 min | Hebdo |
+| Taux retour La Société | > 35% à 12 mois | Mensuel |
+| Revenue email (Klaviyo) | > 20% du CA total | Mensuel |
+
+## 28.3 Tableau de bord — rythme
+
+```
+Quotidien  : Sessions · Revenue · CVR · Sources
+Hebdo      : Top produits · Abandon · Heatmaps · Emails
+Mensuel    : LTV cohortes · La Société tiers · SEO positions · Core Web Vitals
+```
+
+## 28.4 RGPD & Privacy
+
+- **Axeptio** obligatoire avant tout tracking (CNIL)
+- Politique de confidentialité à jour avec liste des trackers
+- Server-side tracking via Shopify Pixels API (récupère ~80% data malgré bloqueurs)
+- `consent_mode` GA4 configuré
+- Droit à l'oubli : process documenté
+
+---
+
+# PARTIE 29 — RECOMMANDATIONS UX GLOBALES
+
+## 29.1 Navigation & Discovery
+
+| Feature | Spec | Priorité |
+|---|---|---|
+| Search overlay | Clic icône → overlay full-screen, résultats instantanés | P1 |
+| Filtres collection | Sticky desktop / bottom sheet mobile | P1 |
+| Breadcrumb | 12px, opacity 40%, sur collection et produit | P1 |
+| Recently viewed | localStorage, 4 produits, bas fiche produit | P2 |
+| Scroll to top | Bouton discret après 500px scroll | P3 |
+
+## 29.2 Fiche produit UX
+
+| Feature | Spec | Priorité |
+|---|---|---|
+| Galerie sticky desktop | Strip 60×80px + image 3:4 + zoom 3x (bas-droit) | P1 |
+| Lightbox | Clic → plein écran + navigation clavier + swipe mobile | P1 |
+| Sticky ATC mobile | `position: fixed; bottom: 0` — prix + bouton | P1 |
+| Mini-header produit | Après 300px scroll : nom + prix + ATC compact | P1 |
+| Color swatches | Chips 24×24px + tooltip nom couleur au hover | P1 |
+| Sélecteur matière | Boutons texte, underline sur sélection | P1 |
+| Dimensions | Tableau H×L×P, affiché sous les options | P1 |
+| Wishlist | Icône ❤️ stroke, toggle on/off, localStorage | P2 |
+| Quick view | Hover card collection → modal produit (desktop) | P2 |
+
+## 29.3 Accessibilité
+
+- Focus visible sur tous les éléments interactifs (outline 2px solid --tira-black)
+- ARIA labels sur tous les boutons icônes
+- Contraste AA minimum sur tous les textes
+- Navigation clavier complète (tab order logique)
+- `prefers-reduced-motion` : désactiver animations si demandé
+```css
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+---
+
+# PARTIE 30 — CHECKLIST COMPLÈTE AVANT MISE EN PRODUCTION
+
+## 30.1 Checklist visuelle
+
+```
+□ Vidéo hero : 9:16 sur mobile, 16:9 sur desktop
+□ Poster vidéo WebP affiché pendant chargement
+□ Header transparent sur homepage (logo blanc sur vidéo)
+□ Header opaque sur toutes les autres pages (logo noir)
+□ Sticky header directionnel fonctionne
+□ Picto panier = SVG forme V TIRABOSCHI
+□ Marquee défile + pause au hover
+□ Scroll stack homepage fonctionne
+□ Ken Burns actif sur DSCF1828 et BOSCHI0919
+□ Playfair Display chargée (toutes les pages)
+□ 0px border-radius partout
+□ Boutons = texte souligné uppercase (pas de boîte)
+□ Footer complet + newsletter fonctionnelle
+□ Pas de "Powered by Shopify"
+□ Curseur custom fonctionne (desktop)
+```
+
+## 30.2 Checklist fonctionnelle
+
+```
+□ ATC fonctionne sur toutes les fiches produit
+□ Panier drawer s'ouvre avec les articles
+□ Checkout accessible et complet
+□ Search trouve les produits (résultats pertinents)
+□ Menus navigation complets (desktop + mobile)
+□ Pages éditoriales accessibles via menu
+□ Newsletter : soumission du formulaire fonctionne
+□ Filtres collection : tous les filtres fonctionnent
+□ Sélecteur matière/couleur : met à jour le prix et l'image
+□ Galerie produit : thumbnails + main image + lightbox
+□ Zoom produit fonctionne (desktop)
+□ Sticky ATC mobile : scroll down → visible, checkout → fonctionne
+```
+
+## 30.3 Checklist mobile (iOS Safari + Android Chrome)
+
+```
+□ Vidéos hero lisent sans interaction (autoplay muted playsinline)
+□ Header : logo gauche, icônes droite
+□ Navigation drawer s'ouvre et se ferme
+□ Carousel galerie produit swipeable
+□ Sticky ATC toujours visible
+□ Bottom sheet filtres fonctionne
+□ Footer accordéon fonctionne
+□ Formulaires utilisables (zoom automatique désactivé : font-size ≥ 16px)
+□ Pas de débordement horizontal (overflow-x: hidden sur body)
+```
+
+## 30.4 Checklist SEO/Performance
+
+```
+□ LCP < 2.5s (mesurer avec PageSpeed Insights)
+□ CLS = 0 (aspect-ratio défini sur tous les medias)
+□ Pas d'erreurs console JavaScript
+□ JSON-LD valide (tester sur schema.org/validator)
+□ Meta title + description sur chaque page
+□ Alt texts sur toutes les images
+□ Sitemap.xml accessible
+□ robots.txt configuré
+□ Google Analytics 4 reçoit les events
+□ Microsoft Clarity heatmaps actives
+```
+
+## 30.5 Processus de mise en production
+
+```
+1. Travailler sur Horizon test (ID 183983931735)
+2. Tester en local : shopify theme dev
+3. Valider les 4 checklists ci-dessus
+4. Faire valider visuellement par le client
+5. Mesurer LCP/CLS/FID avec PageSpeed Insights
+6. Corriger les éventuels problèmes
+7. Publier Horizon en remplacement de Phantom
+   → Garder Phantom comme backup (NE PAS supprimer)
+```
+
+---
+
+*Cahier des charges v3.0 — TIRABOSCHI Paris — Mai 2025*
+*Mis à jour : Partie 0 (plan projet) · Partie 25 (mobile/vidéo) · Partie 26 (SEO/GEO) · Partie 27 (performance) · Partie 28 (data) · Partie 29 (UX) · Partie 30 (checklist production)*
