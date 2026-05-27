@@ -184,8 +184,9 @@
 
   /* ════════ Lenis Smooth Scrolling (si chargé via theme.liquid) ════════ */
   if (typeof Lenis !== 'undefined' && isDesktop && !noMotion) {
+    document.documentElement.style.scrollBehavior = 'auto';
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 0.8,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       smoothWheel: true
