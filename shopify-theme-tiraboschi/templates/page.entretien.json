@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "tira-entretien": {
+      "type": "tira-entretien",
+      "settings": {}
+    }
+  },
+  "order": ["tira-entretien"]
+}
