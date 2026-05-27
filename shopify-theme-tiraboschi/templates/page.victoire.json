@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "tira-icone-victoire": {
+      "type": "tira-icone-victoire",
+      "settings": {}
+    }
+  },
+  "order": ["tira-icone-victoire"]
+}

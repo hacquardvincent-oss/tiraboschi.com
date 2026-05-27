@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "tira-icone-rafael": {
+      "type": "tira-icone-rafael",
+      "settings": {}
+    }
+  },
+  "order": ["tira-icone-rafael"]
+}

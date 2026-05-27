@@ -1,0 +1,510 @@
+{% comment %}
+  ═══════════════════════════════════════════════════════════════
+  TIRABOSCHI · Icône Rafael — Page éditoriale modèle iconique
+  ═══════════════════════════════════════════════════════════════
+  Structure identique à tira-icone-victoire.liquid
+  Adapté au modèle Rafael (1952, sac porté épaule/main, mixte)
+{% endcomment %}
+
+<style>
+  .raf-page {
+    --tira-black: #0a0a0a;
+    --tira-white: #ffffff;
+    --tira-grey: #f7f5f2;
+    --tira-border: #e8e8e8;
+    --tira-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: 'Playfair Display', Georgia, serif;
+    color: var(--tira-black);
+  }
+
+  /* ── 1. Hero ── */
+  .raf-hero {
+    position: relative; height: 100vh; min-height: 600px;
+    background: var(--tira-black); overflow: hidden;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding-bottom: 64px;
+  }
+  .raf-hero__img { position: absolute; inset: 0; overflow: hidden; }
+  .raf-hero__img img {
+    width: 100%; height: 100%; object-fit: cover; opacity: .65;
+    animation: raf-kb 16s ease-in-out infinite alternate;
+  }
+  @keyframes raf-kb {
+    from { transform: scale(1) translate(0, 0); }
+    to   { transform: scale(1.05) translate(2%, -1%); }
+  }
+  .raf-hero::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(10,10,10,.75) 0%, rgba(10,10,10,.2) 50%, rgba(10,10,10,.1) 100%);
+    z-index: 1;
+  }
+  .raf-hero__filigree {
+    position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+    font-size: clamp(120px, 18vw, 280px); font-style: italic; color: var(--tira-white);
+    opacity: .06; white-space: nowrap; z-index: 2; pointer-events: none;
+    line-height: 1; letter-spacing: -0.02em;
+  }
+  .raf-hero__content {
+    position: relative; z-index: 3; text-align: center;
+    color: var(--tira-white); padding: 0 40px;
+  }
+  .raf-hero__content h1 {
+    font-size: clamp(48px, 7vw, 88px); font-weight: 400; letter-spacing: -0.01em;
+    line-height: 1; margin: 0 0 16px; color: var(--tira-white);
+  }
+  .raf-hero__sub {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .15em; font-style: italic; opacity: .7;
+  }
+  .raf-hero__cta {
+    position: absolute; bottom: 40px; right: 48px; z-index: 3; text-align: right; color: var(--tira-white);
+  }
+  .raf-hero__cta .raf-meta {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .1em; opacity: .6; display: block; margin-bottom: 6px;
+  }
+  .raf-hero__cta a {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .12em;
+    text-decoration: underline; text-underline-offset: 3px; color: var(--tira-white); transition: opacity .2s;
+  }
+  .raf-hero__cta a:hover { opacity: .6; }
+
+  /* ── 2. L'Origine ── */
+  .raf-origine { background: var(--tira-white); padding: 120px 40px; text-align: center; }
+  .raf-origine__inner { max-width: 720px; margin: 0 auto; }
+  .raf-label {
+    display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .15em; opacity: .5; margin-bottom: 28px;
+  }
+  .raf-origine p { font-size: 18px; line-height: 1.75; margin-bottom: 48px; opacity: .85; }
+  .raf-origine__quote {
+    font-size: clamp(22px, 3.5vw, 32px); font-style: italic; line-height: 1.4; letter-spacing: -0.01em;
+    border-top: 1px solid var(--tira-border); border-bottom: 1px solid var(--tira-border);
+    padding: 32px 0; margin-top: 48px;
+  }
+
+  /* ── 3. La Silhouette ── */
+  .raf-silhouette { background: var(--tira-grey); padding: 0; }
+  .raf-silhouette__grid { display: grid; grid-template-columns: 60fr 40fr; min-height: 700px; }
+  .raf-silhouette__img { position: relative; overflow: hidden; background: #1a1a1a; }
+  .raf-silhouette__img img { width: 100%; height: 100%; object-fit: cover; opacity: .8; }
+  .raf-silhouette__content {
+    padding: 80px 60px; display: flex; flex-direction: column; justify-content: center;
+  }
+  .raf-silhouette__content h2 {
+    font-size: clamp(32px, 4vw, 48px); font-weight: 400; letter-spacing: -0.01em; line-height: 1.1; margin-bottom: 28px;
+  }
+  .raf-silhouette__content > p { font-size: 15px; line-height: 1.8; opacity: .8; margin-bottom: 32px; }
+  .raf-silhouette__dims {
+    font-size: 12px; letter-spacing: .08em; opacity: .6; line-height: 2;
+    border-top: 1px solid var(--tira-border); padding-top: 20px; margin-bottom: 20px;
+  }
+  .raf-silhouette__dims span { display: block; }
+  .raf-note { font-size: 13px; opacity: .6; margin-bottom: 28px; line-height: 1.7; }
+
+  /* ── 4. Les Matières ── */
+  .raf-matieres { background: var(--tira-white); padding: 100px 40px; }
+  .raf-matieres__header { text-align: center; margin-bottom: 64px; }
+  .raf-matieres__title { font-size: clamp(28px, 4vw, 40px); font-weight: 400; letter-spacing: -0.01em; }
+  .raf-matieres__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; max-width: 1100px; margin: 0 auto; }
+  .raf-mat-card { padding: 40px 28px; border: 1px solid var(--tira-border); transition: background .3s; }
+  .raf-mat-card:hover { background: var(--tira-grey); }
+  .raf-mat-card__swatch { width: 80px; height: 100px; margin-bottom: 24px; }
+  .raf-mat-card__name { font-size: 15px; margin-bottom: 10px; }
+  .raf-mat-card__desc { font-size: 12px; opacity: .6; line-height: 1.6; margin-bottom: 16px; }
+  .raf-mat-card__avail {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 10px; text-transform: uppercase; letter-spacing: .12em; opacity: .5;
+  }
+  .raf-mat-card__avail-dot { width: 5px; height: 5px; background: var(--tira-black); border-radius: 50%; }
+  .raf-sw-pleine-fleur { background: linear-gradient(135deg, #8b6b4a 0%, #6b4f35 40%, #7d5f43 100%); }
+  .raf-sw-veau-gras    { background: linear-gradient(135deg, #c4a882 0%, #a8876a 40%, #b89872 100%); }
+  .raf-sw-veau-box     { background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 50%, #333 100%); }
+  .raf-sw-chocolat     { background: linear-gradient(135deg, #4a2e1a 0%, #3d2010 50%, #5a3820 100%); }
+
+  /* ── 5. La Palette ── */
+  .raf-palette { background: var(--tira-grey); padding: 100px 40px; text-align: center; }
+  .raf-palette__title { font-size: clamp(28px, 4vw, 40px); font-weight: 400; letter-spacing: -0.01em; margin-bottom: 56px; }
+  .raf-palette__grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 32px; max-width: 700px; margin: 0 auto 48px; }
+  .raf-cswatch { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .raf-cswatch__sq { width: 48px; height: 48px; transition: transform .3s var(--tira-ease); }
+  .raf-cswatch:hover .raf-cswatch__sq { transform: scale(1.1); }
+  .raf-cswatch__name { font-size: 10px; text-transform: uppercase; letter-spacing: .1em; opacity: .6; }
+  .raf-sw-noir     { background: #1a1a1a; }
+  .raf-sw-marine   { background: #1a2a3a; }
+  .raf-sw-chocolat { background: #3d2010; }
+  .raf-sw-bordeaux { background: #5c1a28; }
+  .raf-sw-cognac   { background: #8b5a2b; }
+  .raf-sw-sable    { background: #c4a882; }
+  .raf-sw-naturel  { background: #d4c4a8; }
+  .raf-sw-ivoire   { background: #f0e8d8; border: 1px solid var(--tira-border); }
+  .raf-palette__note { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; opacity: .45; font-style: italic; }
+
+  /* ── 6. La Fabrication ── */
+  .raf-fabrication { background: var(--tira-black); color: var(--tira-white); padding: 0; }
+  .raf-fabrication__grid { display: grid; grid-template-columns: 1fr 1fr; min-height: 640px; }
+  .raf-fabrication__content { padding: 100px 80px; display: flex; flex-direction: column; justify-content: center; }
+  .raf-fabrication__content .raf-label { color: rgba(255,255,255,.5); }
+  .raf-fabrication__content h2 {
+    font-size: clamp(32px, 4vw, 48px); font-weight: 400; letter-spacing: -0.01em;
+    line-height: 1.1; margin-bottom: 28px; color: var(--tira-white);
+  }
+  .raf-fabrication__content > p { font-size: 15px; line-height: 1.85; opacity: .75; margin-bottom: 40px; }
+  .raf-fab-stats {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    border-top: 1px solid rgba(255,255,255,.12); padding-top: 32px;
+  }
+  .raf-fab-stats__label { font-size: 10px; text-transform: uppercase; letter-spacing: .12em; opacity: .45; margin-bottom: 4px; }
+  .raf-fab-stats__value { font-size: 14px; letter-spacing: .02em; }
+  .raf-fabrication__img {
+    background: linear-gradient(135deg, #1a1210 0%, #2d2018 30%, #1a1510 60%, #261c12 100%);
+    position: relative; overflow: hidden;
+  }
+  .raf-fabrication__img img { width: 100%; height: 100%; object-fit: cover; opacity: .6; mix-blend-mode: luminosity; }
+
+  /* ── 7. Témoignages ── */
+  .raf-temoignages { background: var(--tira-white); padding: 100px 40px; }
+  .raf-temoignages__header { text-align: center; margin-bottom: 72px; }
+  .raf-temoignages__header h2 { font-size: clamp(28px, 4vw, 40px); font-weight: 400; letter-spacing: -0.01em; }
+  .raf-temoignages__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px 64px; max-width: 1100px; margin: 0 auto; }
+  .raf-temoignage { border-top: 1px solid var(--tira-border); padding-top: 32px; }
+  .raf-temoignage__text { font-size: 15px; font-style: italic; line-height: 1.75; margin-bottom: 24px; opacity: .85; }
+  .raf-temoignage__author { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; opacity: .45; font-style: normal; }
+
+  /* ── 8. Sur Mesure ── */
+  .raf-sur-mesure { background: var(--tira-grey); padding: 100px 40px; text-align: center; }
+  .raf-sur-mesure__inner { max-width: 680px; margin: 0 auto; }
+  .raf-sur-mesure__inner h2 { font-size: clamp(32px, 4.5vw, 48px); font-weight: 400; letter-spacing: -0.01em; margin-bottom: 24px; }
+  .raf-sur-mesure__inner > p { font-size: 16px; line-height: 1.8; opacity: .8; margin-bottom: 40px; }
+  .raf-sur-mesure__options {
+    list-style: none; text-align: left; margin: 0 auto 48px; max-width: 440px; border-top: 1px solid var(--tira-border);
+  }
+  .raf-sur-mesure__options li { padding: 16px 0; border-bottom: 1px solid var(--tira-border); font-size: 14px; opacity: .75; }
+  .raf-sur-mesure__options li::before { content: '— '; opacity: .4; }
+  .raf-sur-mesure__ctas { display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; }
+  .raf-sur-mesure__ctas a {
+    font-size: 13px; letter-spacing: .1em; text-transform: uppercase;
+    text-decoration: underline; text-underline-offset: 3px; transition: opacity .2s;
+  }
+  .raf-sur-mesure__ctas a:hover { opacity: .6; }
+
+  /* ── 9. Découvrir aussi ── */
+  .raf-decouvrir { background: var(--tira-white); padding: 100px 40px; }
+  .raf-decouvrir__header { margin-bottom: 56px; }
+  .raf-decouvrir__header h2 { font-size: 24px; font-weight: 400; letter-spacing: .02em; }
+  .raf-decouvrir__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; max-width: 1100px; }
+  .raf-prod-card { overflow: hidden; }
+  .raf-prod-card__img {
+    display: block; aspect-ratio: 3/4; background: var(--tira-grey);
+    margin-bottom: 16px; overflow: hidden; position: relative;
+  }
+  .raf-prod-card__img img {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    transition: transform .6s var(--tira-ease);
+  }
+  .raf-prod-card:hover .raf-prod-card__img img { transform: scale(1.04); }
+  .raf-prod-card__name { font-size: 14px; margin-bottom: 4px; }
+  .raf-prod-card__price { font-size: 12px; opacity: .5; margin-bottom: 10px; letter-spacing: .04em; }
+  .raf-prod-card__cta {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .12em;
+    text-decoration: underline; text-underline-offset: 3px; transition: opacity .2s;
+  }
+  .raf-prod-card__cta:hover { opacity: .6; }
+
+  /* ── Mobile ── */
+  @media (max-width: 768px) {
+    .raf-hero { padding-bottom: 48px; }
+    .raf-hero__content { padding: 0 20px; }
+    .raf-hero__cta { right: 20px; bottom: 24px; }
+    .raf-origine { padding: 80px 20px; }
+    .raf-origine p { font-size: 16px; }
+    .raf-silhouette__grid { grid-template-columns: 1fr; }
+    .raf-silhouette__img { min-height: 380px; }
+    .raf-silhouette__content { padding: 48px 24px; }
+    .raf-matieres { padding: 72px 0; }
+    .raf-matieres__header { padding: 0 20px; }
+    .raf-matieres__grid {
+      grid-template-columns: repeat(4, 260px);
+      overflow-x: auto; scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch; gap: 1px; padding: 0 20px 24px; scrollbar-width: none;
+    }
+    .raf-matieres__grid::-webkit-scrollbar { display: none; }
+    .raf-mat-card { scroll-snap-align: start; }
+    .raf-palette { padding: 72px 20px; }
+    .raf-fabrication__grid { grid-template-columns: 1fr; }
+    .raf-fabrication__img { min-height: 320px; order: -1; }
+    .raf-fabrication__content { padding: 64px 24px; }
+    .raf-fab-stats { grid-template-columns: 1fr 1fr; }
+    .raf-temoignages { padding: 72px 20px; }
+    .raf-temoignages__grid { grid-template-columns: 1fr; gap: 36px; }
+    .raf-sur-mesure { padding: 72px 20px; }
+    .raf-decouvrir { padding: 72px 20px; }
+    .raf-decouvrir__grid { grid-template-columns: 1fr; gap: 32px; }
+  }
+  @media (max-width: 480px) {
+    .raf-matieres__grid { grid-template-columns: repeat(4, 80vw); }
+  }
+</style>
+
+<div class="raf-page">
+
+  {%- comment -%} ── 1. HERO ── {%- endcomment -%}
+  <section class="raf-hero" aria-label="Le Rafael — Icône TIRABOSCHI Paris">
+    <div class="raf-hero__img">
+      <img
+        src="{{ 'https://cdn.shopify.com/s/files/1/0927/5890/1079/files/28092025-DSCF1828.jpg' }}"
+        alt="Le Rafael — Sac iconique TIRABOSCHI Paris"
+        loading="eager" fetchpriority="high" width="1920" height="1080">
+    </div>
+    <div class="raf-hero__filigree" aria-hidden="true">Rafael</div>
+    <div class="raf-hero__content">
+      <h1 data-words>Le Rafael</h1>
+      <p class="raf-hero__sub">Né en 1952. La forme du mouvement.</p>
+    </div>
+    <div class="raf-hero__cta" data-reveal>
+      <span class="raf-meta">FW25 · À partir de 2 450€</span>
+      <a href="{{ routes.root_url }}products/rafael">Découvrir la boutique →</a>
+    </div>
+  </section>
+
+  {%- comment -%} ── 2. L'ORIGINE ── {%- endcomment -%}
+  <section class="raf-origine">
+    <div class="raf-origine__inner">
+      <span class="raf-label" data-reveal>L'Icône</span>
+      <p data-reveal>
+        En 1952, la maison crée un sac pour les femmes actives de l'après-guerre —
+        celles qui travaillent, qui voyagent, qui ne ralentissent pas.
+        Le Rafael porte à l'épaule ou à la main, selon l'heure. La forme en V s'impose
+        au dos, structurant l'arrière comme une colonne vertébrale. Un sac d'architecte.
+      </p>
+      <blockquote class="raf-origine__quote" data-reveal>
+        "Conçu pour accompagner une vie en mouvement perpétuel."
+      </blockquote>
+    </div>
+  </section>
+
+  {%- comment -%} ── 3. LA SILHOUETTE ── {%- endcomment -%}
+  <section class="raf-silhouette" aria-label="La silhouette du Rafael">
+    <div class="raf-silhouette__grid">
+      <div class="raf-silhouette__img">
+        {%- assign rafael = all_products['rafael'] -%}
+        {%- if rafael and rafael.featured_image -%}
+          <img
+            src="{{ rafael.featured_image | image_url: width: 900 }}"
+            alt="{{ rafael.title }} — TIRABOSCHI Paris"
+            loading="lazy" width="900" height="1200">
+        {%- else -%}
+          <img
+            src="{{ 'https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0919.jpg' }}"
+            alt="Le Rafael — TIRABOSCHI Paris"
+            loading="lazy" width="900" height="1200">
+        {%- endif -%}
+      </div>
+      <div class="raf-silhouette__content">
+        <span class="raf-label" data-reveal>La Forme</span>
+        <h2 data-words>La silhouette</h2>
+        <p data-reveal>
+          Plus long, plus plat, à ouverture zippée. Le Rafael porte les codes de la maison
+          dans un volume pensé pour le travail — ordinateur 13", dossiers, le tout accessible
+          sans poser le sac. Sophistication fonctionnelle.
+        </p>
+        <div class="raf-silhouette__dims" data-reveal>
+          <span>Hauteur&nbsp;&nbsp;&nbsp;&nbsp;32 cm</span>
+          <span>Largeur&nbsp;&nbsp;&nbsp;&nbsp;38 cm</span>
+          <span>Profondeur&nbsp;10 cm</span>
+        </div>
+        <p class="raf-note" data-reveal>
+          Contient&nbsp;: ordinateur 13", portefeuille, téléphone, agenda, clés. Passe en cabine avion.
+        </p>
+        <a href="{{ routes.root_url }}products/rafael" class="tira-btn" data-reveal>
+          Voir le produit →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} ── 4. LES MATIÈRES ── {%- endcomment -%}
+  <section class="raf-matieres" aria-label="Les matières disponibles pour le Rafael">
+    <div class="raf-matieres__header">
+      <span class="raf-label" data-reveal>Le Choix</span>
+      <h2 class="raf-matieres__title" data-words>Le Rafael selon votre matière</h2>
+    </div>
+    <div class="raf-matieres__grid">
+      <article class="raf-mat-card" data-reveal>
+        <div class="raf-mat-card__swatch raf-sw-pleine-fleur"></div>
+        <p class="raf-mat-card__name">Veau Pleine Fleur</p>
+        <p class="raf-mat-card__desc">La noblesse du cuir naturel — grain serré, tenue exceptionnelle, patine lumineuse.</p>
+        <div class="raf-mat-card__avail"><span class="raf-mat-card__avail-dot"></span>Disponible</div>
+      </article>
+      <article class="raf-mat-card" data-reveal>
+        <div class="raf-mat-card__swatch raf-sw-veau-gras"></div>
+        <p class="raf-mat-card__name">Veau Gras</p>
+        <p class="raf-mat-card__desc">Souplesse absolue, toucher velouté. Le cuir qui s'assouplit dès le premier jour.</p>
+        <div class="raf-mat-card__avail"><span class="raf-mat-card__avail-dot"></span>Disponible</div>
+      </article>
+      <article class="raf-mat-card" data-reveal>
+        <div class="raf-mat-card__swatch raf-sw-veau-box"></div>
+        <p class="raf-mat-card__name">Veau Box</p>
+        <p class="raf-mat-card__desc">Lisse, brillant, architectural. La matière des grandes maisons parisiennes.</p>
+        <div class="raf-mat-card__avail"><span class="raf-mat-card__avail-dot"></span>Disponible</div>
+      </article>
+      <article class="raf-mat-card" data-reveal>
+        <div class="raf-mat-card__swatch raf-sw-chocolat"></div>
+        <p class="raf-mat-card__name">Veau Chocolat</p>
+        <p class="raf-mat-card__desc">Teinte chaude, profonde. La signature la plus portée sur le Rafael depuis 1952.</p>
+        <div class="raf-mat-card__avail"><span class="raf-mat-card__avail-dot"></span>Disponible</div>
+      </article>
+    </div>
+  </section>
+
+  {%- comment -%} ── 5. LA PALETTE FW25 ── {%- endcomment -%}
+  <section class="raf-palette" aria-label="Palette de couleurs FW25">
+    <span class="raf-label" data-reveal>FW25</span>
+    <h2 class="raf-palette__title" data-words>La palette</h2>
+    <div class="raf-palette__grid" data-reveal>
+      <div class="raf-cswatch"><div class="raf-cswatch__sq raf-sw-noir"></div><span class="raf-cswatch__name">Noir</span></div>
+      <div class="raf-cswatch"><div class="raf-cswatch__sq raf-sw-marine"></div><span class="raf-cswatch__name">Marine</span></div>
+      <div class="raf-cswatch"><div class="raf-cswatch__sq raf-sw-chocolat"></div><span class="raf-cswatch__name">Chocolat</span></div>
+      <div class="raf-cswatch"><div class="raf-cswatch__sq raf-sw-bordeaux"></div><span class="raf-cswatch__name">Bordeaux</span></div>
+      <div class="raf-cswatch"><div class="raf-cswatch__sq raf-sw-cognac"></div><span class="raf-cswatch__name">Cognac</span></div>
+      <div class="raf-cswatch"><div class="raf-cswatch__sq raf-sw-sable"></div><span class="raf-cswatch__name">Sable</span></div>
+      <div class="raf-cswatch"><div class="raf-cswatch__sq raf-sw-naturel"></div><span class="raf-cswatch__name">Naturel</span></div>
+      <div class="raf-cswatch"><div class="raf-cswatch__sq raf-sw-ivoire"></div><span class="raf-cswatch__name">Ivoire</span></div>
+    </div>
+    <p class="raf-palette__note" data-reveal>Toutes les teintes sont disponibles en commande — délai 4–6 semaines</p>
+  </section>
+
+  {%- comment -%} ── 6. LA FABRICATION ── {%- endcomment -%}
+  <section class="raf-fabrication" aria-label="Fabrication artisanale du Rafael">
+    <div class="raf-fabrication__grid">
+      <div class="raf-fabrication__content">
+        <span class="raf-label" data-reveal>Le Savoir-Faire</span>
+        <h2 data-words>48 à 72 heures<br>de travail</h2>
+        <p data-reveal>
+          Un seul maroquinier, de la découpe à la finition. La fermeture à glissière —
+          posée à la main, cousue sellier — est la pièce la plus longue du Rafael.
+          Un détail que vous sentirez à chaque ouverture.
+        </p>
+        <div class="raf-fab-stats" data-reveal>
+          <div>
+            <p class="raf-fab-stats__label">Artisans</p>
+            <p class="raf-fab-stats__value">1 par sac</p>
+          </div>
+          <div>
+            <p class="raf-fab-stats__label">Couture sellier</p>
+            <p class="raf-fab-stats__value">16 heures</p>
+          </div>
+          <div>
+            <p class="raf-fab-stats__label">Points de couture</p>
+            <p class="raf-fab-stats__value">3 800</p>
+          </div>
+          <div>
+            <p class="raf-fab-stats__label">Traçabilité</p>
+            <p class="raf-fab-stats__value">Certificat signé</p>
+          </div>
+        </div>
+      </div>
+      <div class="raf-fabrication__img" aria-hidden="true">
+        <img
+          src="{{ 'https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0154.jpg' }}"
+          alt="" loading="lazy" width="960" height="1280">
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} ── 7. LES TÉMOIGNAGES ── {%- endcomment -%}
+  <section class="raf-temoignages" aria-label="Témoignages clients">
+    <div class="raf-temoignages__header">
+      <span class="raf-label" data-reveal>Ils le portent</span>
+      <h2 data-words>Quelques mots</h2>
+    </div>
+    <div class="raf-temoignages__grid">
+      <blockquote class="raf-temoignage" data-reveal>
+        <p class="raf-temoignage__text">
+          "Le Rafael m'accompagne au bureau depuis 3 ans. Il est devenu mon uniforme.
+          Plus besoin de réfléchir le matin."
+        </p>
+        <cite class="raf-temoignage__author">Caroline L. — Paris</cite>
+      </blockquote>
+      <blockquote class="raf-temoignage" data-reveal>
+        <p class="raf-temoignage__text">
+          "Je voyage toutes les semaines pour le travail. Le Rafael a survécu à 4 continents.
+          Il est encore parfait. Je n'en reviens pas."
+        </p>
+        <cite class="raf-temoignage__author">Thomas A. — Genève</cite>
+      </blockquote>
+      <blockquote class="raf-temoignage" data-reveal>
+        <p class="raf-temoignage__text">
+          "Mon mari m'a commandé le Rafael en surprise. J'ai d'abord pensé que c'était pour lui.
+          Finalement, il est pour moi — et il le sait."
+        </p>
+        <cite class="raf-temoignage__author">Delphine P. — Lyon</cite>
+      </blockquote>
+    </div>
+  </section>
+
+  {%- comment -%} ── 8. SUR MESURE ── {%- endcomment -%}
+  <section class="raf-sur-mesure" aria-label="Le Rafael sur mesure">
+    <div class="raf-sur-mesure__inner">
+      <span class="raf-label" data-reveal>Personnalisation</span>
+      <h2 data-words>Le Rafael,<br>à votre façon</h2>
+      <p data-reveal>
+        Cuir, couleur, couture, initiales. Le Rafael se configure entièrement
+        selon vos préférences — avec le même délai et le même niveau d'exigence.
+      </p>
+      <ul class="raf-sur-mesure__options" data-reveal>
+        <li>Teinte au choix parmi les 48 couleurs de notre tannerie partenaire</li>
+        <li>Couleur de fil de couture sellier (naturel, ivoire, bordeaux, marine ou assorti)</li>
+        <li>Initiales gravées sur la quincaillerie — or, or vieilli ou argent</li>
+      </ul>
+      <div class="raf-sur-mesure__ctas" data-reveal>
+        <a href="{{ routes.root_url }}pages/sur-mesure">Configurer mon Rafael →</a>
+        <a href="{{ routes.root_url }}pages/prendrez-rendez-vous">Prendre rendez-vous →</a>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} ── 9. DÉCOUVRIR AUSSI ── {%- endcomment -%}
+  <section class="raf-decouvrir" aria-label="Dans la même famille">
+    <div class="raf-decouvrir__header" data-reveal>
+      <span class="raf-label">La Famille</span>
+      <h2>Dans la même famille</h2>
+    </div>
+    <div class="raf-decouvrir__grid">
+      {%- assign related = 'victoire,colette,jane' | split: ',' -%}
+      {%- for handle in related -%}
+        {%- assign prod = all_products[handle] -%}
+        {%- if prod -%}
+          <article class="raf-prod-card" data-reveal>
+            <a class="raf-prod-card__img" href="{{ prod.url }}">
+              {%- if prod.featured_image -%}
+                <img
+                  src="{{ prod.featured_image | image_url: width: 600 }}"
+                  alt="{{ prod.title }} — TIRABOSCHI Paris"
+                  loading="lazy" width="600" height="800">
+              {%- endif -%}
+            </a>
+            <div>
+              <p class="raf-prod-card__name">{{ prod.title }}</p>
+              <p class="raf-prod-card__price">À partir de {{ prod.price | money }}</p>
+              <a href="{{ prod.url }}" class="raf-prod-card__cta">Découvrir →</a>
+            </div>
+          </article>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </section>
+
+</div>
+
+{% schema %}
+{
+  "name": "Icône Rafael",
+  "tag": "section",
+  "class": "tira-section tira-section--icone-rafael",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Icône Rafael"
+    }
+  ]
+}
+{% endschema %}
