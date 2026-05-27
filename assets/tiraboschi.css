@@ -266,23 +266,17 @@ h1, h2, h3, h4, h5, h6 {
   stroke-linecap: square; stroke-linejoin: miter;
 }
 .hdr__m .tira-bag-icon { width: 24px; height: 24px; }
-.hdr__m a {
+.hdr__m .hdr__bag,
+.hdr__m > a:not(.hdr__m-logo) {
   display: flex; align-items: center; justify-content: center;
   color: inherit; text-decoration: none;
-  min-width: 36px; min-height: 36px;
+  width: 36px; height: 36px; flex-shrink: 0;
 }
 .hdr__m button {
   background: none; border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   color: inherit; padding: 0;
-  min-width: 36px; min-height: 36px;
-}
-/* Scrim de contraste — icônes blanches visibles sur n'importe quel hero */
-.hdr--transparent-home:not(.solid)::before {
-  content: '';
-  position: absolute; inset: 0; z-index: -1;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.28) 0%, transparent 100%);
-  pointer-events: none;
+  width: 36px; height: 36px; flex-shrink: 0;
 }
 
 @media (max-width: 1200px) {
@@ -514,7 +508,9 @@ body.nav-open { overflow: hidden; }
 /* Overlay gradient */
 .hero__overlay {
   position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,.5) 0%, rgba(0,0,0,.08) 55%, transparent 100%);
+  background:
+    linear-gradient(to bottom, rgba(0,0,0,.38) 0%, transparent 28%),
+    linear-gradient(to top,    rgba(0,0,0,.52) 0%, rgba(0,0,0,.08) 55%, transparent 100%);
   z-index: 1;
 }
 
