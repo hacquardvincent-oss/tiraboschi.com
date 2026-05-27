@@ -26,7 +26,7 @@
   /* ── 1. Hero ── */
   .sf-hero {
     background: var(--tira-grey);
-    padding: calc(68px + 44px + 80px) 40px 80px;
+    padding: calc(var(--content-top) + 80px) 40px 80px;
     text-align: center;
   }
   .sf-hero__eyebrow {
@@ -70,7 +70,7 @@
     transform: rotate(180deg);
   }
   @media (max-width: 768px) {
-    .sf-hero { padding: calc(68px + 44px + 48px) 24px 48px; }
+    .sf-hero { padding: calc(var(--content-top) + 48px) 24px 48px; }
     .sf-hero__title { font-size: 36px; }
   }
 

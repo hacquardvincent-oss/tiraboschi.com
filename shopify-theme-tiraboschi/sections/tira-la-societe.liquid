@@ -29,7 +29,7 @@
   .soc-hero {
     background: var(--tira-black);
     color: var(--tira-white);
-    padding: calc(68px + 44px + 80px) 40px 80px;
+    padding: calc(var(--content-top) + 80px) 40px 80px;
     text-align: center;
   }
   .soc-hero__eyebrow {
@@ -216,7 +216,7 @@
   /* ── Mobile ── */
   @media (max-width: 768px) {
     .soc-hero {
-      padding: calc(68px + 44px + 48px) 24px 48px;
+      padding: calc(var(--content-top) + 48px) 24px 48px;
     }
     .soc-hero__title {
       font-size: 36px;

@@ -25,6 +25,13 @@
   --header-h:      68px;
   --search-h:      44px;
   --filter-h:      48px;
+  /* Offset depuis le haut du viewport pour le premier élément de contenu.
+     Mobile : header 68px + search bar 44px = 112px
+     Desktop : header seulement (search intégrée) = 68px */
+  --content-top:   calc(var(--header-h) + var(--search-h));
+}
+@media (min-width: 901px) {
+  :root { --content-top: var(--header-h); }
 }
 
 body {
@@ -103,7 +110,7 @@ h1, h2, h3, h4, h5, h6 {
 /* ─── Desktop ─── */
 .hdr__d {
   display: grid;
-  grid-template-columns: auto 1fr auto;   /* logo | nav | icons */
+  grid-template-columns: auto 1fr auto;   /* [logo+nav] | search | icons */
   align-items: center; gap: 40px;
   height: 100%; padding: 0 40px;
   color: var(--tira-white);
@@ -111,6 +118,54 @@ h1, h2, h3, h4, h5, h6 {
 }
 .hdr.solid .hdr__d,
 .hdr--always-solid .hdr__d { color: var(--tira-black); }
+
+/* Groupe gauche : logo + nav */
+.hdr__left {
+  display: flex; align-items: center; gap: 36px;
+}
+
+/* Search inline — centré dans le header desktop */
+.hdr__search-inline {
+  display: flex; justify-content: center; align-items: center;
+}
+.hdr__search-inline .hdr__search-inline__inner {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; max-width: 420px;
+}
+.hdr__search-inline input[type="search"] {
+  flex: 1; border: none; background: none; outline: none;
+  font-family: inherit; font-size: 11px;
+  text-transform: uppercase; letter-spacing: .12em;
+  color: inherit;
+  border-bottom: 1px solid rgba(255,255,255,.25);
+  transition: color .4s, border-color .4s;
+  padding-bottom: 3px; text-align: center;
+}
+.hdr__search-inline input[type="search"]::placeholder {
+  color: inherit; opacity: .4; letter-spacing: .1em;
+}
+.hdr.solid .hdr__search-inline input[type="search"],
+.hdr--always-solid .hdr__search-inline input[type="search"] {
+  border-bottom-color: rgba(10,10,10,.2);
+}
+.hdr__search-inline input[type="search"]:focus {
+  border-bottom-color: currentColor; outline: none;
+}
+.hdr__search-inline button[type="submit"] {
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center;
+  color: inherit; opacity: .6; transition: opacity .2s;
+  padding: 0 0 0 8px;
+}
+.hdr__search-inline button[type="submit"]:hover { opacity: 1; }
+.hdr__search-inline button[type="submit"] svg {
+  width: 14px; height: 14px; fill: none;
+  stroke: currentColor; stroke-width: 1.5;
+}
+/* Sur mobile : masquer la search inline (la search bar externe reste visible) */
+@media (max-width: 900px) {
+  .hdr__search-inline { display: none; }
+}
 
 /* ─── Logo — image CDN, filtre white ↔ black ─── */
 .hdr__logo a { display: block; line-height: 0; }
@@ -200,6 +255,10 @@ h1, h2, h3, h4, h5, h6 {
 @media (max-width: 900px) {
   .hdr__d { display: none; }
   .hdr__m { display: grid; }
+}
+/* Masquer la search bar externe sur desktop (intégrée dans le header) */
+@media (min-width: 901px) {
+  #hdr-search { display: none !important; }
 }
 
 
@@ -2272,10 +2331,10 @@ body.hdr-hidden .col-filters {
 .hdr__nav-link:hover,
 .hdr__nav-item.is-open .hdr__nav-link { opacity: 1; }
 
-/* Panel mega — démarre sous header + search bar */
+/* Panel mega — démarre immédiatement sous le header */
 .mega {
   position: fixed;
-  top: calc(var(--header-h) + var(--search-h));
+  top: var(--header-h);
   left: 0; right: 0;
   background: var(--tira-white);
   border-bottom: 1px solid var(--tira-border);
