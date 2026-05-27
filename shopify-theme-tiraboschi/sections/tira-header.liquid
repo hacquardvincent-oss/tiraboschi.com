@@ -44,22 +44,12 @@
 
     {%- comment -%} Navigation centrée {%- endcomment -%}
     <nav class="hdr__nav" aria-label="{{ 'general.navigation' | t | default: 'Navigation principale' }}">
-      {%- if linklists[menu].links.size > 0 -%}
-        {%- for link in linklists[menu].links -%}
-          {%- if link.title contains '|sep' -%}
-            <span class="nav-sep" aria-hidden="true"></span>
-          {%- else -%}
-            <a href="{{ link.url }}"{% if link.active %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
-          {%- endif -%}
-        {%- endfor -%}
-      {%- else -%}
-        <a href="{{ routes.collections_url }}/sacs">Sacs</a>
-        <a href="{{ routes.collections_url }}/petite-maroquinerie">Petite Maroquinerie</a>
-        <a href="{{ routes.collections_url }}/iconiques">Iconiques</a>
-        <a href="{{ routes.collections_url }}/sur-mesure-exotiques">Sur Mesure</a>
-        <span class="nav-sep" aria-hidden="true"></span>
-        <a href="/pages/histoire">La Maison</a>
-      {%- endif -%}
+      <a href="{{ routes.collections_url }}/sacs"{% if request.path contains '/collections/sacs' %} aria-current="page"{% endif %}>Sacs</a>
+      <a href="{{ routes.collections_url }}/petite-maroquinerie"{% if request.path contains '/collections/petite-maroquinerie' %} aria-current="page"{% endif %}>Petite Maroquinerie</a>
+      <a href="{{ routes.collections_url }}/iconiques"{% if request.path contains '/collections/iconiques' %} aria-current="page"{% endif %}>Iconiques</a>
+      <a href="{{ routes.collections_url }}/sur-mesure-exotiques"{% if request.path contains '/collections/sur-mesure' %} aria-current="page"{% endif %}>Sur Mesure</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/pages/histoire"{% if request.path contains '/pages/histoire' %} aria-current="page"{% endif %}>La Maison</a>
     </nav>
 
     {%- comment -%} Icons droite : [account] [search] [bag] {%- endcomment -%}

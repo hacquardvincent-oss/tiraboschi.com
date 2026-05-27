@@ -24,37 +24,6 @@
   <section class="society-crm" data-reveal aria-labelledby="society-title">
     <div>
       <h2 class="society-crm__title" id="society-title">Join<br>the Society</h2>
-
-      <div class="society-crm__social">
-        <span class="society-crm__social-label">Suivez-nous</span>
-        <div class="society-crm__social-icons">
-          {%- if section.settings.social_instagram_link != blank -%}
-            <a href="{{ section.settings.social_instagram_link }}" target="_blank" rel="noopener" aria-label="Instagram">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                <rect x="2" y="2" width="20" height="20" rx="5"/>
-                <circle cx="12" cy="12" r="5"/>
-                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
-              </svg>
-            </a>
-          {%- endif -%}
-          {%- if section.settings.social_linkedin_link != blank -%}
-            <a href="{{ section.settings.social_linkedin_link }}" target="_blank" rel="noopener" aria-label="LinkedIn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                <rect x="2" y="2" width="20" height="20" rx="3"/>
-                <path d="M7 10v7M7 7v.01M11 17v-4a2 2 0 0 1 4 0v4M11 10v7"/>
-              </svg>
-            </a>
-          {%- endif -%}
-          {%- if section.settings.social_youtube_link != blank -%}
-            <a href="{{ section.settings.social_youtube_link }}" target="_blank" rel="noopener" aria-label="YouTube">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                <path d="M22 8s-.3-2-1.2-2.8c-1.1-1.2-2.4-1.2-3-1.3C15.1 3.8 12 3.8 12 3.8s-3.1 0-5.8.1c-.6.1-1.9.1-3 1.3C2.3 6 2 8 2 8S1.8 10.3 1.8 12.6v2.1c0 2.3.2 4.6.2 4.6s.3 2 1.2 2.8c1.1 1.2 2.6 1.2 3.2 1.2C8.2 23.5 12 23.5 12 23.5s3.1 0 5.8-.3c.6-.1 1.9-.1 3-1.3.9-.8 1.2-2.8 1.2-2.8s.2-2.3.2-4.6v-2.1C22.2 10.3 22 8 22 8z"/>
-                <polygon points="9.5,15.5 15.5,12 9.5,8.5" fill="currentColor" stroke="none"/>
-              </svg>
-            </a>
-          {%- endif -%}
-        </div>
-      </div>
     </div>
 
     <div class="society-crm__right">
@@ -176,6 +145,23 @@
     </div>
 
   </div>{%- comment -%} /footer__top {%- endcomment -%}
+
+  {%- comment -%} ─── Barre locale + social ─── {%- endcomment -%}
+  <div class="footer__locale-bar">
+    {%- render 'tira-locale-selector', context: 'footer' -%}
+
+    <nav class="footer__social" aria-label="Réseaux sociaux">
+      {%- if section.settings.social_instagram_link != blank -%}
+        <a href="{{ section.settings.social_instagram_link }}" target="_blank" rel="noopener">Instagram</a>
+      {%- endif -%}
+      {%- if section.settings.social_linkedin_link != blank -%}
+        <a href="{{ section.settings.social_linkedin_link }}" target="_blank" rel="noopener">LinkedIn</a>
+      {%- endif -%}
+      {%- if section.settings.social_youtube_link != blank -%}
+        <a href="{{ section.settings.social_youtube_link }}" target="_blank" rel="noopener">YouTube</a>
+      {%- endif -%}
+    </nav>
+  </div>
 
   <div class="footer__bottom">
     <p class="footer__copy">© {{ 'now' | date: '%Y' }} {{ shop.name }}. Tous droits réservés.</p>
