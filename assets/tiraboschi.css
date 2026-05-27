@@ -13,7 +13,7 @@
    1. RESET + DESIGN TOKENS
 ════════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+/* scroll-behavior: smooth retiré — Lenis gère le smooth scroll via JS */
 
 :root {
   --tira-black:    #0a0a0a;
@@ -2272,10 +2272,10 @@ body.hdr-hidden .col-filters {
 .hdr__nav-link:hover,
 .hdr__nav-item.is-open .hdr__nav-link { opacity: 1; }
 
-/* Panel mega */
+/* Panel mega — démarre sous header + search bar */
 .mega {
   position: fixed;
-  top: var(--header-h);
+  top: calc(var(--header-h) + var(--search-h));
   left: 0; right: 0;
   background: var(--tira-white);
   border-bottom: 1px solid var(--tira-border);
@@ -2291,23 +2291,23 @@ body.hdr-hidden .col-filters {
 .mega__inner {
   display: grid;
   grid-template-columns: 1fr 480px;
-  gap: 0;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 48px 40px;
+  padding: 36px 40px;
   gap: 60px;
   align-items: start;
 }
 
 .mega__links {
   display: flex; flex-direction: column; gap: 4px;
-  padding-top: 8px;
+  padding-top: 4px;
 }
+/* Spécificité renforcée pour garantir la couleur même si Horizon override */
 .mega__tagline {
   font-size: 11px; text-transform: uppercase; letter-spacing: .12em;
-  opacity: .4; margin-bottom: 20px;
+  color: var(--tira-black); opacity: .4; margin-bottom: 20px;
 }
-.mega__link {
+.hdr .mega__link {
   font-size: 13px; color: var(--tira-black);
   text-decoration: none; opacity: .6;
   padding: 10px 0;
@@ -2315,12 +2315,12 @@ body.hdr-hidden .col-filters {
   transition: opacity .2s, border-color .2s;
   letter-spacing: .02em;
 }
-.mega__link:hover { opacity: 1; border-bottom-color: var(--tira-border); }
-.mega__link--featured {
+.hdr .mega__link:hover { opacity: 1; border-bottom-color: var(--tira-border); }
+.hdr .mega__link--featured {
   font-size: 15px; opacity: .9; margin-bottom: 8px;
   border-bottom: 1px solid var(--tira-border);
 }
-.mega__link--featured:hover { opacity: 1; }
+.hdr .mega__link--featured:hover { opacity: 1; }
 
 .mega__visual {
   position: relative;
@@ -2332,7 +2332,7 @@ body.hdr-hidden .col-filters {
 .mega__caption {
   margin-top: 12px;
   font-size: 10px; text-transform: uppercase; letter-spacing: .12em;
-  opacity: .4;
+  color: var(--tira-black); opacity: .4;
 }
 
 /* Backdrop */
