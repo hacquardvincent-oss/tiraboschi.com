@@ -202,6 +202,28 @@
     });
   }
 
+  /* ════════ Transitions entre pages ════════ */
+  const pageOverlay = document.getElementById('tira-page-overlay');
+  if (pageOverlay && !noMotion) {
+    window.addEventListener('pageshow', () => pageOverlay.classList.remove('active'));
+
+    document.addEventListener('click', function (e) {
+      const link = e.target.closest('a[href]');
+      if (!link) return;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      if (link.target === '_blank') return;
+      const href = link.getAttribute('href');
+      if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+      try {
+        const url = new URL(href, location.origin);
+        if (url.origin !== location.origin) return;
+      } catch (_) { return; }
+      e.preventDefault();
+      pageOverlay.classList.add('active');
+      setTimeout(() => { location.href = link.href; }, 350);
+    });
+  }
+
   /* ════════ Cart AJAX (ajout panier sans rechargement) ════════ */
   document.addEventListener('submit', function (e) {
     const form = e.target;
