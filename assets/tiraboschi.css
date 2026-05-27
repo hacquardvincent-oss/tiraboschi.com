@@ -251,7 +251,11 @@ h1, h2, h3, h4, h5, h6 {
   grid-template-columns: 1fr auto auto auto;
   align-items: center; gap: 4px;
   height: 100%; padding: 0 16px;
+  color: var(--tira-white);
+  transition: color .5s ease;
 }
+.hdr.solid .hdr__m,
+.hdr--always-solid .hdr__m { color: var(--tira-black); }
 .hdr__m-logo {
   display: block; line-height: 0;
 }
@@ -263,50 +267,39 @@ h1, h2, h3, h4, h5, h6 {
 .hdr.solid .hdr__m-logo .hdr__logo-img,
 .hdr--always-solid .hdr__m-logo .hdr__logo-img { filter: none; }
 
-/* Icônes mobile — classe explicite sur chaque élément */
+/* Tous les SVG dans le header mobile — taille fixe (évite 300px par défaut) */
+.hdr__m svg {
+  width: 22px; height: 22px; flex-shrink: 0;
+  fill: none; stroke: currentColor;
+  stroke-width: 1.5; stroke-linecap: square; stroke-linejoin: miter;
+}
+/* Bag icon CDN (ancienne structure HTML sans classe hdr__m-icon) */
+.hdr__m .tira-bag-icon {
+  width: 22px; height: 22px; flex-shrink: 0;
+  filter: brightness(0) invert(1); transition: filter .5s ease;
+}
+.hdr.solid .hdr__m .tira-bag-icon,
+.hdr--always-solid .hdr__m .tira-bag-icon { filter: none; }
+
+/* Liens + bouton icônes — compatible ancienne ET nouvelle structure HTML */
+.hdr__m .hdr__bag,
+.hdr__m > a:not(.hdr__m-logo),
+.hdr__m button,
 .hdr__m-icon {
   display: flex !important; align-items: center; justify-content: center;
   position: relative;
   width: 44px; height: 44px; flex-shrink: 0;
-  background: rgba(255,0,0,0.4) !important; border: none; cursor: pointer;
-  padding: 0; text-decoration: none;
+  background: none; border: none; cursor: pointer;
+  padding: 0; text-decoration: none; color: inherit;
 }
-/* SVG mobile — stroke blanc par défaut (header transparent sur hero) */
-.hdr__m-icon svg {
-  width: 22px; height: 22px; flex-shrink: 0;
-  fill: none;
-  stroke: #ffffff;
-  stroke-width: 1.5;
-  stroke-linecap: square; stroke-linejoin: miter;
-}
-/* SVG mobile → noir quand header solid */
-.hdr.solid .hdr__m-icon svg,
-.hdr--always-solid .hdr__m-icon svg {
-  stroke: #0a0a0a;
-}
-/* Bag SVG spécifique */
-.hdr__m-bag-svg {
-  width: 22px; height: 22px; flex-shrink: 0;
-  fill: none;
-  stroke: #ffffff;
-  stroke-width: 1.5;
-  stroke-linecap: square; stroke-linejoin: miter;
-}
-.hdr.solid .hdr__m-bag-svg,
-.hdr--always-solid .hdr__m-bag-svg {
-  stroke: #0a0a0a;
-}
+
 /* Badge panier */
 .hdr__bag-count {
-  position: absolute; top: 6px; right: 6px;
-  min-width: 16px; height: 16px;
-  background: var(--tira-black); color: var(--tira-white);
-  font-size: 9px; line-height: 16px; text-align: center;
+  position: absolute; top: 4px; right: 2px;
+  min-width: 14px; height: 14px;
+  background: currentColor; color: var(--tira-white);
+  font-size: 8px; line-height: 14px; text-align: center;
   letter-spacing: 0;
-}
-.hdr.solid .hdr__bag-count,
-.hdr--always-solid .hdr__bag-count {
-  background: var(--tira-black); color: var(--tira-white);
 }
 
 @media (max-width: 1200px) {
