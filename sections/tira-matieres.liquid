@@ -28,7 +28,7 @@
   .mat-hero {
     background: var(--tira-black);
     color: var(--tira-white);
-    padding: calc(68px + 44px + 80px) 40px 80px;
+    padding: calc(var(--content-top) + 80px) 40px 80px;
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -74,7 +74,7 @@
     margin: 0;
   }
   @media (max-width: 768px) {
-    .mat-hero { padding: calc(68px + 44px + 48px) 24px 48px; }
+    .mat-hero { padding: calc(var(--content-top) + 48px) 24px 48px; }
     .mat-hero__title { font-size: 36px; }
   }
 

@@ -27,7 +27,7 @@
   /* ── 1. Hero ── */
   .hist-hero {
     background: var(--tira-grey);
-    padding: calc(68px + 44px + 80px) 40px 80px;
+    padding: calc(var(--content-top) + 80px) 40px 80px;
     text-align: center;
   }
   .hist-hero__eyebrow {
@@ -237,7 +237,7 @@
   /* ── Mobile ── */
   @media (max-width: 768px) {
     .hist-hero {
-      padding: calc(68px + 44px + 48px) 24px 48px;
+      padding: calc(var(--content-top) + 48px) 24px 48px;
     }
     .hist-hero__title {
       font-size: 36px;

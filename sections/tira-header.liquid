@@ -25,25 +25,28 @@
   {%- comment -%} ═══ DESKTOP ═══ {%- endcomment -%}
   <div class="hdr__d">
 
-    {%- comment -%} Logo gauche {%- endcomment -%}
-    <div class="hdr__logo">
-      <a href="{{ routes.root_url }}" aria-label="{{ shop.name }} — accueil">
-        {%- if section.settings.logo != blank -%}
-          {{ section.settings.logo | image_url: width: 400 | image_tag:
-              class: 'hdr__logo-img',
-              alt: shop.name,
-              widths: '200,400',
-              height: 22 }}
-        {%- else -%}
-          <img class="hdr__logo-img"
-               src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738"
-               alt="{{ shop.name }}" width="auto" height="22">
-        {%- endif -%}
-      </a>
-    </div>
+    {%- comment -%} Gauche : logo + navigation {%- endcomment -%}
+    <div class="hdr__left">
 
-    {%- comment -%} Navigation desktop avec mega-menu {%- endcomment -%}
-    <nav class="hdr__nav" id="hdr-nav" aria-label="{{ 'general.navigation' | t | default: 'Navigation principale' }}">
+      {%- comment -%} Logo {%- endcomment -%}
+      <div class="hdr__logo">
+        <a href="{{ routes.root_url }}" aria-label="{{ shop.name }} — accueil">
+          {%- if section.settings.logo != blank -%}
+            {{ section.settings.logo | image_url: width: 400 | image_tag:
+                class: 'hdr__logo-img',
+                alt: shop.name,
+                widths: '200,400',
+                height: 22 }}
+          {%- else -%}
+            <img class="hdr__logo-img"
+                 src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738"
+                 alt="{{ shop.name }}" width="auto" height="22">
+          {%- endif -%}
+        </a>
+      </div>
+
+      {%- comment -%} Navigation desktop avec mega-menu {%- endcomment -%}
+      <nav class="hdr__nav" id="hdr-nav" aria-label="{{ 'general.navigation' | t | default: 'Navigation principale' }}">
 
       {%- comment -%} Groupe Collections {%- endcomment -%}
       <div class="hdr__nav-item" data-mega="collections">
@@ -121,7 +124,27 @@
         </div>
       </div>
 
-    </nav>
+      </nav>
+
+    </div>{%- comment -%} /hdr__left {%- endcomment -%}
+
+    {%- comment -%} Search centrée dans le header (desktop uniquement) {%- endcomment -%}
+    {%- if section.settings.show_search -%}
+    <form class="hdr__search-inline" action="{{ routes.search_url }}" method="get" role="search" aria-label="Recherche">
+      <div class="hdr__search-inline__inner">
+        <input type="hidden" name="type" value="product,article,page">
+        <input type="search" name="q" placeholder="Demander à Tiraboschi" aria-label="Recherche" autocomplete="off">
+        <button type="submit" aria-label="Rechercher">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12,5 19,12 12,19"/>
+          </svg>
+        </button>
+      </div>
+    </form>
+    {%- else -%}
+    <div aria-hidden="true"></div>
+    {%- endif -%}
 
     {%- comment -%} Overlay backdrop mega-menu {%- endcomment -%}
     <div class="mega-backdrop" id="mega-backdrop" aria-hidden="true"></div>
@@ -330,14 +353,6 @@
       mega.addEventListener('mouseleave', closeMega);
     }
   });
-
-  // La search bar est entre les liens nav et le panel mega (44px de gap).
-  // Si la souris la traverse, on annule la fermeture pour ne pas perdre le mega.
-  const searchBar = document.getElementById('hdr-search');
-  if (searchBar) {
-    searchBar.addEventListener('mouseenter', () => clearTimeout(closeTimer));
-    searchBar.addEventListener('mouseleave', closeMega);
-  }
 
   backdrop.addEventListener('mouseenter', closeMega);
 
