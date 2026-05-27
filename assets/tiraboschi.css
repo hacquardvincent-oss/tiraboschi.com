@@ -22,7 +22,7 @@ html { scroll-behavior: smooth; }
   --tira-border:   #e8e8e8;
   --tira-ease:     cubic-bezier(0.16, 1, 0.3, 1);
   --tira-duration: 0.9s;
-  --header-h:      64px;
+  --header-h:      80px;
   --search-h:      44px;
   --filter-h:      48px;
 }
@@ -115,7 +115,7 @@ h1, h2, h3, h4, h5, h6 {
 /* ─── Logo — image CDN, filtre white ↔ black ─── */
 .hdr__logo a { display: block; line-height: 0; }
 .hdr__logo-img {
-  display: block; height: 28px; width: auto;
+  display: block; height: 32px; width: auto;
   filter: brightness(0) invert(1);
   transition: filter .5s ease;
 }
@@ -270,8 +270,8 @@ h1, h2, h3, h4, h5, h6 {
 .hdr-search.sticky-mode input:focus,
 .hdr-search--always-solid input:focus { border-bottom-color: var(--tira-black); }
 
-/* Loupe */
-.hdr-search__icon { flex-shrink: 0; display: flex; align-items: center; }
+/* Loupe — masquée (design sans icône) */
+.hdr-search__icon { display: none; }
 .hdr-search__icon svg {
   width: 15px; height: 15px; fill: none;
   stroke: var(--tira-white); stroke-width: 1.2; opacity: .75;
@@ -2138,4 +2138,39 @@ body.hdr-hidden .col-filters {
 @media (max-width: 900px) {
   .tira-account-page { padding: calc(var(--header-h) + var(--search-h) + 32px) 20px 60px; }
   .tira-account__grid { grid-template-columns: 1fr; gap: 40px; }
+}
+
+
+/* ════════════════════════════════════════════
+   COLLECTION — Load More
+════════════════════════════════════════════ */
+.col-load-more {
+  display: flex; justify-content: center;
+  padding: 48px 40px 64px;
+}
+.col-load-more__btn {
+  background: none; border: none; cursor: pointer;
+  font-family: inherit; font-size: 11px;
+  text-transform: uppercase; letter-spacing: .15em;
+  color: var(--tira-black);
+  border-bottom: 1px solid var(--tira-black);
+  padding-bottom: 3px;
+  opacity: .7; transition: opacity .2s;
+}
+.col-load-more__btn:hover { opacity: 1; }
+.col-load-more__btn:disabled { opacity: .35; cursor: not-allowed; }
+.col-load-more__meta { opacity: .5; }
+
+@media (max-width: 900px) {
+  .col-load-more { padding: 32px 20px 48px; }
+}
+
+
+/* ════════════════════════════════════════════
+   FOOTER — Join The Society label
+════════════════════════════════════════════ */
+.society-crm__label {
+  display: block;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .12em;
+  opacity: .5; margin-bottom: 6px;
 }
