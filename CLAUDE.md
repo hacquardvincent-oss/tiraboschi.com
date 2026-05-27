@@ -510,8 +510,8 @@ locales/ar.json                 → Strings AR draft RTL (traduction native OBLI
 
 3F — Pages P3
 ✅ Blog + Article + Search + 404 + Cart — sections + templates prêts
-□ Cadeaux + Wishlist + Presse + RSE    — NON CRÉÉS
-□ Espace client (customers/)           — NON CRÉÉ
+□ Espace client (customers/)           — NON CRÉÉ  ← priorité avant Cadeaux/Wishlist
+□ Cadeaux + Wishlist + Presse + RSE    — NON CRÉÉS (priorité basse)
 □ Checkout branding                    — NON CRÉÉ
 
 Snippets — tous dans snippets/ ✅ (tira-drop-bar, tira-geo-banner, tira-locale-selector,
