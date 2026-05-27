@@ -52,8 +52,8 @@
       {%- render 'tira-drop-bar' -%}
     {%- endif -%}
 
-    {%- comment -%} ── Géo-banner suggestion marché (Markets actif) ── {%- endcomment -%}
-    {%- if shop.published_locales.size > 1 -%}
+    {%- comment -%} ── Géo-banner suggestion marché (uniquement si setting activé) ── {%- endcomment -%}
+    {%- if settings.geo_banner_enabled and shop.published_locales.size > 1 -%}
       {%- render 'tira-geo-banner' -%}
     {%- endif -%}
 
