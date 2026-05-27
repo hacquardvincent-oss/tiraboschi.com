@@ -1,0 +1,95 @@
+{% comment %}
+  TIRABOSCHI · Page search
+{% endcomment %}
+
+{%- paginate search.results by 12 -%}
+
+<section class="tira-search" aria-label="Résultats de recherche">
+  <div class="tira-search__header">
+    <h1 class="tira-search__title">
+      {%- if search.performed -%}
+        {{ search.results_count }} résultat{% if search.results_count != 1 %}s{% endif %} pour « {{ search.terms | escape }} »
+      {%- else -%}
+        Rechercher
+      {%- endif -%}
+    </h1>
+    <form action="{{ routes.search_url }}" method="get" class="tira-search__form" role="search">
+      <input type="hidden" name="type" value="product">
+      <label for="search-input" class="visually-hidden">Rechercher</label>
+      <input class="tira-search__input"
+             type="search"
+             id="search-input"
+             name="q"
+             value="{{ search.terms | escape }}"
+             placeholder="Rechercher un sac, une matière…"
+             autocomplete="off">
+      <button type="submit" class="tira-search__submit" aria-label="Lancer la recherche">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </button>
+    </form>
+  </div>
+
+  {%- if search.performed and search.results_count > 0 -%}
+    <div class="col-grid tira-search__grid">
+      {%- for result in search.results -%}
+        {%- if result.object_type == 'product' -%}
+          <article class="card" data-reveal>
+            <a href="{{ result.url }}" class="card__img">
+              <img src="{{ result.featured_image | image_url: width: 600 }}"
+                   alt="{{ result.featured_image.alt | default: result.title | escape }}"
+                   width="600" height="800"
+                   loading="lazy">
+            </a>
+            <div class="card__info">
+              <p class="card__type">{{ result.object_type | capitalize }}</p>
+              <a class="card__name" href="{{ result.url }}">{{ result.title }}</a>
+              <p class="card__price">{{ result.price | money }}</p>
+            </div>
+          </article>
+        {%- else -%}
+          <article class="tira-search__page-result" data-reveal>
+            <a href="{{ result.url }}">
+              <p class="tira-search__page-type">{{ result.object_type | capitalize }}</p>
+              <h2 class="tira-search__page-title">{{ result.title }}</h2>
+              {%- if result.excerpt != blank -%}
+                <p class="tira-search__page-excerpt">{{ result.excerpt | strip_html | truncate: 150 }}</p>
+              {%- endif -%}
+            </a>
+          </article>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    {%- if paginate.pages > 1 -%}
+      <nav class="col-pagination" aria-label="Pagination">
+        {%- if paginate.previous -%}
+          <a href="{{ paginate.previous.url }}" class="col-pagination__btn" rel="prev">← Précédent</a>
+        {%- endif -%}
+        <span class="col-pagination__info">Page {{ paginate.current_page }} / {{ paginate.pages }}</span>
+        {%- if paginate.next -%}
+          <a href="{{ paginate.next.url }}" class="col-pagination__btn" rel="next">Suivant →</a>
+        {%- endif -%}
+      </nav>
+    {%- endif -%}
+
+  {%- elsif search.performed -%}
+    <div class="tira-search__no-results">
+      <p>Aucun résultat pour « {{ search.terms | escape }} ».</p>
+      <p>Essayez un autre terme ou <a href="{{ routes.collections_url }}/sacs">parcourez nos collections →</a></p>
+    </div>
+  {%- endif -%}
+</section>
+
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Search TIRABOSCHI",
+  "tag": "div",
+  "class": "tira-search-page",
+  "settings": [],
+  "presets": [{ "name": "Search TIRABOSCHI" }]
+}
+{% endschema %}

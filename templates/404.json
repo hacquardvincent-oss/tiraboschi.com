@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "tira-404": {
+      "type": "tira-404",
+      "settings": {}
+    }
+  },
+  "order": ["tira-404"]
+}

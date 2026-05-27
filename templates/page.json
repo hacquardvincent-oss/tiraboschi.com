@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "tira-page": {
+      "type": "tira-page",
+      "settings": {}
+    }
+  },
+  "order": ["tira-page"]
+}

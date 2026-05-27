@@ -1,0 +1,105 @@
+{% comment %}
+  TIRABOSCHI · Page panier
+{% endcomment %}
+
+<section class="tira-cart" aria-label="Votre panier">
+  <div class="tira-cart__inner">
+    <h1 class="tira-cart__title">Votre sélection</h1>
+
+    {%- if cart.item_count > 0 -%}
+      <form action="{{ routes.cart_url }}" method="post" novalidate>
+
+        <div class="tira-cart__items">
+          {%- for item in cart.items -%}
+            <div class="tira-cart__item" data-key="{{ item.key }}">
+              <a href="{{ item.url }}" class="tira-cart__item-img">
+                <img src="{{ item.image | image_url: width: 200 }}"
+                     alt="{{ item.image.alt | default: item.product.title | escape }}"
+                     width="200" height="267"
+                     loading="lazy">
+              </a>
+              <div class="tira-cart__item-info">
+                <p class="tira-cart__item-type">{{ item.product.type }}</p>
+                <a href="{{ item.url }}" class="tira-cart__item-name">{{ item.product.title }}</a>
+                {%- unless item.product.has_only_default_variant -%}
+                  <p class="tira-cart__item-variant">{{ item.variant.title }}</p>
+                {%- endunless -%}
+                <div class="tira-cart__item-actions">
+                  <div class="tira-cart__qty">
+                    <button type="button" class="tira-cart__qty-btn" aria-label="Diminuer la quantité"
+                            data-key="{{ item.key }}" data-action="decrease">−</button>
+                    <span class="tira-cart__qty-num">{{ item.quantity }}</span>
+                    <button type="button" class="tira-cart__qty-btn" aria-label="Augmenter la quantité"
+                            data-key="{{ item.key }}" data-action="increase">+</button>
+                  </div>
+                  <button type="button" class="tira-cart__remove" aria-label="Supprimer {{ item.product.title | escape }}"
+                          data-key="{{ item.key }}">Retirer</button>
+                </div>
+              </div>
+              <div class="tira-cart__item-price">
+                <p>{{ item.final_line_price | money }}</p>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        <div class="tira-cart__summary">
+          <div class="tira-cart__total">
+            <span>Total</span>
+            <span>{{ cart.total_price | money }}</span>
+          </div>
+          <p class="tira-cart__taxes-note">Taxes incluses. Livraison calculée à l'étape suivante.</p>
+          <button type="submit" name="checkout" class="tira-cart__checkout">
+            Passer commande
+          </button>
+          <a href="{{ routes.collections_url }}/sacs" class="tira-cart__continue">Continuer mes achats</a>
+        </div>
+
+      </form>
+    {%- else -%}
+      <div class="tira-cart__empty">
+        <p>Votre panier est vide.</p>
+        <a href="{{ routes.collections_url }}/sacs" class="tira-cart__checkout">Découvrir nos créations</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<script>
+(function() {
+  document.querySelectorAll('.tira-cart__qty-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var key = this.dataset.key;
+      var action = this.dataset.action;
+      var qtyEl = this.closest('.tira-cart__qty').querySelector('.tira-cart__qty-num');
+      var qty = parseInt(qtyEl.textContent) + (action === 'increase' ? 1 : -1);
+      if (qty < 0) qty = 0;
+      fetch('/cart/change.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: key, quantity: qty })
+      }).then(function() { location.reload(); });
+    });
+  });
+  document.querySelectorAll('.tira-cart__remove').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var key = this.dataset.key;
+      fetch('/cart/change.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: key, quantity: 0 })
+      }).then(function() { location.reload(); });
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Panier TIRABOSCHI",
+  "tag": "div",
+  "class": "tira-cart-page",
+  "settings": [],
+  "presets": [{ "name": "Panier TIRABOSCHI" }]
+}
+{% endschema %}

@@ -1,0 +1,26 @@
+{% comment %}
+  TIRABOSCHI · Page 404
+{% endcomment %}
+
+<section class="tira-404" aria-labelledby="not-found-title">
+  <div class="tira-404__inner">
+    <p class="tira-404__code">404</p>
+    <h1 class="tira-404__title" id="not-found-title">Cette page<br>est introuvable</h1>
+    <p class="tira-404__text">La page que vous cherchez a peut-être été déplacée ou n'existe plus.<br>Nos collections, elles, sont bien là.</p>
+    <div class="tira-404__actions">
+      <a href="{{ routes.root_url }}" class="tira-404__link">Retour à l'accueil</a>
+      <a href="{{ routes.collections_url }}/sacs" class="tira-404__link">Voir les sacs</a>
+    </div>
+    <div class="tira-404__signature">TIRABOSCHI Paris · Since 1904</div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Page 404 TIRABOSCHI",
+  "tag": "div",
+  "class": "tira-404-page",
+  "settings": [],
+  "presets": [{ "name": "404 TIRABOSCHI" }]
+}
+{% endschema %}

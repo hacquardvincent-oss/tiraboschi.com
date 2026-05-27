@@ -1,0 +1,43 @@
+{% comment %} TIRABOSCHI · Login {% endcomment %}
+<div class="tira-account-page">
+  <div class="tira-account__form-wrap">
+    <h1 class="tira-account__title">Connexion</h1>
+    {% form 'customer_login' %}
+      {{ form.errors | default_errors }}
+      <div class="tira-form__field">
+        <label for="CustomerEmail">Email</label>
+        <input type="email" name="customer[email]" id="CustomerEmail" autocomplete="email" autocorrect="off" autocapitalize="off" autofocus>
+      </div>
+      <div class="tira-form__field">
+        <label for="CustomerPassword">Mot de passe</label>
+        <input type="password" name="customer[password]" id="CustomerPassword" autocomplete="current-password">
+      </div>
+      <button type="submit" class="tira-account__btn">Se connecter</button>
+    {% endform %}
+    <p class="tira-account__alt">
+      <a href="#recover" onclick="document.getElementById('recover-form').style.display='block';document.getElementById('login-form-main').style.display='none';">Mot de passe oublié ?</a>
+    </p>
+    <p class="tira-account__alt">
+      Pas encore de compte ? <a href="{{ routes.account_register_url }}">Créer un compte</a>
+    </p>
+  </div>
+
+  <div class="tira-account__form-wrap" id="recover-form" style="display:none">
+    <h2 class="tira-account__title">Réinitialiser votre mot de passe</h2>
+    {% form 'recover_customer_password' %}
+      {{ form.errors | default_errors }}
+      {% if form.posted_successfully? %}
+        <p>Un email vous a été envoyé.</p>
+      {% else %}
+        <div class="tira-form__field">
+          <label for="RecoverEmail">Email</label>
+          <input type="email" name="email" id="RecoverEmail" autocomplete="email">
+        </div>
+        <button type="submit" class="tira-account__btn">Réinitialiser</button>
+      {% endif %}
+    {% endform %}
+    <p class="tira-account__alt">
+      <a href="#" onclick="document.getElementById('recover-form').style.display='none';document.getElementById('login-form-main').style.display='block';">← Retour à la connexion</a>
+    </p>
+  </div>
+</div>

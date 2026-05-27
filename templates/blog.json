@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "tira-blog": {
+      "type": "tira-blog",
+      "settings": {}
+    }
+  },
+  "order": ["tira-blog"]
+}

@@ -1,0 +1,29 @@
+{% comment %} TIRABOSCHI · Register {% endcomment %}
+<div class="tira-account-page">
+  <div class="tira-account__form-wrap">
+    <h1 class="tira-account__title">Créer un compte</h1>
+    {% form 'create_customer' %}
+      {{ form.errors | default_errors }}
+      <div class="tira-form__field">
+        <label for="FirstName">Prénom</label>
+        <input type="text" name="customer[first_name]" id="FirstName" autocomplete="given-name">
+      </div>
+      <div class="tira-form__field">
+        <label for="LastName">Nom</label>
+        <input type="text" name="customer[last_name]" id="LastName" autocomplete="family-name">
+      </div>
+      <div class="tira-form__field">
+        <label for="Email">Email</label>
+        <input type="email" name="customer[email]" id="Email" autocomplete="email">
+      </div>
+      <div class="tira-form__field">
+        <label for="CreatePassword">Mot de passe</label>
+        <input type="password" name="customer[password]" id="CreatePassword" autocomplete="new-password">
+      </div>
+      <button type="submit" class="tira-account__btn">Créer mon compte</button>
+    {% endform %}
+    <p class="tira-account__alt">
+      Déjà un compte ? <a href="{{ routes.account_login_url }}">Se connecter</a>
+    </p>
+  </div>
+</div>

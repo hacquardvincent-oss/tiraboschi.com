@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "tira-cart": {
+      "type": "tira-cart",
+      "settings": {}
+    }
+  },
+  "order": ["tira-cart"]
+}
