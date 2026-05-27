@@ -30,9 +30,9 @@
     }
     document.body.classList.toggle('on-dark', isHome && !isSolid);
 
-    /* 2. Header directionnel */
+    /* 2. Header directionnel (désactivé sur homepage : le header reste visible pour le hero) */
     const delta = y - lastScrollY;
-    if (y > 120) {
+    if (!isHome && y > 120) {
       if (delta > 4 && lastDir !== 'down') {
         hdr.classList.add('hidden');
         if (search) {
