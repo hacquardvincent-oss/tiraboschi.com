@@ -1,0 +1,612 @@
+{% comment %}
+  ═══════════════════════════════════════════════════════════════
+  TIRABOSCHI · Matières & Cuirs — Page éditoriale
+  ═══════════════════════════════════════════════════════════════
+  Structure :
+  1. Hero fond noir, lettre décorative "M"
+  2. Philosophie — citation + corps
+  3. Les Cuirs de la Maison — 4 cuirs en cartes
+  4. Peaux Précieuses — 3 peaux exotiques
+  5. Nos Tanneurs — 3 tanneries partenaires
+  6. CTA vers Sur Mesure
+  Styles : scoped .mat-*
+{% endcomment %}
+
+<style>
+  /* ── Variables locales ── */
+  .mat-page {
+    --tira-black: #0a0a0a;
+    --tira-white: #ffffff;
+    --tira-grey: #f7f5f2;
+    --tira-border: #e8e8e8;
+    --tira-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: 'Playfair Display', Georgia, serif;
+    color: var(--tira-black);
+  }
+
+  /* ── 1. Hero ── */
+  .mat-hero {
+    background: var(--tira-black);
+    color: var(--tira-white);
+    padding: calc(68px + 44px + 80px) 40px 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .mat-hero__bg-letter {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 40vw;
+    font-weight: 400;
+    font-style: italic;
+    opacity: 0.03;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+  }
+  .mat-hero__eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    justify-content: center;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.45;
+    margin-bottom: 32px;
+  }
+  .mat-hero__eyebrow span { opacity: 0.3; }
+  .mat-hero__title {
+    font-size: 56px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    margin: 0 0 16px;
+  }
+  .mat-hero__sub {
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.45;
+    margin: 0;
+  }
+  @media (max-width: 768px) {
+    .mat-hero { padding: calc(68px + 44px + 48px) 24px 48px; }
+    .mat-hero__title { font-size: 36px; }
+  }
+
+  /* ── 2. Philosophie ── */
+  .mat-phil {
+    padding: 96px 40px;
+    background: var(--tira-white);
+  }
+  .mat-phil__inner {
+    max-width: 820px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .mat-phil__label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.45;
+    margin: 0 0 32px;
+  }
+  .mat-phil__quote {
+    font-size: 28px;
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.45;
+    margin: 0 0 40px;
+  }
+  .mat-phil__body {
+    font-size: 14px;
+    line-height: 1.85;
+    opacity: 0.7;
+    margin: 0 auto;
+    max-width: 640px;
+  }
+  @media (max-width: 768px) {
+    .mat-phil { padding: 64px 24px; }
+    .mat-phil__quote { font-size: 22px; }
+  }
+
+  /* ── 3. Cuirs de la Maison ── */
+  .mat-cuirs {
+    background: var(--tira-grey);
+    padding: 96px 40px;
+  }
+  .mat-cuirs__header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+  .mat-cuirs__label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.45;
+    display: block;
+    margin-bottom: 16px;
+  }
+  .mat-cuirs__title {
+    font-size: 40px;
+    font-weight: 400;
+    margin: 0;
+  }
+  .mat-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .mat-card {
+    background: var(--tira-white);
+    padding: 40px 32px;
+  }
+  .mat-card__swatch {
+    width: 100%;
+    aspect-ratio: 4/3;
+    margin-bottom: 28px;
+    background: var(--tira-grey);
+    border: 1px solid var(--tira-border);
+  }
+  /* Swatches couleur — identité visuelle cuirs */
+  .swatch-veau-pf {
+    background: linear-gradient(135deg, #c8a882 0%, #a8855a 100%);
+  }
+  .swatch-agneau {
+    background: linear-gradient(135deg, #e8ddd0 0%, #c9b89a 100%);
+  }
+  .swatch-veau-box {
+    background: linear-gradient(135deg, #1a1a1a 0%, #3a3a3a 100%);
+  }
+  .swatch-veau-gras {
+    background: linear-gradient(135deg, #8b6b4a 0%, #6b4e30 100%);
+  }
+  .mat-card__name {
+    font-size: 16px;
+    font-weight: 400;
+    margin: 0 0 8px;
+  }
+  .mat-card__origin {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin: 0 0 12px;
+  }
+  .mat-card__texture {
+    font-size: 13px;
+    line-height: 1.7;
+    opacity: 0.7;
+    margin: 0 0 12px;
+  }
+  .mat-card__usage {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.45;
+    margin: 0;
+    border-top: 1px solid var(--tira-border);
+    padding-top: 12px;
+  }
+  @media (max-width: 900px) {
+    .mat-cuirs { padding: 64px 24px; }
+    .mat-cards { grid-template-columns: repeat(2, 1fr); }
+    .mat-cuirs__title { font-size: 28px; }
+  }
+  @media (max-width: 540px) {
+    .mat-cards { grid-template-columns: 1fr; }
+  }
+
+  /* ── 4. Peaux Précieuses ── */
+  .mat-precious {
+    background: var(--tira-black);
+    color: var(--tira-white);
+    padding: 96px 40px;
+  }
+  .mat-precious__header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+  .mat-precious__label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.35;
+    display: block;
+    margin-bottom: 16px;
+  }
+  .mat-precious__title {
+    font-size: 40px;
+    font-weight: 400;
+    margin: 0;
+  }
+  .mat-precious__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .mat-precious-card {
+    background: rgba(255,255,255,0.04);
+    padding: 40px 32px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .mat-precious-swatch {
+    width: 100%;
+    aspect-ratio: 4/3;
+    margin-bottom: 28px;
+  }
+  .swatch-python {
+    background: repeating-linear-gradient(
+      45deg,
+      #3a3020 0px, #3a3020 4px,
+      #5a4a30 4px, #5a4a30 8px
+    );
+  }
+  .swatch-lezard {
+    background: repeating-linear-gradient(
+      0deg,
+      #4a5a3a 0px, #4a5a3a 3px,
+      #6a7a4a 3px, #6a7a4a 6px
+    );
+  }
+  .swatch-autruche {
+    background: radial-gradient(circle at 30% 40%, #5a4a4a 4px, transparent 4px),
+                radial-gradient(circle at 70% 60%, #5a4a4a 4px, transparent 4px),
+                radial-gradient(circle at 50% 20%, #5a4a4a 3px, transparent 3px),
+                #4a3a3a;
+  }
+  .mat-precious-card__name {
+    font-size: 16px;
+    font-weight: 400;
+    margin: 0 0 8px;
+  }
+  .mat-precious-card__origin {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.4;
+    margin: 0 0 12px;
+  }
+  .mat-precious-card__texture {
+    font-size: 13px;
+    line-height: 1.7;
+    opacity: 0.6;
+    margin: 0 0 16px;
+  }
+  .mat-precious-card__usage {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.4;
+    margin: 0 0 12px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 12px;
+  }
+  .mat-precious-card__cites {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.3;
+    display: block;
+  }
+  @media (max-width: 900px) {
+    .mat-precious { padding: 64px 24px; }
+    .mat-precious__grid { grid-template-columns: 1fr; }
+    .mat-precious__title { font-size: 28px; }
+  }
+
+  /* ── 5. Nos Tanneurs ── */
+  .mat-tanneries {
+    background: var(--tira-white);
+    padding: 96px 40px;
+  }
+  .mat-tanneries__header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+  .mat-tanneries__label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.45;
+    display: block;
+    margin-bottom: 16px;
+  }
+  .mat-tanneries__title {
+    font-size: 40px;
+    font-weight: 400;
+    margin: 0 0 16px;
+  }
+  .mat-tanneries__sub {
+    font-size: 14px;
+    opacity: 0.55;
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+  .mat-tan-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .mat-tan-card {
+    background: var(--tira-grey);
+    padding: 48px 40px;
+  }
+  .mat-tan-card__year {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.45;
+    margin: 0 0 12px;
+  }
+  .mat-tan-card__name {
+    font-size: 22px;
+    font-weight: 400;
+    margin: 0 0 4px;
+  }
+  .mat-tan-card__location {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.45;
+    margin: 0 0 8px;
+  }
+  .mat-tan-card__specialty {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    opacity: 0.55;
+    margin: 0 0 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--tira-border);
+  }
+  .mat-tan-card__text {
+    font-size: 13px;
+    line-height: 1.75;
+    opacity: 0.65;
+    margin: 0;
+  }
+  @media (max-width: 900px) {
+    .mat-tanneries { padding: 64px 24px; }
+    .mat-tan-grid { grid-template-columns: 1fr; }
+    .mat-tanneries__title { font-size: 28px; }
+  }
+
+  /* ── 6. CTA ── */
+  .mat-cta {
+    background: var(--tira-grey);
+    padding: 96px 40px;
+    text-align: center;
+    border-top: 1px solid var(--tira-border);
+  }
+  .mat-cta__eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.45;
+    display: block;
+    margin-bottom: 24px;
+  }
+  .mat-cta__title {
+    font-size: 40px;
+    font-weight: 400;
+    margin: 0 0 16px;
+    font-style: italic;
+  }
+  .mat-cta__sub {
+    font-size: 14px;
+    opacity: 0.55;
+    margin: 0 0 48px;
+  }
+  .mat-cta__link {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    color: var(--tira-black);
+    transition: opacity 0.3s;
+  }
+  .mat-cta__link:hover { opacity: 0.45; }
+  @media (max-width: 768px) {
+    .mat-cta { padding: 64px 24px; }
+    .mat-cta__title { font-size: 28px; }
+  }
+
+  /* ── Reveal animations ── */
+  [data-tira-reveal] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.9s var(--tira-ease), transform 0.9s var(--tira-ease);
+  }
+  [data-tira-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+</style>
+
+<div class="mat-page" id="MainContent">
+
+  {%- comment -%} ══ 1. HERO ══ {%- endcomment -%}
+  <section class="mat-hero" aria-labelledby="mat-hero-title">
+    <div class="mat-hero__bg-letter" aria-hidden="true">M</div>
+    <div class="mat-hero__eyebrow">
+      <span>·</span>
+      <span data-tira-reveal>La Maison · Depuis 1904</span>
+      <span>·</span>
+    </div>
+    <h1 class="mat-hero__title" id="mat-hero-title" data-tira-reveal>Matières &amp; Cuirs</h1>
+    <p class="mat-hero__sub" data-tira-reveal>L'excellence commence avant l'atelier</p>
+  </section>
+
+  {%- comment -%} ══ 2. PHILOSOPHIE ══ {%- endcomment -%}
+  <section class="mat-phil" aria-labelledby="mat-phil-heading">
+    <div class="mat-phil__inner">
+      <p class="mat-phil__label" data-tira-reveal>Notre philosophie</p>
+      <blockquote class="mat-phil__quote" data-tira-reveal>
+        « Le cuir est vivant avant même d'entrer dans l'atelier. Nous le choisissons comme on choisit un collaborateur : avec exigence, pour longtemps. »
+      </blockquote>
+      <p class="mat-phil__body" data-tira-reveal>
+        Chaque maroquinerie TIRABOSCHI débute en mégisserie, à quelques heures de Paris. Nous ne commandons pas de cuir par catalogue : nous sélectionnons les peaux à la main, lot par lot, avec notre artisan. Cuir pleine fleur exclusivement — la surface naturelle de l'animal, non corrigée, non poncée. Seulement 2% des peaux inspectées satisfont nos critères. Ce que vous touchez, c'est la peau dans son état le plus noble.
+      </p>
+    </div>
+  </section>
+
+  {%- comment -%} ══ 3. LES CUIRS DE LA MAISON ══ {%- endcomment -%}
+  <section class="mat-cuirs" aria-labelledby="mat-cuirs-title">
+    <div class="mat-cuirs__header">
+      <span class="mat-cuirs__label" data-tira-reveal>Notre sélection</span>
+      <h2 class="mat-cuirs__title" id="mat-cuirs-title" data-tira-reveal>Les Cuirs de la Maison</h2>
+    </div>
+    <div class="mat-cards" role="list">
+
+      <article class="mat-card" role="listitem" data-tira-reveal>
+        <div class="mat-card__swatch swatch-veau-pf" aria-label="Veau pleine fleur — swatch couleur" role="img"></div>
+        <div class="mat-card__info">
+          <h3 class="mat-card__name">Veau Pleine Fleur</h3>
+          <p class="mat-card__origin">Mégisserie Berry, Vallée de la Loire — France</p>
+          <p class="mat-card__texture">Grain serré et régulier, toucher soyeux, patine naturelle dorée avec l'usage. Le cuir signature de la Maison.</p>
+          <p class="mat-card__usage">Victoire · Colette · Rafael · Jane · Olympe</p>
+        </div>
+      </article>
+
+      <article class="mat-card" role="listitem" data-tira-reveal>
+        <div class="mat-card__swatch swatch-agneau" aria-label="Agneau nappa — swatch couleur" role="img"></div>
+        <div class="mat-card__info">
+          <h3 class="mat-card__name">Agneau Nappa</h3>
+          <p class="mat-card__origin">Gants de Millau, Aveyron — France</p>
+          <p class="mat-card__texture">Douceur incomparable, légèreté naturelle, chute souple au toucher comme de la soie tendue.</p>
+          <p class="mat-card__usage">Pochon · Doublures de tous les modèles</p>
+        </div>
+      </article>
+
+      <article class="mat-card" role="listitem" data-tira-reveal>
+        <div class="mat-card__swatch swatch-veau-box" aria-label="Veau box — swatch couleur" role="img"></div>
+        <div class="mat-card__info">
+          <h3 class="mat-card__name">Veau Box</h3>
+          <p class="mat-card__origin">Tannerie Rémy Carriat, Normandie — France</p>
+          <p class="mat-card__texture">Lisse, brillant, résistant aux égratignures. Acquiert avec l'âge le lustre d'un miroir patiné.</p>
+          <p class="mat-card__usage">Modèles iconiques sur demande · Sur Mesure</p>
+        </div>
+      </article>
+
+      <article class="mat-card" role="listitem" data-tira-reveal>
+        <div class="mat-card__swatch swatch-veau-gras" aria-label="Veau gras — swatch couleur" role="img"></div>
+        <div class="mat-card__info">
+          <h3 class="mat-card__name">Veau Gras</h3>
+          <p class="mat-card__origin">Tannerie du Puy, Haute-Loire — France</p>
+          <p class="mat-card__texture">Légèrement grainé, souple dès la première utilisation, naturellement résistant à l'eau.</p>
+          <p class="mat-card__usage">Colette Mini · Jane · Chaîne</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  {%- comment -%} ══ 4. PEAUX PRÉCIEUSES ══ {%- endcomment -%}
+  <section class="mat-precious" aria-labelledby="mat-precious-title">
+    <div class="mat-precious__header">
+      <span class="mat-precious__label" data-tira-reveal>Réservées aux esprits rares</span>
+      <h2 class="mat-precious__title" id="mat-precious-title" data-tira-reveal>Peaux Précieuses</h2>
+    </div>
+    <div class="mat-precious__grid" role="list">
+
+      <article class="mat-precious-card" role="listitem" data-tira-reveal>
+        <div class="mat-precious-swatch swatch-python" aria-label="Python de Birmanie" role="img"></div>
+        <h3 class="mat-precious-card__name">Python de Birmanie</h3>
+        <p class="mat-precious-card__origin">Élevages certifiés CITES, Asie du Sud-Est</p>
+        <p class="mat-precious-card__texture">Écailles régulières naturelles, reflets nacrés changeants selon la lumière. Aucune peau ne ressemble à une autre.</p>
+        <p class="mat-precious-card__usage">Sur Mesure &amp; Exotiques uniquement</p>
+        <span class="mat-precious-card__cites">Certifié CITES · Éthique</span>
+      </article>
+
+      <article class="mat-precious-card" role="listitem" data-tira-reveal>
+        <div class="mat-precious-swatch swatch-lezard" aria-label="Lézard niloticus" role="img"></div>
+        <h3 class="mat-precious-card__name">Lézard Niloticus</h3>
+        <p class="mat-precious-card__origin">Élevages certifiés CITES, Afrique</p>
+        <p class="mat-precious-card__texture">Écailles carrées et uniformes, toucher sec et précis, structure géométrique naturellement parfaite.</p>
+        <p class="mat-precious-card__usage">Sur Mesure &amp; Exotiques uniquement</p>
+        <span class="mat-precious-card__cites">Certifié CITES · Éthique</span>
+      </article>
+
+      <article class="mat-precious-card" role="listitem" data-tira-reveal>
+        <div class="mat-precious-swatch swatch-autruche" aria-label="Autruche d'Afrique du Sud" role="img"></div>
+        <h3 class="mat-precious-card__name">Autruche d'Afrique du Sud</h3>
+        <p class="mat-precious-card__origin">Élevages certifiés CITES, Cape Province</p>
+        <p class="mat-precious-card__texture">Rondeurs caractéristiques et reconnaissables, ultra-souple, rarissime — production mondiale limitée.</p>
+        <p class="mat-precious-card__usage">Sur Mesure &amp; Exotiques uniquement</p>
+        <span class="mat-precious-card__cites">Certifié CITES · Éthique</span>
+      </article>
+
+    </div>
+  </section>
+
+  {%- comment -%} ══ 5. NOS TANNEURS ══ {%- endcomment -%}
+  <section class="mat-tanneries" aria-labelledby="mat-tanneries-title">
+    <div class="mat-tanneries__header">
+      <span class="mat-tanneries__label" data-tira-reveal>Depuis plus de 50 ans</span>
+      <h2 class="mat-tanneries__title" id="mat-tanneries-title" data-tira-reveal>Nos Tanneurs</h2>
+      <p class="mat-tanneries__sub" data-tira-reveal>
+        Trois maisons françaises, trois générations de confiance. Nous ne changeons pas de tanneries — nous les accompagnons.
+      </p>
+    </div>
+    <div class="mat-tan-grid">
+
+      <article class="mat-tan-card" data-tira-reveal>
+        <p class="mat-tan-card__year">Fondée en 1897</p>
+        <h3 class="mat-tan-card__name">Mégisserie Berry</h3>
+        <p class="mat-tan-card__location">Vallée de la Loire, France</p>
+        <p class="mat-tan-card__specialty">Tannage végétal · Processus 6 semaines</p>
+        <p class="mat-tan-card__text">Spécialisée dans le tannage végétal à l'écorce de chêne, la Mégisserie Berry est l'une des dernières manufactures françaises à maintenir un processus de six semaines — contre quelques jours pour le tannage chimique. C'est ici que naît notre veau pleine fleur signature.</p>
+      </article>
+
+      <article class="mat-tan-card" data-tira-reveal>
+        <p class="mat-tan-card__year">Fondée en 1934</p>
+        <h3 class="mat-tan-card__name">Rémy Carriat</h3>
+        <p class="mat-tan-card__location">Normandie, France</p>
+        <p class="mat-tan-card__specialty">Veau box · Spécialité 3 générations</p>
+        <p class="mat-tan-card__text">Trois générations de tanneurs normands dédiées exclusivement au veau box. La famille Carriat a développé un procédé de lustrage à froid unique qui donne à leur cuir son brillant caractéristique sans aucun revêtement artificiel. Une maison confidentielle, pour les maroquiniers qui savent.</p>
+      </article>
+
+      <article class="mat-tan-card" data-tira-reveal>
+        <p class="mat-tan-card__year">Fondée en 1912</p>
+        <h3 class="mat-tan-card__name">Tannerie du Puy</h3>
+        <p class="mat-tan-card__location">Haute-Loire, France</p>
+        <p class="mat-tan-card__specialty">Teinture artisanale · Couleurs exclusives</p>
+        <p class="mat-tan-card__text">Installée dans les gorges de la Loire depuis 1912, la Tannerie du Puy maîtrise une technique de teinture en cuve artisanale qui teint le cuir dans toute son épaisseur. Nos couleurs exclusives sont développées ici, en collaboration directe avec notre artisan.</p>
+      </article>
+
+    </div>
+  </section>
+
+  {%- comment -%} ══ 6. CTA ══ {%- endcomment -%}
+  <section class="mat-cta" aria-label="Appel à l'action">
+    <span class="mat-cta__eyebrow" data-tira-reveal>Sur Mesure</span>
+    <h2 class="mat-cta__title" data-tira-reveal>Votre cuir. Votre couleur.</h2>
+    <p class="mat-cta__sub" data-tira-reveal>Façonné pour vous, dans la matière de votre choix.</p>
+    <a href="/pages/sur-mesure" class="mat-cta__link" data-tira-reveal>
+      Découvrir le Sur Mesure →
+    </a>
+  </section>
+
+</div>
+
+{% schema %}
+{
+  "name": "Matières & Cuirs TIRABOSCHI",
+  "tag": "main",
+  "class": "section",
+  "settings": [],
+  "presets": [{ "name": "Matières & Cuirs TIRABOSCHI" }]
+}
+{% endschema %}

@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "tira-savoir-faire": {
+      "type": "tira-savoir-faire",
+      "settings": {}
+    }
+  },
+  "order": ["tira-savoir-faire"]
+}
