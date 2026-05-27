@@ -30,7 +30,7 @@
      Desktop : header seulement (search intégrée) = 68px */
   --content-top:   calc(var(--header-h) + var(--search-h));
 }
-@media (min-width: 901px) {
+@media (min-width: 1201px) {
   :root { --content-top: var(--header-h); }
 }
 
@@ -181,8 +181,8 @@ h1, h2, h3, h4, h5, h6 {
   width: 14px; height: 14px; fill: none;
   stroke: currentColor; stroke-width: 1.5;
 }
-/* Sur mobile : masquer la search inline (la search bar externe reste visible) */
-@media (max-width: 900px) {
+/* Sous 1200px : masquer la search inline (la search bar externe reste visible) */
+@media (max-width: 1200px) {
   .hdr__search-inline { display: none; }
 }
 
@@ -271,12 +271,12 @@ h1, h2, h3, h4, h5, h6 {
   display: flex; align-items: center; color: inherit; padding: 2px;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1200px) {
   .hdr__d { display: none; }
   .hdr__m { display: grid; }
 }
 /* Masquer la search bar externe sur desktop (intégrée dans le header) */
-@media (min-width: 901px) {
+@media (min-width: 1201px) {
   #hdr-search { display: none !important; }
 }
 
