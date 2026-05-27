@@ -10,8 +10,8 @@
 ## ⛔ RÈGLE ABSOLUE — NE JAMAIS OUBLIER
 
 ```
-THÈME LIVE    → ID 187554070871 (Phantom)  ← NE JAMAIS TOUCHER
-THÈME DE TEST → ID 183983931735 (Horizon)  ← Travailler ICI uniquement
+THÈME LIVE    → ID 187554070871 (Phantom)       ← NE JAMAIS TOUCHER
+THÈME DE TEST → ID 199706411351 (tiraboschibespoke) ← Travailler ICI uniquement
 ```
 
 ---
