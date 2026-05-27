@@ -138,19 +138,23 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Icons desktop — droite : [account] [search] [bag] */
 .hdr__icons {
-  display: flex; align-items: center; justify-content: flex-end; gap: 18px;
+  display: flex; align-items: center; justify-content: flex-end; gap: 20px;
 }
+.hdr__icons a,
 .hdr__icons button {
-  background: none; border: none; cursor: none;
+  background: none; border: none; cursor: pointer;
   display: flex; align-items: center; color: inherit;
   opacity: .75; transition: opacity .2s;
+  text-decoration: none;
 }
+.hdr__icons a:hover,
 .hdr__icons button:hover { opacity: 1; }
 .hdr__icons svg {
-  width: 20px; height: 20px; fill: none;
+  width: 22px; height: 22px; fill: none;
   stroke: currentColor; stroke-width: 1.5;
   stroke-linecap: square; stroke-linejoin: miter;
 }
+
 
 /* Bag icon — image CDN, filtre white ↔ black */
 .tira-bag-icon {
@@ -514,7 +518,7 @@ body.nav-open { overflow: hidden; }
   .grid { grid-template-columns: repeat(2, 1fr); gap: 2px; padding: 2px; }
 }
 
-.card { cursor: none; position: relative; }
+.card { cursor: auto; position: relative; }
 
 .card__img {
   position: relative; aspect-ratio: 3/4; overflow: hidden;
@@ -542,7 +546,7 @@ body.nav-open { overflow: hidden; }
   align-self: flex-end; width: 32px; height: 32px;
   background: transparent; border: none;
   display: flex; align-items: center; justify-content: center;
-  cursor: none;
+  cursor: pointer;
 }
 .card__wish svg {
   width: 18px; height: 18px; fill: none;
@@ -563,7 +567,7 @@ body.nav-open { overflow: hidden; }
   border: none; width: 100%; padding: 11px;
   font-family: inherit; font-size: 10px;
   text-transform: uppercase; letter-spacing: .12em;
-  cursor: none; transition: background .2s;
+  cursor: pointer; transition: background .2s;
 }
 .card__atc:hover { background: var(--tira-black); }
 
@@ -1120,7 +1124,7 @@ body.hdr-hidden .col-filters {
 
 /* Bouton filtre */
 .col-filter-btn {
-  background: none; border: none; cursor: none;
+  background: none; border: none; cursor: pointer;
   display: flex; align-items: center; gap: 5px;
   font-family: inherit; font-size: 10px;
   text-transform: uppercase; letter-spacing: .1em;
@@ -1213,7 +1217,7 @@ body.hdr-hidden .col-filters {
 /* Tri */
 .col-sort-wrap { position: relative; }
 .col-sort-btn {
-  background: none; border: none; cursor: none;
+  background: none; border: none; cursor: pointer;
   display: flex; align-items: center; gap: 5px;
   font-family: inherit; font-size: 10px;
   text-transform: uppercase; letter-spacing: .1em;
@@ -1234,7 +1238,7 @@ body.hdr-hidden .col-filters {
   padding: 10px 20px; text-align: left;
   font-family: inherit; font-size: 10px;
   text-transform: uppercase; letter-spacing: .1em;
-  opacity: .55; transition: opacity .2s, background .2s; cursor: none;
+  opacity: .55; transition: opacity .2s, background .2s; cursor: pointer;
 }
 .col-sort-panel button:hover { opacity: 1; background: var(--tira-grey); }
 .col-sort-panel button.selected { opacity: 1; }
@@ -1265,7 +1269,7 @@ body.hdr-hidden .col-filters {
   font-family: inherit; font-size: 10px;
   text-transform: uppercase; letter-spacing: .14em;
   text-decoration: underline; text-underline-offset: 5px;
-  cursor: none; opacity: .55; transition: opacity .2s;
+  cursor: pointer; opacity: .55; transition: opacity .2s;
 }
 .col-more__btn:hover { opacity: 1; }
 
@@ -1534,7 +1538,7 @@ body.hdr-hidden .col-filters {
 .prd-colors__swatches { display: flex; gap: 12px; }
 .prd-swatch {
   display: flex; flex-direction: column; align-items: center; gap: 6px;
-  cursor: none;
+  cursor: pointer;
 }
 .prd-swatch input { position: absolute; opacity: 0; pointer-events: none; }
 .prd-swatch__material {
@@ -1567,7 +1571,7 @@ body.hdr-hidden .col-filters {
   background: var(--tira-black); color: var(--tira-white);
   border: none; font-family: inherit;
   font-size: 11px; text-transform: uppercase; letter-spacing: .14em;
-  cursor: none; transition: background .2s;
+  cursor: pointer; transition: background .2s;
 }
 .prd-atc:hover { background: rgba(10,10,10,.82); }
 .prd-atc.in-cart { background: rgba(10,10,10,.6); }
@@ -1579,7 +1583,7 @@ body.hdr-hidden .col-filters {
   font-family: inherit; font-size: 11px;
   text-transform: uppercase; letter-spacing: .12em;
   background: transparent; color: var(--tira-black);
-  cursor: none; transition: background .3s, color .3s;
+  cursor: pointer; transition: background .3s, color .3s;
   text-align: center;
 }
 .prd-atc__btn--preorder:hover { background: var(--tira-black); color: var(--tira-white); }
@@ -1611,7 +1615,7 @@ body.hdr-hidden .col-filters {
   width: 100%; padding: 16px 0; background: none; border: none;
   font-family: inherit; font-size: 11px;
   text-transform: uppercase; letter-spacing: .1em;
-  cursor: none; opacity: .65; transition: opacity .2s;
+  cursor: pointer; opacity: .65; transition: opacity .2s;
 }
 .prd-accordion__btn:hover { opacity: 1; }
 .prd-accordion__btn svg {
@@ -1768,7 +1772,7 @@ body.hdr-hidden .col-filters {
   display: inline-flex; align-items: center; gap: 12px;
   margin-top: 32px;
   font-size: 10px; text-transform: uppercase; letter-spacing: .14em;
-  opacity: .7; transition: opacity .2s; cursor: none;
+  opacity: .7; transition: opacity .2s; cursor: pointer;
 }
 .story-play:hover { opacity: 1; }
 .story-play svg { width: 36px; height: 36px; }
