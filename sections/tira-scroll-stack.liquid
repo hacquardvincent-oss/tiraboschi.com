@@ -24,6 +24,9 @@
     {%- endif -%}
 
     <div class="stack__panel stack__panel--{{ block.settings.overlay_style | default: 'dark' }}" {{ block.shopify_attributes }}>
+      {%- if block.settings.link_url != blank -%}
+        <a href="{{ block.settings.link_url }}" class="stack__panel-link" aria-label="{{ block.settings.title | escape }}"></a>
+      {%- endif -%}
       <div class="stack__bg">
         {%- if block.settings.image -%}
           <img src="{{ block.settings.image | image_url: width: 1920 }}"
