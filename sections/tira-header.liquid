@@ -42,15 +42,82 @@
       </a>
     </div>
 
-    {%- comment -%} Navigation centrée {%- endcomment -%}
-    <nav class="hdr__nav" aria-label="{{ 'general.navigation' | t | default: 'Navigation principale' }}">
-      <a href="{{ routes.collections_url }}/sacs"{% if request.path contains '/collections/sacs' %} aria-current="page"{% endif %}>Sacs</a>
-      <a href="{{ routes.collections_url }}/petite-maroquinerie"{% if request.path contains '/collections/petite-maroquinerie' %} aria-current="page"{% endif %}>Petite Maroquinerie</a>
-      <a href="{{ routes.collections_url }}/iconiques"{% if request.path contains '/collections/iconiques' %} aria-current="page"{% endif %}>Iconiques</a>
-      <a href="{{ routes.collections_url }}/sur-mesure-exotiques"{% if request.path contains '/collections/sur-mesure' %} aria-current="page"{% endif %}>Sur Mesure</a>
+    {%- comment -%} Navigation desktop avec mega-menu {%- endcomment -%}
+    <nav class="hdr__nav" id="hdr-nav" aria-label="{{ 'general.navigation' | t | default: 'Navigation principale' }}">
+
+      {%- comment -%} Groupe Collections {%- endcomment -%}
+      <div class="hdr__nav-item" data-mega="collections">
+        <a href="{{ routes.collections_url }}/fw25"
+           class="hdr__nav-link"
+           {% if request.path contains '/collections/' %} aria-current="page"{% endif %}>Collections</a>
+        <div class="mega" id="mega-collections" role="region" aria-label="Menu Collections">
+          <div class="mega__inner">
+            <div class="mega__links">
+              <a href="{{ routes.collections_url }}/fw25" class="mega__link mega__link--featured">FW25 · Automne-Hiver</a>
+              <a href="{{ routes.collections_url }}/sacs" class="mega__link">Sacs</a>
+              <a href="{{ routes.collections_url }}/petite-maroquinerie" class="mega__link">Petite Maroquinerie</a>
+              <a href="{{ routes.collections_url }}/iconiques" class="mega__link">Iconiques</a>
+              <a href="{{ routes.collections_url }}/sur-mesure-exotiques" class="mega__link">Sur Mesure · Exotiques</a>
+            </div>
+            <div class="mega__visual">
+              <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Asset_Atelier_6.png?v=1752606862"
+                   alt="Collections TIRABOSCHI" width="480" height="640" loading="lazy">
+              <p class="mega__caption">FW25 · Collection Automne-Hiver</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {%- comment -%} Sur Mesure {%- endcomment -%}
+      <div class="hdr__nav-item" data-mega="surm">
+        <a href="/pages/sur-mesure" class="hdr__nav-link"
+           {% if request.path contains '/pages/sur-mesure' %} aria-current="page"{% endif %}>Sur Mesure</a>
+        <div class="mega" id="mega-surm" role="region" aria-label="Menu Sur Mesure">
+          <div class="mega__inner">
+            <div class="mega__links">
+              <p class="mega__tagline">Votre sac. Votre cuir. Votre empreinte.</p>
+              <a href="/pages/sur-mesure" class="mega__link mega__link--featured">Découvrir le programme</a>
+              <a href="/pages/sur-mesure#rdv" class="mega__link">Prendre rendez-vous</a>
+              <a href="/pages/matieres-cuirs" class="mega__link">Guide des matières</a>
+            </div>
+            <div class="mega__visual">
+              <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Asset_Mains_1.png?v=1752607078"
+                   alt="Sur Mesure TIRABOSCHI" width="480" height="640" loading="lazy">
+              <p class="mega__caption">Atelier · Paris · Sur rendez-vous</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/pages/histoire"{% if request.path contains '/pages/histoire' %} aria-current="page"{% endif %}>La Maison</a>
+
+      {%- comment -%} La Maison {%- endcomment -%}
+      <div class="hdr__nav-item" data-mega="maison">
+        <a href="/pages/histoire" class="hdr__nav-link"
+           {% if request.path contains '/pages/histoire' or request.path contains '/pages/savoir-faire' or request.path contains '/pages/matieres' %} aria-current="page"{% endif %}>La Maison</a>
+        <div class="mega" id="mega-maison" role="region" aria-label="Menu La Maison">
+          <div class="mega__inner">
+            <div class="mega__links">
+              <a href="/pages/histoire" class="mega__link mega__link--featured">Histoire · Depuis 1904</a>
+              <a href="/pages/savoir-faire" class="mega__link">Savoir-Faire</a>
+              <a href="/pages/matieres-cuirs" class="mega__link">Matières & Cuirs</a>
+              <a href="/pages/la-societe" class="mega__link">The Society</a>
+              <a href="/blogs/latelier" class="mega__link">L'Atelier · Blog</a>
+              <a href="/pages/contact" class="mega__link">Contact · RDV</a>
+            </div>
+            <div class="mega__visual">
+              <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Asset_atelier_1.png?v=1752606834"
+                   alt="Atelier TIRABOSCHI" width="480" height="640" loading="lazy">
+              <p class="mega__caption">TIRABOSCHI Paris · Fondé en 1904</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </nav>
+
+    {%- comment -%} Overlay backdrop mega-menu {%- endcomment -%}
+    <div class="mega-backdrop" id="mega-backdrop" aria-hidden="true"></div>
 
     {%- comment -%} Icons droite : [account] [search] [bag] {%- endcomment -%}
     <div class="hdr__icons">
@@ -231,3 +298,51 @@
   "presets": [{ "name": "Header TIRABOSCHI" }]
 }
 {% endschema %}
+
+<script>
+(function () {
+  const items    = document.querySelectorAll('.hdr__nav-item[data-mega]');
+  const backdrop = document.getElementById('mega-backdrop');
+  if (!items.length || !backdrop) return;
+
+  let closeTimer;
+
+  function openMega(item) {
+    clearTimeout(closeTimer);
+    items.forEach(i => i.classList.remove('is-open'));
+    item.classList.add('is-open');
+    backdrop.classList.add('is-visible');
+  }
+
+  function closeMega() {
+    closeTimer = setTimeout(() => {
+      items.forEach(i => i.classList.remove('is-open'));
+      backdrop.classList.remove('is-visible');
+    }, 120);
+  }
+
+  items.forEach(item => {
+    item.addEventListener('mouseenter', () => openMega(item));
+    item.addEventListener('mouseleave', closeMega);
+    const mega = item.querySelector('.mega');
+    if (mega) {
+      mega.addEventListener('mouseenter', () => clearTimeout(closeTimer));
+      mega.addEventListener('mouseleave', closeMega);
+    }
+  });
+
+  backdrop.addEventListener('mouseenter', closeMega);
+
+  // Fermer au clic sur le backdrop
+  backdrop.addEventListener('click', () => {
+    items.forEach(i => i.classList.remove('is-open'));
+    backdrop.classList.remove('is-visible');
+  });
+
+  // Fermer au scroll
+  window.addEventListener('scroll', () => {
+    items.forEach(i => i.classList.remove('is-open'));
+    backdrop.classList.remove('is-visible');
+  }, { passive: true });
+})();
+</script>

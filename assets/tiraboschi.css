@@ -126,12 +126,17 @@ h1, h2, h3, h4, h5, h6 {
 .hdr__nav {
   display: flex; align-items: center; gap: 28px;
 }
-.hdr__nav a {
+.hdr__nav-item { display: flex; align-items: center; position: static; }
+.hdr__nav a,
+.hdr__nav-link {
   font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
   opacity: .75; transition: opacity .2s; white-space: nowrap;
+  color: inherit; text-decoration: none; cursor: pointer;
 }
-.hdr__nav a:hover { opacity: 1; }
-.hdr__nav a[aria-current] { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
+.hdr__nav a:hover,
+.hdr__nav-link:hover { opacity: 1; }
+.hdr__nav a[aria-current],
+.hdr__nav-link[aria-current] { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
 .hdr__nav .nav-sep {
   width: 1px; height: 11px; background: currentColor; opacity: .2;
 }
@@ -886,10 +891,25 @@ body.nav-open { overflow: hidden; }
    (jamais "newsletter" — vocabulaire luxe)
 ════════════════════════════════════════════ */
 .society-crm {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
-  align-items: center; padding: 80px 48px;
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 60px;
+  align-items: start; padding: 80px 48px;
   border-top: 1px solid var(--tira-border);
   border-bottom: 1px solid var(--tira-border);
+}
+/* Bloc Instagram */
+.society-crm__col-social { display: flex; flex-direction: column; gap: 20px; }
+.society-crm__social-eyebrow { font-size: 10px; text-transform: uppercase; letter-spacing: .15em; opacity: .4; }
+.society-crm__insta-link {
+  display: flex; align-items: center; gap: 14px;
+  text-decoration: none; color: var(--tira-black);
+  opacity: .8; transition: opacity .25s;
+}
+.society-crm__insta-link:hover { opacity: 1; }
+.society-crm__insta-icon { width: 28px; height: 28px; flex-shrink: 0; }
+.society-crm__insta-handle { font-size: 17px; letter-spacing: .02em; flex: 1; }
+.society-crm__insta-arrow { width: 16px; height: 16px; opacity: .45; }
+@media (max-width: 900px) {
+  .society-crm { grid-template-columns: 1fr; gap: 40px; padding: 60px 20px; }
 }
 .society-crm__title {
   font-size: clamp(28px, 3.5vw, 52px); font-weight: 400;
@@ -2233,4 +2253,101 @@ body.hdr-hidden .col-filters {
 @media (max-width: 768px) {
   .footer__social { gap: 16px; }
   .tira-locale-row { gap: 12px; }
+}
+
+/* ════════════════════════════════════════════
+   MEGA MENU
+════════════════════════════════════════════ */
+.hdr__nav-item {
+  position: static;
+}
+.hdr__nav-link {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+  opacity: .75; transition: opacity .2s; white-space: nowrap;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 4px 0;
+}
+.hdr__nav-link:hover,
+.hdr__nav-item.is-open .hdr__nav-link { opacity: 1; }
+
+/* Panel mega */
+.mega {
+  position: fixed;
+  top: var(--header-h);
+  left: 0; right: 0;
+  background: var(--tira-white);
+  border-bottom: 1px solid var(--tira-border);
+  z-index: 190;
+  opacity: 0; pointer-events: none;
+  transform: translateY(-8px);
+  transition: opacity .3s var(--tira-ease), transform .3s var(--tira-ease);
+}
+.hdr__nav-item.is-open .mega {
+  opacity: 1; pointer-events: auto; transform: translateY(0);
+}
+
+.mega__inner {
+  display: grid;
+  grid-template-columns: 1fr 480px;
+  gap: 0;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 40px;
+  gap: 60px;
+  align-items: start;
+}
+
+.mega__links {
+  display: flex; flex-direction: column; gap: 4px;
+  padding-top: 8px;
+}
+.mega__tagline {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .12em;
+  opacity: .4; margin-bottom: 20px;
+}
+.mega__link {
+  font-size: 13px; color: var(--tira-black);
+  text-decoration: none; opacity: .6;
+  padding: 10px 0;
+  border-bottom: 1px solid transparent;
+  transition: opacity .2s, border-color .2s;
+  letter-spacing: .02em;
+}
+.mega__link:hover { opacity: 1; border-bottom-color: var(--tira-border); }
+.mega__link--featured {
+  font-size: 15px; opacity: .9; margin-bottom: 8px;
+  border-bottom: 1px solid var(--tira-border);
+}
+.mega__link--featured:hover { opacity: 1; }
+
+.mega__visual {
+  position: relative;
+}
+.mega__visual img {
+  width: 100%; aspect-ratio: 3/4;
+  object-fit: cover; display: block;
+}
+.mega__caption {
+  margin-top: 12px;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .12em;
+  opacity: .4;
+}
+
+/* Backdrop */
+.mega-backdrop {
+  position: fixed; inset: 0;
+  top: var(--header-h);
+  background: rgba(10,10,10,.2);
+  z-index: 189;
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s ease;
+}
+.mega-backdrop.is-visible { opacity: 1; pointer-events: auto; }
+
+/* Masquer mega sur mobile */
+@media (max-width: 1024px) {
+  .mega { display: none; }
+  .mega-backdrop { display: none; }
 }
