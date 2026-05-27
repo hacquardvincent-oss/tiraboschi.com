@@ -119,7 +119,7 @@
     {%- comment -%} Overlay backdrop mega-menu {%- endcomment -%}
     <div class="mega-backdrop" id="mega-backdrop" aria-hidden="true"></div>
 
-    {%- comment -%} Icons droite : [account] [search] [bag] {%- endcomment -%}
+    {%- comment -%} Icons droite : [account] [bag] {%- endcomment -%}
     <div class="hdr__icons">
       <a href="{{ routes.account_url }}" aria-label="{% if customer %}Mon compte — {{ customer.first_name | escape }}{% else %}Se connecter{% endif %}">
         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -127,13 +127,6 @@
           <path d="M3.5 20c0-4.5 3.8-7 8.5-7s8.5 2.5 8.5 7"/>
         </svg>
       </a>
-
-      <button type="button" aria-label="Ouvrir la recherche" data-tira-search-toggle>
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="10.5" cy="10.5" r="6.5"/>
-          <line x1="15.5" y1="15.5" x2="21" y2="21"/>
-        </svg>
-      </button>
 
       <a href="{{ routes.cart_url }}" aria-label="Panier — {{ cart.item_count }} article{% if cart.item_count != 1 %}s{% endif %}" class="hdr__bag" data-cart-count="{{ cart.item_count }}">
         <img class="tira-bag-icon"
