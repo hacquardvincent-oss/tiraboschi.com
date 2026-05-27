@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "tira-contact": {
+      "type": "tira-contact",
+      "settings": {}
+    }
+  },
+  "order": ["tira-contact"]
+}
