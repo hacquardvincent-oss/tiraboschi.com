@@ -47,10 +47,6 @@
   <body class="template-{{ template | replace: '.', '-' }} page-type-{{ request.page_type }}">
     <a class="visually-hidden skip-to-content" href="#MainContent">Aller au contenu principal</a>
 
-    {%- comment -%} ── Curseur custom (desktop only via JS) ── {%- endcomment -%}
-    <div class="cur-dot" id="cur-dot" aria-hidden="true"></div>
-    <div class="cur-ring" id="cur-ring" aria-hidden="true"></div>
-
     {%- comment -%} ── Drop bar site-wide (si drop actif dans settings) ── {%- endcomment -%}
     {%- if settings.drop_active -%}
       {%- render 'tira-drop-bar' -%}

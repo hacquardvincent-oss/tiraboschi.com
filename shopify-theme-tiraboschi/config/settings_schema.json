@@ -39,12 +39,6 @@
       },
       {
         "type": "checkbox",
-        "id": "custom_cursor",
-        "label": "Curseur custom (desktop uniquement)",
-        "default": true
-      },
-      {
-        "type": "checkbox",
         "id": "page_transitions",
         "label": "Transitions entre pages (fondu blanc 350ms)",
         "default": true
