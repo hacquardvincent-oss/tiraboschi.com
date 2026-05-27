@@ -1579,37 +1579,115 @@ body.hdr-hidden .col-filters {
 .prd-lightbox__prev { left: 0; }
 .prd-lightbox__next { right: 0; }
 
-/* ─── Galerie mobile : carousel swipe avec barre de progression ─── */
+/* ─── Galerie mobile : scroll vertical style Miu Miu ─── */
 .prd-gallery--mobile {
   display: none;
-  position: relative; aspect-ratio: 3/4;
-  overflow: hidden; background: var(--tira-grey);
+  background: var(--tira-grey);
 }
-.prd-gallery--mobile .prd-carousel {
-  display: flex; height: 100%;
-  transition: transform .4s var(--tira-ease);
-  will-change: transform;
+.prd-vgallery__img {
+  position: relative; aspect-ratio: 3/4; overflow: hidden;
 }
-.prd-carousel__slide {
-  min-width: 100%; height: 100%; flex-shrink: 0;
-  position: relative;
+.prd-vgallery__img img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
 }
-.prd-carousel__slide img { width: 100%; height: 100%; }
 
-/* Barre de progression (remplace les dots ronds) */
-.prd-carousel__progress {
-  position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
-  background: rgba(10,10,10,.12); z-index: 2;
+/* Dots indicateur — fixed gauche, visible pendant la galerie */
+.prd-vdots {
+  display: none;
+  position: fixed; left: 10px; top: 50%; transform: translateY(-50%);
+  flex-direction: column; gap: 7px;
+  z-index: 80; pointer-events: none;
 }
-.prd-carousel__progress-bar {
-  height: 100%; background: var(--tira-black);
-  transition: width .4s var(--tira-ease);
-  width: 20%;
+.prd-vdot {
+  width: 4px; height: 4px;
+  background: rgba(10,10,10,.2);
+  border-radius: 50%;
+  transition: background .25s, transform .25s;
+}
+.prd-vdot.active { background: var(--tira-black); transform: scale(1.6); }
+
+/* Wishlist fixed — visible pendant scroll galerie mobile */
+.prd-gallery__wish {
+  display: none;
+  position: fixed; top: calc(var(--header-h) + 14px); right: 14px;
+  z-index: 80; background: none; border: none; cursor: pointer;
+  width: 36px; height: 36px;
+  align-items: center; justify-content: center;
+}
+.prd-gallery__wish svg {
+  width: 20px; height: 20px; fill: none;
+  stroke: var(--tira-black); stroke-width: 1.5;
+}
+.prd-gallery__wish.active svg { fill: var(--tira-black); }
+
+/* Trigger "Détails du produit" — mobile only */
+.prd-details-trigger {
+  display: none;
+  align-items: center; justify-content: space-between;
+  width: 100%; padding: 16px 0;
+  background: none; border: none;
+  border-top: 1px solid var(--tira-border);
+  font-family: inherit; font-size: 11px;
+  text-transform: uppercase; letter-spacing: .1em;
+  cursor: pointer; color: var(--tira-black); opacity: .65;
+  transition: opacity .2s;
+}
+.prd-details-trigger:hover { opacity: 1; }
+.prd-details-trigger svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+
+/* Panel "Détails du produit" — bottom sheet mobile */
+.prd-details-panel {
+  display: none;
+  position: fixed; inset: 0; z-index: 400;
+}
+.prd-details-panel.open { display: block; }
+.prd-details-panel__backdrop {
+  position: absolute; inset: 0;
+  background: rgba(10,10,10,.4);
+  opacity: 0; transition: opacity .35s var(--tira-ease);
+}
+.prd-details-panel.open .prd-details-panel__backdrop { opacity: 1; }
+.prd-details-panel__inner {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  background: var(--tira-white);
+  max-height: 88vh; overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform .4s var(--tira-ease);
+}
+.prd-details-panel.open .prd-details-panel__inner { transform: none; }
+.prd-details-panel__head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px; border-bottom: 1px solid var(--tira-border);
+  position: sticky; top: 0; background: var(--tira-white); z-index: 2;
+}
+.prd-details-panel__head h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .1em; }
+.prd-details-panel__close {
+  background: none; border: none; cursor: pointer;
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  opacity: .5; transition: opacity .2s;
+}
+.prd-details-panel__close:hover { opacity: 1; }
+.prd-details-panel__close svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.prd-details-panel__body { padding: 0 24px 32px; }
+.prd-details-panel__desc {
+  font-size: 13px; line-height: 1.85; opacity: .65;
+  padding: 20px 0 24px; border-bottom: 1px solid var(--tira-border);
+}
+.prd-details-panel__trust {
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 16px 0; border-bottom: 1px solid var(--tira-border);
 }
 
 @media (max-width: 900px) {
   .prd-gallery { display: none; }
   .prd-gallery--mobile { display: block; }
+  .prd-vdots { display: flex; }
+  .prd-gallery__wish { display: flex; }
+  .prd-details-trigger { display: flex; }
+  /* Trust + accordion masqués dans le flux normal → panel */
+  .prd-trust { display: none; }
+  .prd-accordion { display: none; }
 }
 
 /* ─── Panneau infos produit ─── */
@@ -1753,34 +1831,34 @@ body.hdr-hidden .col-filters {
 .prd-accordion__body ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
 .prd-accordion__body li::before { content: '—'; margin-right: 8px; opacity: .4; }
 
-/* ─── Sticky ATC mobile : fixe en bas ─── */
+/* ─── Sticky ATC mobile : plein écran en bas, style Miu Miu ─── */
 .prd-sticky-atc {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 290;
   background: var(--tira-white);
   border-top: 1px solid var(--tira-border);
-  padding: 12px 20px 16px;
-  display: none; align-items: center; gap: 16px;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  display: none;
 }
-.prd-sticky-atc__price { font-size: 13px; opacity: .6; }
+.prd-sticky-atc__price { display: none; } /* masqué — variant dans le bouton */
 .prd-sticky-atc__btn {
-  flex: 1; padding: 14px;
+  display: block; width: 100%; padding: 16px;
   background: var(--tira-black); color: var(--tira-white);
-  border: none; font-family: inherit; font-size: 10px;
+  border: none; font-family: inherit; font-size: 11px;
   text-transform: uppercase; letter-spacing: .14em; cursor: pointer;
+  transition: background .2s;
 }
-/* Sticky ATC — etat precommande */
+.prd-sticky-atc__btn:hover { background: rgba(10,10,10,.82); }
 .prd-sticky-atc__btn--preorder {
-  flex: 1; padding: 14px;
+  display: block; width: 100%; padding: 15px;
   border: 1px solid var(--tira-black);
   background: transparent; color: var(--tira-black);
-  font-family: inherit; font-size: 10px;
-  text-transform: uppercase; letter-spacing: .14em;
-  cursor: pointer; text-align: center; text-decoration: none;
-  display: flex; align-items: center; justify-content: center;
+  font-family: inherit; font-size: 11px;
+  text-transform: uppercase; letter-spacing: .12em;
+  cursor: pointer; text-align: center;
 }
 @media (max-width: 900px) {
-  .prd-sticky-atc { display: flex; }
-  body { padding-bottom: 72px; }
+  .prd-sticky-atc { display: block; }
+  body { padding-bottom: 76px; }
 }
 
 
