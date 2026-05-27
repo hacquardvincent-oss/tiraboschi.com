@@ -304,7 +304,7 @@ h1, h2, h3, h4, h5, h6 {
 
 @media (max-width: 1200px) {
   .hdr__d { display: none; }
-  .hdr__m { display: grid; }
+  .hdr__m { display: grid; background: blue !important; }
 }
 /* Masquer la search bar externe sur desktop (intégrée dans le header) */
 @media (min-width: 1201px) {
