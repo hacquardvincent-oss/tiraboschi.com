@@ -33,9 +33,11 @@ body {
   background: var(--tira-white);
   color: var(--tira-black);
   overflow-x: hidden;
-  cursor: none;
+  /* cursor: none appliqué uniquement quand JS active le curseur custom */
 }
-@media (hover: none) { body { cursor: auto; } }
+/* Curseur custom actif — classe ajoutée par tiraboschi.js */
+body.tira-cursor-ready { cursor: none; }
+@media (hover: none) { body.tira-cursor-ready { cursor: auto; } }
 
 img {
   display: block; width: 100%; height: 100%;

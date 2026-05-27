@@ -1,40 +1,38 @@
 {% comment %}
   TIRABOSCHI — Hero vidéo responsive 9:16 mobile / 16:9 desktop
   Référence : tiraboschi-homepage-prototype.html L1126-1164
+
+  CDN fallback intégré : si aucune vidéo configurée via le thème editor,
+  on utilise directement VIDEO HOMEPAGE.mp4 / TEST 9-16 Boschi 1.
 {% endcomment %}
+
+{%- comment -%} ── URLs CDN de fallback (toujours disponibles) ── {%- endcomment -%}
+{%- assign fb_desktop_hd  = 'https://cdn.shopify.com/videos/c/vp/a34148cdb12a474b8ca71469bf389e47/a34148cdb12a474b8ca71469bf389e47.HD-720p-4.5Mbps-79621443.mp4' -%}
+{%- assign fb_mobile_hd   = 'https://cdn.shopify.com/videos/c/vp/1358774942114ba8966c625ffb4d90ab/1358774942114ba8966c625ffb4d90ab.HD-1080p-7.2Mbps-67848507.mp4' -%}
+
+{%- comment -%} ── URLs réelles (si configurées via Personnaliser) ── {%- endcomment -%}
+{%- assign src_desktop = fb_desktop_hd -%}
+{%- assign src_mobile  = fb_mobile_hd -%}
+
+{%- if section.settings.video_desktop -%}
+  {%- assign src_desktop = section.settings.video_desktop.sources[1].url | default: section.settings.video_desktop.sources[0].url -%}
+{%- endif -%}
+{%- if section.settings.video_mobile -%}
+  {%- assign src_mobile = section.settings.video_mobile.sources[1].url | default: section.settings.video_mobile.sources[0].url -%}
+{%- endif -%}
 
 <section class="hero" aria-label="{{ section.settings.aria_label | escape }}">
 
   <div class="hero__video-wrap">
-    {%- assign has_video = false -%}
-    {%- if section.settings.video_desktop or section.settings.video_mobile -%}
-      {%- assign has_video = true -%}
-    {%- endif -%}
-
-    {%- if has_video -%}
-      <video class="hero__video" id="hero-video"
-             autoplay muted loop playsinline
-             {% if section.settings.poster %}poster="{{ section.settings.poster | image_url: width: 1920 }}"{% endif %}
-             aria-hidden="true">
-        {%- if section.settings.video_mobile -%}
-          <source media="(max-width: 768px)"
-                  src="{{ section.settings.video_mobile.sources[1].url | default: section.settings.video_mobile.sources[0].url }}"
-                  type="video/mp4">
-        {%- endif -%}
-        {%- if section.settings.video_desktop -%}
-          <source src="{{ section.settings.video_desktop.sources[1].url | default: section.settings.video_desktop.sources[0].url }}"
-                  type="video/mp4">
-        {%- endif -%}
-      </video>
-    {%- elsif section.settings.poster -%}
-      <img class="hero__video"
-           src="{{ section.settings.poster | image_url: width: 1920 }}"
-           alt=""
-           aria-hidden="true"
-           width="1920" height="1080"
-           loading="eager"
-           fetchpriority="high">
-    {%- endif -%}
+    <video class="hero__video" id="hero-video"
+           autoplay muted loop playsinline
+           {% if section.settings.poster %}poster="{{ section.settings.poster | image_url: width: 1920 }}"{% endif %}
+           aria-hidden="true">
+      {%- comment -%} Mobile 9:16 en premier (mobile-first) {%- endcomment -%}
+      <source media="(max-width: 768px)" src="{{ src_mobile }}" type="video/mp4">
+      {%- comment -%} Desktop 16:9 {%- endcomment -%}
+      <source src="{{ src_desktop }}" type="video/mp4">
+    </video>
   </div>
 
   <div class="hero__overlay"></div>
@@ -97,22 +95,22 @@
     },
     {
       "type": "header",
-      "content": "Médias"
+      "content": "Médias (optionnels — CDN fallback intégré)"
     },
     {
       "type": "video",
       "id": "video_desktop",
-      "label": "Vidéo desktop (16:9)"
+      "label": "Vidéo desktop (16:9) — remplace le fallback CDN"
     },
     {
       "type": "video",
       "id": "video_mobile",
-      "label": "Vidéo mobile (9:16)"
+      "label": "Vidéo mobile (9:16) — remplace le fallback CDN"
     },
     {
       "type": "image_picker",
       "id": "poster",
-      "label": "Image poster (fallback)"
+      "label": "Image poster (fallback si vidéo non disponible)"
     },
     {
       "type": "header",

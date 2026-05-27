@@ -15,6 +15,9 @@
     const ring = document.getElementById('cur-ring');
     let mx = 0, my = 0, rx = 0, ry = 0;
 
+    /* Activer cursor:none uniquement une fois le curseur custom prêt */
+    document.body.classList.add('tira-cursor-ready');
+
     document.addEventListener('mousemove', e => {
       mx = e.clientX; my = e.clientY;
       dot.style.left = mx + 'px';

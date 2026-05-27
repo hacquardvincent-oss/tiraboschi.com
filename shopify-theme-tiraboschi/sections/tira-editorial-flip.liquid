@@ -1,6 +1,9 @@
 {% comment %}
   TIRABOSCHI — Section éditoriale 2 colonnes (image + texte, flippable)
   Référence : tiraboschi-homepage-prototype.html L1389-1407 (standard) + L1523-1540 (flip)
+
+  image_url_fallback : URL CDN texte — utilisée quand aucune image n'est
+  sélectionnée via l'image_picker du thème editor.
 {% endcomment %}
 
 {%- assign editorial_class = 'editorial' -%}
@@ -8,17 +11,40 @@
   {%- assign editorial_class = 'editorial flip' -%}
 {%- endif -%}
 
+{%- comment -%} Résoudre l'image : picker > fallback url > rien {%- endcomment -%}
+{%- assign has_image = false -%}
+{%- assign img_src   = '' -%}
+{%- assign img_src2x = '' -%}
+{%- if section.settings.image -%}
+  {%- assign has_image = true -%}
+  {%- assign img_src   = section.settings.image | image_url: width: 1200 -%}
+  {%- assign img_src2x = section.settings.image | image_url: width: 900 -%}
+{%- elsif section.settings.image_url_fallback != blank -%}
+  {%- assign has_image = true -%}
+  {%- assign img_src   = section.settings.image_url_fallback -%}
+  {%- assign img_src2x = section.settings.image_url_fallback -%}
+{%- endif -%}
+
 <section class="{{ editorial_class }}" data-tira-reveal aria-labelledby="edit-title-{{ section.id }}">
   <div class="editorial__img">
-    {%- if section.settings.image -%}
-      <img src="{{ section.settings.image | image_url: width: 1200 }}"
-           srcset="{{ section.settings.image | image_url: width: 600 }} 600w,
-                   {{ section.settings.image | image_url: width: 900 }} 900w,
-                   {{ section.settings.image | image_url: width: 1200 }} 1200w"
-           sizes="(max-width: 768px) 100vw, 50vw"
-           alt="{{ section.settings.image.alt | default: section.settings.title | escape }}"
-           width="1200" height="900"
-           loading="lazy">
+    {%- if has_image -%}
+      {%- if section.settings.image -%}
+        <img src="{{ img_src }}"
+             srcset="{{ section.settings.image | image_url: width: 600 }} 600w,
+                     {{ section.settings.image | image_url: width: 900 }} 900w,
+                     {{ section.settings.image | image_url: width: 1200 }} 1200w"
+             sizes="(max-width: 768px) 100vw, 50vw"
+             alt="{{ section.settings.image.alt | default: section.settings.title | escape }}"
+             width="1200" height="900"
+             loading="lazy">
+      {%- else -%}
+        <img src="{{ img_src }}"
+             alt="{{ section.settings.title | escape }}"
+             width="1200" height="900"
+             loading="lazy">
+      {%- endif -%}
+    {%- else -%}
+      <div class="editorial__img-placeholder" aria-hidden="true"></div>
     {%- endif -%}
   </div>
   <div class="editorial__body">
@@ -83,9 +109,18 @@
       "label": "Lien"
     },
     {
+      "type": "header",
+      "content": "Image"
+    },
+    {
       "type": "image_picker",
       "id": "image",
-      "label": "Image"
+      "label": "Image (thème editor)"
+    },
+    {
+      "type": "text",
+      "id": "image_url_fallback",
+      "label": "URL image CDN (fallback si image picker vide)"
     },
     {
       "type": "checkbox",
