@@ -45,6 +45,7 @@
   </head>
 
   <body class="template-{{ template | replace: '.', '-' }} page-type-{{ request.page_type }}">
+    <div id="tira-page-overlay" aria-hidden="true"></div>
 
     {%- comment -%} ── Drop bar site-wide (si drop actif dans settings) ── {%- endcomment -%}
     {%- if settings.drop_active -%}
@@ -69,12 +70,12 @@
       {%- render 'tira-newsletter-popup' -%}
     {%- endif -%}
 
-    {%- comment -%} ── JS principal ── {%- endcomment -%}
-    <script src="{{ 'tiraboschi.js' | asset_url }}" defer></script>
-
-    {%- comment -%} ── Lenis smooth scrolling (desktop uniquement) ── {%- endcomment -%}
+    {%- comment -%} ── Lenis avant tiraboschi.js (defer = ordre DOM) ── {%- endcomment -%}
     {%- if settings.lenis_smooth_scroll -%}
       <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js" defer></script>
     {%- endif -%}
+
+    {%- comment -%} ── JS principal ── {%- endcomment -%}
+    <script src="{{ 'tiraboschi.js' | asset_url }}" defer></script>
   </body>
 </html>
