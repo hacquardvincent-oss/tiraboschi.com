@@ -449,55 +449,75 @@ locales/ja.json                 → Strings JA draft (révision humaine requise)
 locales/ar.json                 → Strings AR draft RTL (traduction native OBLIGATOIRE)
 ```
 
-### ✅ Phase actuelle — Recette TERMINÉE — Corrections en cours
-- ✅ Recette page par page (Google Sheet) — terminée
-- ✅ Corrections post-recette : homepage, collection, cadeaux, 13 pages secondaires, fiche produit
-- ✅ Décisions client collectées (voir tableau "Décisions client confirmées" ci-dessus)
-- ✅ Contenus fictifs OK pour Phase 3 (remplacement back-office après lancement)
-- 🔲 Push final branch `claude/clever-archimedes-h8OmL` → PR vers main
+### ✅ Phase actuelle — Phase 3 EN COURS — Intégration Shopify
+*Mis à jour le 27/05/2026*
 
-### 🔲 Phase 3 — Intégration Shopify (dans l'ordre)
+#### Shopify Admin — Actions directes (via GraphQL)
+- ✅ 8 produits publiés sur "Boutique en ligne" (Victoire, Rafaël, Colette, Colette Mini, Jane, Olympe, Pochon, Chaîne)
+- ✅ Pages template assignées : histoire → `page.histoire` · savoir-faire → `page.savoir-faire` · matieres-cuirs → `page.matieres-cuirs`
+- ✅ Pages créées dans Shopify Admin : `/pages/sur-mesure` + `/pages/la-societe`
+- 🔲 Métafields produits non remplis (composition, fabrication, contenances, dimensions)
+- 🔲 Menus Shopify admin (main-menu, footer-*) non configurés
+
+#### Phase 3 — État précis par sous-phase
 ```
 3A — Socle
-□ Header + Footer Liquid + injection tira-seo-schemas.liquid dans theme.liquid
-□ Homepage
-□ Collection + Fiche produit (+ swatches → changement gallery)
-□ Barre drop (tira-drop-bar.liquid dans theme.liquid si drop actif)
+✅ sections/tira-header.liquid  — mega-menu, sticky directionnel, transparent hero
+✅ sections/tira-footer.liquid  — CRM form, Instagram social, locale selector
+✅ assets/tiraboschi.css        — tokens, header 68px, search bar, mega menu, society-crm
+✅ assets/tiraboschi.js         — scroll reveals, marquee, curseur custom
+✅ templates/index.json         — Homepage
+✅ sections/tira-hero-video.liquid, tira-scroll-stack.liquid, tira-product-grid.liquid, tira-marquee.liquid, tira-editorial-flip.liquid
+✅ templates/collection.json    — Collection
+✅ sections/tira-collection.liquid
+✅ templates/product.json       — Fiche produit
+✅ sections/tira-product.liquid — 6 sections storytelling, galerie, ATC, précommande
+□ layout/theme.liquid          — AUCUNE MODIFICATION (Lenis, splash, transitions, SEO schemas NON injectés)
+□ sections/header-group.json   — NON CRÉÉ
+□ sections/footer-group.json   — NON CRÉÉ
+□ Swatches couleur → changement galerie — NON IMPLÉMENTÉ
+□ Barre drop (tira-drop-bar.liquid dans theme.liquid) — NON INJECTÉ
 
 3B — Fondations "grande maison"
-□ Lenis smooth scrolling (theme.liquid)
-□ Transitions entre pages (tiraboschi.js)
-□ Splash screen logo (theme.liquid)
-□ Mega-menu éditorial (header)
-□ Magnetic buttons sur CTA principaux
+✅ Mega-menu éditorial (header)  — Images CDN, 3 panels (Collections, Sur Mesure, La Maison)
+□ Lenis smooth scrolling (theme.liquid) — NON INJECTÉ
+□ Transitions entre pages       — NON INJECTÉES
+□ Splash screen logo            — NON INJECTÉ
+□ Magnetic buttons CTA          — NON IMPLÉMENTÉS
 
 3C — SEO technique
-□ tira-seo-schemas.liquid → {% render 'tira-seo-schemas' %} dans </head>
-□ Hreflang automatique (inclus dans tira-seo-schemas.liquid si Markets actif)
-□ Métafields produits remplis (composition, fabrication, contenances)
-□ AggregateRating dynamique via Judge.me (reviews metafield)
-□ Sitemap.xml vérifié dans Google Search Console
-□ Robots.txt configuré
+□ tira-seo-schemas.liquid → render dans theme.liquid — NON INJECTÉ (snippet prêt)
+□ Métafields produits remplis  — À faire dans Shopify Admin (aucun rempli)
+□ Sitemap.xml · Robots.txt · Search Console — Phase post-lancement
 
 3D — International (Shopify Markets)
-□ Activer Shopify Markets (FR + GB + US prioritaires)
-□ Déployer tira-geo-banner.liquid dans theme.liquid
-□ Déployer tira-locale-selector.liquid dans header + footer
-□ Weglot activé + traductions humaines pages éditoriales
-□ Hreflang vérifié via Google Search Console
+□ Shopify Markets NON activé   — Snippets (tira-geo-banner, tira-locale-selector) prêts
+□ tira-locale-selector.liquid présent dans footer (rendu conditionnel — OK si Markets désactivé)
 
-3E — Pages prioritaires (P2)
-□ Pages éditoriales (Histoire, Savoir-Faire, Matières, Sur Mesure, La Société)
-□ Pages Icônes (Victoire, Colette, Rafael)
-□ Contact + Booking RDV (Calendly ou Cal.com intégré)
-□ Entretien & Réparation
-□ Lookbook FW25
-□ Drops & Précommandes (tira-preorder.liquid + tira-drop-bar.liquid)
+3E — Pages P2
+✅ Histoire      — sections/tira-histoire.liquid + templates/page.histoire.json
+✅ Savoir-Faire  — sections/tira-savoir-faire.liquid + templates/page.savoir-faire.json
+✅ Matières      — sections/tira-matieres.liquid + templates/page.matieres-cuirs.json
+✅ Sur Mesure    — sections/tira-sur-mesure.liquid + templates/page.sur-mesure.json
+✅ La Société    — sections/tira-la-societe.liquid + templates/page.la-societe.json
+□ Icône Victoire — section + template NON CRÉÉS
+□ Icône Colette  — section + template NON CRÉÉS
+□ Icône Rafael   — section + template NON CRÉÉS
+□ Contact + Booking RDV        — NON CRÉÉ
+□ Entretien & Réparation       — NON CRÉÉ
+□ Lookbook FW25                — NON CRÉÉ
+□ Drops & Précommandes         — snippets prêts, page template NON CRÉÉ
 
-3F — Pages secondaires
-□ Blog + Articles (3 articles existants à publier) + Search + 404
-□ Cadeaux + Wishlist + Presse + RSE
-□ Espace client + Checkout branding
+3F — Pages P3
+✅ Blog + Article + Search + 404 + Cart — sections + templates prêts
+□ Cadeaux + Wishlist + Presse + RSE    — NON CRÉÉS
+□ Espace client (customers/)           — NON CRÉÉ
+□ Checkout branding                    — NON CRÉÉ
+
+Snippets — tous dans snippets/ ✅ (tira-drop-bar, tira-geo-banner, tira-locale-selector,
+           tira-newsletter-popup, tira-preorder, tira-seo-schemas)
+□ tira-back-in-stock.liquid — NON CRÉÉ
+□ tira-reviews.liquid       — NON CRÉÉ
 ```
 
 ### 🔲 Phase 4 — CRM & Analytics
@@ -525,8 +545,8 @@ locales/ar.json                 → Strings AR draft RTL (traduction native OBLI
 
 ```
 Phase 1 — Audit        ✅ DONE : Comparaison prototype vs cahier des charges
-Phase 2 — Prototypes   ✅ DONE : 24 pages + composants HTML
-Phase 3 — Shopify      → EN COURS : Conversion Liquid + intégration thème test
+Phase 2 — Prototypes   ✅ DONE : 26 prototypes HTML + snippets Liquid
+Phase 3 — Shopify      → EN COURS (≈60%) : Socle + 5 pages éditoriales livrées — layout/theme.liquid, pages Icônes, Contact, Lookbook, CRM manquants
 Phase 4 — CRM          → CRM, flows, analytics
 Phase 5 — IA Search    → Agent conversationnel (nécessite contenu réel)
 ```
