@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "tira-la-creatrice": {
+      "type": "tira-la-creatrice",
+      "settings": {}
+    }
+  },
+  "order": ["tira-la-creatrice"]
+}
