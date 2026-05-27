@@ -3,19 +3,25 @@
   TIRABOSCHI · Collection page
   ═══════════════════════════════════════════════════════════════
   - Hero Ken Burns (image collection ou fallback CDN)
-  - Barre filtres sticky (type, matière, couleur, sort)
+  - Barre filtres sticky (type, matière, couleur, sort custom)
   - Grille produits 4 cols / 2 mobile, gap 2px, ratio 3:4
+  - Encarts éditoriaux 2×2 et 4×1 positionnés dans la grille
+  - Mobile : FAB + bottom sheet filtres
   - Wishlist localStorage, ATC AJAX, crossfade au hover
 {% endcomment %}
 
 {%- liquid
-  assign products_per_page = section.settings.products_per_page | default: 12
-  assign sort_by = collection.sort_by | default: collection.default_sort_by
+  assign products_per_page  = section.settings.products_per_page | default: 12
+  assign sort_by             = collection.sort_by | default: collection.default_sort_by
+  assign pos_2x2             = section.settings.editorial_2x2_position | default: 4
+  assign pos_4x1             = section.settings.editorial_4x1_position | default: 8
+  assign show_2x2            = section.settings.editorial_2x2_enabled
+  assign show_4x1            = section.settings.editorial_4x1_enabled
 -%}
 
 {%- comment -%} ═══ COLLECTION HERO ═══ {%- endcomment -%}
 <section class="col-hero" aria-label="{{ collection.title | escape }}">
-  <div class="col-hero__img">
+  <div class="col-hero__img tira-ken-burns">
     {%- if collection.image -%}
       <img src="{{ collection.image | image_url: width: 1920 }}"
            srcset="{{ collection.image | image_url: width: 768 }} 768w,
@@ -41,20 +47,19 @@
       <span aria-hidden="true"> / </span>
       <span aria-current="page">{{ collection.title }}</span>
     </nav>
-    <h1 class="col-hero__title" data-reveal>{{ collection.title }}</h1>
+    <h1 class="col-hero__title" data-tira-reveal>{{ collection.title }}</h1>
     {%- if collection.description != blank -%}
-      <p class="col-hero__desc" data-reveal>{{ collection.description }}</p>
+      <p class="col-hero__desc" data-tira-reveal>{{ collection.description }}</p>
     {%- endif -%}
-    <p class="col-hero__meta" data-reveal>{{ collection.products_count }} pièce{% if collection.products_count != 1 %}s{% endif %} · Made in France, Only.</p>
+    <p class="col-hero__meta" data-tira-reveal>{{ collection.products_count }} pièce{% if collection.products_count != 1 %}s{% endif %} · Made in France, Only.</p>
   </div>
 </section>
 
-{%- comment -%} ═══ FILTER BAR ═══ {%- endcomment -%}
+{%- comment -%} ═══ FILTER BAR (desktop) ═══ {%- endcomment -%}
 <div class="col-filters" id="col-filters" role="search" aria-label="Filtres collection">
   <div class="col-filters__inner">
     <div class="col-filters__left">
 
-      {%- comment -%} Filtre type {%- endcomment -%}
       <div class="col-filter-wrap">
         <button class="col-filter-btn" id="btn-type" aria-expanded="false" aria-controls="panel-type">
           Type <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="4,6 8,10 12,6"/></svg>
@@ -67,7 +72,6 @@
         </div>
       </div>
 
-      {%- comment -%} Filtre matière {%- endcomment -%}
       <div class="col-filter-wrap">
         <button class="col-filter-btn" id="btn-matiere" aria-expanded="false" aria-controls="panel-matiere">
           Matière <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="4,6 8,10 12,6"/></svg>
@@ -81,7 +85,6 @@
         </div>
       </div>
 
-      {%- comment -%} Filtre couleur {%- endcomment -%}
       <div class="col-filter-wrap">
         <button class="col-filter-btn" id="btn-couleur" aria-expanded="false" aria-controls="panel-couleur">
           Couleur <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="4,6 8,10 12,6"/></svg>
@@ -102,14 +105,25 @@
     </div>
     <div class="col-filters__right">
       <span class="col-filters__count" aria-live="polite">{{ collection.products_count }} résultat{% if collection.products_count != 1 %}s{% endif %}</span>
+
+      {%- comment -%} Tri custom (remplace <select>) {%- endcomment -%}
       <div class="col-sort-wrap">
-        <label for="col-sort" class="visually-hidden">Trier par</label>
-        <select id="col-sort" class="col-sort" onchange="location.href='?sort_by='+this.value">
+        <button class="col-sort-btn" id="col-sort-btn" aria-expanded="false" aria-controls="col-sort-panel">
+          Trier par
+          <svg viewBox="0 0 12 12" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="2,4 6,8 10,4"/></svg>
+        </button>
+        <div class="col-sort-panel" id="col-sort-panel" role="listbox" aria-label="Trier les résultats">
           {%- for option in collection.sort_options -%}
-            <option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name }}</option>
+            <button class="col-sort-option{% if option.value == sort_by %} selected{% endif %}"
+                    role="option"
+                    aria-selected="{% if option.value == sort_by %}true{% else %}false{% endif %}"
+                    data-value="{{ option.value }}">
+              {{ option.name }}
+            </button>
           {%- endfor -%}
-        </select>
+        </div>
       </div>
+
     </div>
   </div>
 </div>
@@ -128,7 +142,7 @@
         {%- assign has_second = true -%}
       {%- endif -%}
 
-      <article class="card" role="listitem" data-product-type="{{ product.type | handleize }}" data-reveal>
+      <article class="card" role="listitem" data-product-type="{{ product.type | handleize }}" data-tira-reveal>
         <a href="{{ product.url }}" class="card__img" aria-label="{{ product.title | escape }}">
           <img src="{{ product.featured_image | image_url: width: 600 }}"
                srcset="{{ product.featured_image | image_url: width: 400 }} 400w,
@@ -146,7 +160,6 @@
                  loading="lazy">
           {%- endif -%}
 
-          {%- comment -%} Badge New / Sold Out {%- endcomment -%}
           {%- if product.available == false -%}
             <span class="card__badge card__badge--sold">Épuisé</span>
           {%- elsif product.tags contains 'new' -%}
@@ -183,12 +196,53 @@
           </p>
         </div>
       </article>
+
+      {%- comment -%} ── Encart éditorial 2×2 après le Nème produit ── {%- endcomment -%}
+      {%- if show_2x2 and forloop.index == pos_2x2 -%}
+        {%- assign ed2_img = '' -%}
+        {%- if section.settings.editorial_2x2_image -%}
+          {%- assign ed2_img = section.settings.editorial_2x2_image | image_url: width: 1200 -%}
+        {%- elsif section.settings.editorial_2x2_image_fallback != blank -%}
+          {%- assign ed2_img = section.settings.editorial_2x2_image_fallback -%}
+        {%- endif -%}
+        <a class="col-editorial-2x2" href="{{ section.settings.editorial_2x2_link | default: '/pages/savoir-faire' }}" data-tira-reveal>
+          {%- if ed2_img != '' -%}
+            <img src="{{ ed2_img }}" alt="{{ section.settings.editorial_2x2_title | escape }}" loading="lazy">
+          {%- endif -%}
+          <div class="col-editorial-2x2__overlay"></div>
+          <div class="col-editorial-2x2__body">
+            <p class="col-editorial-2x2__label">{{ section.settings.editorial_2x2_label | default: 'Savoir-Faire' }}</p>
+            <h3 class="col-editorial-2x2__title">{{ section.settings.editorial_2x2_title | default: '3 400 points de couture sellier' }}</h3>
+            <span class="col-editorial-2x2__link">{{ section.settings.editorial_2x2_cta | default: "Découvrir l'atelier" }}</span>
+          </div>
+        </a>
+      {%- endif -%}
+
+      {%- comment -%} ── Encart éditorial 4×1 après le Nème produit ── {%- endcomment -%}
+      {%- if show_4x1 and forloop.index == pos_4x1 -%}
+        {%- assign ed4_img = '' -%}
+        {%- if section.settings.editorial_4x1_image -%}
+          {%- assign ed4_img = section.settings.editorial_4x1_image | image_url: width: 1920 -%}
+        {%- elsif section.settings.editorial_4x1_image_fallback != blank -%}
+          {%- assign ed4_img = section.settings.editorial_4x1_image_fallback -%}
+        {%- endif -%}
+        <a class="col-editorial-4x1" href="{{ section.settings.editorial_4x1_link | default: '/pages/la-societe' }}" data-tira-reveal>
+          <div class="col-editorial-4x1__body">
+            <p class="col-editorial-4x1__label">{{ section.settings.editorial_4x1_label | default: 'The Society · Privilèges' }}</p>
+            <h3 class="col-editorial-4x1__title">{{ section.settings.editorial_4x1_title | default: 'Accédez aux pièces non mises en vente' }}</h3>
+            <span class="col-editorial-4x1__link">{{ section.settings.editorial_4x1_cta | default: 'Découvrir The Society' }}</span>
+          </div>
+          {%- if ed4_img != '' -%}
+            <img src="{{ ed4_img }}" alt="{{ section.settings.editorial_4x1_title | escape }}" loading="lazy">
+          {%- endif -%}
+        </a>
+      {%- endif -%}
+
     {%- else -%}
       <p class="col-empty">Cette collection ne contient aucun produit pour le moment.</p>
     {%- endfor -%}
   </div>
 
-  {%- comment -%} Load more — visible seulement s'il y a une page suivante {%- endcomment -%}
   {%- if paginate.next -%}
     <div class="col-load-more" id="col-load-more">
       <button class="col-load-more__btn"
@@ -209,56 +263,199 @@
   {%- endpaginate -%}
 </section>
 
+{%- comment -%} ═══ MOBILE — FAB Filtrer & Trier ═══ {%- endcomment -%}
+<button class="col-filter-fab" id="filter-fab" aria-label="Ouvrir les filtres" aria-expanded="false" aria-controls="filter-sheet">
+  <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5">
+    <line x1="4" y1="7" x2="20" y2="7"/>
+    <line x1="4" y1="12" x2="14" y2="12"/>
+    <line x1="4" y1="17" x2="10" y2="17"/>
+  </svg>
+  Filtrer &amp; Trier
+</button>
+
+{%- comment -%} ═══ MOBILE — Bottom sheet filtres ═══ {%- endcomment -%}
+<div class="filter-sheet" id="filter-sheet" role="dialog" aria-modal="true" aria-label="Filtres et tri">
+  <div class="filter-sheet__backdrop" id="filter-backdrop"></div>
+  <div class="filter-sheet__inner">
+    <div class="filter-sheet__head">
+      <h3>Filtrer &amp; Trier</h3>
+      <button class="filter-sheet__close" id="filter-close" aria-label="Fermer les filtres">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+      </button>
+    </div>
+
+    <div class="filter-sheet__section open">
+      <button class="filter-sheet__section-btn" aria-expanded="true">
+        Trier par
+        <svg viewBox="0 0 12 12" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="2,4 6,8 10,4"/></svg>
+      </button>
+      <div class="filter-sheet__section-body">
+        <ul>
+          {%- for option in collection.sort_options -%}
+            <li>
+              <label>
+                <input type="radio" name="mobile-sort" value="{{ option.value }}"{% if option.value == sort_by %} checked{% endif %}>
+                {{ option.name }}
+              </label>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    </div>
+
+    <div class="filter-sheet__section">
+      <button class="filter-sheet__section-btn" aria-expanded="false">
+        Type
+        <svg viewBox="0 0 12 12" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="2,4 6,8 10,4"/></svg>
+      </button>
+      <div class="filter-sheet__section-body">
+        <ul>
+          <li><label><input type="checkbox" name="m-filter-type" value="Sacs"> Sacs</label></li>
+          <li><label><input type="checkbox" name="m-filter-type" value="Petite maroquinerie"> Petite maroquinerie</label></li>
+          <li><label><input type="checkbox" name="m-filter-type" value="Accessoires"> Accessoires</label></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="filter-sheet__section">
+      <button class="filter-sheet__section-btn" aria-expanded="false">
+        Matière
+        <svg viewBox="0 0 12 12" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="2,4 6,8 10,4"/></svg>
+      </button>
+      <div class="filter-sheet__section-body">
+        <ul>
+          <li><label><input type="checkbox" name="m-filter-matiere" value="Veau grainé"> Veau grainé</label></li>
+          <li><label><input type="checkbox" name="m-filter-matiere" value="Veau lisse"> Veau lisse</label></li>
+          <li><label><input type="checkbox" name="m-filter-matiere" value="Agneau nappa"> Agneau nappa</label></li>
+          <li><label><input type="checkbox" name="m-filter-matiere" value="Cuir buffle"> Cuir buffle</label></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="filter-sheet__section">
+      <button class="filter-sheet__section-btn" aria-expanded="false">
+        Couleur
+        <svg viewBox="0 0 12 12" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="2,4 6,8 10,4"/></svg>
+      </button>
+      <div class="filter-sheet__section-body">
+        <ul>
+          <li><label><input type="checkbox" name="m-filter-couleur" value="Noir"> Noir</label></li>
+          <li><label><input type="checkbox" name="m-filter-couleur" value="Caramel"> Caramel</label></li>
+          <li><label><input type="checkbox" name="m-filter-couleur" value="Cognac"> Cognac</label></li>
+          <li><label><input type="checkbox" name="m-filter-couleur" value="Marine"> Marine</label></li>
+          <li><label><input type="checkbox" name="m-filter-couleur" value="Crème"> Crème</label></li>
+          <li><label><input type="checkbox" name="m-filter-couleur" value="Bordeaux"> Bordeaux</label></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="filter-sheet__foot">
+      <button class="filter-sheet__reset" id="filter-reset">Réinitialiser</button>
+      <button class="filter-sheet__apply" id="filter-apply">Voir {{ collection.products_count }} résultat{% if collection.products_count != 1 %}s{% endif %}</button>
+    </div>
+  </div>
+</div>
+
 <script>
 (function () {
-  var btn = document.getElementById('col-load-more-btn');
+  /* ── Load more ── */
+  var btn  = document.getElementById('col-load-more-btn');
   var grid = document.getElementById('col-grid');
   var wrap = document.getElementById('col-load-more');
-  if (!btn || !grid) return;
-
-  btn.addEventListener('click', function () {
-    var nextUrl = btn.getAttribute('data-next-url');
-    if (!nextUrl) return;
-
-    btn.disabled = true;
-    btn.textContent = '…';
-
-    fetch(nextUrl + (nextUrl.indexOf('?') > -1 ? '&' : '?') + 'section_id=tira-collection')
-      .then(function (r) { return r.text(); })
-      .then(function (html) {
-        var parser = new DOMParser();
-        var doc = parser.parseFromString(html, 'text/html');
-
-        /* Append new product cards */
-        var newCards = doc.querySelectorAll('#col-grid .card');
-        newCards.forEach(function (card) {
-          grid.appendChild(card);
-        });
-
-        /* Trigger reveal animations on new cards */
-        requestAnimationFrame(function () {
-          grid.querySelectorAll('[data-reveal]:not(.is-visible)').forEach(function (el) {
-            el.classList.add('is-visible');
+  if (btn && grid) {
+    btn.addEventListener('click', function () {
+      var nextUrl = btn.getAttribute('data-next-url');
+      if (!nextUrl) return;
+      btn.disabled = true;
+      btn.textContent = '…';
+      fetch(nextUrl + (nextUrl.indexOf('?') > -1 ? '&' : '?') + 'section_id=tira-collection')
+        .then(function (r) { return r.text(); })
+        .then(function (html) {
+          var parser = new DOMParser();
+          var doc    = parser.parseFromString(html, 'text/html');
+          doc.querySelectorAll('#col-grid .card').forEach(function (card) { grid.appendChild(card); });
+          requestAnimationFrame(function () {
+            grid.querySelectorAll('[data-tira-reveal]:not(.is-visible)').forEach(function (el) { el.classList.add('is-visible'); });
           });
-        });
+          var nextBtn = doc.getElementById('col-load-more-btn');
+          if (nextBtn && nextBtn.getAttribute('data-next-url')) {
+            btn.setAttribute('data-next-url', nextBtn.getAttribute('data-next-url'));
+            btn.disabled = false;
+            var meta = nextBtn.querySelector('.col-load-more__meta');
+            btn.innerHTML = 'Charger plus' + (meta ? ' ' + meta.outerHTML : '');
+          } else {
+            if (wrap) wrap.style.display = 'none';
+          }
+        })
+        .catch(function () { btn.disabled = false; btn.textContent = 'Charger plus'; });
+    });
+  }
 
-        /* Update or hide the Load more button */
-        var nextBtn = doc.getElementById('col-load-more-btn');
-        if (nextBtn && nextBtn.getAttribute('data-next-url')) {
-          btn.setAttribute('data-next-url', nextBtn.getAttribute('data-next-url'));
-          btn.disabled = false;
-          /* Re-build label */
-          var meta = nextBtn.querySelector('.col-load-more__meta');
-          btn.innerHTML = 'Charger plus' + (meta ? ' ' + meta.outerHTML : '');
-        } else {
-          /* No more pages — hide button */
-          wrap.style.display = 'none';
-        }
-      })
-      .catch(function () {
-        btn.disabled = false;
-        btn.textContent = 'Charger plus';
+  /* ── Tri custom (desktop) ── */
+  var sortBtn   = document.getElementById('col-sort-btn');
+  var sortPanel = document.getElementById('col-sort-panel');
+  if (sortBtn && sortPanel) {
+    sortBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var isOpen = sortPanel.classList.contains('open');
+      sortPanel.classList.toggle('open', !isOpen);
+      sortBtn.setAttribute('aria-expanded', String(!isOpen));
+    });
+    sortPanel.querySelectorAll('.col-sort-option').forEach(function (opt) {
+      opt.addEventListener('click', function () {
+        var val = opt.getAttribute('data-value');
+        var url = new URL(window.location.href);
+        url.searchParams.set('sort_by', val);
+        window.location.href = url.toString();
       });
+    });
+    document.addEventListener('click', function () { sortPanel.classList.remove('open'); sortBtn.setAttribute('aria-expanded', 'false'); });
+    sortPanel.addEventListener('click', function (e) { e.stopPropagation(); });
+  }
+
+  /* ── Mobile filter sheet ── */
+  var fab      = document.getElementById('filter-fab');
+  var sheet    = document.getElementById('filter-sheet');
+  var backdrop = document.getElementById('filter-backdrop');
+  var closeBtn = document.getElementById('filter-close');
+  var applyBtn = document.getElementById('filter-apply');
+  var resetBtn = document.getElementById('filter-reset');
+
+  function openSheet()  { if (sheet) { sheet.classList.add('open');  fab && fab.setAttribute('aria-expanded', 'true');  document.body.style.overflow = 'hidden'; } }
+  function closeSheet() { if (sheet) { sheet.classList.remove('open'); fab && fab.setAttribute('aria-expanded', 'false'); document.body.style.overflow = ''; } }
+
+  fab      && fab.addEventListener('click', openSheet);
+  backdrop && backdrop.addEventListener('click', closeSheet);
+  closeBtn && closeBtn.addEventListener('click', closeSheet);
+  applyBtn && applyBtn.addEventListener('click', function () {
+    var val = document.querySelector('input[name="mobile-sort"]:checked');
+    if (val) {
+      var url = new URL(window.location.href);
+      url.searchParams.set('sort_by', val.value);
+      window.location.href = url.toString();
+    } else {
+      closeSheet();
+    }
+  });
+  resetBtn && resetBtn.addEventListener('click', function () {
+    sheet.querySelectorAll('input[type="checkbox"]').forEach(function (cb) { cb.checked = false; });
+    var firstRadio = sheet.querySelector('input[type="radio"]');
+    if (firstRadio) firstRadio.checked = true;
+  });
+
+  /* Accordéon sections du sheet */
+  document.querySelectorAll('.filter-sheet__section-btn').forEach(function (sBtn) {
+    sBtn.addEventListener('click', function () {
+      var sec    = sBtn.closest('.filter-sheet__section');
+      var isOpen = sec.classList.contains('open');
+      sec.classList.toggle('open', !isOpen);
+      sBtn.setAttribute('aria-expanded', String(!isOpen));
+    });
+  });
+
+  /* Fermeture ESC */
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { closeSheet(); sortPanel && sortPanel.classList.remove('open'); }
   });
 })();
 </script>
@@ -277,6 +474,112 @@
       "max": 48,
       "step": 4,
       "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Encart éditorial 2×2 — Savoir-Faire"
+    },
+    {
+      "type": "checkbox",
+      "id": "editorial_2x2_enabled",
+      "label": "Afficher l'encart 2×2",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "editorial_2x2_position",
+      "label": "Insérer après le produit N°",
+      "min": 1,
+      "max": 12,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "image_picker",
+      "id": "editorial_2x2_image",
+      "label": "Image (thème editor)"
+    },
+    {
+      "type": "text",
+      "id": "editorial_2x2_image_fallback",
+      "label": "URL image CDN (fallback)",
+      "default": "https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Asset_Mains_1.png?v=1752607078"
+    },
+    {
+      "type": "text",
+      "id": "editorial_2x2_label",
+      "label": "Sur-titre",
+      "default": "Savoir-Faire"
+    },
+    {
+      "type": "text",
+      "id": "editorial_2x2_title",
+      "label": "Titre",
+      "default": "3 400 points de couture sellier"
+    },
+    {
+      "type": "text",
+      "id": "editorial_2x2_cta",
+      "label": "Libellé lien",
+      "default": "Découvrir l'atelier"
+    },
+    {
+      "type": "url",
+      "id": "editorial_2x2_link",
+      "label": "Lien"
+    },
+    {
+      "type": "header",
+      "content": "Encart éditorial 4×1 — The Society"
+    },
+    {
+      "type": "checkbox",
+      "id": "editorial_4x1_enabled",
+      "label": "Afficher l'encart 4×1",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "editorial_4x1_position",
+      "label": "Insérer après le produit N°",
+      "min": 1,
+      "max": 12,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "image_picker",
+      "id": "editorial_4x1_image",
+      "label": "Image (thème editor)"
+    },
+    {
+      "type": "text",
+      "id": "editorial_4x1_image_fallback",
+      "label": "URL image CDN (fallback)",
+      "default": "https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Asset_atelier_1.png?v=1752606834"
+    },
+    {
+      "type": "text",
+      "id": "editorial_4x1_label",
+      "label": "Sur-titre",
+      "default": "The Society · Privilèges"
+    },
+    {
+      "type": "text",
+      "id": "editorial_4x1_title",
+      "label": "Titre",
+      "default": "Accédez aux pièces non mises en vente"
+    },
+    {
+      "type": "text",
+      "id": "editorial_4x1_cta",
+      "label": "Libellé lien",
+      "default": "Découvrir The Society"
+    },
+    {
+      "type": "url",
+      "id": "editorial_4x1_link",
+      "label": "Lien"
     }
   ],
   "presets": [{ "name": "Collection TIRABOSCHI" }]

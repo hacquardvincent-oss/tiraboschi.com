@@ -674,6 +674,7 @@ body.nav-open { overflow: hidden; }
 .card__type {
   font-size: 9px; text-transform: uppercase; letter-spacing: .12em;
   opacity: .35; margin-bottom: 4px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .card__name {
   font-size: 11px; text-transform: uppercase; letter-spacing: .08em;
