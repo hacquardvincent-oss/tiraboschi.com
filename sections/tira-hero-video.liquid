@@ -28,12 +28,17 @@
            autoplay muted loop playsinline
            {% if section.settings.poster %}poster="{{ section.settings.poster | image_url: width: 1920 }}"{% endif %}
            aria-hidden="true">
-      {%- comment -%} Mobile 9:16 en premier (mobile-first) {%- endcomment -%}
-      <source media="(max-width: 768px)" src="{{ src_mobile }}" type="video/mp4">
-      {%- comment -%} Desktop 16:9 {%- endcomment -%}
-      <source src="{{ src_desktop }}" type="video/mp4">
     </video>
   </div>
+  <script>
+    (function() {
+      var video = document.getElementById('hero-video');
+      var isMobile = window.matchMedia('(max-width: 768px)').matches;
+      var src = isMobile ? {{ src_mobile | json }} : {{ src_desktop | json }};
+      video.src = src;
+      video.load();
+    })();
+  </script>
 
   <div class="hero__overlay"></div>
 
