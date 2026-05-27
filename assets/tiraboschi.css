@@ -289,7 +289,7 @@ h1, h2, h3, h4, h5, h6 {
   display: flex !important; align-items: center; justify-content: center;
   position: relative;
   width: 44px; height: 44px; flex-shrink: 0;
-  background: none; border: none; cursor: pointer;
+  background: rgba(255,0,0,0.5) !important; border: none; cursor: pointer;
   padding: 0; text-decoration: none; color: inherit;
 }
 
