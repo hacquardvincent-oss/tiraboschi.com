@@ -1,0 +1,369 @@
+{% comment %}
+  ═══════════════════════════════════════════════════════════════
+  TIRABOSCHI · The Society — Page cercle de privilèges
+  ═══════════════════════════════════════════════════════════════
+  Structure :
+  1. Hero fond --tira-black, texte blanc, titre italique
+  2. Intro centré fond --tira-grey
+  3. 4 paliers en grille 2×2
+  4. Section image + texte éditorial
+  5. Note éditoriale
+  6. CTA
+  RÈGLE : jamais "points", "remises", "programme fidélité"
+         → toujours "privilèges", "cercle"
+{% endcomment %}
+
+<style>
+  /* ── Variables locales ── */
+  .soc-page {
+    --tira-black: #0a0a0a;
+    --tira-white: #ffffff;
+    --tira-grey: #f7f5f2;
+    --tira-border: #e8e8e8;
+    --tira-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: 'Playfair Display', Georgia, serif;
+    color: var(--tira-black);
+  }
+
+  /* ── 1. Hero ── */
+  .soc-hero {
+    background: var(--tira-black);
+    color: var(--tira-white);
+    padding: calc(68px + 44px + 80px) 40px 80px;
+    text-align: center;
+  }
+  .soc-hero__eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.4;
+    margin: 0 0 24px;
+  }
+  .soc-hero__title {
+    font-size: 56px;
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: -0.01em;
+    margin: 0 0 20px;
+    line-height: 1.1;
+  }
+  .soc-hero__sub {
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin: 0;
+  }
+
+  /* ── 2. Intro ── */
+  .soc-intro {
+    background: var(--tira-grey);
+    padding: 100px 40px;
+    text-align: center;
+  }
+  .soc-intro__text {
+    max-width: 720px;
+    margin: 0 auto;
+    font-size: 18px;
+    line-height: 1.75;
+  }
+
+  /* ── 3. Paliers ── */
+  .soc-paliers {
+    background: var(--tira-white);
+    padding: 100px 40px;
+  }
+  .soc-paliers__label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-align: center;
+    opacity: 0.4;
+    margin: 0 0 16px;
+  }
+  .soc-paliers__title {
+    font-size: 40px;
+    font-weight: 400;
+    text-align: center;
+    margin: 0 0 64px;
+    letter-spacing: -0.01em;
+  }
+  .soc-paliers__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    max-width: 1200px;
+    margin: 0 auto;
+    border: 1px solid var(--tira-border);
+    background: var(--tira-border);
+  }
+  .soc-palier {
+    background: var(--tira-white);
+    padding: 56px 48px;
+    position: relative;
+  }
+  .soc-palier__num {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.3;
+    display: block;
+    margin: 0 0 24px;
+  }
+  .soc-palier__name {
+    font-size: 28px;
+    font-weight: 400;
+    font-style: italic;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+  .soc-palier__seuil {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.4;
+    margin: 0 0 32px;
+    display: block;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--tira-border);
+  }
+  .soc-palier__privilege {
+    font-size: 15px;
+    line-height: 1.7;
+    margin: 0;
+    opacity: 0.75;
+  }
+
+  /* ── 4. Image + texte ── */
+  .soc-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 560px;
+    background: var(--tira-grey);
+  }
+  .soc-split__img {
+    overflow: hidden;
+  }
+  .soc-split__img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .soc-split__body {
+    padding: 80px 64px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .soc-split__label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.4;
+    margin: 0 0 24px;
+  }
+  .soc-split__title {
+    font-size: 36px;
+    font-weight: 400;
+    margin: 0 0 24px;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+  .soc-split__text {
+    font-size: 15px;
+    line-height: 1.8;
+    opacity: 0.7;
+    margin: 0;
+  }
+
+  /* ── 5. Note éditoriale ── */
+  .soc-note {
+    background: var(--tira-black);
+    color: var(--tira-white);
+    padding: 80px 40px;
+    text-align: center;
+  }
+  .soc-note__text {
+    max-width: 680px;
+    margin: 0 auto;
+    font-size: 16px;
+    font-style: italic;
+    line-height: 1.75;
+    opacity: 0.75;
+  }
+
+  /* ── 6. CTA ── */
+  .soc-cta {
+    background: var(--tira-white);
+    padding: 100px 40px;
+    text-align: center;
+    border-top: 1px solid var(--tira-border);
+  }
+  .soc-cta__link {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--tira-black);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transition: opacity 0.3s var(--tira-ease);
+  }
+  .soc-cta__link:hover {
+    opacity: 0.5;
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 768px) {
+    .soc-hero {
+      padding: calc(68px + 44px + 48px) 24px 48px;
+    }
+    .soc-hero__title {
+      font-size: 36px;
+    }
+    .soc-intro {
+      padding: 64px 24px;
+    }
+    .soc-intro__text {
+      font-size: 16px;
+    }
+    .soc-paliers {
+      padding: 64px 24px;
+    }
+    .soc-paliers__grid {
+      grid-template-columns: 1fr;
+    }
+    .soc-palier {
+      padding: 40px 24px;
+    }
+    .soc-paliers__title {
+      font-size: 28px;
+    }
+    .soc-split {
+      grid-template-columns: 1fr;
+    }
+    .soc-split__img {
+      height: 280px;
+    }
+    .soc-split__body {
+      padding: 48px 24px;
+    }
+    .soc-split__title {
+      font-size: 26px;
+    }
+    .soc-note {
+      padding: 64px 24px;
+    }
+    .soc-note__text {
+      font-size: 14px;
+    }
+    .soc-cta {
+      padding: 64px 24px;
+    }
+  }
+
+  /* ── Reveal animation ── */
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.9s var(--tira-ease), transform 0.9s var(--tira-ease);
+  }
+  [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+</style>
+
+<div class="soc-page">
+
+  {%- comment -%} ═══ 1. HERO ═══ {%- endcomment -%}
+  <section class="soc-hero">
+    <p class="soc-hero__eyebrow" data-reveal>Votre cercle</p>
+    <h1 class="soc-hero__title" data-reveal>The Society</h1>
+    <p class="soc-hero__sub" data-reveal>Vos privilèges. Votre cercle.</p>
+  </section>
+
+  {%- comment -%} ═══ 2. INTRO ═══ {%- endcomment -%}
+  <section class="soc-intro">
+    <p class="soc-intro__text" data-reveal>
+      The Society TIRABOSCHI n'est pas un programme de fidélité. C'est un cercle. Dès votre premier achat, vous intégrez un niveau de privilèges qui s'approfondit à mesure que s'intensifie votre relation avec la maison.
+    </p>
+  </section>
+
+  {%- comment -%} ═══ 3. PALIERS ═══ {%- endcomment -%}
+  <section class="soc-paliers" aria-label="Vos cercles de privilèges">
+    <p class="soc-paliers__label" data-reveal>Vos privilèges</p>
+    <h2 class="soc-paliers__title" data-reveal>Votre cercle</h2>
+    <div class="soc-paliers__grid">
+
+      <div class="soc-palier" data-reveal>
+        <span class="soc-palier__num">Cercle I</span>
+        <h3 class="soc-palier__name">Premier Cercle</h3>
+        <span class="soc-palier__seuil">Dès 10&nbsp;000&nbsp;€</span>
+        <p class="soc-palier__privilege">Accès en avant-première aux nouvelles collections.</p>
+      </div>
+
+      <div class="soc-palier" data-reveal>
+        <span class="soc-palier__num">Cercle II</span>
+        <h3 class="soc-palier__name">Deuxième Cercle</h3>
+        <span class="soc-palier__seuil">Dès 20&nbsp;000&nbsp;€</span>
+        <p class="soc-palier__privilege">Accès à des pièces exclusives non disponibles en boutique.</p>
+      </div>
+
+      <div class="soc-palier" data-reveal>
+        <span class="soc-palier__num">Cercle III</span>
+        <h3 class="soc-palier__name">Troisième Cercle</h3>
+        <span class="soc-palier__seuil">Dès 50&nbsp;000&nbsp;€</span>
+        <p class="soc-palier__privilege">Accès à des matières exclusives non mises en vente.</p>
+      </div>
+
+      <div class="soc-palier" data-reveal>
+        <span class="soc-palier__num">Cercle IV</span>
+        <h3 class="soc-palier__name">Quatrième Cercle</h3>
+        <span class="soc-palier__seuil">Dès 100&nbsp;000&nbsp;€</span>
+        <p class="soc-palier__privilege">Conception d'une pièce d'exception sur mesure dans la matière de votre choix.</p>
+      </div>
+
+    </div>
+  </section>
+
+  {%- comment -%} ═══ 4. IMAGE + TEXTE ═══ {%- endcomment -%}
+  <section class="soc-split" aria-label="Votre conseiller">
+    <div class="soc-split__img">
+      <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Asset_atelier_1.png"
+           alt="Atelier TIRABOSCHI Paris"
+           width="960" height="1120"
+           loading="lazy">
+    </div>
+    <div class="soc-split__body">
+      <p class="soc-split__label" data-reveal>Votre accompagnement</p>
+      <h2 class="soc-split__title" data-reveal>Un conseiller personnel</h2>
+      <p class="soc-split__text" data-reveal>
+        Votre conseiller personnel vous contactera après votre premier achat pour vous présenter vos privilèges.
+      </p>
+    </div>
+  </section>
+
+  {%- comment -%} ═══ 5. NOTE ÉDITORIALE ═══ {%- endcomment -%}
+  <section class="soc-note" aria-label="À propos de The Society">
+    <p class="soc-note__text" data-reveal>
+      The Society est réservée aux clients TIRABOSCHI. L'appartenance ne s'achète pas — elle se mérite par la confiance que vous nous accordez.
+    </p>
+  </section>
+
+  {%- comment -%} ═══ 6. CTA ═══ {%- endcomment -%}
+  <section class="soc-cta">
+    <a class="soc-cta__link" href="/collections/fw25" data-reveal>
+      Découvrir la collection &rarr;
+    </a>
+  </section>
+
+</div>
+
+{% schema %}
+{
+  "name": "The Society",
+  "tag": "section",
+  "presets": [{ "name": "The Society — Cercle de privilèges" }]
+}
+{% endschema %}

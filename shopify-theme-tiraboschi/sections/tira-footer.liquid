@@ -22,7 +22,7 @@
 {%- if section.settings.show_crm -%}
   {%- comment -%} ═══ JOIN THE SOCIETY ═══ {%- endcomment -%}
   <section class="society-crm" data-reveal aria-labelledby="society-title">
-    <div>
+    <div class="society-crm__col-title">
       <h2 class="society-crm__title" id="society-title">Join<br>the Society</h2>
     </div>
 
@@ -61,6 +61,30 @@
           </p>
         {%- endif -%}
       </form>
+    </div>
+
+    {%- comment -%} ─── Bloc social Instagram ─── {%- endcomment -%}
+    <div class="society-crm__col-social">
+      <p class="society-crm__social-eyebrow">Suivez-nous</p>
+      {%- if section.settings.social_instagram_link != blank -%}
+        <a href="{{ section.settings.social_instagram_link }}"
+           target="_blank" rel="noopener"
+           class="society-crm__insta-link"
+           aria-label="Suivez TIRABOSCHI sur Instagram">
+          <svg class="society-crm__insta-icon" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="1.2" aria-hidden="true">
+            <rect x="2" y="2" width="20" height="20" rx="5"/>
+            <circle cx="12" cy="12" r="5"/>
+            <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/>
+          </svg>
+          <span class="society-crm__insta-handle">@boschi_paris</span>
+          <svg class="society-crm__insta-arrow" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12,5 19,12 12,19"/>
+          </svg>
+        </a>
+      {%- endif -%}
     </div>
   </section>
 {%- endif -%}
