@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "tira-matieres": {
+      "type": "tira-matieres",
+      "settings": {}
+    }
+  },
+  "order": ["tira-matieres"]
+}
