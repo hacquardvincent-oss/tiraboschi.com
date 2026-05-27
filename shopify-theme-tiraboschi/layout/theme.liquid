@@ -45,7 +45,6 @@
   </head>
 
   <body class="template-{{ template | replace: '.', '-' }} page-type-{{ request.page_type }}">
-    <a class="visually-hidden skip-to-content" href="#MainContent">Aller au contenu principal</a>
 
     {%- comment -%} ── Drop bar site-wide (si drop actif dans settings) ── {%- endcomment -%}
     {%- if settings.drop_active -%}

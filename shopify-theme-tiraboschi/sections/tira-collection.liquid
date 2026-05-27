@@ -188,20 +188,77 @@
     {%- endfor -%}
   </div>
 
-  {%- if paginate.pages > 1 -%}
-    <nav class="col-pagination" aria-label="Pagination">
-      {%- if paginate.previous -%}
-        <a href="{{ paginate.previous.url }}" class="col-pagination__btn" rel="prev">← Précédent</a>
-      {%- endif -%}
-      <span class="col-pagination__info">Page {{ paginate.current_page }} / {{ paginate.pages }}</span>
-      {%- if paginate.next -%}
-        <a href="{{ paginate.next.url }}" class="col-pagination__btn" rel="next">Suivant →</a>
-      {%- endif -%}
-    </nav>
+  {%- comment -%} Load more — visible seulement s'il y a une page suivante {%- endcomment -%}
+  {%- if paginate.next -%}
+    <div class="col-load-more" id="col-load-more">
+      <button class="col-load-more__btn"
+              id="col-load-more-btn"
+              type="button"
+              data-next-url="{{ paginate.next.url }}">
+        Charger plus
+        <span class="col-load-more__meta">
+          — {{ paginate.items | minus: paginate.current_offset | minus: products_per_page }} restant{% if paginate.items | minus: paginate.current_offset | minus: products_per_page != 1 %}s{% endif %}
+        </span>
+      </button>
+    </div>
   {%- endif -%}
 
   {%- endpaginate -%}
 </section>
+
+<script>
+(function () {
+  var btn = document.getElementById('col-load-more-btn');
+  var grid = document.getElementById('col-grid');
+  var wrap = document.getElementById('col-load-more');
+  if (!btn || !grid) return;
+
+  btn.addEventListener('click', function () {
+    var nextUrl = btn.getAttribute('data-next-url');
+    if (!nextUrl) return;
+
+    btn.disabled = true;
+    btn.textContent = '…';
+
+    fetch(nextUrl + (nextUrl.indexOf('?') > -1 ? '&' : '?') + 'section_id=tira-collection')
+      .then(function (r) { return r.text(); })
+      .then(function (html) {
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(html, 'text/html');
+
+        /* Append new product cards */
+        var newCards = doc.querySelectorAll('#col-grid .card');
+        newCards.forEach(function (card) {
+          grid.appendChild(card);
+        });
+
+        /* Trigger reveal animations on new cards */
+        requestAnimationFrame(function () {
+          grid.querySelectorAll('[data-reveal]:not(.is-visible)').forEach(function (el) {
+            el.classList.add('is-visible');
+          });
+        });
+
+        /* Update or hide the Load more button */
+        var nextBtn = doc.getElementById('col-load-more-btn');
+        if (nextBtn && nextBtn.getAttribute('data-next-url')) {
+          btn.setAttribute('data-next-url', nextBtn.getAttribute('data-next-url'));
+          btn.disabled = false;
+          /* Re-build label */
+          var meta = nextBtn.querySelector('.col-load-more__meta');
+          btn.innerHTML = 'Charger plus' + (meta ? ' ' + meta.outerHTML : '');
+        } else {
+          /* No more pages — hide button */
+          wrap.style.display = 'none';
+        }
+      })
+      .catch(function () {
+        btn.disabled = false;
+        btn.textContent = 'Charger plus';
+      });
+  });
+})();
+</script>
 
 {% schema %}
 {

@@ -24,43 +24,6 @@
   <section class="society-crm" data-reveal aria-labelledby="society-title">
     <div>
       <h2 class="society-crm__title" id="society-title">Join<br>the Society</h2>
-    </div>
-    <div class="society-crm__right">
-      <form id="society-form" action="{{ routes.root_url }}contact#contact_form" method="post" accept-charset="UTF-8" novalidate>
-        <input type="hidden" name="form_type" value="customer">
-        <input type="hidden" name="utf8" value="✓">
-        <input type="hidden" name="contact[tags]" value="newsletter">
-        <input type="hidden" name="contact[accepts_marketing]" value="yes">
-
-        <div class="society-crm__field">
-          <label for="society-email" class="visually-hidden">Adresse email</label>
-          <input class="society-crm__input"
-                 type="email"
-                 id="society-email"
-                 name="contact[email]"
-                 placeholder="email"
-                 required
-                 autocomplete="email">
-          <button type="submit" class="society-crm__arrow" aria-label="S'inscrire">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-              <line x1="5" y1="12" x2="19" y2="12"/>
-              <polyline points="12,5 19,12 12,19"/>
-            </svg>
-          </button>
-        </div>
-
-        <p class="society-crm__gdpr">
-          En vous inscrivant, vous acceptez notre
-          <a href="{{ privacy_url | default: '#' }}">politique de confidentialité</a>.
-          Vous pouvez vous désinscrire à tout moment.
-        </p>
-
-        {%- if form.posted_successfully? -%}
-          <p class="society-crm__confirm" aria-live="polite">
-            Bienvenue — votre inscription est confirmée.
-          </p>
-        {%- endif -%}
-      </form>
 
       <div class="society-crm__social">
         <span class="society-crm__social-label">Suivez-nous</span>
@@ -92,6 +55,43 @@
           {%- endif -%}
         </div>
       </div>
+    </div>
+
+    <div class="society-crm__right">
+      <form id="society-form" action="{{ routes.root_url }}contact#contact_form" method="post" accept-charset="UTF-8" novalidate>
+        <input type="hidden" name="form_type" value="customer">
+        <input type="hidden" name="utf8" value="✓">
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <input type="hidden" name="contact[accepts_marketing]" value="yes">
+
+        <div class="society-crm__field">
+          <label for="society-email" class="society-crm__label">Email</label>
+          <input class="society-crm__input"
+                 type="email"
+                 id="society-email"
+                 name="contact[email]"
+                 required
+                 autocomplete="email">
+          <button type="submit" class="society-crm__arrow" aria-label="S'inscrire">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12,5 19,12 12,19"/>
+            </svg>
+          </button>
+        </div>
+
+        <p class="society-crm__gdpr">
+          En vous inscrivant, vous acceptez notre
+          <a href="{{ privacy_url | default: '#' }}">politique de confidentialité</a>.
+          Vous pouvez vous désinscrire à tout moment.
+        </p>
+
+        {%- if form.posted_successfully? -%}
+          <p class="society-crm__confirm" aria-live="polite">
+            Bienvenue — votre inscription est confirmée.
+          </p>
+        {%- endif -%}
+      </form>
     </div>
   </section>
 {%- endif -%}
