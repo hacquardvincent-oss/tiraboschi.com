@@ -26,7 +26,12 @@
 {%- endif -%}
 
 <section class="{{ editorial_class }}" data-tira-reveal aria-labelledby="edit-title-{{ section.id }}">
-  <div class="editorial__img">
+  {%- assign ed_link = section.settings.link_url | default: '' -%}
+  {%- if ed_link != blank -%}
+    <a href="{{ ed_link }}" class="editorial__img" aria-label="{{ section.settings.title | escape }}">
+  {%- else -%}
+    <div class="editorial__img">
+  {%- endif -%}
     {%- if has_image -%}
       {%- if section.settings.image -%}
         <img src="{{ img_src }}"
@@ -46,7 +51,11 @@
     {%- else -%}
       <div class="editorial__img-placeholder" aria-hidden="true"></div>
     {%- endif -%}
-  </div>
+  {%- if ed_link != blank -%}
+    </a>
+  {%- else -%}
+    </div>
+  {%- endif -%}
   <div class="editorial__body">
     {%- if section.settings.label != blank -%}
       <p class="editorial__label">{{ section.settings.label }}</p>

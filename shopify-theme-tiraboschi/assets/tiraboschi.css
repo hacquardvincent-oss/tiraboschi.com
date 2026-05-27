@@ -95,11 +95,23 @@ h1, h2, h3, h4, h5, h6 {
   border-bottom: 1px solid transparent;
   transition: background .5s ease, border-color .5s ease, transform .35s var(--tira-ease);
 }
-/* Etat solid : blanc opaque (au scroll OU pages internes sans hero) */
+/* Etat solid : verre dépoli (au scroll sur homepage) */
 .hdr.solid {
-  background: var(--tira-white);
-  border-bottom-color: var(--tira-border);
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom-color: rgba(232,232,232,0.6);
 }
+/* Mega menu ouvert → fond blanc plein pour cohérence avec le panel */
+.hdr.mega-open {
+  background: var(--tira-white) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-bottom-color: transparent !important;
+}
+.hdr.mega-open .hdr__d { color: var(--tira-black); }
+.hdr.mega-open .hdr__logo-img { filter: none; }
+.hdr.mega-open .tira-bag-icon { filter: none; }
 /* Variante : header toujours solid (pages internes, fiche produit, etc.) */
 .hdr--always-solid {
   background: var(--tira-white);
@@ -109,9 +121,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ─── Desktop ─── */
 .hdr__d {
-  display: grid;
-  grid-template-columns: auto 1fr auto;   /* [logo+nav] | search | icons */
-  align-items: center; gap: 40px;
+  display: flex; justify-content: space-between; align-items: center;
+  position: relative;   /* permet le centrage absolu de la search */
   height: 100%; padding: 0 40px;
   color: var(--tira-white);
   transition: color .5s ease;
@@ -124,13 +135,15 @@ h1, h2, h3, h4, h5, h6 {
   display: flex; align-items: center; gap: 36px;
 }
 
-/* Search inline — centré dans le header desktop */
+/* Search inline — vraiment centré (position absolue dans hdr__d) */
 .hdr__search-inline {
+  position: absolute; left: 50%; transform: translateX(-50%);
   display: flex; justify-content: center; align-items: center;
+  width: 360px; pointer-events: auto;
 }
 .hdr__search-inline .hdr__search-inline__inner {
   display: flex; align-items: center; gap: 8px;
-  width: 100%; max-width: 420px;
+  width: 100%;
 }
 .hdr__search-inline input[type="search"] {
   flex: 1; border: none; background: none; outline: none;
@@ -143,9 +156,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 .hdr__search-inline input[type="search"]::placeholder {
   color: inherit; opacity: .4; letter-spacing: .1em;
+  transition: opacity .15s;
 }
+/* Placeholder disparaît à la saisie */
+.hdr__search-inline input[type="search"]:focus::placeholder { opacity: 0; }
 .hdr.solid .hdr__search-inline input[type="search"],
 .hdr--always-solid .hdr__search-inline input[type="search"] {
+  border-bottom-color: rgba(10,10,10,.2);
+}
+.hdr.mega-open .hdr__search-inline input[type="search"] {
   border-bottom-color: rgba(10,10,10,.2);
 }
 .hdr__search-inline input[type="search"]:focus {
@@ -218,7 +237,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Bag icon — image CDN, filtre white ↔ black */
 .tira-bag-icon {
-  display: block; width: 22px; height: 22px; object-fit: contain;
+  display: block; width: 28px; height: 28px; object-fit: contain;
   filter: brightness(0) invert(1);
   transition: filter .5s ease;
 }
@@ -559,7 +578,7 @@ body.nav-open { overflow: hidden; }
 ════════════════════════════════════════════ */
 .sec-head {
   display: flex; align-items: flex-end; justify-content: space-between;
-  padding: 72px 48px 28px;
+  padding: 40px 48px 20px;
 }
 .sec-head h2 {
   font-size: clamp(30px, 4vw, 48px); font-weight: 400; letter-spacing: -.01em;
@@ -570,7 +589,10 @@ body.nav-open { overflow: hidden; }
   opacity: .5; transition: opacity .2s;
 }
 .sec-head a:hover { opacity: 1; }
-@media (max-width: 768px) { .sec-head { padding: 48px 20px 20px; } }
+@media (max-width: 768px) { .sec-head { padding: 28px 20px 16px; } }
+
+/* Neutralise marges Horizon entre sections — évite le blanc sous la homepage */
+.shopify-section { margin-bottom: 0 !important; }
 
 
 /* ════════════════════════════════════════════
@@ -605,9 +627,9 @@ body.nav-open { overflow: hidden; }
   position: absolute; inset: 0;
   display: flex; flex-direction: column;
   justify-content: space-between; padding: 14px;
-  opacity: 0; transition: opacity .25s ease;
+  opacity: 0; pointer-events: none; transition: opacity .25s ease;
 }
-.card:hover .card__actions { opacity: 1; }
+.card:hover .card__actions { opacity: 1; pointer-events: auto; }
 
 /* Wishlist — transparent stroke white drop-shadow */
 .card__wish {
@@ -656,8 +678,13 @@ body.nav-open { overflow: hidden; }
 .card__name {
   font-size: 11px; text-transform: uppercase; letter-spacing: .08em;
   margin-bottom: 5px; opacity: .8;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .card__price { font-size: 12px; opacity: .5; letter-spacing: .04em; }
+.card__meta {
+  font-size: 10px; opacity: .35; letter-spacing: .04em; margin-top: 3px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 
 
 /* ════════════════════════════════════════════
@@ -780,8 +807,13 @@ body.nav-open { overflow: hidden; }
   background: linear-gradient(135deg, rgba(10,10,10,.92) 0%, rgba(10,10,10,.5) 100%);
 }
 
+/* Lien pleine zone sur chaque panneau du stack (sous le body) */
+.stack__panel-link {
+  position: absolute; inset: 0; z-index: 1; display: block;
+}
+
 .stack__body {
-  position: relative; z-index: 2;
+  position: relative; z-index: 3;
   max-width: 420px; padding: 64px;
   color: var(--tira-white);
 }
@@ -833,7 +865,8 @@ body.nav-open { overflow: hidden; }
 .editorial.flip { direction: rtl; }
 .editorial.flip > * { direction: ltr; }
 
-.editorial__img { overflow: hidden; position: relative; }
+.editorial__img,
+a.editorial__img { overflow: hidden; position: relative; display: block; cursor: pointer; }
 .editorial__img img {
   width: 100%; height: 100%;
   transition: transform .9s var(--tira-ease);
@@ -2357,10 +2390,16 @@ body.hdr-hidden .col-filters {
   align-items: start;
 }
 
+/* Liens mega — 2 colonnes, featured et règles sur toute la largeur */
 .mega__links {
-  display: flex; flex-direction: column; gap: 4px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 28px;
   padding-top: 4px;
 }
+.hdr .mega__link--featured,
+.mega__tagline,
+.mega__rule { grid-column: 1 / -1; }
 /* Spécificité renforcée pour garantir la couleur même si Horizon override */
 .mega__tagline {
   font-size: 11px; text-transform: uppercase; letter-spacing: .12em;

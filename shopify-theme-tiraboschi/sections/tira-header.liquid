@@ -326,6 +326,7 @@
 (function () {
   const items    = document.querySelectorAll('.hdr__nav-item[data-mega]');
   const backdrop = document.getElementById('mega-backdrop');
+  const hdrEl    = document.getElementById('hdr');
   if (!items.length || !backdrop) return;
 
   let closeTimer;
@@ -335,12 +336,14 @@
     items.forEach(i => i.classList.remove('is-open'));
     item.classList.add('is-open');
     backdrop.classList.add('is-visible');
+    if (hdrEl) hdrEl.classList.add('mega-open');
   }
 
   function closeMega() {
     closeTimer = setTimeout(() => {
       items.forEach(i => i.classList.remove('is-open'));
       backdrop.classList.remove('is-visible');
+      if (hdrEl) hdrEl.classList.remove('mega-open');
     }, 220);
   }
 
@@ -360,12 +363,14 @@
   backdrop.addEventListener('click', () => {
     items.forEach(i => i.classList.remove('is-open'));
     backdrop.classList.remove('is-visible');
+    if (hdrEl) hdrEl.classList.remove('mega-open');
   });
 
   // Fermer au scroll
   window.addEventListener('scroll', () => {
     items.forEach(i => i.classList.remove('is-open'));
     backdrop.classList.remove('is-visible');
+    if (hdrEl) hdrEl.classList.remove('mega-open');
   }, { passive: true });
 })();
 </script>
