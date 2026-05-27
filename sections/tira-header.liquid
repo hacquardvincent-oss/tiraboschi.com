@@ -186,23 +186,24 @@
       {%- endif -%}
     </a>
 
-    <a href="{{ routes.cart_url }}" aria-label="Panier — {{ cart.item_count }} article{% if cart.item_count != 1 %}s{% endif %}" class="hdr__bag" data-cart-count="{{ cart.item_count }}">
-      <img class="tira-bag-icon"
-           src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050"
-           alt="" aria-hidden="true" width="21" height="21">
+    <a href="{{ routes.cart_url }}" aria-label="Panier — {{ cart.item_count }} article{% if cart.item_count != 1 %}s{% endif %}" class="hdr__bag hdr__m-icon" data-cart-count="{{ cart.item_count }}">
+      <svg class="hdr__m-bag-svg" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M7.5 10V8.5C7.5 6.0 9.5 4 12 4s4.5 2 4.5 4.5V10"/>
+        <rect x="3" y="10" width="18" height="12"/>
+      </svg>
       {%- if cart.item_count > 0 -%}
         <span class="hdr__bag-count" aria-hidden="true">{{ cart.item_count }}</span>
       {%- endif -%}
     </a>
 
-    <a href="{{ routes.account_url }}" aria-label="Mon compte">
+    <a href="{{ routes.account_url }}" aria-label="Mon compte" class="hdr__m-icon">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <circle cx="12" cy="7.5" r="3.5"/>
         <path d="M3.5 20c0-4.5 3.8-7 8.5-7s8.5 2.5 8.5 7"/>
       </svg>
     </a>
 
-    <button type="button" aria-label="Menu principal" aria-expanded="false" id="mobile-menu-btn" data-tira-menu-toggle>
+    <button type="button" aria-label="Menu principal" aria-expanded="false" id="mobile-menu-btn" class="hdr__m-icon" data-tira-menu-toggle>
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <line x1="3" y1="6"  x2="21" y2="6"/>
         <line x1="3" y1="12" x2="21" y2="12"/>

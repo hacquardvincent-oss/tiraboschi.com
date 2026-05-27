@@ -249,34 +249,64 @@ h1, h2, h3, h4, h5, h6 {
 .hdr__m {
   display: none;
   grid-template-columns: 1fr auto auto auto;
-  align-items: center; gap: 14px;
-  height: 100%; padding: 0 20px;
-  color: var(--tira-white);
-  transition: color .5s ease;
+  align-items: center; gap: 4px;
+  height: 100%; padding: 0 16px;
 }
-.hdr.solid .hdr__m,
-.hdr--always-solid .hdr__m { color: var(--tira-black); }
 .hdr__m-logo {
   display: block; line-height: 0;
 }
-.hdr__m-logo .hdr__logo-img { height: 24px; }
-.hdr__m svg {
-  width: 24px; height: 24px; fill: none;
-  stroke: currentColor; stroke-width: 1.5;
+.hdr__m-logo .hdr__logo-img {
+  height: 22px; width: auto;
+  filter: brightness(0) invert(1);
+  transition: filter .5s ease;
+}
+.hdr.solid .hdr__m-logo .hdr__logo-img,
+.hdr--always-solid .hdr__m-logo .hdr__logo-img { filter: none; }
+
+/* Icônes mobile — classe explicite sur chaque élément */
+.hdr__m-icon {
+  display: flex !important; align-items: center; justify-content: center;
+  position: relative;
+  width: 44px; height: 44px; flex-shrink: 0;
+  background: none; border: none; cursor: pointer;
+  padding: 0; text-decoration: none;
+}
+/* SVG mobile — stroke blanc par défaut (header transparent sur hero) */
+.hdr__m-icon svg {
+  width: 22px; height: 22px; flex-shrink: 0;
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 1.5;
   stroke-linecap: square; stroke-linejoin: miter;
 }
-.hdr__m .tira-bag-icon { width: 24px; height: 24px; }
-.hdr__m .hdr__bag,
-.hdr__m > a:not(.hdr__m-logo) {
-  display: flex; align-items: center; justify-content: center;
-  color: inherit; text-decoration: none;
-  width: 36px; height: 36px; flex-shrink: 0;
+/* SVG mobile → noir quand header solid */
+.hdr.solid .hdr__m-icon svg,
+.hdr--always-solid .hdr__m-icon svg {
+  stroke: #0a0a0a;
 }
-.hdr__m button {
-  background: none; border: none; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  color: inherit; padding: 0;
-  width: 36px; height: 36px; flex-shrink: 0;
+/* Bag SVG spécifique */
+.hdr__m-bag-svg {
+  width: 22px; height: 22px; flex-shrink: 0;
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 1.5;
+  stroke-linecap: square; stroke-linejoin: miter;
+}
+.hdr.solid .hdr__m-bag-svg,
+.hdr--always-solid .hdr__m-bag-svg {
+  stroke: #0a0a0a;
+}
+/* Badge panier */
+.hdr__bag-count {
+  position: absolute; top: 6px; right: 6px;
+  min-width: 16px; height: 16px;
+  background: var(--tira-black); color: var(--tira-white);
+  font-size: 9px; line-height: 16px; text-align: center;
+  letter-spacing: 0;
+}
+.hdr.solid .hdr__bag-count,
+.hdr--always-solid .hdr__bag-count {
+  background: var(--tira-black); color: var(--tira-white);
 }
 
 @media (max-width: 1200px) {
