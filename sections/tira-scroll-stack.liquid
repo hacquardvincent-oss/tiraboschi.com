@@ -8,7 +8,8 @@
 
 {%- assign total_panels = section.blocks.size -%}
 
-<div class="stack" aria-label="{{ section.settings.aria_label | default: 'L''univers TIRABOSCHI' | escape }}">
+{%- assign stack_aria = section.settings.aria_label | default: "L'univers TIRABOSCHI" -%}
+<div class="stack" aria-label="{{ stack_aria | escape }}">
   {%- for block in section.blocks -%}
     {%- assign panel_num = forloop.index -%}
     {%- assign panel_num_padded = panel_num | prepend: '0' | slice: -2, 2 -%}
