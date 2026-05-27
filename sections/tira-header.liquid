@@ -58,6 +58,10 @@
               <a href="{{ routes.collections_url }}/petite-maroquinerie" class="mega__link">Petite Maroquinerie</a>
               <a href="{{ routes.collections_url }}/iconiques" class="mega__link">Iconiques</a>
               <a href="{{ routes.collections_url }}/sur-mesure-exotiques" class="mega__link">Sur Mesure · Exotiques</a>
+              <div class="mega__rule"></div>
+              <a href="/pages/victoire" class="mega__link">La Victoire · Icône 1908</a>
+              <a href="/pages/colette" class="mega__link">La Colette · Icône 1938</a>
+              <a href="/pages/rafael" class="mega__link">Le Rafael · Icône 1952</a>
             </div>
             <div class="mega__visual">
               <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Asset_Atelier_6.png?v=1752606862"
@@ -98,11 +102,12 @@
         <div class="mega" id="mega-maison" role="region" aria-label="Menu La Maison">
           <div class="mega__inner">
             <div class="mega__links">
-              <a href="/pages/histoire" class="mega__link mega__link--featured">Histoire · Depuis 1904</a>
+              <a href="/pages/notre-histoire" class="mega__link mega__link--featured">Notre Histoire · 1904</a>
               <a href="/pages/savoir-faire" class="mega__link">Savoir-Faire</a>
               <a href="/pages/matieres-cuirs" class="mega__link">Matières & Cuirs</a>
               <a href="/pages/la-societe" class="mega__link">The Society</a>
               <a href="/blogs/latelier" class="mega__link">L'Atelier · Blog</a>
+              <a href="/pages/entretien-reparation" class="mega__link">Entretien & Réparation</a>
               <a href="/pages/contact" class="mega__link">Contact · RDV</a>
             </div>
             <div class="mega__visual">
@@ -311,7 +316,7 @@
     closeTimer = setTimeout(() => {
       items.forEach(i => i.classList.remove('is-open'));
       backdrop.classList.remove('is-visible');
-    }, 120);
+    }, 220);
   }
 
   items.forEach(item => {
@@ -323,6 +328,14 @@
       mega.addEventListener('mouseleave', closeMega);
     }
   });
+
+  // La search bar est entre les liens nav et le panel mega (44px de gap).
+  // Si la souris la traverse, on annule la fermeture pour ne pas perdre le mega.
+  const searchBar = document.getElementById('hdr-search');
+  if (searchBar) {
+    searchBar.addEventListener('mouseenter', () => clearTimeout(closeTimer));
+    searchBar.addEventListener('mouseleave', closeMega);
+  }
 
   backdrop.addEventListener('mouseenter', closeMega);
 
