@@ -52,6 +52,18 @@
     ]
   },
   {
+    "name": "Marchés internationaux",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "geo_banner_enabled",
+        "label": "Afficher le bandeau de suggestion de marché",
+        "info": "À activer uniquement si Shopify Markets est correctement configuré (FR/UK/US…)",
+        "default": false
+      }
+    ]
+  },
+  {
     "name": "Drop / Précommande",
     "settings": [
       {

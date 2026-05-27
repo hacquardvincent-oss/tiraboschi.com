@@ -28,8 +28,8 @@
 
   "geo": {
     "suggestion": "Vous semblez naviguer depuis un autre pays.",
-    "switch": "Continuer en {currency} {symbol}",
-    "stay": "Rester en €  EUR",
+    "switch": "Continuer en {{ currency }} {{ symbol }}",
+    "stay": "Rester en € EUR",
     "dismiss_label": "Ignorer la suggestion"
   },
 

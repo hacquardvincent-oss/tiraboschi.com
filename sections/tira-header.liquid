@@ -14,6 +14,9 @@
   assign hdr_classes = 'hdr'
   if transparent_home and template == 'index'
     assign hdr_classes = hdr_classes | append: ' hdr--transparent-home'
+  else
+    # Hors homepage : header toujours solid (logo noir sur fond blanc)
+    assign hdr_classes = hdr_classes | append: ' hdr--always-solid solid'
   endif
 -%}
 
