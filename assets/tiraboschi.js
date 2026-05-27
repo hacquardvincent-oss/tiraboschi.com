@@ -9,42 +9,6 @@
   const noMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isDesktop = window.matchMedia('(hover: hover)').matches;
 
-  /* ════════ Curseur custom (desktop) ════════ */
-  if (isDesktop && document.getElementById('cur-dot')) {
-    const dot = document.getElementById('cur-dot');
-    const ring = document.getElementById('cur-ring');
-    let mx = 0, my = 0, rx = 0, ry = 0;
-
-    /* Activer cursor:none uniquement une fois le curseur custom prêt */
-    document.body.classList.add('tira-cursor-ready');
-
-    document.addEventListener('mousemove', e => {
-      mx = e.clientX; my = e.clientY;
-      dot.style.left = mx + 'px';
-      dot.style.top  = my + 'px';
-    });
-
-    if (!noMotion) {
-      (function followRing() {
-        rx += (mx - rx) * .1;
-        ry += (my - ry) * .1;
-        ring.style.left = rx + 'px';
-        ring.style.top  = ry + 'px';
-        requestAnimationFrame(followRing);
-      })();
-    } else {
-      document.addEventListener('mousemove', e => {
-        ring.style.left = e.clientX + 'px';
-        ring.style.top  = e.clientY + 'px';
-      });
-    }
-
-    document.querySelectorAll('a, button, .card').forEach(el => {
-      el.addEventListener('mouseenter', () => document.body.classList.add('on-hover'));
-      el.addEventListener('mouseleave', () => document.body.classList.remove('on-hover'));
-    });
-  }
-
   /* ════════ Header : transparent → opaque, sticky directionnel ════════ */
   const hdr = document.getElementById('hdr');
   const search = document.getElementById('hdr-search');

@@ -35,9 +35,6 @@ body {
   overflow-x: hidden;
   /* cursor: none appliqué uniquement quand JS active le curseur custom */
 }
-/* Curseur custom actif — classe ajoutée par tiraboschi.js */
-body.tira-cursor-ready { cursor: none; }
-@media (hover: none) { body.tira-cursor-ready { cursor: auto; } }
 
 img {
   display: block; width: 100%; height: 100%;
@@ -76,30 +73,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
-/* ════════════════════════════════════════════
-   3. CURSEUR CUSTOM (desktop only)
-════════════════════════════════════════════ */
-.cur-dot, .cur-ring {
-  position: fixed; border-radius: 50%;
-  pointer-events: none; z-index: 9999;
-  transform: translate(-50%, -50%);
-  will-change: left, top;
-}
-.cur-dot {
-  width: 6px; height: 6px;
-  background: var(--tira-black);
-  transition: width .3s var(--tira-ease), height .3s var(--tira-ease), background .3s;
-}
-.cur-ring {
-  width: 30px; height: 30px;
-  border: 1px solid rgba(10,10,10,.38);
-  transition: opacity .25s, width .3s var(--tira-ease), height .3s var(--tira-ease);
-}
-body.on-hover .cur-dot  { width: 44px; height: 44px; background: rgba(10,10,10,.06); }
-body.on-hover .cur-ring { opacity: 0; }
-body.on-dark  .cur-dot  { background: var(--tira-white); }
-body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
-@media (hover: none) { .cur-dot, .cur-ring { display: none; } }
+/* curseur custom supprimé */
 
 
 /* ════════════════════════════════════════════

@@ -1,7 +1,6 @@
 {
   "current": {
     "lenis_smooth_scroll": true,
-    "custom_cursor": true,
     "page_transitions": true,
     "splash_screen": false,
     "drop_active": false,
@@ -18,7 +17,6 @@
   "presets": {
     "TIRABOSCHI Bespoke": {
       "lenis_smooth_scroll": true,
-      "custom_cursor": true,
       "page_transitions": true,
       "newsletter_popup_enabled": true,
       "social_instagram_link": "https://instagram.com/boschi_paris",
