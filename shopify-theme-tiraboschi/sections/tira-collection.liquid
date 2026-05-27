@@ -196,8 +196,11 @@
               type="button"
               data-next-url="{{ paginate.next.url }}">
         Charger plus
+        {%- liquid
+          assign remaining = paginate.items | minus: paginate.current_offset | minus: products_per_page
+        -%}
         <span class="col-load-more__meta">
-          — {{ paginate.items | minus: paginate.current_offset | minus: products_per_page }} restant{% if paginate.items | minus: paginate.current_offset | minus: products_per_page != 1 %}s{% endif %}
+          — {{ remaining }} restant{%- if remaining != 1 -%}s{%- endif -%}
         </span>
       </button>
     </div>
