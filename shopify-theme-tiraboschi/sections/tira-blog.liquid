@@ -1,0 +1,71 @@
+{% comment %}
+  TIRABOSCHI · Blog L'Atelier
+{% endcomment %}
+
+{%- paginate blog.articles by 9 -%}
+
+<section class="tira-blog" aria-label="Blog {{ blog.title | escape }}">
+
+  <div class="tira-blog__header" data-reveal>
+    <p class="tira-blog__label">L'Atelier</p>
+    <h1 class="tira-blog__title">{{ blog.title }}</h1>
+    <p class="tira-blog__sub">Savoirs, matières, gestes — les chroniques de l'atelier TIRABOSCHI Paris.</p>
+  </div>
+
+  <div class="tira-blog__grid">
+    {%- for article in blog.articles -%}
+      <article class="tira-blog__card" data-reveal>
+        {%- if article.image -%}
+          <a href="{{ article.url }}" class="tira-blog__card-img" tabindex="-1" aria-hidden="true">
+            <img src="{{ article.image | image_url: width: 800 }}"
+                 srcset="{{ article.image | image_url: width: 400 }} 400w,
+                         {{ article.image | image_url: width: 800 }} 800w"
+                 sizes="(max-width:768px) 100vw, 33vw"
+                 alt="{{ article.image.alt | default: article.title | escape }}"
+                 width="800" height="534"
+                 loading="lazy">
+          </a>
+        {%- endif -%}
+        <div class="tira-blog__card-body">
+          <p class="tira-blog__card-date">
+            <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+              {{ article.published_at | date: '%d %B %Y' }}
+            </time>
+          </p>
+          <h2 class="tira-blog__card-title">
+            <a href="{{ article.url }}">{{ article.title }}</a>
+          </h2>
+          {%- if article.excerpt != blank -%}
+            <p class="tira-blog__card-excerpt">{{ article.excerpt | strip_html | truncate: 140 }}</p>
+          {%- endif -%}
+          <a href="{{ article.url }}" class="tira-blog__card-link">Lire →</a>
+        </div>
+      </article>
+    {%- endfor -%}
+  </div>
+
+  {%- if paginate.pages > 1 -%}
+    <nav class="col-pagination" aria-label="Pagination">
+      {%- if paginate.previous -%}
+        <a href="{{ paginate.previous.url }}" class="col-pagination__btn" rel="prev">← Précédent</a>
+      {%- endif -%}
+      <span class="col-pagination__info">Page {{ paginate.current_page }} / {{ paginate.pages }}</span>
+      {%- if paginate.next -%}
+        <a href="{{ paginate.next.url }}" class="col-pagination__btn" rel="next">Suivant →</a>
+      {%- endif -%}
+    </nav>
+  {%- endif -%}
+
+</section>
+
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Blog TIRABOSCHI",
+  "tag": "div",
+  "class": "tira-blog-page",
+  "settings": [],
+  "presets": [{ "name": "Blog TIRABOSCHI" }]
+}
+{% endschema %}

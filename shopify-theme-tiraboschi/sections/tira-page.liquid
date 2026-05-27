@@ -1,0 +1,53 @@
+{% comment %}
+  ═══════════════════════════════════════════════════════════════
+  TIRABOSCHI · Page générique (éditoriale)
+  ═══════════════════════════════════════════════════════════════
+  - Hero image + titre
+  - Contenu riche (page.content via back-office)
+  - Styles appliqués via tiraboschi.css .page-editorial
+{% endcomment %}
+
+<div class="page-editorial">
+
+  {%- comment -%} Hero {%- endcomment -%}
+  <section class="page-hero">
+    {%- if section.settings.hero_image -%}
+      <div class="page-hero__img">
+        <img src="{{ section.settings.hero_image | image_url: width: 1920 }}"
+             srcset="{{ section.settings.hero_image | image_url: width: 768 }} 768w,
+                     {{ section.settings.hero_image | image_url: width: 1280 }} 1280w,
+                     {{ section.settings.hero_image | image_url: width: 1920 }} 1920w"
+             sizes="100vw"
+             alt="{{ section.settings.hero_image.alt | default: page.title | escape }}"
+             width="1920" height="640"
+             loading="eager">
+      </div>
+      <div class="page-hero__overlay"></div>
+    {%- endif -%}
+    <div class="page-hero__content{% unless section.settings.hero_image %} page-hero__content--no-img{% endunless %}">
+      <h1 class="page-hero__title" data-reveal>{{ page.title }}</h1>
+    </div>
+  </section>
+
+  {%- comment -%} Contenu Shopify admin {%- endcomment -%}
+  <div class="page-body rte" id="page-content">
+    {{ page.content }}
+  </div>
+
+</div>
+
+{% schema %}
+{
+  "name": "Page éditoriale",
+  "tag": "article",
+  "class": "tira-editorial-page",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Image hero"
+    }
+  ],
+  "presets": [{ "name": "Page éditoriale TIRABOSCHI" }]
+}
+{% endschema %}

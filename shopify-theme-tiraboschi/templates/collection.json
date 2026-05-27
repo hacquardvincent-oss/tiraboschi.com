@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "tira-collection": {
+      "type": "tira-collection",
+      "settings": {
+        "products_per_page": 12
+      }
+    }
+  },
+  "order": ["tira-collection"]
+}

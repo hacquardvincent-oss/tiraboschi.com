@@ -1,0 +1,53 @@
+{% comment %} TIRABOSCHI · Account {% endcomment %}
+<div class="tira-account-page tira-account-page--dashboard">
+  <div class="tira-account__header">
+    <h1 class="tira-account__title">Bonjour, {{ customer.first_name }}</h1>
+    <a href="{{ routes.account_logout_url }}" class="tira-account__logout">Se déconnecter</a>
+  </div>
+
+  <div class="tira-account__grid">
+    <div class="tira-account__orders">
+      <h2 class="tira-account__section-title">Mes commandes</h2>
+      {% if customer.orders.size > 0 %}
+        <table class="tira-account__orders-table">
+          <thead>
+            <tr>
+              <th>Commande</th>
+              <th>Date</th>
+              <th>Statut</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in customer.orders %}
+              <tr>
+                <td><a href="{{ order.customer_url }}">{{ order.name }}</a></td>
+                <td>{{ order.created_at | date: '%d/%m/%Y' }}</td>
+                <td>{{ order.financial_status_label }}</td>
+                <td>{{ order.total_price | money }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>Vous n'avez pas encore passé de commande. <a href="{{ routes.collections_url }}/sacs">Découvrir nos créations →</a></p>
+      {% endif %}
+    </div>
+
+    <div class="tira-account__address">
+      <h2 class="tira-account__section-title">Adresse par défaut</h2>
+      {% if customer.default_address %}
+        <address>
+          {{ customer.default_address.name }}<br>
+          {{ customer.default_address.address1 }}<br>
+          {% if customer.default_address.address2 != blank %}{{ customer.default_address.address2 }}<br>{% endif %}
+          {{ customer.default_address.city }}, {{ customer.default_address.zip }}<br>
+          {{ customer.default_address.country }}
+        </address>
+        <a href="{{ routes.account_addresses_url }}" class="tira-account__link">Gérer mes adresses →</a>
+      {% else %}
+        <p>Aucune adresse enregistrée. <a href="{{ routes.account_addresses_url }}">Ajouter une adresse →</a></p>
+      {% endif %}
+    </div>
+  </div>
+</div>

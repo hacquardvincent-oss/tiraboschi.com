@@ -1,0 +1,523 @@
+{% comment %}
+  ═══════════════════════════════════════════════════════════════
+  TIRABOSCHI · Fiche produit
+  ═══════════════════════════════════════════════════════════════
+  - Galerie desktop scroll vertical (retour recette 3.1+3.2)
+  - Galerie mobile carousel + barre progression
+  - Breadcrumb, titre, prix, swatches texture cuir, dimensions
+  - ATC AJAX + précommande (tag 'preorder')
+  - 4 trust signals
+  - 3 accordéons (composition, entretien, livraison)
+  - 6 sections storytelling (Savoir-Faire, Matière, Dimensions, Atelier, Sur Mesure, Reco)
+{% endcomment %}
+
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign composition = product.metafields.custom.composition.value | default: ''
+  assign fabrication  = product.metafields.custom.fabrication.value | default: ''
+  assign contenances  = product.metafields.custom.contenances.value | default: ''
+  assign dimensions   = product.metafields.custom.dimensions.value | default: ''
+  assign is_preorder  = false
+  if product.tags contains 'preorder'
+    assign is_preorder = true
+  endif
+-%}
+
+<div class="prd-main" id="MainContent-product">
+
+  {%- comment -%} ─── GALERIE DESKTOP scroll vertical ─── {%- endcomment -%}
+  <div class="prd-gallery" id="prd-gallery" aria-label="Galerie produit {{ product.title | escape }}">
+    {%- for image in product.images -%}
+      <div class="prd-gallery__img" data-img="{{ forloop.index0 }}">
+        <img src="{{ image | image_url: width: 900 }}"
+             srcset="{{ image | image_url: width: 600 }} 600w,
+                     {{ image | image_url: width: 900 }} 900w,
+                     {{ image | image_url: width: 1200 }} 1200w"
+             sizes="50vw"
+             alt="{{ image.alt | default: product.title | escape }}"
+             width="900" height="1200"
+             {% if forloop.first %}loading="eager"{% else %}loading="lazy"{% endif %}>
+      </div>
+    {%- else -%}
+      <div class="prd-gallery__img" data-img="0">
+        <img src="{{ product.featured_image | image_url: width: 900 }}"
+             alt="{{ product.title | escape }}"
+             width="900" height="1200"
+             loading="eager">
+      </div>
+    {%- endfor -%}
+
+    {%- comment -%} Nav produit précédent / suivant {%- endcomment -%}
+    {%- if collection -%}
+      <nav class="prd-nav" aria-label="Navigation dans la collection">
+        {%- if collection.previous_product -%}
+          <a href="{{ collection.previous_product }}" class="prd-nav__prev" aria-label="Produit précédent">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="15,18 9,12 15,6"/></svg>
+            <span>Précédent</span>
+          </a>
+        {%- endif -%}
+        {%- if collection.next_product -%}
+          <a href="{{ collection.next_product }}" class="prd-nav__next" aria-label="Produit suivant">
+            <span>Suivant</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="9,18 15,12 9,6"/></svg>
+          </a>
+        {%- endif -%}
+      </nav>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} ─── GALERIE MOBILE carousel swipe ─── {%- endcomment -%}
+  <div class="prd-gallery--mobile" id="gallery-mobile" aria-label="Galerie mobile {{ product.title | escape }}">
+    <div class="prd-carousel" id="prd-carousel">
+      {%- for image in product.images -%}
+        <div class="prd-carousel__slide">
+          <img src="{{ image | image_url: width: 800 }}"
+               alt="{{ image.alt | default: product.title | escape }}"
+               width="800" height="1067"
+               {% if forloop.first %}loading="eager"{% else %}loading="lazy"{% endif %}>
+        </div>
+      {%- else -%}
+        <div class="prd-carousel__slide">
+          <img src="{{ product.featured_image | image_url: width: 800 }}"
+               alt="{{ product.title | escape }}"
+               width="800" height="1067"
+               loading="eager">
+        </div>
+      {%- endfor -%}
+    </div>
+    <div class="prd-carousel__progress" aria-hidden="true">
+      <div class="prd-carousel__progress-bar" id="carousel-progress"></div>
+    </div>
+  </div>
+
+  {%- comment -%} ─── PANNEAU INFOS ─── {%- endcomment -%}
+  <div class="prd-info" id="prd-info">
+
+    <nav class="prd-breadcrumb" aria-label="Fil d'Ariane">
+      <a href="{{ routes.root_url }}">Accueil</a><span>—</span>
+      {%- if collection -%}
+        <a href="{{ collection.url }}">{{ collection.title }}</a><span>—</span>
+      {%- else -%}
+        <a href="{{ routes.collections_url }}/sacs">Sacs</a><span>—</span>
+      {%- endif -%}
+      <span aria-current="page">{{ product.title }}</span>
+    </nav>
+
+    <p class="prd-type">{{ product.type }}</p>
+    <h1 class="prd-name">{{ product.title }}</h1>
+    <p class="prd-price" id="prd-price-display">
+      {%- if current_variant.compare_at_price > current_variant.price -%}
+        <span class="prd-price--sale">{{ current_variant.price | money }}</span>
+        <span class="prd-price--compare">{{ current_variant.compare_at_price | money }}</span>
+      {%- else -%}
+        {{ current_variant.price | money }}
+      {%- endif -%}
+    </p>
+
+    {%- comment -%} ─── SWATCHES MATIÈRES (variantes) ─── {%- endcomment -%}
+    {%- if product.variants.size > 1 -%}
+      <div class="prd-colors">
+        <p class="prd-colors__label">
+          <span>Matière</span>
+          <span id="prd-variant-title">{{ current_variant.title }}</span>
+        </p>
+        <div class="prd-colors__swatches" role="radiogroup" aria-label="Choisir une matière" id="prd-swatches">
+          {%- for variant in product.variants -%}
+            {%- assign swatch_img = variant.image | default: product.featured_image -%}
+            <label class="prd-swatch{% if variant.id == current_variant.id %} active{% endif %}"
+                   aria-label="{{ variant.title | escape }}">
+              <input type="radio"
+                     name="variant"
+                     value="{{ variant.id }}"
+                     data-variant-id="{{ variant.id }}"
+                     data-variant-title="{{ variant.title | escape }}"
+                     data-variant-price="{{ variant.price | money }}"
+                     {% if variant.id == current_variant.id %}checked{% endif %}
+                     {% unless variant.available %}disabled{% endunless %}>
+              <span class="prd-swatch__material">
+                {%- if swatch_img -%}
+                  <img src="{{ swatch_img | image_url: width: 80, height: 80, crop: 'center' }}"
+                       alt="{{ variant.title | escape }}"
+                       width="40" height="40"
+                       loading="lazy">
+                {%- endif -%}
+              </span>
+              <span class="prd-swatch__name">{{ variant.title }}</span>
+            </label>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} ─── DIMENSIONS ─── {%- endcomment -%}
+    {%- if dimensions != blank -%}
+      <div class="prd-dims">
+        <p class="prd-dims__label">Dimensions</p>
+        <div class="prd-dims__row">
+          {%- assign dim_parts = dimensions | split: '×' -%}
+          {%- for dim in dim_parts -%}
+            <span class="prd-dims__val">{{ dim | strip }}</span>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} ─── CONTENANCES ─── {%- endcomment -%}
+    {%- if contenances != blank -%}
+      <p class="prd-contenances">{{ contenances }}</p>
+    {%- endif -%}
+
+    {%- comment -%} ─── ATC / PRÉCOMMANDE ─── {%- endcomment -%}
+    <div class="prd-atc-wrap">
+      {%- form 'product', product, id: 'product-form', novalidate: 'novalidate' -%}
+        <input type="hidden" name="id" value="{{ current_variant.id }}" id="prd-variant-input">
+        {%- if is_preorder -%}
+          <button class="prd-atc__btn--preorder" type="submit" name="add">
+            Réserver ma pièce →
+            {%- if product.metafields.custom.drop_edition_size -%}
+              <span class="prd-atc__preorder-note">{{ product.metafields.custom.drop_name.value }} · {{ product.metafields.custom.drop_edition_size.value }} exemplaires</span>
+            {%- else -%}
+              <span class="prd-atc__preorder-note">Édition limitée</span>
+            {%- endif -%}
+          </button>
+        {%- elsif current_variant.available -%}
+          <button class="prd-atc" type="submit" name="add" id="atc-btn" aria-live="polite">Ajouter au panier</button>
+        {%- else -%}
+          <button class="prd-atc prd-atc--unavailable" type="button" disabled>Épuisé</button>
+        {%- endif -%}
+      {%- endform -%}
+    </div>
+
+    {%- comment -%} ─── TRUST SIGNALS ─── {%- endcomment -%}
+    <div class="prd-trust">
+      <div class="prd-trust__item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Fabriqué en France · Ateliers Paris
+      </div>
+      <div class="prd-trust__item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Délai de fabrication : 4 à 6 semaines
+      </div>
+      <div class="prd-trust__item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        Livraison offerte · Retour 30 jours
+      </div>
+      <div class="prd-trust__item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Emballage cadeau · Gravure sur demande
+      </div>
+    </div>
+
+    {%- comment -%} ─── ACCORDÉONS ─── {%- endcomment -%}
+    <div class="prd-accordion" id="prd-accordion">
+
+      <div class="prd-accordion__item">
+        <button class="prd-accordion__btn" aria-expanded="false">
+          Composition &amp; Matière
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="2,4 6,8 10,4"/></svg>
+        </button>
+        <div class="prd-accordion__body">
+          {%- if composition != blank -%}
+            <p>{{ composition }}</p>
+          {%- else -%}
+            <p>Extérieur : veau grainé pleine fleur, tanné végétal. Doublure : chevreau naturel. Ferrures : laiton massif brossé. Coutures : fil polyester ciré, point sellier.</p>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <div class="prd-accordion__item">
+        <button class="prd-accordion__btn" aria-expanded="false">
+          Entretien
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="2,4 6,8 10,4"/></svg>
+        </button>
+        <div class="prd-accordion__body">
+          <ul>
+            <li>Nettoyage : chiffon doux légèrement humide</li>
+            <li>Hydratation : crème incolore pour cuir lisse, 2× / an</li>
+            <li>Stockage : pochon en flanelle fourni, debout</li>
+            <li>Éviter : pluie prolongée, chaleur directe, solvants</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="prd-accordion__item">
+        <button class="prd-accordion__btn" aria-expanded="false">
+          Livraison &amp; Retours
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="2,4 6,8 10,4"/></svg>
+        </button>
+        <div class="prd-accordion__body">
+          <p>Livraison offerte en France métropolitaine. Colissimo Suivi ou UPS Express. Délai d'expédition : 24h ouvrées après fabrication.</p>
+          <p>Retour gratuit sous 30 jours, pièce non utilisée dans son emballage d'origine.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>{%- comment -%}/prd-info{%- endcomment -%}
+</div>{%- comment -%}/prd-main{%- endcomment -%}
+
+{%- comment -%} ═══ STORYTELLING ═══ {%- endcomment -%}
+<div class="prd-story">
+
+  <section class="story-section" aria-labelledby="story-1-title" data-reveal>
+    <div class="story-section__inner">
+      <div class="story-section__img">
+        <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0919.jpg"
+             alt="Artisan TIRABOSCHI — couture sellier"
+             loading="lazy">
+      </div>
+      <div class="story-section__body">
+        <p class="story-num">01 / 06</p>
+        <p class="story-label">Savoir-Faire</p>
+        <h2 class="story-title" id="story-1-title">Un seul artisan,<br>de A à Z</h2>
+        <p class="story-text">
+          {%- if fabrication != blank -%}
+            {{ fabrication }}
+          {%- else -%}
+            Chaque pièce TIRABOSCHI est fabriquée par un seul artisan, du traçage de la première pièce à la pose de la dernière ferrure. Aucune chaîne, aucune division du travail. Cette règle, inchangée depuis 1904, garantit une cohérence et une qualité impossibles à obtenir autrement.
+          {%- endif -%}
+        </p>
+        <div class="story-stats">
+          <div class="story-stat"><span class="story-stat__num">1</span><span class="story-stat__label">Artisan</span></div>
+          <div class="story-stat"><span class="story-stat__num">3 400</span><span class="story-stat__label">Points de couture</span></div>
+          <div class="story-stat"><span class="story-stat__num">48–72h</span><span class="story-stat__label">De fabrication</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="story-section story-section--flip" aria-labelledby="story-2-title" data-reveal>
+    <div class="story-section__inner">
+      <div class="story-section__img">
+        <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0154.jpg"
+             alt="Détail matière cuir — TIRABOSCHI Paris"
+             loading="lazy">
+      </div>
+      <div class="story-section__body">
+        <p class="story-num">02 / 06</p>
+        <p class="story-label">La Matière</p>
+        <h2 class="story-title" id="story-2-title">Des cuirs choisis<br>une à une</h2>
+        <p class="story-text">
+          {%- if composition != blank -%}
+            {{ composition }}
+          {%- else -%}
+            Veau grainé, cuir de buffle, agneau nappa — nos peaux proviennent exclusivement des meilleures tanneries françaises, sélectionnées à la main. Chaque peau est inspectée avant découpe : aucun défaut, aucun compromis.
+          {%- endif -%}
+        </p>
+        {%- if contenances != blank -%}
+          <p class="story-contenances">{{ contenances }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+
+  {%- if dimensions != blank or section.settings.show_dimensions -%}
+  <section class="story-section story-section--specs" aria-labelledby="story-3-title" data-reveal>
+    <div class="story-section__specs-inner">
+      <p class="story-num">03 / 06</p>
+      <p class="story-label">Dimensions &amp; Détails</p>
+      <h2 class="story-title" id="story-3-title">{{ product.title }}</h2>
+      <table class="story-specs-table">
+        {%- if dimensions != blank -%}
+          <tr><th>Dimensions</th><td>{{ dimensions }}</td></tr>
+        {%- endif -%}
+        <tr><th>Fabrication</th><td>Un seul artisan · Paris, France</td></tr>
+        <tr><th>Points couture</th><td>3 400 points sellier par sac</td></tr>
+        <tr><th>Temps travail</th><td>48 à 72 heures</td></tr>
+        <tr><th>Ferrures</th><td>Laiton massif brossé</td></tr>
+      </table>
+    </div>
+  </section>
+  {%- endif -%}
+
+  <section class="story-section" aria-labelledby="story-4-title" data-reveal>
+    <div class="story-section__inner">
+      <div class="story-section__img">
+        <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/28092025-DSCF1828.jpg"
+             alt="L'atelier TIRABOSCHI Paris"
+             loading="lazy">
+      </div>
+      <div class="story-section__body">
+        <p class="story-num">04 / 06</p>
+        <p class="story-label">L'Atelier</p>
+        <h2 class="story-title" id="story-4-title">96 Avenue de Clichy,<br>Paris</h2>
+        <p class="story-text">Depuis 1904, TIRABOSCHI fabrique dans le même arrondissement parisien. L'atelier, ouvert sur rendez-vous, accueille les clients qui souhaitent rencontrer leur artisan, choisir leur cuir, personnaliser leur pièce.</p>
+        <a href="/pages/savoir-faire" class="story-link">Découvrir l'atelier →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="story-section story-section--dark story-section--entretien" aria-labelledby="story-5-title" data-reveal>
+    <div class="story-section__entretien-inner">
+      <p class="story-num">05 / 06</p>
+      <p class="story-label">Entretien du cuir</p>
+      <h2 class="story-title" id="story-5-title">Une pièce pour toute<br>une vie</h2>
+      <div class="story-entretien-grid">
+        <div class="story-entretien-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z"/><path d="M12 8v4l3 3"/></svg>
+          <p>Nettoyer avec un chiffon doux légèrement humide. Sécher à l'air naturel.</p>
+        </div>
+        <div class="story-entretien-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          <p>Hydrater 2 fois par an avec une crème incolore adaptée au cuir de veau.</p>
+        </div>
+        <div class="story-entretien-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
+          <p>Ranger dans le pochon en flanelle fourni, debout, à l'abri de la lumière.</p>
+        </div>
+        <div class="story-entretien-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+          <p>Éviter la pluie prolongée, la chaleur directe et tout produit solvant.</p>
+        </div>
+      </div>
+      <a href="/pages/entretien-reparation" class="story-link story-link--light">Guide entretien complet →</a>
+    </div>
+  </section>
+
+  {%- if product.tags contains 'sur-mesure' -%}
+  <section class="story-section story-section--sur-mesure" aria-labelledby="story-6-title" data-reveal>
+    <div class="story-section__body story-section__body--center">
+      <p class="story-num">06 / 06</p>
+      <p class="story-label">Sur Mesure</p>
+      <h2 class="story-title" id="story-6-title">Faites-le vôtre</h2>
+      <p class="story-text">Ce modèle est disponible sur mesure. Choisissez votre cuir, vos couleurs, vos ferrures. Délai de réalisation : 6 à 8 semaines.</p>
+      <a href="/pages/sur-mesure" class="prd-atc__btn--preorder" style="display:inline-block;text-decoration:none">Prendre rendez-vous →</a>
+    </div>
+  </section>
+  {%- endif -%}
+
+</div>
+
+{%- comment -%} ═══ RECOMMANDATIONS ═══ {%- endcomment -%}
+{%- assign reco_collection = product.collections.first -%}
+{%- if reco_collection and reco_collection.products_count > 1 -%}
+<section class="prd-reco" aria-labelledby="reco-title" data-reveal>
+  <h2 class="prd-reco__title" id="reco-title">Vous aimerez aussi</h2>
+  <div class="prd-reco__grid">
+    {%- assign reco_count = 0 -%}
+    {%- for reco_product in reco_collection.products -%}
+      {%- if reco_product.id != product.id and reco_count < 4 -%}
+        {%- assign reco_count = reco_count | plus: 1 -%}
+        <article class="card card--reco">
+          <a href="{{ reco_product.url }}" class="card__img">
+            <img src="{{ reco_product.featured_image | image_url: width: 600 }}"
+                 alt="{{ reco_product.featured_image.alt | default: reco_product.title | escape }}"
+                 width="600" height="800"
+                 loading="lazy">
+            {%- if reco_product.images.size > 1 -%}
+              <img class="img-alt"
+                   src="{{ reco_product.images[1] | image_url: width: 600 }}"
+                   alt="{{ reco_product.title | escape }}"
+                   width="600" height="800"
+                   loading="lazy">
+            {%- endif -%}
+          </a>
+          <div class="card__info">
+            <p class="card__type">{{ reco_product.type }}</p>
+            <a class="card__name" href="{{ reco_product.url }}">{{ reco_product.title }}</a>
+            <p class="card__price">{{ reco_product.price | money }}</p>
+          </div>
+        </article>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</section>
+{%- endif -%}
+
+{%- comment -%} ═══ STICKY ATC MOBILE ═══ {%- endcomment -%}
+<div class="prd-sticky-atc" id="sticky-atc" aria-hidden="true" aria-label="Ajouter {{ product.title | escape }} au panier">
+  <span class="prd-sticky-atc__price">{{ current_variant.price | money }}</span>
+  {%- if is_preorder -%}
+    <button class="prd-sticky-atc__btn prd-sticky-atc__btn--preorder" onclick="document.getElementById('product-form').querySelector('[type=submit]').click()">
+      Réserver →
+    </button>
+  {%- elsif current_variant.available -%}
+    <button class="prd-sticky-atc__btn" onclick="document.getElementById('product-form').querySelector('[type=submit]').click()">
+      Ajouter au panier
+    </button>
+  {%- else -%}
+    <button class="prd-sticky-atc__btn" disabled>Épuisé</button>
+  {%- endif -%}
+</div>
+
+<script>
+(function() {
+  /* ── Swatches variant switcher ── */
+  var swatches = document.querySelectorAll('#prd-swatches input[type=radio]');
+  var variantInput = document.getElementById('prd-variant-input');
+  var variantTitle = document.getElementById('prd-variant-title');
+  var priceDisplay = document.getElementById('prd-price-display');
+
+  swatches.forEach(function(sw) {
+    sw.addEventListener('change', function() {
+      if (!this.checked) return;
+      var id = this.dataset.variantId;
+      var title = this.dataset.variantTitle;
+      var price = this.dataset.variantPrice;
+      if (variantInput) variantInput.value = id;
+      if (variantTitle) variantTitle.textContent = title;
+      if (priceDisplay) priceDisplay.textContent = price;
+      document.querySelectorAll('.prd-swatch').forEach(function(s) { s.classList.remove('active'); });
+      this.closest('.prd-swatch').classList.add('active');
+    });
+  });
+
+  /* ── Sticky ATC : apparaît après scroll de la galerie ── */
+  var stickyAtc = document.getElementById('sticky-atc');
+  var prdInfo = document.getElementById('prd-info');
+  if (stickyAtc && prdInfo) {
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        stickyAtc.setAttribute('aria-hidden', e.isIntersecting ? 'true' : 'false');
+        stickyAtc.style.display = e.isIntersecting ? 'none' : 'flex';
+      });
+    }, { threshold: 0 });
+    io.observe(prdInfo.querySelector('.prd-atc-wrap'));
+  }
+
+  /* ── Mobile carousel progress bar ── */
+  var carousel = document.getElementById('prd-carousel');
+  var progressBar = document.getElementById('carousel-progress');
+  if (carousel && progressBar) {
+    var slides = carousel.querySelectorAll('.prd-carousel__slide');
+    function updateProgress() {
+      if (slides.length < 2) { progressBar.style.width = '100%'; return; }
+      var p = carousel.scrollLeft / (carousel.scrollWidth - carousel.offsetWidth);
+      progressBar.style.width = Math.min(100, Math.max(0, p * 100)) + '%';
+    }
+    carousel.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+  }
+
+  /* ── Accordéons ── */
+  document.querySelectorAll('.prd-accordion__btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var expanded = this.getAttribute('aria-expanded') === 'true';
+      document.querySelectorAll('.prd-accordion__btn').forEach(function(b) {
+        b.setAttribute('aria-expanded', 'false');
+        b.nextElementSibling.style.maxHeight = null;
+      });
+      if (!expanded) {
+        this.setAttribute('aria-expanded', 'true');
+        this.nextElementSibling.style.maxHeight = this.nextElementSibling.scrollHeight + 'px';
+      }
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Fiche produit TIRABOSCHI",
+  "tag": "div",
+  "class": "tira-product-page",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_dimensions",
+      "label": "Afficher section dimensions même si vide",
+      "default": true
+    }
+  ],
+  "presets": [{ "name": "Fiche produit TIRABOSCHI" }]
+}
+{% endschema %}

@@ -1,0 +1,71 @@
+{% comment %}
+  TIRABOSCHI · Article de blog
+{% endcomment %}
+
+<article class="tira-article" aria-label="{{ article.title | escape }}">
+
+  {%- if article.image -%}
+    <div class="tira-article__hero">
+      <img src="{{ article.image | image_url: width: 1280 }}"
+           srcset="{{ article.image | image_url: width: 768 }} 768w,
+                   {{ article.image | image_url: width: 1280 }} 1280w"
+           sizes="100vw"
+           alt="{{ article.image.alt | default: article.title | escape }}"
+           width="1280" height="720"
+           loading="eager">
+    </div>
+  {%- endif -%}
+
+  <div class="tira-article__body">
+    <nav class="tira-article__breadcrumb" aria-label="Fil d'Ariane">
+      <a href="{{ routes.root_url }}">Accueil</a> /
+      <a href="{{ blog.url }}">{{ blog.title }}</a> /
+      <span aria-current="page">{{ article.title }}</span>
+    </nav>
+
+    <header class="tira-article__header" data-reveal>
+      <p class="tira-article__date">
+        <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+          {{ article.published_at | date: '%d %B %Y' }}
+        </time>
+      </p>
+      <h1 class="tira-article__title">{{ article.title }}</h1>
+      {%- if article.author != blank -%}
+        <p class="tira-article__author">Par {{ article.author }}</p>
+      {%- endif -%}
+    </header>
+
+    <div class="tira-article__content rte" data-reveal>
+      {{ article.content }}
+    </div>
+
+    {%- if article.tags.size > 0 -%}
+      <div class="tira-article__tags">
+        {%- for tag in article.tags -%}
+          <a href="{{ blog.url }}/tagged/{{ tag | handleize }}" class="tira-article__tag">{{ tag }}</a>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    <div class="tira-article__nav">
+      {%- if blog.previous_article -%}
+        <a href="{{ blog.previous_article }}" class="tira-article__nav-link" rel="prev">← Article précédent</a>
+      {%- endif -%}
+      <a href="{{ blog.url }}" class="tira-article__nav-link">Tous les articles</a>
+      {%- if blog.next_article -%}
+        <a href="{{ blog.next_article }}" class="tira-article__nav-link" rel="next">Article suivant →</a>
+      {%- endif -%}
+    </div>
+  </div>
+
+</article>
+
+{% schema %}
+{
+  "name": "Article TIRABOSCHI",
+  "tag": "div",
+  "class": "tira-article-page",
+  "settings": [],
+  "presets": [{ "name": "Article TIRABOSCHI" }]
+}
+{% endschema %}
