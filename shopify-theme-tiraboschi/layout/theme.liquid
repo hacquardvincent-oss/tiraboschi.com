@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- else -%}
+      <link rel="icon" type="image/png" href="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Favicon_T_32x32_-_noir.png">
+    {%- endif -%}
+
+    <title>
+      {%- if request.page_type == 'index' -%}
+        {{ shop.name }} — Maroquinerie de Luxe Française depuis 1904
+      {%- else -%}
+        {{ page_title }}{% if current_tags %} &ndash; {{ current_tags | join: ', ' }}{% endif %}{% if current_page != 1 %} &ndash; Page {{ current_page }}{% endif %}{% unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}
+      {%- endif -%}
+    </title>
+
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    {{ content_for_header }}
+
+    {%- comment -%} ── Playfair Display 400 — single weight, latin subset ── {%- endcomment -%}
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap&subset=latin">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap&subset=latin" rel="stylesheet">
+
+    {%- comment -%} ── Theme CSS ── {%- endcomment -%}
+    {{ 'tiraboschi.css' | asset_url | stylesheet_tag }}
+    {{ 'tira-header-fix.css' | asset_url | stylesheet_tag }}
+    {{ 'tira-sections.css' | asset_url | stylesheet_tag }}
+    {%- if template contains 'product' -%}
+      {{ 'tira-preorder.css' | asset_url | stylesheet_tag }}
+    {%- endif -%}
+
+    {%- comment -%} ── SEO JSON-LD + hreflang (snippet central) ── {%- endcomment -%}
+    {%- render 'tira-seo-schemas' -%}
+  </head>
+
+  <body class="template-{{ template | replace: '.', '-' }} page-type-{{ request.page_type }}">
+    <div id="tira-page-overlay" aria-hidden="true"></div>
+
+    {%- comment -%} ── Drop bar site-wide (si drop actif dans settings) ── {%- endcomment -%}
+    {%- if settings.drop_active -%}
+      {%- render 'tira-drop-bar' -%}
+    {%- endif -%}
+
+    {%- comment -%} ── Géo-banner suggestion marché (uniquement si setting activé) ── {%- endcomment -%}
+    {%- if settings.geo_banner_enabled and shop.published_locales.size > 1 -%}
+      {%- render 'tira-geo-banner' -%}
+    {%- endif -%}
+
+    {%- section 'tira-header' -%}
+
+    <main id="MainContent" role="main" data-page-type="{{ request.page_type }}">
+      {{ content_for_layout }}
+    </main>
+
+    {%- section 'tira-footer' -%}
+
+    {%- comment -%} ── Newsletter popup (8s ou 40% scroll, 1×/30 jours) ── {%- endcomment -%}
+    {%- if settings.newsletter_popup_enabled -%}
+      {%- render 'tira-newsletter-popup' -%}
+    {%- endif -%}
+
+    {%- comment -%} ── Lenis avant tiraboschi.js (defer = ordre DOM) ── {%- endcomment -%}
+    {%- if settings.lenis_smooth_scroll -%}
+      <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js" defer></script>
+    {%- endif -%}
+
+    {%- comment -%} ── JS principal ── {%- endcomment -%}
+    <script src="{{ 'tiraboschi.js' | asset_url }}" defer></script>
+  </body>
+</html>
