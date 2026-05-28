@@ -628,14 +628,14 @@ body.nav-open { overflow: hidden; }
 ════════════════════════════════════════════ */
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 3px; padding: 3px;
 }
 @media (max-width: 900px) {
-  .grid { grid-template-columns: repeat(2, 1fr); gap: 2px; padding: 2px; }
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px; padding: 2px; }
 }
 
-.card { cursor: auto; position: relative; }
+.card { cursor: auto; position: relative; min-width: 0; }
 
 .card__img {
   display: block; position: relative; aspect-ratio: 3/4; overflow: hidden;
