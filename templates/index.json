@@ -53,6 +53,17 @@
         "text_words_reveal": true
       }
     },
+    "atelier_vid": {
+      "type": "tira-atelier-vid",
+      "settings": {
+        "stat_number": "40",
+        "stat_label": "Heures par sac",
+        "title": "Un geste. Un artisan. Une pièce.",
+        "link_label": "L'Atelier TIRABOSCHI",
+        "link_url": "/blogs/latelier",
+        "poster_url_fallback": "https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Asset_atelier_1.png?v=1752606834"
+      }
+    },
     "stack": {
       "type": "tira-scroll-stack",
       "blocks": {
@@ -145,6 +156,7 @@
     "marquee",
     "products_fw25",
     "editorial_savoir_faire",
+    "atelier_vid",
     "stack",
     "editorial_society",
     "quote"

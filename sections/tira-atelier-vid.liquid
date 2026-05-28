@@ -1,0 +1,131 @@
+{% comment %}
+  TIRABOSCHI — Section vidéo atelier immersive (80vh)
+  Référence : tiraboschi-homepage-prototype.html — section .atelier-vid
+  "40 heures par sac" — fond vidéo + overlay + contenu texte
+{% endcomment %}
+
+{%- assign vid_poster = '' -%}
+{%- if section.settings.poster_image -%}
+  {%- assign vid_poster = section.settings.poster_image | image_url: width: 1920 -%}
+{%- elsif section.settings.poster_url_fallback != blank -%}
+  {%- assign vid_poster = section.settings.poster_url_fallback -%}
+{%- endif -%}
+
+{%- assign vid_src = '' -%}
+{%- if section.settings.video_file != blank -%}
+  {%- assign vid_src = section.settings.video_file -%}
+{%- elsif section.settings.video_url_fallback != blank -%}
+  {%- assign vid_src = section.settings.video_url_fallback -%}
+{%- endif -%}
+
+<div class="atelier-vid" data-tira-reveal>
+  {%- if vid_src != blank -%}
+    <video class="atelier-vid__video"
+           autoplay muted loop playsinline
+           {%- if vid_poster != blank %} poster="{{ vid_poster }}"{% endif %}
+           aria-hidden="true">
+      <source src="{{ vid_src }}" type="video/mp4">
+    </video>
+  {%- elsif vid_poster != blank -%}
+    <img class="atelier-vid__video"
+         src="{{ vid_poster }}"
+         alt=""
+         aria-hidden="true"
+         width="1920" height="1080"
+         loading="lazy"
+         style="object-fit:cover;opacity:.65">
+  {%- endif -%}
+
+  <div class="atelier-vid__overlay"></div>
+
+  <div class="atelier-vid__content">
+    {%- if section.settings.stat_number != blank -%}
+      <p class="atelier-vid__num">{{ section.settings.stat_number }}</p>
+    {%- endif -%}
+    {%- if section.settings.stat_label != blank -%}
+      <p class="atelier-vid__unit">{{ section.settings.stat_label }}</p>
+    {%- endif -%}
+    {%- if section.settings.title != blank -%}
+      <h2 class="atelier-vid__title" data-tira-word-reveal>{{ section.settings.title }}</h2>
+    {%- endif -%}
+    {%- if section.settings.link_label != blank -%}
+      <a href="{{ section.settings.link_url | default: '/blogs/latelier' }}" class="atelier-vid__link">
+        {{ section.settings.link_label }}
+      </a>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Vidéo atelier",
+  "tag": "div",
+  "class": "tira-section tira-section--atelier-vid",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Vidéo"
+    },
+    {
+      "type": "text",
+      "id": "video_url_fallback",
+      "label": "URL vidéo MP4 (CDN Shopify Files)",
+      "info": "Uploader la vidéo dans Fichiers Shopify et coller l'URL ici"
+    },
+    {
+      "type": "header",
+      "content": "Image poster (fallback si pas de vidéo)"
+    },
+    {
+      "type": "image_picker",
+      "id": "poster_image",
+      "label": "Image poster (thème editor)"
+    },
+    {
+      "type": "text",
+      "id": "poster_url_fallback",
+      "label": "URL image poster CDN (fallback)",
+      "default": "https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Asset_Mains_1.png?v=1752607078"
+    },
+    {
+      "type": "header",
+      "content": "Contenu"
+    },
+    {
+      "type": "text",
+      "id": "stat_number",
+      "label": "Chiffre mis en avant",
+      "default": "40"
+    },
+    {
+      "type": "text",
+      "id": "stat_label",
+      "label": "Unité du chiffre",
+      "default": "Heures par sac"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre",
+      "default": "Un geste. Un artisan. Une pièce."
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Libellé lien",
+      "default": "L'Atelier TIRABOSCHI"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Lien",
+      "default": "/blogs/latelier"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Vidéo atelier TIRABOSCHI"
+    }
+  ]
+}
+{% endschema %}

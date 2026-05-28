@@ -49,23 +49,23 @@
                  width="600" height="800"
                  loading="lazy">
           {%- endif -%}
-
-          <div class="card__actions">
-            <button type="button" class="card__wish" aria-label="Ajouter {{ product.title | escape }} aux favoris" data-product-handle="{{ product.handle }}">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-              </svg>
-            </button>
-            {%- if product.available -%}
-              <form method="post" action="/cart/add" class="card__atc-form">
-                <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-                <button type="submit" class="card__atc">Ajouter au panier</button>
-              </form>
-            {%- else -%}
-              <span class="card__atc card__atc--sold">Rupture</span>
-            {%- endif -%}
-          </div>
         </a>
+
+        <div class="card__actions">
+          <button type="button" class="card__wish" aria-label="Ajouter {{ product.title | escape }} aux favoris" data-product-handle="{{ product.handle }}">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+          {%- if product.available -%}
+            <form method="post" action="/cart/add" class="card__atc-form">
+              <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+              <button type="submit" class="card__atc">Ajouter au panier</button>
+            </form>
+          {%- else -%}
+            <span class="card__atc card__atc--sold">Rupture</span>
+          {%- endif -%}
+        </div>
 
         <div class="card__info">
           {%- if product.type != blank -%}

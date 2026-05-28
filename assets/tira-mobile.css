@@ -78,13 +78,9 @@
 
 /* ── 3. SECTIONS — Suppression espaces blancs, assets plein-écran ── */
 
-/* overflow-x: clip (≠ hidden) : coupe sans créer de scroll container
-   → préserve position:sticky dans le scroll stack */
-.shopify-section { overflow-x: clip; }
-
-/* Le stack doit rester débordant en Y pour que sticky fonctionne */
-.tira-section--stack,
-.tira-section--stack > .stack { overflow: visible !important; }
+/* Pas d'overflow sur .shopify-section : html/body overflow-x:clip/hidden
+   (injecté inline dans tira-header.liquid) suffit.
+   overflow sur un wrapper intermédiaire casse position:sticky du stack. */
 
 /* Hero — vidéo pleine largeur */
 .hero { overflow: hidden; }
