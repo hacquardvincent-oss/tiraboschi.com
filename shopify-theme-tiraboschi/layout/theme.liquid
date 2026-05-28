@@ -59,57 +59,6 @@
 
     {%- section 'tira-header' -%}
 
-    {%- comment -%} ── Guard : restaure les icônes mobile si un script externe les supprime ── {%- endcomment -%}
-    <script>
-    ;(function(){
-      var hdrM = document.querySelector('.hdr__m');
-      if (!hdrM) return;
-      var _snap = hdrM.innerHTML;
-
-      function _check() {
-        if (window.innerWidth > 1200) return;
-        var icons = hdrM.querySelectorAll('.hdr__m-icon');
-        if (icons.length === 0) {
-          /* Icônes supprimées du DOM → restaurer */
-          _obs.disconnect();
-          hdrM.innerHTML = _snap;
-          /* Ré-attacher le listener hamburger */
-          var btn = document.getElementById('mobile-menu-btn');
-          var nav = document.getElementById('mobile-nav');
-          if (btn && nav) {
-            btn.addEventListener('click', function() {
-              var open = btn.getAttribute('aria-expanded') === 'true';
-              btn.setAttribute('aria-expanded', open ? 'false' : 'true');
-              nav.classList.toggle('open', !open);
-              nav.setAttribute('aria-hidden', open ? 'true' : 'false');
-              document.body.classList.toggle('nav-open', !open);
-            });
-          }
-          _obs.observe(hdrM, {childList: true, subtree: true});
-          return;
-        }
-        /* Icônes présentes mais peut-être encapsulées dans un parent caché */
-        for (var i = 0; i < icons.length; i++) {
-          var el = icons[i];
-          if (window.getComputedStyle(el).display === 'none') {
-            var p = el.parentNode;
-            while (p && p !== hdrM) {
-              p.style.setProperty('display', 'flex', 'important');
-              p.style.setProperty('visibility', 'visible', 'important');
-              p = p.parentNode;
-            }
-            el.style.setProperty('display', 'flex', 'important');
-          }
-        }
-      }
-
-      var _obs = new MutationObserver(_check);
-      _obs.observe(hdrM, {childList: true, subtree: true});
-      [100, 300, 800, 2000].forEach(function(t){ setTimeout(_check, t); });
-      window.addEventListener('load', _check);
-    })();
-    </script>
-
     <main id="MainContent" role="main" data-page-type="{{ request.page_type }}">
       {{ content_for_layout }}
     </main>

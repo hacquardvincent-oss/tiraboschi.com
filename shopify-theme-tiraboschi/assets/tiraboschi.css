@@ -249,8 +249,8 @@ h1, h2, h3, h4, h5, h6 {
 .hdr__m {
   display: none;
   grid-template-columns: 1fr auto auto auto;
-  align-items: center; gap: 4px;
-  height: 100%; padding: 0 16px;
+  align-items: center; gap: 14px;
+  height: 100%; padding: 0 20px;
   color: var(--tira-white);
   transition: color .5s ease;
 }
@@ -266,49 +266,30 @@ h1, h2, h3, h4, h5, h6 {
 }
 .hdr.solid .hdr__m-logo .hdr__logo-img,
 .hdr--always-solid .hdr__m-logo .hdr__logo-img { filter: none; }
-
-/* Tous les SVG dans le header mobile — taille fixe (évite 300px par défaut) */
 .hdr__m svg {
-  width: 22px; height: 22px; flex-shrink: 0;
-  fill: none; stroke: currentColor;
+  width: 22px; height: 22px; fill: none;
+  stroke: currentColor;
   stroke-width: 1.5; stroke-linecap: square; stroke-linejoin: miter;
 }
-/* Bag icon CDN (ancienne structure HTML sans classe hdr__m-icon) */
 .hdr__m .tira-bag-icon {
   width: 22px; height: 22px; flex-shrink: 0;
   filter: brightness(0) invert(1); transition: filter .5s ease;
 }
 .hdr.solid .hdr__m .tira-bag-icon,
 .hdr--always-solid .hdr__m .tira-bag-icon { filter: none; }
-
-/* Liens + bouton icônes — compatible ancienne ET nouvelle structure HTML */
-.hdr__m .hdr__bag,
-.hdr__m > a:not(.hdr__m-logo),
-.hdr__m button,
-.hdr__m-icon {
-  display: flex !important; align-items: center; justify-content: center;
+.hdr__m .hdr__bag {
   position: relative;
-  width: 44px; height: 44px; flex-shrink: 0;
-  background: rgba(255,0,0,0.5) !important; border: none; cursor: pointer;
-  padding: 0; text-decoration: none; color: inherit;
+  display: flex; align-items: center; justify-content: center;
 }
-/* NUCLEAR: spécificité max (ID + 2 class + 1 tag) pour forcer les enfants visibles */
-html body #hdr .hdr__m a.hdr__m-icon,
-html body #hdr .hdr__m button.hdr__m-icon {
-  display: flex !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  min-width: 44px !important;
-  min-height: 44px !important;
-  background: rgba(255,0,0,0.9) !important;
-  overflow: visible !important;
-  transform: none !important;
-  pointer-events: auto !important;
+.hdr__m button {
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: inherit; padding: 0;
 }
 
 /* Badge panier */
 .hdr__bag-count {
-  position: absolute; top: 4px; right: 2px;
+  position: absolute; top: -2px; right: -4px;
   min-width: 14px; height: 14px;
   background: currentColor; color: var(--tira-white);
   font-size: 8px; line-height: 14px; text-align: center;
@@ -317,7 +298,7 @@ html body #hdr .hdr__m button.hdr__m-icon {
 
 @media (max-width: 1200px) {
   .hdr__d { display: none; }
-  .hdr__m { display: grid; background: blue !important; }
+  .hdr__m { display: grid; }
 }
 /* Masquer la search bar externe sur desktop (intégrée dans le header) */
 @media (min-width: 1201px) {
