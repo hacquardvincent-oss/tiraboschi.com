@@ -5,9 +5,6 @@
 'use strict';
 
 (function () {
-  /* ════════ DEBUG: désactiver tout le JS sur mobile ════════ */
-  if (window.innerWidth <= 1200) return;
-
   /* ════════ Préférences utilisateur ════════ */
   const noMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isDesktop = window.matchMedia('(hover: hover)').matches;
