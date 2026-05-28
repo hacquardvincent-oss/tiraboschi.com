@@ -1,9 +1,32 @@
-# TIRABOSCHI Paris — Instructions Claude Code v4.0
+# TIRABOSCHI Paris — Instructions Claude Code v5.0
 > Document de travail principal. Lu automatiquement à chaque session.
 > Référence détaillée complète : `TIRABOSCHI_cahier_des_charges_complet.md`
 > Roadmap stratégique : `ROADMAP.md`
 > Suivi des validations : `VALIDATION.md`
-> Prototype homepage validé : `tiraboschi-homepage-prototype.html`
+
+---
+
+## 🚨 WORKFLOW OBLIGATOIRE — LIRE EN PREMIER À CHAQUE SESSION
+
+### Déploiement : GitHub UNIQUEMENT — jamais de Shopify CLI direct
+- **Thème actuel** : `tiraboschibespoke` (ID 199706411351) — thème Bespoke custom, **pas Horizon**
+- Toutes les modifications passent par `git commit + push` → auto-sync GitHub → Shopify
+- Ne jamais utiliser `shopify theme push`, `shopify theme dev`, ni modifier les fichiers depuis Shopify CLI
+
+### Branches git
+```
+Branche de dev   : claude/clever-archimedes-h8OmL  (prototypes HTML, docs)
+Branche déployée : shopify-deploy  (auto-sync Shopify)
+Branche locale   : shopify-deploy-local  → pousse vers origin/shopify-deploy
+```
+**Commande de push à utiliser :**
+```bash
+git push origin shopify-deploy-local:shopify-deploy
+```
+Si rejeté (non fast-forward) : `git fetch origin shopify-deploy` puis réessayer.
+
+### Règle de mise à jour de ce fichier
+**À chaque fin de session significative** : mettre à jour la section "ÉTAT D'AVANCEMENT" ci-dessous, committer et pousser CLAUDE.md. C'est ce fichier qui garantit la continuité entre sessions.
 
 ---
 
@@ -16,7 +39,7 @@ THÈME DE TEST → ID 199706411351 (tiraboschibespoke) ← Travailler ICI unique
 
 ---
 
-## SETUP SHOPIFY CLI
+## SETUP SHOPIFY CLI (référence uniquement — non utilisé)
 
 ```bash
 # Authentification
@@ -450,7 +473,7 @@ locales/ar.json                 → Strings AR draft RTL (traduction native OBLI
 ```
 
 ### ✅ Phase actuelle — Phase 3 EN COURS — Intégration Shopify
-*Mis à jour le 27/05/2026*
+*Mis à jour le 28/05/2026*
 
 #### Shopify Admin — Actions directes (via GraphQL)
 - ✅ 8 produits publiés sur "Boutique en ligne" (Victoire, Rafaël, Colette, Colette Mini, Jane, Olympe, Pochon, Chaîne)
@@ -459,40 +482,49 @@ locales/ar.json                 → Strings AR draft RTL (traduction native OBLI
 - 🔲 Métafields produits non remplis (composition, fabrication, contenances, dimensions)
 - 🔲 Menus Shopify admin (main-menu, footer-*) non configurés
 
+#### Bugs corrigés (28/05/2026)
+- ✅ `overflow-x: clip` (était `hidden`) → fixe scroll stack sticky + panels animation
+- ✅ `.card__actions` pointer-events → produits cliquables sur homepage
+- ✅ Page Password complète : layout/password.liquid + templates/password.json + sections/tira-password.liquid
+
 #### Phase 3 — État précis par sous-phase
 ```
 3A — Socle
-✅ sections/tira-header.liquid  — mega-menu, sticky directionnel, transparent hero
-✅ sections/tira-footer.liquid  — CRM form, Instagram social, locale selector
-✅ assets/tiraboschi.css        — tokens, header 68px, search bar, mega menu, society-crm
-✅ assets/tiraboschi.js         — scroll reveals, marquee, curseur custom
-✅ templates/index.json         — Homepage
-✅ sections/tira-hero-video.liquid, tira-scroll-stack.liquid, tira-product-grid.liquid, tira-marquee.liquid, tira-editorial-flip.liquid
-✅ templates/collection.json    — Collection
+✅ sections/tira-header.liquid      — mega-menu, sticky directionnel, transparent hero
+✅ sections/tira-footer.liquid      — CRM form, Instagram social, locale selector
+✅ assets/tiraboschi.css            — tokens, header 68px, search bar, mega menu, society-crm
+✅ assets/tiraboschi.js             — scroll reveals, marquee, curseur custom
+✅ templates/index.json             — Homepage
+✅ sections/tira-hero-video.liquid, tira-scroll-stack.liquid, tira-product-grid.liquid
+✅ sections/tira-marquee.liquid, tira-editorial-flip.liquid, tira-atelier-vid.liquid
+✅ templates/collection.json        — Collection
 ✅ sections/tira-collection.liquid
-✅ templates/product.json       — Fiche produit
-✅ sections/tira-product.liquid — 6 sections storytelling, galerie, ATC, précommande
-□ layout/theme.liquid          — AUCUNE MODIFICATION (Lenis, splash, transitions, SEO schemas NON injectés)
-□ sections/header-group.json   — NON CRÉÉ
-□ sections/footer-group.json   — NON CRÉÉ
+✅ templates/product.json           — Fiche produit
+✅ sections/tira-product.liquid     — 6 sections storytelling, galerie, ATC, précommande
+✅ layout/password.liquid           — Layout page Coming Soon (sans header/footer)
+✅ templates/password.json          — Coming Soon page (layout: password)
+✅ sections/tira-password.liquid    — Coming Soon : vidéo fond, opt-in form, accès admin
+□ layout/theme.liquid               — AUCUNE MODIFICATION (Lenis, splash, transitions, SEO schemas NON injectés)
+□ sections/header-group.json        — NON CRÉÉ
+□ sections/footer-group.json        — NON CRÉÉ
 □ Swatches couleur → changement galerie — NON IMPLÉMENTÉ
 □ Barre drop (tira-drop-bar.liquid dans theme.liquid) — NON INJECTÉ
 
 3B — Fondations "grande maison"
-✅ Mega-menu éditorial (header)  — Images CDN, 3 panels (Collections, Sur Mesure, La Maison)
-□ Lenis smooth scrolling (theme.liquid) — NON INJECTÉ
-□ Transitions entre pages       — NON INJECTÉES
-□ Splash screen logo            — NON INJECTÉ
-□ Magnetic buttons CTA          — NON IMPLÉMENTÉS
+✅ Mega-menu éditorial (header)      — Images CDN, 3 panels (Collections, Sur Mesure, La Maison)
+□ Lenis smooth scrolling             — NON INJECTÉ dans theme.liquid
+□ Transitions entre pages            — NON INJECTÉES
+□ Splash screen logo                 — NON INJECTÉ
+□ Magnetic buttons CTA               — NON IMPLÉMENTÉS
 
 3C — SEO technique
-□ tira-seo-schemas.liquid → render dans theme.liquid — NON INJECTÉ (snippet prêt)
-□ Métafields produits remplis  — À faire dans Shopify Admin (aucun rempli)
+□ tira-seo-schemas.liquid → render dans theme.liquid — NON INJECTÉ (snippet prêt dans snippets/)
+□ Métafields produits remplis        — À faire dans Shopify Admin (aucun rempli)
 □ Sitemap.xml · Robots.txt · Search Console — Phase post-lancement
 
 3D — International (Shopify Markets)
-□ Shopify Markets NON activé   — Snippets (tira-geo-banner, tira-locale-selector) prêts
-□ tira-locale-selector.liquid présent dans footer (rendu conditionnel — OK si Markets désactivé)
+□ Shopify Markets NON activé        — Snippets (tira-geo-banner, tira-locale-selector) prêts
+□ tira-locale-selector.liquid dans footer (rendu conditionnel — OK si Markets désactivé)
 
 3E — Pages P2
 ✅ Histoire      — sections/tira-histoire.liquid + templates/page.histoire.json
@@ -500,24 +532,33 @@ locales/ar.json                 → Strings AR draft RTL (traduction native OBLI
 ✅ Matières      — sections/tira-matieres.liquid + templates/page.matieres-cuirs.json
 ✅ Sur Mesure    — sections/tira-sur-mesure.liquid + templates/page.sur-mesure.json
 ✅ La Société    — sections/tira-la-societe.liquid + templates/page.la-societe.json
-□ Icône Victoire — section + template NON CRÉÉS
-□ Icône Colette  — section + template NON CRÉÉS
-□ Icône Rafael   — section + template NON CRÉÉS
-□ Contact + Booking RDV        — NON CRÉÉ
-□ Entretien & Réparation       — NON CRÉÉ
-□ Lookbook FW25                — NON CRÉÉ
-□ Drops & Précommandes         — snippets prêts, page template NON CRÉÉ
+✅ Icône Victoire — sections/tira-icone-victoire.liquid + templates/page.victoire.json
+✅ Icône Colette  — sections/tira-icone-colette.liquid + templates/page.colette.json
+✅ Icône Rafael   — sections/tira-icone-rafael.liquid + templates/page.rafael.json
+✅ Contact + Booking RDV — sections/tira-contact.liquid + templates/page.contact.json
+✅ Entretien & Réparation — sections/tira-entretien.liquid + templates/page.entretien.json
+✅ Drops & Précommandes  — sections/tira-drops.liquid + templates/page.drops.json
+□ Lookbook FW25          — NON CRÉÉ (section + template manquants)
+□ Conformité maquettes HTML — À vérifier (Notre Histoire en priorité)
 
 3F — Pages P3
 ✅ Blog + Article + Search + 404 + Cart — sections + templates prêts
-□ Espace client (customers/)           — NON CRÉÉ  ← priorité avant Cadeaux/Wishlist
-□ Cadeaux + Wishlist + Presse + RSE    — NON CRÉÉS (priorité basse)
-□ Checkout branding                    — NON CRÉÉ
+✅ Espace client — sections/tira-customers.liquid (template customers/ à vérifier)
+□ Cadeaux + Wishlist + Presse + RSE — NON CRÉÉS (priorité basse)
+□ Checkout branding — NON CRÉÉ
 
-Snippets — tous dans snippets/ ✅ (tira-drop-bar, tira-geo-banner, tira-locale-selector,
-           tira-newsletter-popup, tira-preorder, tira-seo-schemas)
+Snippets — tous dans snippets/ ✅
+✅ tira-drop-bar.liquid, tira-geo-banner.liquid, tira-locale-selector.liquid
+✅ tira-newsletter-popup.liquid, tira-preorder.liquid, tira-seo-schemas.liquid
 □ tira-back-in-stock.liquid — NON CRÉÉ
 □ tira-reviews.liquid       — NON CRÉÉ
+
+Défauts UX à corriger (identifiés 28/05/2026)
+□ Homepage grille produits — largeurs inégales entre cards
+□ Menu mobile — entrées manquantes (ex: Prochains Drops présent en desktop absent en mobile)
+□ Swatches coloris fiche produit — mise en page à revoir
+□ Pages éditoriales — conformité maquettes HTML (Notre Histoire en priorité)
+□ Contenu édito fiche produit — doit être produit-spécifique (métafields), pas générique
 ```
 
 ### 🔲 Phase 4 — CRM & Analytics
