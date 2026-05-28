@@ -20,6 +20,29 @@
   endif
 -%}
 
+<style>
+/* ── CSS critique injecté directement dans la section (indépendant du chargement des assets) ── */
+:root{--header-h:68px;--search-h:44px;}
+html{overflow-x:clip!important;max-width:100vw;}
+body{overflow-x:hidden!important;max-width:100vw;width:100%;}
+img,video,iframe,svg,canvas{max-width:100%!important;}
+
+/* Desktop ≥1201px : .hdr__d visible, .hdr__m caché, #hdr-search caché */
+@media(min-width:1201px){
+  .hdr__d{display:flex!important;}
+  .hdr__m{display:none!important;}
+  #hdr-search{display:none!important;}
+}
+/* Mobile ≤1200px : .hdr__d caché, .hdr__m visible, .hdr__search-inline caché */
+@media(max-width:1200px){
+  .hdr__d{display:none!important;}
+  .hdr__m{display:grid!important;grid-template-columns:1fr auto auto auto;}
+  .hdr__search-inline{display:none!important;}
+  .mega{display:none!important;}
+  .mega-backdrop{display:none!important;}
+}
+</style>
+
 <header class="{{ hdr_classes }}" id="hdr" role="banner" data-transparent-home="{{ transparent_home }}">
 
   {%- comment -%} ═══ DESKTOP ═══ {%- endcomment -%}
