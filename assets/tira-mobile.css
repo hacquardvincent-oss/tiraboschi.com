@@ -1,0 +1,158 @@
+/* ═══════════════════════════════════════════════════════════
+   TIRABOSCHI — Mobile Fixes CSS
+   Corrections responsive — chargé après tiraboschi.css
+═══════════════════════════════════════════════════════════ */
+
+/* ── 1. HEADER MOBILE — logo et icônes plus grands ── */
+@media (max-width: 1200px) {
+  .hdr__m-logo .hdr__logo-img {
+    height: 30px !important;
+  }
+  .hdr__m {
+    gap: 18px;
+    padding: 0 20px;
+  }
+  .hdr__m svg {
+    width: 26px !important;
+    height: 26px !important;
+  }
+  .hdr__m .tira-bag-icon {
+    width: 26px !important;
+    height: 26px !important;
+  }
+}
+
+/* ── 2. SEARCH BAR (#hdr-search) — couleur, flèche, trait ── */
+/*
+  État par défaut = header transparent (hero sombre) → couleur blanche.
+  Quand .solid ou .hdr--always-solid → couleur noire via tiraboschi.css.
+*/
+
+/* Supprime le trait sous le bloc search */
+.hdr-search {
+  border-bottom: none !important;
+  color: var(--tira-white, #fff);
+}
+
+/* Input et placeholder en blanc sur fond transparent */
+.hdr-search input[type="search"] {
+  color: var(--tira-white, #fff);
+  border-bottom-color: rgba(255, 255, 255, 0.4) !important;
+}
+.hdr-search input::placeholder {
+  color: var(--tira-white, #fff);
+  opacity: 0.5;
+}
+
+/* Flèche submit en blanc */
+.hdr-search__submit {
+  color: var(--tira-white, #fff) !important;
+}
+.hdr-search__submit svg {
+  stroke: currentColor !important;
+}
+
+/* Quand header devient solid (scroll) → repasse en noir */
+.hdr-search.solid input[type="search"],
+.hdr-search.sticky-mode input[type="search"],
+.hdr-search--always-solid input[type="search"] {
+  color: var(--tira-black, #0a0a0a);
+  border-bottom-color: var(--tira-border, #e8e8e8) !important;
+}
+.hdr-search.solid input::placeholder,
+.hdr-search.sticky-mode input::placeholder,
+.hdr-search--always-solid input::placeholder {
+  color: var(--tira-black, #0a0a0a);
+  opacity: 0.45;
+}
+.hdr-search.solid .hdr-search__submit,
+.hdr-search.sticky-mode .hdr-search__submit,
+.hdr-search--always-solid .hdr-search__submit {
+  color: var(--tira-black, #0a0a0a) !important;
+}
+
+/* Pages hors homepage : .hdr--always-solid → search toujours foncée */
+.hdr-search--always-solid {
+  color: var(--tira-black, #0a0a0a);
+}
+
+/* ── 3. SECTIONS — Suppression espaces blancs, assets plein-écran ── */
+
+/* Toutes les sections : overflow contenu */
+.shopify-section { overflow-x: hidden; }
+
+/* Hero — vidéo pleine largeur */
+.hero { overflow: hidden; }
+.hero__video-wrap { overflow: hidden; }
+.hero__video { object-fit: cover; }
+
+/* Scroll stack — images couvrent tout l'écran */
+@media (max-width: 768px) {
+  .stack__bg { overflow: hidden; }
+  .stack__bg img { object-fit: cover; width: 100%; height: 100%; }
+  .stack__panel { overflow: hidden; }
+}
+
+/* Editorial — sections sans espace parasite */
+@media (max-width: 900px) {
+  .editorial {
+    min-height: auto !important;
+    overflow: hidden;
+  }
+  .editorial__img {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+  }
+  .editorial__img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .editorial__body { padding: 36px 20px 40px; }
+}
+
+/* Quote section — padding mobile réduit */
+@media (max-width: 768px) {
+  .quote { padding: 72px 20px; }
+}
+
+/* Supprime les marges Shopify entre sections */
+.shopify-section { margin-bottom: 0 !important; }
+main > .shopify-section + .shopify-section { margin-top: 0 !important; }
+
+/* ── 4. GRILLE PRODUITS — Longs titres & descriptions ── */
+@media (max-width: 900px) {
+  /* Cache la composition sur mobile : trop verbeux sur petites cards */
+  .card__meta { display: none !important; }
+
+  /* Moins d'espace blanc sous les infos produit */
+  .card__info { padding: 8px 0 14px; }
+
+  /* Titre et prix : couper proprement */
+  .card__name {
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+  .card__price {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* ── 5. FOOTER CRM — social media sous le champ opt-in ── */
+@media (max-width: 900px) {
+  .society-crm {
+    grid-template-columns: 1fr;
+    gap: 36px;
+    padding: 52px 20px;
+  }
+  /* Ordre explicite : titre → form → social */
+  .society-crm__col-title  { order: 1; }
+  .society-crm__right      { order: 2; }
+  .society-crm__col-social { order: 3; }
+}

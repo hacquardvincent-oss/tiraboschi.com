@@ -36,6 +36,7 @@
 
     {%- comment -%} ── Theme CSS ── {%- endcomment -%}
     {{ 'tiraboschi.css' | asset_url | stylesheet_tag }}
+    {{ 'tira-mobile.css' | asset_url | stylesheet_tag }}
     {%- if template contains 'product' -%}
       {{ 'tira-preorder.css' | asset_url | stylesheet_tag }}
     {%- endif -%}
