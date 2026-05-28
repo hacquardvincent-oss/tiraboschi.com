@@ -22,13 +22,15 @@
     const y = window.scrollY;
     const heroH = window.innerHeight;
 
-    /* 1. Transparent ↔ solid (uniquement sur homepage, sinon toujours solid) */
-    const isSolid = !isHome || y >= heroH * 0.85;
+    /* 1. Transparent ↔ solid — sur toutes les pages (seuil 80px hors homepage) */
+    const threshold = isHome ? heroH * 0.85 : 80;
+    const isSolid = y >= threshold;
     hdr.classList.toggle('solid', isSolid);
     if (search && !search.classList.contains('sticky-mode')) {
       search.classList.toggle('solid', isSolid);
     }
-    document.body.classList.toggle('on-dark', isHome && !isSolid);
+    const hasDarkHero = isHome || document.querySelector('[data-tira-dark-hero]') !== null;
+    document.body.classList.toggle('on-dark', hasDarkHero && !isSolid);
 
     /* 2. Header directionnel (désactivé sur homepage : le header reste visible pour le hero) */
     const delta = y - lastScrollY;
