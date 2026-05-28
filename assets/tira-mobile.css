@@ -78,8 +78,13 @@
 
 /* ── 3. SECTIONS — Suppression espaces blancs, assets plein-écran ── */
 
-/* Toutes les sections : overflow contenu */
-.shopify-section { overflow-x: hidden; }
+/* overflow-x: clip (≠ hidden) : coupe sans créer de scroll container
+   → préserve position:sticky dans le scroll stack */
+.shopify-section { overflow-x: clip; }
+
+/* Le stack doit rester débordant en Y pour que sticky fonctionne */
+.tira-section--stack,
+.tira-section--stack > .stack { overflow: visible !important; }
 
 /* Hero — vidéo pleine largeur */
 .hero { overflow: hidden; }
@@ -123,6 +128,10 @@
 /* Supprime les marges Shopify entre sections */
 .shopify-section { margin-bottom: 0 !important; }
 main > .shopify-section + .shopify-section { margin-top: 0 !important; }
+
+/* Réduit l'espace au-dessus de la grille produit (sec-head padding-top) */
+.sec-head { padding-top: 24px !important; }
+@media (max-width: 768px) { .sec-head { padding-top: 16px !important; } }
 
 /* ── 4. GRILLE PRODUITS — Longs titres & descriptions ── */
 @media (max-width: 900px) {
