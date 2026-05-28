@@ -122,23 +122,24 @@
     });
   });
 
-  /* ════════ Join the Society form (Shopify customer/newsletter) ════════ */
+  /* ════════ Join the Society form (Shopify newsletter) ════════ */
   const societyForm = document.getElementById('society-form');
   if (societyForm) {
     societyForm.addEventListener('submit', function (e) {
-      /* Si l'action pointe vers /contact (Shopify), on laisse Shopify gérer.
-         Sinon, mode démo : on affiche confirmation client side */
-      if (!this.action || this.action.indexOf('/contact') === -1) {
-        e.preventDefault();
-        const confirm = document.getElementById('society-confirm');
-        if (confirm) {
-          confirm.hidden = false;
-          const field = this.querySelector('.society-crm__field');
-          const gdpr  = this.querySelector('.society-crm__gdpr');
-          if (field) field.style.display = 'none';
-          if (gdpr)  gdpr.style.display = 'none';
-        }
-      }
+      const emailInput = this.querySelector('input[type="email"]');
+      if (!emailInput || !emailInput.value.trim()) return;
+      e.preventDefault();
+      // Soumettre à Shopify via fetch (best-effort, sans rechargement)
+      const formData = new FormData(this);
+      fetch(this.getAttribute('action') || '/contact', { method: 'POST', body: formData })
+        .catch(() => {});
+      // Afficher la confirmation client-side immédiatement (UX fluide)
+      const confirmEl = this.querySelector('.society-crm__confirm');
+      const field = this.querySelector('.society-crm__field');
+      const gdpr  = this.querySelector('.society-crm__gdpr');
+      if (confirmEl) confirmEl.hidden = false;
+      if (field) field.style.display = 'none';
+      if (gdpr)  gdpr.style.display  = 'none';
     });
   }
 

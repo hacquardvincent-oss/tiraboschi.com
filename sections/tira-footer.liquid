@@ -68,11 +68,9 @@
           Vous pouvez vous désinscrire à tout moment.
         </p>
 
-        {%- if form.posted_successfully? -%}
-          <p class="society-crm__confirm" aria-live="polite">
-            Bienvenue — votre inscription est confirmée.
-          </p>
-        {%- endif -%}
+        <p class="society-crm__confirm" aria-live="polite" hidden>
+          Bienvenue — votre inscription est confirmée.
+        </p>
       </form>
     </div>
 

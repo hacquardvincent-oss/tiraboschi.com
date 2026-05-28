@@ -50,7 +50,7 @@
       <h1 class="hero__title">{{ section.settings.title }}</h1>
     {%- endif -%}
     {%- if section.settings.cta_label != blank -%}
-      <a href="{{ section.settings.cta_link | default: '#' }}" class="hero__cta tira-magnetic">{{ section.settings.cta_label }}</a>
+      <a href="{{ section.settings.cta_link | default: '#' }}" class="hero__cta">{{ section.settings.cta_label }}</a>
     {%- endif -%}
   </div>
 
