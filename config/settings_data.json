@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "current": {
     "lenis_smooth_scroll": true,
@@ -12,7 +21,31 @@
     "social_instagram_link": "https://instagram.com/boschi_paris",
     "contact_address": "96 Avenue de Clichy, 75017 Paris",
     "contact_email": "contact@tiraboschi-paris.com",
-    "contact_hours": "Lundi—Vendredi, 10h—18h · Sur rendez-vous"
+    "contact_hours": "Lundi—Vendredi, 10h—18h · Sur rendez-vous",
+    "sections": {
+      "tira-header": {
+        "type": "tira-header",
+        "settings": {
+          "transparent_on_home": true,
+          "main_menu": "main-menu",
+          "show_search": true
+        }
+      },
+      "tira-footer": {
+        "type": "tira-footer",
+        "settings": {
+          "show_crm": true,
+          "social_instagram_link": "https://instagram.com/tiraboschi_paris",
+          "social_linkedin_link": "",
+          "social_youtube_link": "",
+          "footer_menu_collections": "",
+          "footer_menu_maison": "",
+          "footer_menu_service": "",
+          "footer_brand_text": "Maroquinerie de luxe française. Chaque pièce fabriquée à la main, par un seul artisan, dans nos ateliers parisiens."
+        }
+      }
+    },
+    "content_for_index": []
   },
   "presets": {
     "TIRABOSCHI Bespoke": {
