@@ -1,0 +1,260 @@
+/* ═══════════════════════════════════════════════════════════
+   TIRABOSCHI — Header Fix v1
+   Surcharge le CSS MVP1 obsolète (classes .tira-header)
+   Ce fichier est chargé APRÈS tiraboschi.css dans theme.liquid
+═══════════════════════════════════════════════════════════ */
+
+/* ── Tokens — override --header-h: 80px de l'ancien CSS ── */
+:root {
+  --header-h:  68px;
+  --search-h:  44px;
+  --tira-black: #0a0a0a;
+  --tira-white: #ffffff;
+  --tira-border: #e8e8e8;
+  --tira-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --content-top: calc(var(--header-h) + var(--search-h));
+}
+@media (min-width: 1201px) {
+  :root { --content-top: var(--header-h); }
+}
+
+/* ── Reset universel ── */
+*, *::before, *::after { box-sizing: border-box; }
+a { color: inherit; text-decoration: none; }
+img { display: block; }
+
+/* ── Header wrapper ── */
+.hdr {
+  position: fixed !important;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  height: var(--header-h);
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background .5s ease, border-color .5s ease, transform .35s var(--tira-ease);
+}
+.hdr.solid {
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom-color: rgba(232,232,232,0.6);
+}
+.hdr.mega-open {
+  background: var(--tira-white) !important;
+  backdrop-filter: none !important;
+}
+.hdr--always-solid {
+  background: var(--tira-white) !important;
+  border-bottom: 1px solid var(--tira-border) !important;
+}
+.hdr.hidden { transform: translateY(-100%); }
+
+/* ── Desktop header ── */
+.hdr__d {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  height: 100%;
+  padding: 0 40px;
+  color: var(--tira-white);
+  transition: color .5s ease;
+}
+.hdr.solid .hdr__d,
+.hdr--always-solid .hdr__d { color: var(--tira-black); }
+.hdr.mega-open .hdr__d { color: var(--tira-black); }
+
+/* Logo */
+.hdr__logo-img {
+  display: block !important;
+  height: 26px !important;
+  width: auto !important;
+  filter: brightness(0) invert(1);
+  transition: filter .5s ease;
+}
+.hdr.solid .hdr__logo-img,
+.hdr--always-solid .hdr__logo-img,
+.hdr.mega-open .hdr__logo-img { filter: none; }
+
+/* Nav desktop */
+.hdr__left { display: flex; align-items: center; gap: 36px; }
+.hdr__nav { display: flex; align-items: center; gap: 28px; }
+.hdr__nav-item { display: flex; align-items: center; }
+.hdr__nav a, .hdr__nav-link {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+  opacity: .75; transition: opacity .2s; white-space: nowrap;
+}
+.hdr__nav a:hover, .hdr__nav-link:hover { opacity: 1; }
+
+/* Icons desktop */
+.hdr__icons { display: flex; align-items: center; gap: 20px; }
+.hdr__icons a, .hdr__icons button {
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; color: inherit;
+  opacity: .75; transition: opacity .2s;
+}
+.hdr__icons a:hover, .hdr__icons button:hover { opacity: 1; }
+.hdr__icons svg {
+  width: 24px; height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4; stroke-linecap: square;
+}
+
+/* Search inline desktop */
+.hdr__search-inline {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center;
+  width: 360px;
+}
+@media (max-width: 1200px) { .hdr__search-inline { display: none; } }
+
+/* Bag icon — partout */
+.tira-bag-icon {
+  display: block !important;
+  width: 28px !important; height: 28px !important;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  transition: filter .5s ease;
+}
+.hdr.solid .tira-bag-icon,
+.hdr--always-solid .tira-bag-icon,
+.hdr.mega-open .tira-bag-icon { filter: none; }
+.hdr-search__actions .tira-bag-icon { filter: none !important; }
+
+/* ── Mobile header — section critique ── */
+.hdr__m {
+  display: none;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: 14px;
+  height: 100%;
+  padding: 0 20px;
+  color: var(--tira-white);
+  transition: color .5s ease;
+}
+.hdr.solid .hdr__m,
+.hdr--always-solid .hdr__m { color: var(--tira-black); }
+
+/* Logo mobile */
+.hdr__m-logo { display: block; line-height: 0; }
+.hdr__m-logo .hdr__logo-img { height: 22px !important; }
+
+/* SVG icons mobile — fill: none + stroke: currentColor est CRITIQUE */
+.hdr__m svg {
+  width: 22px !important;
+  height: 22px !important;
+  fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 1.5;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+}
+
+/* Bag mobile */
+.hdr__m .tira-bag-icon {
+  width: 22px !important;
+  height: 22px !important;
+}
+.hdr__m .hdr__bag {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* Button hamburger */
+.hdr__m button {
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: inherit; padding: 0;
+}
+
+/* Badge panier */
+.hdr__bag-count {
+  position: absolute; top: -2px; right: -4px;
+  min-width: 14px; height: 14px;
+  background: currentColor; color: var(--tira-white);
+  font-size: 8px; line-height: 14px; text-align: center; letter-spacing: 0;
+}
+
+/* ── Breakpoints desktop ↔ mobile ── */
+@media (max-width: 1200px) {
+  .hdr__d { display: none !important; }
+  .hdr__m { display: grid !important; }
+}
+@media (min-width: 1201px) {
+  #hdr-search { display: none !important; }
+}
+
+/* ── Search bar externe (sous header, mobile) ── */
+.hdr-search {
+  position: fixed !important;
+  top: var(--header-h);
+  left: 0; right: 0;
+  z-index: 199;
+  display: flex; align-items: center; justify-content: center;
+  height: var(--search-h);
+  padding: 0 40px;
+  background: transparent;
+  border-bottom: 1px solid rgba(255,255,255,.15);
+  transition: background .5s, border-color .5s;
+}
+.hdr-search.solid {
+  background: var(--tira-white) !important;
+  border-bottom-color: var(--tira-border) !important;
+}
+.hdr-search.sticky-mode {
+  top: 0;
+  background: rgba(255,255,255,.88) !important;
+  backdrop-filter: blur(12px);
+}
+
+/* Input search */
+.hdr-search__field {
+  display: flex; align-items: center; gap: 8px;
+  margin: 0 auto; width: 100%; max-width: 560px;
+}
+.hdr-search input[type="search"] {
+  flex: 1; border: none; background: none; outline: none;
+  font-size: 11px; text-transform: uppercase; letter-spacing: .12em;
+  color: var(--tira-black);
+  border-bottom: 1px solid rgba(10,10,10,.25);
+  padding-bottom: 3px;
+}
+.hdr-search input::placeholder { opacity: .4; }
+.hdr-search.solid input, .hdr-search.sticky-mode input {
+  border-bottom-color: var(--tira-border);
+}
+.hdr-search__icon { display: none; }
+.hdr-search__submit {
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; color: var(--tira-black);
+  opacity: .6;
+}
+
+/* ── Mobile nav drawer ── */
+.mobile-nav {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(10,10,10,.5);
+  opacity: 0; pointer-events: none;
+  transition: opacity .35s var(--tira-ease);
+}
+.mobile-nav.open { opacity: 1; pointer-events: auto; }
+.mobile-nav__inner {
+  position: absolute; top: 0; right: 0; bottom: 0;
+  width: min(320px, 88vw);
+  background: var(--tira-white);
+  padding: 28px 32px 40px;
+  transform: translateX(100%);
+  transition: transform .4s var(--tira-ease);
+  overflow-y: auto;
+}
+.mobile-nav.open .mobile-nav__inner { transform: none; }
+
+/* ── Page overlay ── */
+#tira-page-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--tira-white);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.35s var(--tira-ease);
+}
+#tira-page-overlay.active { opacity: 1; pointer-events: all; }
