@@ -111,11 +111,14 @@
     </p>
 
     {%- if product.variants.size > 1 -%}
+      {%- assign trigger_img = current_variant.image | default: product.featured_image -%}
       <div class="prd-colors">
         <p class="prd-colors__label">
           <span>Matière</span>
           <span id="prd-variant-title">{{ current_variant.title }}</span>
         </p>
+
+        {%- comment -%} Desktop : grille de swatches {%- endcomment -%}
         <div class="prd-colors__swatches" role="radiogroup" aria-label="Choisir une matière" id="prd-swatches">
           {%- for variant in product.variants -%}
             {%- assign swatch_img = variant.image | default: product.featured_image -%}
@@ -141,6 +144,24 @@
             </label>
           {%- endfor -%}
         </div>
+
+        {%- comment -%} Mobile : trigger → volet de sélection {%- endcomment -%}
+        <button class="prd-swatch-trigger" id="prd-swatch-trigger" type="button"
+                aria-haspopup="dialog" aria-label="Choisir une matière — actuellement : {{ current_variant.title | escape }}">
+          {%- if trigger_img -%}
+            <img class="prd-swatch-trigger__img" id="swatch-trigger-img"
+                 src="{{ trigger_img | image_url: width: 88, height: 88, crop: 'center' }}"
+                 alt="{{ current_variant.title | escape }}"
+                 width="44" height="44">
+          {%- endif -%}
+          <span class="prd-swatch-trigger__info">
+            <span class="prd-swatch-trigger__label">Matière</span>
+            <span class="prd-swatch-trigger__name" id="swatch-trigger-name">{{ current_variant.title }}</span>
+          </span>
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5">
+            <polyline points="9,18 15,12 9,6"/>
+          </svg>
+        </button>
       </div>
     {%- endif -%}
 
@@ -357,6 +378,51 @@
     </div>
   </div>
 </div>
+
+{%- comment -%} ─── VOLET SÉLECTION MATIÈRE (mobile bottom sheet) ─── {%- endcomment -%}
+{%- if product.variants.size > 1 -%}
+<div class="prd-swatch-sheet" id="prd-swatch-sheet" role="dialog" aria-modal="true" aria-label="Choisir une matière" aria-hidden="true">
+  <div class="prd-swatch-sheet__backdrop" id="prd-swatch-sheet-backdrop"></div>
+  <div class="prd-swatch-sheet__inner">
+    <div class="prd-swatch-sheet__head">
+      <p>Choisir une matière</p>
+      <button class="prd-swatch-sheet__close" id="prd-swatch-sheet-close" aria-label="Fermer">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5">
+          <line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/>
+        </svg>
+      </button>
+    </div>
+    <div class="prd-swatch-sheet__grid">
+      {%- for variant in product.variants -%}
+        {%- assign s_img = variant.image | default: product.featured_image -%}
+        <button class="prd-swatch-sheet__item{% if variant.id == current_variant.id %} active{% endif %}"
+                type="button"
+                data-variant-id="{{ variant.id }}"
+                data-variant-title="{{ variant.title | escape }}"
+                data-variant-price="{{ variant.price | money }}"
+                {%- if s_img -%}
+                  data-variant-img="{{ s_img | image_url: width: 88, height: 88, crop: 'center' }}"
+                {%- endif -%}
+                {% unless variant.available %}aria-disabled="true"{% endunless %}
+                aria-label="{{ variant.title | escape }}{% unless variant.available %} — Épuisé{% endunless %}">
+          {%- if s_img -%}
+            <span class="prd-swatch-sheet__img">
+              <img src="{{ s_img | image_url: width: 160, height: 160, crop: 'center' }}"
+                   alt="{{ variant.title | escape }}"
+                   width="72" height="72"
+                   loading="lazy">
+            </span>
+          {%- endif -%}
+          <span class="prd-swatch-sheet__name">{{ variant.title }}</span>
+          {%- unless variant.available -%}
+            <span class="prd-swatch-sheet__unavail">Épuisé</span>
+          {%- endunless -%}
+        </button>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+{%- endif -%}
 
 {%- comment -%} ═══ STORYTELLING ═══ {%- endcomment -%}
 <div class="prd-story">
@@ -618,6 +684,65 @@
     }
   }
 
+  /* ── Volet sélection matière (mobile) ── */
+  var swatchTrigger  = document.getElementById('prd-swatch-trigger');
+  var swatchSheet    = document.getElementById('prd-swatch-sheet');
+  var swatchBackdrop = document.getElementById('prd-swatch-sheet-backdrop');
+  var swatchClose    = document.getElementById('prd-swatch-sheet-close');
+  var triggerImg     = document.getElementById('swatch-trigger-img');
+  var triggerName    = document.getElementById('swatch-trigger-name');
+
+  function openSwatchSheet() {
+    if (!swatchSheet) return;
+    swatchSheet.classList.add('open');
+    swatchSheet.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSwatchSheet() {
+    if (!swatchSheet) return;
+    swatchSheet.classList.remove('open');
+    swatchSheet.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  swatchTrigger  && swatchTrigger.addEventListener('click', openSwatchSheet);
+  swatchBackdrop && swatchBackdrop.addEventListener('click', closeSwatchSheet);
+  swatchClose    && swatchClose.addEventListener('click', closeSwatchSheet);
+
+  document.querySelectorAll('.prd-swatch-sheet__item').forEach(function(item) {
+    item.addEventListener('click', function() {
+      if (this.getAttribute('aria-disabled') === 'true') return;
+      var id    = this.dataset.variantId;
+      var title = this.dataset.variantTitle;
+      var price = this.dataset.variantPrice;
+      var img   = this.dataset.variantImg;
+
+      /* Mettre à jour le formulaire principal */
+      if (variantInput)  variantInput.value = id;
+      if (variantTitle)  variantTitle.textContent = title;
+      if (priceDisplay)  priceDisplay.textContent = price;
+      if (stickyVariant) stickyVariant.textContent = ' — ' + title;
+
+      /* Mettre à jour le trigger (image + nom) */
+      if (triggerImg && img) triggerImg.src = img;
+      if (triggerName)       triggerName.textContent = title;
+
+      /* Synchroniser la grille desktop */
+      var radio = document.querySelector('#prd-swatches input[data-variant-id="' + id + '"]');
+      if (radio) {
+        radio.checked = true;
+        document.querySelectorAll('.prd-swatch').forEach(function(s) { s.classList.remove('active'); });
+        radio.closest('.prd-swatch') && radio.closest('.prd-swatch').classList.add('active');
+      }
+
+      /* Marquer l'item actif dans le volet */
+      document.querySelectorAll('.prd-swatch-sheet__item').forEach(function(s) { s.classList.remove('active'); });
+      this.classList.add('active');
+
+      closeSwatchSheet();
+    });
+  });
+
   /* ── Panel "Détails du produit" (mobile) ── */
   var trigger  = document.getElementById('prd-details-trigger');
   var panel    = document.getElementById('prd-details-panel');
@@ -667,8 +792,10 @@
     });
   }
 
-  /* ESC ferme le panel */
-  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closePanel(); });
+  /* ESC ferme les panels */
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { closePanel(); closeSwatchSheet(); }
+  });
 })();
 </script>
 
