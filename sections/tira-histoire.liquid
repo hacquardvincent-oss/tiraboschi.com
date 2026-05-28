@@ -1,433 +1,458 @@
 {% comment %}
   ═══════════════════════════════════════════════════════════════
-  TIRABOSCHI · Histoire — Page éditoriale "La Maison"
+  TIRABOSCHI · Histoire — Conforme au prototype validé
   ═══════════════════════════════════════════════════════════════
-  Structure :
-  1. Hero fond --tira-grey
-  2. Intro centré max-width 720px
-  3. Stats 3 colonnes fond noir
-  4. Image gauche + texte droite "Le Geste Juste"
-  5. Timeline 4 dates fond --tira-grey
-  6. Image droite + texte gauche "Le Cuir Vivant"
-  7. CTA final centré
+  1. Hero plein écran (DSCF1828) — breadcrumb · H1 · subtitle
+  2. Intro centrée — italic, label
+  3. Timeline verticale alternée — texte | dot | image (zigzag)
+  4. Valeurs (fond noir) — 3 colonnes 01/02/03
+  5. Citation fondatrice — image gauche + citation droite
+  6. Chiffres clés — 4 cases bordées
+  7. CTA final — fond noir, 3 liens + bouton collection
 {% endcomment %}
 
 <style>
-  /* ── Variables locales ── */
-  .hist-page {
-    --tira-black: #0a0a0a;
-    --tira-white: #ffffff;
-    --tira-grey: #f7f5f2;
-    --tira-border: #e8e8e8;
-    --tira-ease: cubic-bezier(0.16, 1, 0.3, 1);
-    font-family: 'Playfair Display', Georgia, serif;
-    color: var(--tira-black);
-  }
+  :root { --tira-black: #0a0a0a; --tira-white: #ffffff; --tira-grey: #f7f5f2; --tira-border: #e8e8e8; --tira-ease: cubic-bezier(0.16, 1, 0.3, 1); }
+  .hist { font-family: 'Playfair Display', Georgia, serif; color: var(--tira-black); }
 
   /* ── 1. Hero ── */
-  .hist-hero {
-    background: var(--tira-grey);
-    padding: calc(var(--content-top) + 80px) 40px 80px;
-    text-align: center;
+  .hist__hero {
+    position: relative; height: 100svh; min-height: 560px;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    overflow: hidden; background: var(--tira-black);
   }
-  .hist-hero__eyebrow {
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--tira-black);
-    margin: 0 0 24px;
-    opacity: 0.5;
+  .hist__hero-img {
+    position: absolute; inset: 0;
   }
-  .hist-hero__title {
-    font-size: 56px;
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    margin: 0 0 16px;
-    line-height: 1.1;
+  .hist__hero-img img {
+    width: 100%; height: 100%; object-fit: cover; object-position: center;
+    animation: hist-kb 14s ease-in-out infinite alternate;
   }
-  .hist-hero__sub {
-    font-size: 14px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin: 0;
-    opacity: 0.6;
+  @keyframes hist-kb {
+    from { transform: scale(1); }
+    to   { transform: scale(1.06) translate(1%, -1%); }
+  }
+  .hist__hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(10,10,10,.75) 0%, rgba(10,10,10,.2) 50%, transparent 100%);
+  }
+  .hist__hero-content {
+    position: relative; z-index: 1;
+    padding: calc(var(--header-h, 68px) + 48px) 48px 72px;
+    color: var(--tira-white);
+  }
+  .hist__breadcrumb {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .16em;
+    opacity: .45; margin-bottom: 20px;
+    display: flex; gap: 10px; align-items: center;
+  }
+  .hist__breadcrumb a { color: inherit; text-decoration: none; transition: opacity .2s; }
+  .hist__breadcrumb a:hover { opacity: .7; }
+  .hist__hero h1 {
+    font-size: clamp(52px, 8vw, 96px); font-weight: 400;
+    line-height: .92; letter-spacing: -.01em; margin: 0 0 24px;
+  }
+  .hist__hero-sub {
+    font-size: 13px; opacity: .55; line-height: 1.7; max-width: 480px; margin: 0;
+  }
+  @media (max-width: 768px) {
+    .hist__hero-content { padding: calc(var(--header-h, 68px) + 32px) 24px 48px; }
+    .hist__hero h1 { font-size: clamp(44px, 10vw, 64px); }
   }
 
   /* ── 2. Intro ── */
-  .hist-intro {
-    padding: 100px 40px;
-    text-align: center;
-    background: var(--tira-white);
+  .hist__intro {
+    max-width: 780px; margin: 0 auto;
+    padding: 80px 48px; text-align: center;
   }
-  .hist-intro__text {
-    max-width: 720px;
-    margin: 0 auto;
-    font-size: 18px;
-    line-height: 1.75;
-    font-weight: 400;
+  .hist__intro-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+    opacity: .3; margin: 0 0 28px;
   }
+  .hist__intro-text {
+    font-size: clamp(18px, 2.2vw, 26px); line-height: 1.65; opacity: .75; font-style: italic; margin: 0;
+  }
+  @media (max-width: 768px) { .hist__intro { padding: 56px 24px; } }
 
-  /* ── 3. Stats ── */
-  .hist-stats {
-    background: var(--tira-black);
-    color: var(--tira-white);
-    padding: 80px 40px;
-  }
-  .hist-stats__grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    max-width: 1200px;
-    margin: 0 auto;
-    border: 1px solid rgba(255,255,255,0.1);
-  }
-  .hist-stats__item {
-    padding: 60px 40px;
-    text-align: center;
-    border-right: 1px solid rgba(255,255,255,0.1);
-  }
-  .hist-stats__item:last-child {
-    border-right: none;
-  }
-  .hist-stats__number {
-    font-size: 64px;
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    line-height: 1;
-    margin: 0 0 12px;
-    display: block;
-  }
-  .hist-stats__label {
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    opacity: 0.5;
-    margin: 0;
-  }
-
-  /* ── 4 & 6. Sections image + texte ── */
-  .hist-split {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    min-height: 600px;
-    background: var(--tira-white);
-  }
-  .hist-split--reverse {
-    direction: rtl;
-  }
-  .hist-split--reverse > * {
-    direction: ltr;
-  }
-  .hist-split__img {
-    overflow: hidden;
-    position: relative;
-  }
-  .hist-split__img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .hist-split__body {
-    padding: 80px 64px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .hist-split__label {
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    opacity: 0.4;
-    margin: 0 0 24px;
-  }
-  .hist-split__title {
-    font-size: 40px;
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    margin: 0 0 28px;
-    line-height: 1.15;
-  }
-  .hist-split__text {
-    font-size: 15px;
-    line-height: 1.8;
-    margin: 0;
-    opacity: 0.75;
-  }
-
-  /* ── 5. Timeline ── */
-  .hist-timeline {
-    background: var(--tira-grey);
-    padding: 100px 40px;
-  }
-  .hist-timeline__label {
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    text-align: center;
-    opacity: 0.4;
-    margin: 0 0 64px;
-  }
-  .hist-timeline__grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
-    max-width: 1200px;
-    margin: 0 auto;
-    position: relative;
-  }
-  .hist-timeline__grid::before {
-    content: '';
-    position: absolute;
-    top: 8px;
-    left: 12.5%;
-    right: 12.5%;
-    height: 1px;
-    background: var(--tira-border);
-  }
-  .hist-timeline__item {
-    text-align: center;
-    padding: 0 20px;
-    position: relative;
-  }
-  .hist-timeline__dot {
-    width: 16px;
-    height: 16px;
-    border: 1px solid var(--tira-black);
-    background: var(--tira-white);
-    border-radius: 0;
-    margin: 0 auto 24px;
-    position: relative;
-    z-index: 1;
-  }
-  .hist-timeline__year {
-    font-size: 32px;
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    display: block;
-    margin: 0 0 12px;
-  }
-  .hist-timeline__event {
-    font-size: 13px;
-    line-height: 1.6;
-    opacity: 0.6;
-    margin: 0;
-  }
-
-  /* ── 7. CTA ── */
-  .hist-cta {
-    background: var(--tira-white);
-    padding: 100px 40px;
-    text-align: center;
+  /* ── 3. Timeline ── */
+  .hist__timeline {
+    position: relative; padding: 0 48px 80px;
     border-top: 1px solid var(--tira-border);
   }
-  .hist-cta__link {
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--tira-black);
-    text-decoration: underline;
-    text-underline-offset: 4px;
-    transition: opacity 0.3s var(--tira-ease);
+  .hist__timeline::before {
+    content: ''; position: absolute;
+    left: 50%; top: 0; bottom: 0;
+    width: 1px; background: var(--tira-border);
+    transform: translateX(-50%);
   }
-  .hist-cta__link:hover {
-    opacity: 0.5;
+  .hist__tl-item {
+    display: grid; grid-template-columns: 1fr 60px 1fr;
+    align-items: start;
+    padding: 64px 0; border-bottom: 1px solid var(--tira-border);
+    position: relative;
+  }
+  .hist__tl-item:last-child { border-bottom: none; }
+  .hist__tl-item:nth-child(odd)  .hist__tl-body { grid-column: 1; text-align: right; padding-right: 52px; }
+  .hist__tl-item:nth-child(odd)  .hist__tl-img  { grid-column: 3; }
+  .hist__tl-item:nth-child(even) .hist__tl-body { grid-column: 3; text-align: left; padding-left: 52px; }
+  .hist__tl-item:nth-child(even) .hist__tl-img  { grid-column: 1; grid-row: 1; }
+  .hist__tl-dot {
+    grid-column: 2; display: flex; align-items: center; justify-content: center;
+    padding-top: 8px;
+  }
+  .hist__tl-dot::after {
+    content: ''; display: block; width: 9px; height: 9px;
+    border: 1px solid var(--tira-black); background: var(--tira-white);
+  }
+  .hist__tl-year {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+    opacity: .3; margin: 0 0 16px; display: block;
+  }
+  .hist__tl-title {
+    font-size: clamp(22px, 2.8vw, 36px); line-height: 1.1;
+    font-weight: 400; letter-spacing: -.01em; margin: 0 0 18px;
+  }
+  .hist__tl-text {
+    font-size: 13px; line-height: 1.9; opacity: .6;
+    max-width: 380px; margin: 0;
+  }
+  .hist__tl-item:nth-child(odd) .hist__tl-text { margin-left: auto; }
+  .hist__tl-img {
+    aspect-ratio: 4/3; overflow: hidden; position: relative; background: var(--tira-grey);
+  }
+  .hist__tl-img img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    transition: transform .9s var(--tira-ease);
+  }
+  .hist__tl-item:hover .hist__tl-img img { transform: scale(1.04); }
+
+  @media (max-width: 900px) {
+    .hist__timeline::before { left: 24px; }
+    .hist__timeline { padding: 0 24px 60px; }
+    .hist__tl-item { grid-template-columns: 48px 1fr; gap: 0; }
+    .hist__tl-dot { grid-column: 1; grid-row: 1; padding-top: 18px; justify-content: flex-start; padding-left: 18px; }
+    .hist__tl-item:nth-child(odd)  .hist__tl-body,
+    .hist__tl-item:nth-child(even) .hist__tl-body { grid-column: 2; text-align: left; padding: 12px 0 24px 20px; }
+    .hist__tl-item:nth-child(odd) .hist__tl-text { margin-left: 0; }
+    .hist__tl-img,
+    .hist__tl-item:nth-child(even) .hist__tl-img { grid-column: 2; grid-row: 2; margin-left: 20px; }
   }
 
-  /* ── Mobile ── */
+  /* ── 4. Valeurs ── */
+  .hist__values {
+    background: var(--tira-black); color: var(--tira-white);
+    padding: 96px 48px;
+  }
+  .hist__values-title {
+    text-align: center; font-size: clamp(32px, 4vw, 52px); font-weight: 400;
+    margin: 0 0 64px; opacity: .9;
+  }
+  .hist__values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; }
+  .hist__val-num {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+    opacity: .25; margin: 0 0 16px;
+  }
+  .hist__val-title {
+    font-size: clamp(20px, 2.5vw, 30px); font-weight: 400; line-height: 1.1; margin: 0 0 18px;
+  }
+  .hist__val-text { font-size: 13px; line-height: 1.9; opacity: .5; margin: 0; }
   @media (max-width: 768px) {
-    .hist-hero {
-      padding: calc(var(--content-top) + 48px) 24px 48px;
-    }
-    .hist-hero__title {
-      font-size: 36px;
-    }
-    .hist-intro {
-      padding: 64px 24px;
-    }
-    .hist-intro__text {
-      font-size: 16px;
-    }
-    .hist-stats {
-      padding: 48px 24px;
-    }
-    .hist-stats__grid {
-      grid-template-columns: 1fr;
-      border: none;
-    }
-    .hist-stats__item {
-      border-right: none;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      padding: 40px 24px;
-    }
-    .hist-stats__item:last-child {
-      border-bottom: none;
-    }
-    .hist-stats__number {
-      font-size: 48px;
-    }
-    .hist-split {
-      grid-template-columns: 1fr;
-      direction: ltr;
-    }
-    .hist-split--reverse {
-      direction: ltr;
-    }
-    .hist-split__img {
-      height: 300px;
-    }
-    .hist-split__body {
-      padding: 48px 24px;
-    }
-    .hist-split__title {
-      font-size: 28px;
-    }
-    .hist-timeline {
-      padding: 64px 24px;
-    }
-    .hist-timeline__grid {
-      grid-template-columns: 1fr;
-      gap: 48px;
-    }
-    .hist-timeline__grid::before {
-      display: none;
-    }
-    .hist-timeline__item {
-      text-align: left;
-      display: flex;
-      align-items: flex-start;
-      gap: 20px;
-      padding: 0;
-    }
-    .hist-timeline__dot {
-      margin: 6px 0 0;
-      flex-shrink: 0;
-    }
-    .hist-cta {
-      padding: 64px 24px;
-    }
+    .hist__values { padding: 72px 24px; }
+    .hist__values-grid { grid-template-columns: 1fr; gap: 36px; }
+    .hist__values-title { margin-bottom: 44px; }
   }
 
-  /* ── Reveal animation ── */
-  [data-reveal] {
-    opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 0.9s var(--tira-ease), transform 0.9s var(--tira-ease);
+  /* ── 5. Citation fondatrice ── */
+  .hist__founder {
+    background: var(--tira-grey);
+    display: grid; grid-template-columns: 1fr 1fr; min-height: 55vh;
   }
-  [data-reveal].is-visible {
-    opacity: 1;
-    transform: none;
+  .hist__founder-img { overflow: hidden; }
+  .hist__founder-img img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    transition: transform .9s var(--tira-ease);
   }
+  .hist__founder:hover .hist__founder-img img { transform: scale(1.04); }
+  .hist__founder-body {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 72px 64px;
+  }
+  .hist__founder-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+    opacity: .3; margin: 0 0 24px;
+  }
+  .hist__founder-quote {
+    font-size: clamp(20px, 2.5vw, 32px); font-style: italic; font-weight: 400;
+    line-height: 1.45; margin: 0 0 32px;
+  }
+  .hist__founder-sig {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .14em; opacity: .4; margin: 0;
+  }
+  .hist__founder-link {
+    margin-top: 40px; align-self: flex-start;
+    font-size: 10px; text-transform: uppercase; letter-spacing: .14em;
+    text-decoration: underline; text-underline-offset: 5px;
+    color: var(--tira-black); opacity: .5; transition: opacity .2s;
+  }
+  .hist__founder-link:hover { opacity: 1; }
+  @media (max-width: 900px) {
+    .hist__founder { grid-template-columns: 1fr; }
+    .hist__founder-img { aspect-ratio: 4/3; }
+    .hist__founder-body { padding: 48px 24px; }
+  }
+
+  /* ── 6. Chiffres clés ── */
+  .hist__figures {
+    padding: 96px 48px; border-top: 1px solid var(--tira-border);
+  }
+  .hist__figures-title {
+    font-size: clamp(28px, 3.5vw, 44px); font-weight: 400;
+    text-align: center; margin: 0 0 64px;
+  }
+  .hist__figures-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .hist__figure {
+    padding: 48px 40px; border: 1px solid var(--tira-border); text-align: center;
+  }
+  .hist__figure-num {
+    font-size: clamp(40px, 5vw, 64px); font-weight: 400;
+    line-height: 1; letter-spacing: -.02em; display: block; margin: 0 0 12px;
+  }
+  .hist__figure-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .14em;
+    opacity: .4; line-height: 1.5; margin: 0;
+  }
+  @media (max-width: 900px) {
+    .hist__figures { padding: 64px 24px; }
+    .hist__figures-grid { grid-template-columns: repeat(2, 1fr); }
+    .hist__figure { padding: 36px 24px; }
+  }
+
+  /* ── 7. CTA final ── */
+  .hist__cta {
+    background: var(--tira-black); color: var(--tira-white);
+    padding: 96px 48px; text-align: center;
+  }
+  .hist__cta-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+    opacity: .28; margin: 0 0 28px;
+  }
+  .hist__cta-title {
+    font-size: clamp(28px, 4vw, 52px); font-weight: 400; line-height: 1.1;
+    margin: 0 0 48px; max-width: 600px; margin-left: auto; margin-right: auto;
+  }
+  .hist__cta-links { display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; }
+  .hist__cta-link {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .14em;
+    text-decoration: underline; text-underline-offset: 5px; color: var(--tira-white);
+    opacity: .6; transition: opacity .2s;
+  }
+  .hist__cta-link:hover { opacity: 1; }
+  .hist__cta-btn {
+    display: inline-block; margin-top: 56px; padding: 22px 60px;
+    border: 1px solid var(--tira-white);
+    font-size: 11px; text-transform: uppercase; letter-spacing: .2em;
+    color: var(--tira-white); text-decoration: none;
+    transition: background .25s, color .25s;
+  }
+  .hist__cta-btn:hover { background: var(--tira-white); color: var(--tira-black); }
+  @media (max-width: 768px) {
+    .hist__cta { padding: 72px 24px; }
+    .hist__cta-links { gap: 24px; }
+    .hist__cta-btn { padding: 18px 40px; }
+  }
+
+  /* ── Reveal ── */
+  [data-tira-reveal] {
+    opacity: 0; transform: translateY(28px);
+    transition: opacity .9s var(--tira-ease), transform .9s var(--tira-ease);
+  }
+  [data-tira-reveal].is-visible { opacity: 1; transform: none; }
 </style>
 
-<div class="hist-page">
+<div class="hist">
 
   {%- comment -%} ═══ 1. HERO ═══ {%- endcomment -%}
-  <section class="hist-hero">
-    <p class="hist-hero__eyebrow" data-reveal>La Maison</p>
-    <h1 class="hist-hero__title" data-reveal>La Maison</h1>
-    <p class="hist-hero__sub" data-reveal>Maroquinerie de Luxe Française &middot; Depuis 1904</p>
+  <section class="hist__hero" aria-label="Notre Histoire — TIRABOSCHI Paris depuis 1904">
+    <div class="hist__hero-img">
+      <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/28092025-DSCF1828.jpg"
+           alt="Atelier TIRABOSCHI Paris — maroquinier depuis 1904"
+           width="1920" height="1080"
+           fetchpriority="high">
+    </div>
+    <div class="hist__hero-overlay" aria-hidden="true"></div>
+    <div class="hist__hero-content">
+      <nav class="hist__breadcrumb" aria-label="Fil d'Ariane">
+        <a href="{{ routes.root_url }}">Accueil</a>
+        <span aria-hidden="true">—</span>
+        <span>La Maison</span>
+        <span aria-hidden="true">—</span>
+        <span aria-current="page">Notre Histoire</span>
+      </nav>
+      <h1>Notre<br>Histoire</h1>
+      <p class="hist__hero-sub">Paris, 1904. Une règle, inchangée depuis cent vingt ans.</p>
+    </div>
   </section>
 
   {%- comment -%} ═══ 2. INTRO ═══ {%- endcomment -%}
-  <section class="hist-intro">
-    <p class="hist-intro__text" data-reveal>
-      TIRABOSCHI Paris naît en 1904, fondée par Aldo Tiraboschi, artisan maroquinier d'origine italienne installé à Paris. Dans son atelier du 9ème arrondissement, il fabrique à la main les premières pièces — des sacs de voyage pour les grands hôtels parisiens. Cent vingt ans plus tard, la maison n'a pas changé de philosophie.
+  <div class="hist__intro" data-tira-reveal>
+    <p class="hist__intro-label">La Maison · Depuis 1904</p>
+    <p class="hist__intro-text">
+      "Un seul artisan fabrique chaque pièce, de A à Z. Pas de chaîne, pas de division du travail. Cette règle, posée par notre fondateur en 1904, est notre seule promesse — et notre seul secret."
     </p>
+  </div>
+
+  {%- comment -%} ═══ 3. TIMELINE ═══ {%- endcomment -%}
+  <section aria-label="Chronologie TIRABOSCHI">
+    <div class="hist__timeline">
+
+      <div class="hist__tl-item" data-tira-reveal>
+        <div class="hist__tl-body">
+          <span class="hist__tl-year">1904</span>
+          <h2 class="hist__tl-title">La fondation</h2>
+          <p class="hist__tl-text">Un maroquinier formé à Florence ouvre son premier atelier à Paris. Sa règle : un seul artisan, une seule pièce, du début à la fin. Cette discipline reste notre seule méthode.</p>
+        </div>
+        <div class="hist__tl-dot" aria-hidden="true"></div>
+        <div class="hist__tl-img">
+          <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Asset_atelier_1.png"
+               alt="Fondation atelier TIRABOSCHI Paris 1904"
+               width="800" height="600" loading="lazy">
+        </div>
+      </div>
+
+      <div class="hist__tl-item" data-tira-reveal>
+        <div class="hist__tl-body">
+          <span class="hist__tl-year">1938</span>
+          <h2 class="hist__tl-title">La transmission</h2>
+          <p class="hist__tl-text">La deuxième génération reprend l'atelier. Elle introduit le cuir de veau pleine fleur du Limousin et établit les premiers partenariats avec les tanneries françaises — certains perdurent à ce jour.</p>
+        </div>
+        <div class="hist__tl-dot" aria-hidden="true"></div>
+        <div class="hist__tl-img">
+          <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0919.jpg"
+               alt="Savoir-faire TIRABOSCHI — transmission 1938"
+               width="800" height="600" loading="lazy">
+        </div>
+      </div>
+
+      <div class="hist__tl-item" data-tira-reveal>
+        <div class="hist__tl-body">
+          <span class="hist__tl-year">1972</span>
+          <h2 class="hist__tl-title">L'ouverture</h2>
+          <p class="hist__tl-text">La première boutique ouvre rue Saint-Honoré. Pour la première fois, les sacs TIRABOSCHI sont proposés à la clientèle parisienne — et non plus seulement sur commande.</p>
+        </div>
+        <div class="hist__tl-dot" aria-hidden="true"></div>
+        <div class="hist__tl-img">
+          <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Asset_Atelier_6.png"
+               alt="Boutique TIRABOSCHI Paris 1972"
+               width="800" height="600" loading="lazy">
+        </div>
+      </div>
+
+      <div class="hist__tl-item" data-tira-reveal>
+        <div class="hist__tl-body">
+          <span class="hist__tl-year">2019</span>
+          <h2 class="hist__tl-title">Le renouveau</h2>
+          <p class="hist__tl-text">La nouvelle direction repositionne la maison, crée la première collection capsule numérotée et lance @boschi_paris. La règle du fondateur reste intacte.</p>
+        </div>
+        <div class="hist__tl-dot" aria-hidden="true"></div>
+        <div class="hist__tl-img">
+          <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Asset_atelier_5.png"
+               alt="TIRABOSCHI Paris 2019 — nouvelle direction"
+               width="800" height="600" loading="lazy">
+        </div>
+      </div>
+
+      <div class="hist__tl-item" data-tira-reveal>
+        <div class="hist__tl-body">
+          <span class="hist__tl-year">Aujourd'hui</span>
+          <h2 class="hist__tl-title">Made in France,<br>Only.</h2>
+          <p class="hist__tl-text">6 artisans. 9 modèles. Zéro sous-traitance. Chaque pièce porte l'empreinte de celui ou celle qui l'a fabriquée. 100% Made in France, comme en 1904.</p>
+        </div>
+        <div class="hist__tl-dot" aria-hidden="true"></div>
+        <div class="hist__tl-img">
+          <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0154.jpg"
+               alt="Atelier TIRABOSCHI Paris — artisans aujourd'hui"
+               width="800" height="600" loading="lazy">
+        </div>
+      </div>
+
+    </div>
   </section>
 
-  {%- comment -%} ═══ 3. STATS ═══ {%- endcomment -%}
-  <section class="hist-stats" aria-label="Chiffres clés">
-    <div class="hist-stats__grid">
-      <div class="hist-stats__item" data-reveal>
-        <span class="hist-stats__number">1904</span>
-        <p class="hist-stats__label">Fondée à Paris</p>
+  {%- comment -%} ═══ 4. VALEURS ═══ {%- endcomment -%}
+  <section class="hist__values" aria-labelledby="hist-values-title" data-tira-reveal>
+    <h2 class="hist__values-title" id="hist-values-title">Ce qui ne changera jamais</h2>
+    <div class="hist__values-grid">
+      <div>
+        <p class="hist__val-num">01</p>
+        <h3 class="hist__val-title">Un artisan,<br>une pièce</h3>
+        <p class="hist__val-text">Du tracé de la première peau au polissage de la dernière ferrure, un seul artisan tient votre sac entre les mains. Cette responsabilité totale est notre gage de qualité le plus puissant.</p>
       </div>
-      <div class="hist-stats__item" data-reveal>
-        <span class="hist-stats__number">1</span>
-        <p class="hist-stats__label">Artisan par sac, de A à Z</p>
+      <div>
+        <p class="hist__val-num">02</p>
+        <h3 class="hist__val-title">Made in France,<br>Only.</h3>
+        <p class="hist__val-text">Peaux, fils, ferrures, doublures : chaque composant est sourcé et fabriqué en France. Pas d'exception. Pas de "conçu en France avec des composants importés". Seulement.</p>
       </div>
-      <div class="hist-stats__item" data-reveal>
-        <span class="hist-stats__number">3 400</span>
-        <p class="hist-stats__label">Points de couture sellier</p>
+      <div>
+        <p class="hist__val-num">03</p>
+        <h3 class="hist__val-title">La durée contre<br>la vitesse</h3>
+        <p class="hist__val-text">48 à 72 heures pour chaque sac. Nous ne produisons pas plus vite parce qu'il est impossible de faire mieux en moins de temps. Votre sac est fait pour durer des décennies.</p>
       </div>
     </div>
   </section>
 
-  {%- comment -%} ═══ 4. IMAGE + TEXTE — Le Geste Juste ═══ {%- endcomment -%}
-  <section class="hist-split" aria-label="Le Geste Juste">
-    <div class="hist-split__img">
-      <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0919.jpg"
-           alt="Artisan TIRABOSCHI au travail"
-           width="960" height="1200"
-           loading="lazy">
+  {%- comment -%} ═══ 5. CITATION FONDATRICE ═══ {%- endcomment -%}
+  <section class="hist__founder" aria-labelledby="hist-founder-title" data-tira-reveal>
+    <div class="hist__founder-img">
+      <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Asset_Mains_1.png"
+           alt="TIRABOSCHI Paris — savoir-faire artisanal"
+           width="960" height="1200" loading="lazy">
     </div>
-    <div class="hist-split__body">
-      <p class="hist-split__label" data-reveal>Savoir-Faire</p>
-      <h2 class="hist-split__title" data-reveal>Le Geste Juste</h2>
-      <p class="hist-split__text" data-reveal>
-        Chaque pièce TIRABOSCHI est façonnée par un seul artisan, du découpage du cuir à la pose de la dernière finition. Ce n'est pas une méthode de production — c'est une discipline. Celle qui permet à chaque sac de porter l'empreinte invisible de ses mains.
+    <div class="hist__founder-body">
+      <p class="hist__founder-label">La Maison · Paris</p>
+      <p class="hist__founder-quote" id="hist-founder-title">
+        "Je refuse de produire un sac dont je ne serais pas capable de tracer chaque point de couture jusqu'à l'artisan qui l'a fait."
       </p>
+      <p class="hist__founder-sig">TIRABOSCHI Paris · Depuis 1904</p>
+      <a href="/pages/savoir-faire" class="hist__founder-link">Découvrir le savoir-faire →</a>
     </div>
   </section>
 
-  {%- comment -%} ═══ 5. TIMELINE ═══ {%- endcomment -%}
-  <section class="hist-timeline" aria-label="Chronologie">
-    <p class="hist-timeline__label" data-reveal>Chronologie</p>
-    <div class="hist-timeline__grid">
-      <div class="hist-timeline__item" data-reveal>
-        <div class="hist-timeline__dot" aria-hidden="true"></div>
-        <div>
-          <span class="hist-timeline__year">1904</span>
-          <p class="hist-timeline__event">Fondation de l'atelier à Paris</p>
-        </div>
+  {%- comment -%} ═══ 6. CHIFFRES CLÉS ═══ {%- endcomment -%}
+  <section class="hist__figures" aria-labelledby="hist-figures-title" data-tira-reveal>
+    <h2 class="hist__figures-title" id="hist-figures-title">En chiffres</h2>
+    <div class="hist__figures-grid">
+      <div class="hist__figure">
+        <span class="hist__figure-num">1904</span>
+        <p class="hist__figure-label">Année de fondation<br>à Paris</p>
       </div>
-      <div class="hist-timeline__item" data-reveal>
-        <div class="hist-timeline__dot" aria-hidden="true"></div>
-        <div>
-          <span class="hist-timeline__year">1938</span>
-          <p class="hist-timeline__event">Création du modèle Victoire</p>
-        </div>
+      <div class="hist__figure">
+        <span class="hist__figure-num">3 400</span>
+        <p class="hist__figure-label">Points de couture<br>sellier par sac</p>
       </div>
-      <div class="hist-timeline__item" data-reveal>
-        <div class="hist-timeline__dot" aria-hidden="true"></div>
-        <div>
-          <span class="hist-timeline__year">1986</span>
-          <p class="hist-timeline__event">Transmission à la deuxième génération</p>
-        </div>
+      <div class="hist__figure">
+        <span class="hist__figure-num">48–72h</span>
+        <p class="hist__figure-label">Temps de fabrication<br>à la main</p>
       </div>
-      <div class="hist-timeline__item" data-reveal>
-        <div class="hist-timeline__dot" aria-hidden="true"></div>
-        <div>
-          <span class="hist-timeline__year">2024</span>
-          <p class="hist-timeline__event">Collection FW25 &middot; Retour aux origines</p>
-        </div>
+      <div class="hist__figure">
+        <span class="hist__figure-num">100%</span>
+        <p class="hist__figure-label">Made in France<br>Sans exception</p>
       </div>
-    </div>
-  </section>
-
-  {%- comment -%} ═══ 6. IMAGE DROITE + TEXTE GAUCHE — Le Cuir Vivant ═══ {%- endcomment -%}
-  <section class="hist-split hist-split--reverse" aria-label="Le Cuir Vivant">
-    <div class="hist-split__img">
-      <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Asset_atelier_1.png"
-           alt="Cuir pleine fleur TIRABOSCHI"
-           width="960" height="1200"
-           loading="lazy">
-    </div>
-    <div class="hist-split__body">
-      <p class="hist-split__label" data-reveal>La Matière</p>
-      <h2 class="hist-split__title" data-reveal>Le Cuir Vivant</h2>
-      <p class="hist-split__text" data-reveal>
-        Nous n'utilisons que du cuir pleine fleur — la couche la plus noble, la plus résistante, celle qui vieillit comme une peau. Nos tanneries partenaires travaillent en France, selon des méthodes végétales centenaires.
-      </p>
     </div>
   </section>
 
   {%- comment -%} ═══ 7. CTA FINAL ═══ {%- endcomment -%}
-  <section class="hist-cta">
-    <a class="hist-cta__link" href="/pages/savoir-faire" data-reveal>
-      Découvrir notre savoir-faire &rarr;
-    </a>
+  <section class="hist__cta" data-tira-reveal>
+    <p class="hist__cta-label">La Maison TIRABOSCHI</p>
+    <h2 class="hist__cta-title">Prolonger la découverte</h2>
+    <div class="hist__cta-links">
+      <a href="/pages/savoir-faire" class="hist__cta-link">Le Savoir-Faire</a>
+      <a href="/pages/matieres-cuirs" class="hist__cta-link">Les Matières &amp; Cuirs</a>
+      <a href="/pages/sur-mesure" class="hist__cta-link">Sur Mesure</a>
+    </div>
+    <a href="{{ routes.collections_url }}/fw25" class="hist__cta-btn">Explorer la collection FW25</a>
   </section>
 
 </div>
