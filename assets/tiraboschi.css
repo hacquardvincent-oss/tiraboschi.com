@@ -39,7 +39,7 @@ body {
   font-weight: 400;
   background: var(--tira-white);
   color: var(--tira-black);
-  overflow-x: hidden;
+  overflow-x: clip;
   /* cursor: none appliqué uniquement quand JS active le curseur custom */
 }
 
@@ -656,7 +656,9 @@ body.nav-open { overflow: hidden; }
   justify-content: space-between; padding: 14px;
   opacity: 0; pointer-events: none; transition: opacity .25s ease;
 }
-.card:hover .card__actions { opacity: 1; pointer-events: auto; }
+.card:hover .card__actions { opacity: 1; }
+.card:hover .card__actions .card__wish,
+.card:hover .card__actions .card__atc-form { pointer-events: auto; }
 
 /* Wishlist — transparent stroke white drop-shadow */
 .card__wish {
