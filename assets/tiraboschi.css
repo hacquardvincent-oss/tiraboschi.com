@@ -1539,6 +1539,10 @@ body.hdr-hidden .col-filters {
   min-height: 100vh;
   padding-top: calc(var(--header-h) + var(--search-h));
 }
+/* Barre de recherche cachée sur mobile → retirer son espace du padding */
+@media (max-width: 1200px) {
+  .prd-main { padding-top: var(--header-h); }
+}
 @media (max-width: 900px) {
   .prd-main { grid-template-columns: 1fr; min-height: auto; }
 }
@@ -1615,6 +1619,10 @@ body.hdr-hidden .col-filters {
 }
 .prd-vgallery__img {
   position: relative; aspect-ratio: 3/4; overflow: hidden;
+}
+/* Première image : capper à 75vh pour que les infos produit restent visibles */
+.prd-vgallery__img:first-child {
+  max-height: 75svh;
 }
 .prd-vgallery__img img {
   width: 100%; height: 100%; object-fit: cover; display: block;
@@ -1759,21 +1767,22 @@ body.hdr-hidden .col-filters {
   opacity: .4; margin-bottom: 12px;
   display: flex; justify-content: space-between;
 }
-.prd-colors__swatches { display: flex; gap: 12px; }
+.prd-colors__swatches { display: flex; flex-wrap: wrap; gap: 8px; }
 .prd-swatch {
-  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  display: flex; flex-direction: column; align-items: center; gap: 0;
   cursor: pointer;
 }
 .prd-swatch input { position: absolute; opacity: 0; pointer-events: none; }
 .prd-swatch__material {
-  width: 40px; height: 40px; overflow: hidden;
+  width: 44px; height: 44px; overflow: hidden;
   border: 1px solid transparent;
   transition: border-color .2s;
 }
 .prd-swatch input:checked ~ .prd-swatch__material,
 .prd-swatch:hover .prd-swatch__material { border-color: var(--tira-black); }
 .prd-swatch__material img { width: 100%; height: 100%; object-fit: cover; }
-.prd-swatch__name { font-size: 9px; text-transform: uppercase; letter-spacing: .08em; opacity: .4; }
+/* Nom masqué sous chaque swatch — affiché dans le label via JS */
+.prd-swatch__name { display: none; }
 
 /* Dimensions */
 .prd-dims { margin-bottom: 32px; }
