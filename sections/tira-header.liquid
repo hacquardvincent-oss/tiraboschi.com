@@ -41,6 +41,19 @@ img,video,iframe,svg,canvas{max-width:100%!important;}
   .mega{display:none!important;}
   .mega-backdrop{display:none!important;}
 }
+
+/* ── Mobile nav accordion sous-menus ── */
+.mobile-nav__row{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.mobile-nav__row>a{flex:1;}
+.mobile-nav__toggle{background:none;border:none;cursor:pointer;padding:6px;color:inherit;opacity:.5;line-height:0;transition:opacity .2s;}
+.mobile-nav__toggle:hover{opacity:1;}
+.mobile-nav__toggle svg{width:14px;height:14px;transition:transform .25s;}
+.mobile-nav__toggle[aria-expanded="true"] svg{transform:rotate(180deg);}
+.mobile-nav__sub{list-style:none;padding:0 0 6px 12px;margin:0;overflow:hidden;max-height:0;transition:max-height .3s ease;}
+.mobile-nav__sub.is-open{max-height:400px;}
+.mobile-nav__sub li{border-top:1px solid rgba(255,255,255,.07);}
+.mobile-nav__sub a{display:block;padding:10px 0;font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.6;text-decoration:none;color:inherit;transition:opacity .2s;}
+.mobile-nav__sub a:hover{opacity:1;}
 </style>
 
 <header class="{{ hdr_classes }}" id="hdr" role="banner" data-transparent-home="{{ transparent_home }}">
@@ -288,15 +301,57 @@ img,video,iframe,svg,canvas{max-width:100%!important;}
       {%- if linklists[menu].links.size > 0 -%}
         {%- for link in linklists[menu].links -%}
           {%- unless link.title contains '|sep' -%}
-            <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+            {%- if link.links.size > 0 -%}
+              <li class="mobile-nav__item--parent">
+                <div class="mobile-nav__row">
+                  <a href="{{ link.url }}">{{ link.title | escape }}</a>
+                  <button class="mobile-nav__toggle" aria-expanded="false" aria-label="Ouvrir sous-menu {{ link.title | escape }}">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="4,6 8,10 12,6"/></svg>
+                  </button>
+                </div>
+                <ul class="mobile-nav__sub" aria-hidden="true">
+                  {%- for child in link.links -%}
+                    <li><a href="{{ child.url }}">{{ child.title | escape }}</a></li>
+                  {%- endfor -%}
+                </ul>
+              </li>
+            {%- else -%}
+              <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+            {%- endif -%}
           {%- endunless -%}
         {%- endfor -%}
       {%- else -%}
-        <li><a href="{{ routes.collections_url }}/sacs">Sacs</a></li>
-        <li><a href="{{ routes.collections_url }}/petite-maroquinerie">Petite Maroquinerie</a></li>
-        <li><a href="{{ routes.collections_url }}/iconiques">Iconiques</a></li>
-        <li><a href="{{ routes.collections_url }}/sur-mesure-exotiques">Sur Mesure</a></li>
-        <li><a href="/pages/histoire">La Maison</a></li>
+        <li>
+          <div class="mobile-nav__row">
+            <a href="{{ routes.collections_url }}/fw25">Collections</a>
+            <button class="mobile-nav__toggle" aria-expanded="false" aria-label="Ouvrir sous-menu Collections">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="4,6 8,10 12,6"/></svg>
+            </button>
+          </div>
+          <ul class="mobile-nav__sub" aria-hidden="true">
+            <li><a href="{{ routes.collections_url }}/fw25">FW25 · Automne-Hiver</a></li>
+            <li><a href="{{ routes.collections_url }}/sacs">Sacs</a></li>
+            <li><a href="{{ routes.collections_url }}/petite-maroquinerie">Petite Maroquinerie</a></li>
+            <li><a href="{{ routes.collections_url }}/iconiques">Iconiques</a></li>
+            <li><a href="{{ routes.collections_url }}/sur-mesure-exotiques">Sur Mesure · Exotiques</a></li>
+          </ul>
+        </li>
+        <li>
+          <div class="mobile-nav__row">
+            <a href="/pages/histoire">La Maison</a>
+            <button class="mobile-nav__toggle" aria-expanded="false" aria-label="Ouvrir sous-menu La Maison">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="4,6 8,10 12,6"/></svg>
+            </button>
+          </div>
+          <ul class="mobile-nav__sub" aria-hidden="true">
+            <li><a href="/pages/histoire">Notre Histoire</a></li>
+            <li><a href="/pages/savoir-faire">Savoir-Faire</a></li>
+            <li><a href="/pages/matieres-cuirs">Les Matières</a></li>
+            <li><a href="/pages/la-societe">The Society</a></li>
+            <li><a href="/blogs/latelier">L'Atelier</a></li>
+          </ul>
+        </li>
+        <li><a href="/pages/sur-mesure">Sur Mesure</a></li>
       {%- endif -%}
 
       <li class="mobile-nav__sep" aria-hidden="true"></li>
@@ -396,4 +451,17 @@ img,video,iframe,svg,canvas{max-width:100%!important;}
     if (hdrEl) hdrEl.classList.remove('mega-open');
   }, { passive: true });
 })();
+
+// Accordion sous-menus mobile
+document.querySelectorAll('.mobile-nav__toggle').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const sub = btn.closest('li').querySelector('.mobile-nav__sub');
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!expanded));
+    if (sub) {
+      sub.classList.toggle('is-open', !expanded);
+      sub.setAttribute('aria-hidden', String(expanded));
+    }
+  });
+});
 </script>

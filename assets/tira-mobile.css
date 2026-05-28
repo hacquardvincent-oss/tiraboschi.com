@@ -86,10 +86,13 @@
 .hero__video-wrap { overflow: hidden; }
 .hero__video { object-fit: cover; }
 
-/* Scroll stack — images couvrent tout l'écran */
+/* Scroll stack — fond sombre si image absente + object-fit cover */
+.stack__panel { background: #0a0a0a; }
+.stack__bg img { object-fit: cover; width: 100%; height: 100%; }
+.editorial__img img { object-fit: cover; }
+
 @media (max-width: 768px) {
   .stack__bg { overflow: hidden; }
-  .stack__bg img { object-fit: cover; width: 100%; height: 100%; }
   .stack__panel { overflow: hidden; }
 }
 

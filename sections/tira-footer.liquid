@@ -19,6 +19,19 @@
   endif
 -%}
 
+<style>
+@media(max-width:900px){
+  .society-crm{display:flex!important;flex-direction:column;gap:40px;padding:60px 20px;}
+  .society-crm__col-title{order:1;}
+  .society-crm__right{order:2;}
+  .society-crm__col-social{order:3;}
+  .footer__top{grid-template-columns:1fr!important;gap:40px;padding:52px 20px 40px;}
+  .footer__col{padding-top:0;}
+  .footer__locale-bar{flex-direction:column;align-items:flex-start;gap:20px;padding:20px;}
+  .footer__bottom{flex-direction:column;gap:12px;padding:20px;text-align:center;}
+  .footer__policies{flex-wrap:wrap;justify-content:center;gap:12px 20px;}
+}
+</style>
 {%- if section.settings.show_crm -%}
   {%- comment -%} ═══ JOIN THE SOCIETY ═══ {%- endcomment -%}
   <section class="society-crm" data-reveal aria-labelledby="society-title">

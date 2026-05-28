@@ -65,7 +65,7 @@
   updateHeader();
 
   /* ════════ Word reveal ════════ */
-  document.querySelectorAll('[data-words]').forEach(el => {
+  document.querySelectorAll('[data-words], [data-tira-word-reveal]').forEach(el => {
     const raw = el.innerHTML.replace(/<br\s*\/?>/gi, '\n');
     const words = raw.split(/\s+/);
     el.innerHTML = words
@@ -77,12 +77,12 @@
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => {
       if (e.isIntersecting) {
-        e.target.classList.add('visible');
+        e.target.classList.add('visible', 'is-visible');
         io.unobserve(e.target);
       }
     });
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-  document.querySelectorAll('[data-reveal], [data-words]').forEach(el => io.observe(el));
+  document.querySelectorAll('[data-reveal], [data-words], [data-tira-reveal], [data-tira-word-reveal]').forEach(el => io.observe(el));
 
   /* ════════ Lazy video play/pause ════════ */
   const videoObs = new IntersectionObserver(entries => {
