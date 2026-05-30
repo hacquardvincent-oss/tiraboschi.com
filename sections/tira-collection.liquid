@@ -20,7 +20,7 @@
 -%}
 
 {%- comment -%} ═══ COLLECTION HERO ═══ {%- endcomment -%}
-<section class="col-hero" aria-label="{{ collection.title | escape }}">
+<section class="col-hero" aria-label="{{ collection.title | escape }}" data-tira-dark-hero>
   <div class="col-hero__img tira-ken-burns">
     {%- if collection.image -%}
       <img src="{{ collection.image | image_url: width: 1920 }}"

@@ -1656,9 +1656,9 @@ body.hdr-hidden .col-filters {
 /* Wishlist fixed — visible pendant scroll galerie mobile */
 .prd-gallery__wish {
   display: none;
-  position: fixed; top: calc(var(--header-h) + 14px); right: 14px;
-  z-index: 80; background: none; border: none; cursor: pointer;
-  width: 36px; height: 36px;
+  position: fixed; bottom: 90px; right: 16px;
+  z-index: 80; background: rgba(255,255,255,.9); border: 1px solid var(--tira-border);
+  cursor: pointer; width: 36px; height: 36px;
   align-items: center; justify-content: center;
 }
 .prd-gallery__wish svg {
@@ -1954,34 +1954,110 @@ body.hdr-hidden .col-filters {
 .prd-accordion__body ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
 .prd-accordion__body li::before { content: '—'; margin-right: 8px; opacity: .4; }
 
-/* ─── Sticky ATC mobile : plein écran en bas, style Miu Miu ─── */
-.prd-sticky-atc {
+/* ─── Volet sticky mobile — style Miu Miu ─── */
+.prd-volet {
+  display: none;
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 290;
   background: var(--tira-white);
   border-top: 1px solid var(--tira-border);
-  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
-  display: none;
-}
-.prd-sticky-atc__price { display: none; } /* masqué — variant dans le bouton */
-.prd-sticky-atc__btn {
-  display: block; width: 100%; padding: 16px;
-  background: var(--tira-black); color: var(--tira-white);
-  border: none; font-family: inherit; font-size: 11px;
-  text-transform: uppercase; letter-spacing: .14em; cursor: pointer;
-  transition: background .2s;
-}
-.prd-sticky-atc__btn:hover { background: rgba(10,10,10,.82); }
-.prd-sticky-atc__btn--preorder {
-  display: block; width: 100%; padding: 15px;
-  border: 1px solid var(--tira-black);
-  background: transparent; color: var(--tira-black);
-  font-family: inherit; font-size: 11px;
-  text-transform: uppercase; letter-spacing: .12em;
-  cursor: pointer; text-align: center;
+  box-shadow: 0 -4px 24px rgba(0,0,0,.08);
 }
 @media (max-width: 900px) {
-  .prd-sticky-atc { display: block; }
-  body.template-product { padding-bottom: 76px; }
+  .prd-volet { display: block; }
+  body.template-product { padding-bottom: 72px; }
+}
+
+/* Handle (drag indicator) */
+.prd-volet__handle-wrap {
+  display: flex; align-items: center; justify-content: center;
+  padding: 10px 0 6px; cursor: pointer;
+}
+.prd-volet__handle {
+  width: 32px; height: 3px;
+  background: var(--tira-border); border-radius: 2px;
+  transition: background .2s;
+}
+.prd-volet__handle-wrap:hover .prd-volet__handle,
+.prd-volet.is-open .prd-volet__handle { background: #aaa; }
+
+/* Drawer (sélection matière + liens — masqué par défaut) */
+.prd-volet__drawer {
+  max-height: 0; overflow: hidden;
+  transition: max-height .45s cubic-bezier(0.16, 1, 0.3, 1);
+  border-bottom: 1px solid var(--tira-border);
+}
+.prd-volet.is-open .prd-volet__drawer { max-height: 280px; }
+
+.prd-volet__swatches { padding: 14px 16px 8px; }
+.prd-volet__sw-label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .1em;
+  opacity: .5; margin-bottom: 10px;
+}
+.prd-volet__sw-row {
+  display: flex; gap: 8px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.prd-volet__sw-row::-webkit-scrollbar { display: none; }
+
+.prd-volet-sw {
+  flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 0;
+}
+.prd-volet-sw__dot {
+  width: 28px; height: 28px;
+  border: 1.5px solid var(--tira-border);
+  transition: border-color .15s;
+}
+.prd-volet-sw.active .prd-volet-sw__dot,
+.prd-volet-sw:hover .prd-volet-sw__dot { border-color: var(--tira-black); }
+.prd-volet-sw__name {
+  font-size: 9px; text-transform: uppercase; letter-spacing: .06em;
+  opacity: .55; white-space: nowrap;
+}
+.prd-volet-sw.active .prd-volet-sw__name { opacity: 1; }
+
+.prd-volet__links {
+  display: flex; border-top: 1px solid var(--tira-border);
+}
+.prd-volet__link {
+  flex: 1; padding: 12px 16px;
+  font-family: inherit; font-size: 10px; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--tira-black); text-decoration: none;
+  background: none; border: none; cursor: pointer;
+  text-align: center; border-right: 1px solid var(--tira-border);
+  opacity: .6; transition: opacity .2s;
+}
+.prd-volet__link:last-child { border-right: none; }
+.prd-volet__link:hover { opacity: 1; }
+
+/* Barre toujours visible : nom + prix + ATC */
+.prd-volet__bar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+}
+.prd-volet__info { flex: 1; min-width: 0; }
+.prd-volet__name {
+  display: block; font-size: 12px; opacity: .55; margin-bottom: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.prd-volet__price {
+  display: block; font-size: 14px;
+}
+.prd-volet__atc-wrap { flex-shrink: 0; }
+.prd-volet__atc {
+  padding: 13px 18px;
+  background: var(--tira-black); color: var(--tira-white);
+  border: none; font-family: inherit; font-size: 10px;
+  text-transform: uppercase; letter-spacing: .14em; cursor: pointer;
+  white-space: nowrap; transition: background .2s;
+}
+.prd-volet__atc:disabled { opacity: .4; cursor: default; }
+.prd-volet__atc:hover:not(:disabled) { background: rgba(10,10,10,.82); }
+.prd-volet__atc--preorder {
+  padding: 12px 18px;
+  border: 1px solid var(--tira-black); background: transparent; color: var(--tira-black);
+  font-family: inherit; font-size: 10px; text-transform: uppercase; letter-spacing: .12em;
+  cursor: pointer; white-space: nowrap;
 }
 
 

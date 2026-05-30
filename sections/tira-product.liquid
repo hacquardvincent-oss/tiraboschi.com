@@ -595,25 +595,86 @@
 </section>
 {%- endif -%}
 
-{%- comment -%} ═══ STICKY ATC MOBILE ═══ {%- endcomment -%}
-<div class="prd-sticky-atc" id="sticky-atc" aria-hidden="true" aria-label="Ajouter {{ product.title | escape }} au panier">
-  <span class="prd-sticky-atc__price">{{ current_variant.price | money }}</span>
-  {%- if is_preorder -%}
-    <button class="prd-sticky-atc__btn prd-sticky-atc__btn--preorder"
-            onclick="document.getElementById('product-form').querySelector('[type=submit]').click()">
-      Réserver ma pièce →
-    </button>
-  {%- elsif current_variant.available -%}
-    <button class="prd-sticky-atc__btn" id="sticky-atc-btn"
-            onclick="document.getElementById('product-form').querySelector('[type=submit]').click()">
-      Ajouter au panier
-      {%- if product.variants.size > 1 -%}
-        <span id="sticky-atc-variant"> — {{ current_variant.title }}</span>
+{%- comment -%} ═══ VOLET STICKY MOBILE (style Miu Miu) ═══ {%- endcomment -%}
+<div class="prd-volet" id="prd-volet" aria-label="Informations produit et ajout au panier">
+  {%- comment -%} Handle — tap pour ouvrir/fermer le drawer {%- endcomment -%}
+  <div class="prd-volet__handle-wrap" id="prd-volet-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="prd-volet-drawer">
+    <div class="prd-volet__handle"></div>
+  </div>
+
+  {%- comment -%} Drawer (masqué par défaut) {%- endcomment -%}
+  <div class="prd-volet__drawer" id="prd-volet-drawer">
+    {%- if product.variants.size > 1 -%}
+    <div class="prd-volet__swatches">
+      <p class="prd-volet__sw-label">Matière : <span id="volet-variant-name">{{ current_variant.title }}</span></p>
+      <div class="prd-volet__sw-row">
+        {%- for variant in product.variants -%}
+          {%- assign v_lc = variant.title | downcase -%}
+          {%- if v_lc contains 'noir' -%}{%- assign sw_color = '#1a1a1a' -%}
+          {%- elsif v_lc contains 'blanc' -%}{%- assign sw_color = '#f0ede8' -%}
+          {%- elsif v_lc contains 'crème' or v_lc contains 'creme' -%}{%- assign sw_color = '#f0ead8' -%}
+          {%- elsif v_lc contains 'caramel' -%}{%- assign sw_color = '#bf7b3c' -%}
+          {%- elsif v_lc contains 'cognac' -%}{%- assign sw_color = '#9b3b2a' -%}
+          {%- elsif v_lc contains 'bordeaux' -%}{%- assign sw_color = '#6e2639' -%}
+          {%- elsif v_lc contains 'rouge' -%}{%- assign sw_color = '#b52535' -%}
+          {%- elsif v_lc contains 'marine' -%}{%- assign sw_color = '#1e3b5e' -%}
+          {%- elsif v_lc contains 'bleu' or v_lc contains 'blue' -%}{%- assign sw_color = '#2c5f8a' -%}
+          {%- elsif v_lc contains 'vert' or v_lc contains 'green' -%}{%- assign sw_color = '#2d5a3d' -%}
+          {%- elsif v_lc contains 'kaki' or v_lc contains 'olive' -%}{%- assign sw_color = '#6b7c45' -%}
+          {%- elsif v_lc contains 'brun' or v_lc contains 'marron' -%}{%- assign sw_color = '#5c3d2e' -%}
+          {%- elsif v_lc contains 'chocolat' -%}{%- assign sw_color = '#3d1c1a' -%}
+          {%- elsif v_lc contains 'taupe' -%}{%- assign sw_color = '#8b7b6b' -%}
+          {%- elsif v_lc contains 'gris' or v_lc contains 'grey' -%}{%- assign sw_color = '#888888' -%}
+          {%- elsif v_lc contains 'beige' -%}{%- assign sw_color = '#d4c4a8' -%}
+          {%- elsif v_lc contains 'naturel' or v_lc contains 'natur' -%}{%- assign sw_color = '#c8a97a' -%}
+          {%- elsif v_lc contains 'ivoire' or v_lc contains 'ivory' -%}{%- assign sw_color = '#f5f0e8' -%}
+          {%- elsif v_lc contains 'miel' -%}{%- assign sw_color = '#d4904a' -%}
+          {%- elsif v_lc contains 'sable' -%}{%- assign sw_color = '#d4b896' -%}
+          {%- elsif v_lc contains 'nuit' -%}{%- assign sw_color = '#1a1f3a' -%}
+          {%- elsif v_lc contains 'framboise' -%}{%- assign sw_color = '#9c2a5a' -%}
+          {%- else -%}{%- assign sw_color = '' -%}
+          {%- endif -%}
+          <button class="prd-volet-sw{% if variant.id == current_variant.id %} active{% endif %}"
+                  data-variant-id="{{ variant.id }}"
+                  data-variant-title="{{ variant.title | escape }}"
+                  data-variant-price="{{ variant.price | money }}"
+                  aria-label="{{ variant.title | escape }}"
+                  {% unless variant.available %}disabled{% endunless %}>
+            <span class="prd-volet-sw__dot"{% if sw_color != blank %} style="background:{{ sw_color }};"{% endif %}></span>
+            <span class="prd-volet-sw__name">{{ variant.title }}</span>
+          </button>
+        {%- endfor -%}
+      </div>
+    </div>
+    {%- endif -%}
+    <div class="prd-volet__links">
+      <button class="prd-volet__link" id="volet-details-link">Détails du produit →</button>
+      <button class="prd-volet__link" id="volet-care-link">Livraison &amp; entretien →</button>
+    </div>
+  </div>
+
+  {%- comment -%} Barre toujours visible {%- endcomment -%}
+  <div class="prd-volet__bar">
+    <div class="prd-volet__info">
+      <span class="prd-volet__name">{{ product.title }}</span>
+      <span class="prd-volet__price" id="volet-price">{{ current_variant.price | money }}</span>
+    </div>
+    <div class="prd-volet__atc-wrap">
+      {%- if is_preorder -%}
+        <button class="prd-volet__atc prd-volet__atc--preorder" id="volet-atc-btn"
+                onclick="document.getElementById('product-form').querySelector('[type=submit]').click()">
+          Réserver →
+        </button>
+      {%- elsif current_variant.available -%}
+        <button class="prd-volet__atc" id="volet-atc-btn"
+                onclick="document.getElementById('product-form').querySelector('[type=submit]').click()">
+          Ajouter au panier
+        </button>
+      {%- else -%}
+        <button class="prd-volet__atc" disabled>Épuisé</button>
       {%- endif -%}
-    </button>
-  {%- else -%}
-    <button class="prd-sticky-atc__btn" disabled>Épuisé</button>
-  {%- endif -%}
+    </div>
+  </div>
 </div>
 
 <script>
@@ -625,7 +686,8 @@
   var variantInput  = document.getElementById('prd-variant-input');
   var variantTitle  = document.getElementById('prd-variant-title');
   var priceDisplay  = document.getElementById('prd-price-display');
-  var stickyVariant = document.getElementById('sticky-atc-variant');
+  var voletPrice       = document.getElementById('volet-price');
+  var voletVariantName = document.getElementById('volet-variant-name');
 
   swatches.forEach(function(sw) {
     sw.addEventListener('change', function() {
@@ -633,26 +695,81 @@
       var id    = this.dataset.variantId;
       var title = this.dataset.variantTitle;
       var price = this.dataset.variantPrice;
-      if (variantInput)  variantInput.value = id;
-      if (variantTitle)  variantTitle.textContent = title;
-      if (priceDisplay)  priceDisplay.textContent = price;
-      if (stickyVariant) stickyVariant.textContent = ' — ' + title;
+      if (variantInput)    variantInput.value = id;
+      if (variantTitle)    variantTitle.textContent = title;
+      if (priceDisplay)    priceDisplay.textContent = price;
+      if (voletPrice)      voletPrice.textContent = price;
+      if (voletVariantName) voletVariantName.textContent = title;
       document.querySelectorAll('.prd-swatch').forEach(function(s) { s.classList.remove('active'); });
       this.closest('.prd-swatch').classList.add('active');
+      /* Sync volet swatches */
+      document.querySelectorAll('.prd-volet-sw').forEach(function(b) {
+        b.classList.toggle('active', b.dataset.variantId === id);
+      });
     });
   });
 
-  /* ── Sticky ATC : apparaît quand le bouton ATC inline quitte l'écran ── */
-  var stickyAtc = document.getElementById('sticky-atc');
-  var atcWrap   = document.querySelector('.prd-atc-wrap');
-  if (stickyAtc && atcWrap) {
-    var atcObs = new IntersectionObserver(function(entries) {
-      entries.forEach(function(e) {
-        stickyAtc.setAttribute('aria-hidden', e.isIntersecting ? 'true' : 'false');
-        if (isMobile) stickyAtc.style.display = e.isIntersecting ? 'none' : 'block';
+  /* ── Volet sticky : toggle drawer au tap sur le handle ── */
+  var volet       = document.getElementById('prd-volet');
+  var voletToggle = document.getElementById('prd-volet-toggle');
+  if (volet && voletToggle) {
+    voletToggle.addEventListener('click', function() {
+      var isOpen = volet.classList.toggle('is-open');
+      voletToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+    voletToggle.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); voletToggle.click(); }
+    });
+  }
+
+  /* ── Volet : sélection variante depuis le drawer ── */
+  document.querySelectorAll('.prd-volet-sw').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var id    = this.dataset.variantId;
+      var title = this.dataset.variantTitle;
+      var price = this.dataset.variantPrice;
+      if (variantInput)     variantInput.value = id;
+      if (variantTitle)     variantTitle.textContent = title;
+      if (priceDisplay)     priceDisplay.textContent = price;
+      if (voletPrice)       voletPrice.textContent = price;
+      if (voletVariantName) voletVariantName.textContent = title;
+      /* Sync desktop swatches */
+      var radio = document.querySelector('#prd-swatches input[data-variant-id="' + id + '"]');
+      if (radio) {
+        radio.checked = true;
+        document.querySelectorAll('.prd-swatch').forEach(function(s) { s.classList.remove('active'); });
+        radio.closest('.prd-swatch') && radio.closest('.prd-swatch').classList.add('active');
+      }
+      document.querySelectorAll('.prd-volet-sw').forEach(function(b) {
+        b.classList.toggle('active', b.dataset.variantId === id);
       });
-    }, { threshold: 0 });
-    atcObs.observe(atcWrap);
+    });
+  });
+
+  /* ── Volet : liens "Détails" et "Livraison" scroll vers les accordéons ── */
+  var voletDetailsLink = document.getElementById('volet-details-link');
+  var voletCareLink    = document.getElementById('volet-care-link');
+  if (voletDetailsLink) {
+    voletDetailsLink.addEventListener('click', function() {
+      var detailsTrigger = document.getElementById('prd-details-trigger');
+      if (detailsTrigger) { detailsTrigger.click(); }
+      else {
+        var accordion = document.querySelector('.prd-accordion');
+        if (accordion) accordion.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      if (volet) volet.classList.remove('is-open');
+    });
+  }
+  if (voletCareLink) {
+    voletCareLink.addEventListener('click', function() {
+      var careSection = document.querySelector('[data-accordion="care"], .prd-accordion--care');
+      if (careSection) careSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      else {
+        var accordion = document.querySelector('.prd-accordion');
+        if (accordion) accordion.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      if (volet) volet.classList.remove('is-open');
+    });
   }
 
   /* ── Dots indicateur galerie mobile ── */
@@ -724,10 +841,11 @@
       var img   = this.dataset.variantImg;
 
       /* Mettre à jour le formulaire principal */
-      if (variantInput)  variantInput.value = id;
-      if (variantTitle)  variantTitle.textContent = title;
-      if (priceDisplay)  priceDisplay.textContent = price;
-      if (stickyVariant) stickyVariant.textContent = ' — ' + title;
+      if (variantInput)     variantInput.value = id;
+      if (variantTitle)     variantTitle.textContent = title;
+      if (priceDisplay)     priceDisplay.textContent = price;
+      if (voletPrice)       voletPrice.textContent = price;
+      if (voletVariantName) voletVariantName.textContent = title;
 
       /* Mettre à jour le trigger (image + nom) */
       if (triggerImg && img) triggerImg.src = img;
@@ -744,6 +862,9 @@
       /* Marquer l'item actif dans le volet */
       document.querySelectorAll('.prd-swatch-sheet__item').forEach(function(s) { s.classList.remove('active'); });
       this.classList.add('active');
+      document.querySelectorAll('.prd-volet-sw').forEach(function(b) {
+        b.classList.toggle('active', b.dataset.variantId === id);
+      });
 
       closeSwatchSheet();
     });

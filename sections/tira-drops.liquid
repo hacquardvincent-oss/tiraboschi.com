@@ -259,42 +259,117 @@
     opacity: .8; padding: 24px 0;
     border-top: 1px solid rgba(255,255,255,.15);
   }
-  /* Waitlist fallback */
-  .drp-waitlist {
-    max-width: 620px; margin: 0 auto; text-align: center;
-    padding: 80px 32px;
-  }
-  .drp-waitlist__title {
-    font-size: clamp(22px, 3vw, 32px); font-weight: 400;
-    letter-spacing: -.01em; margin-bottom: 20px;
+  /* ── Agenda drops (état à venir) ── */
+  .drp-agenda-wrap {
+    padding: 80px 48px;
+    background: var(--tira-black);
     color: var(--tira-white);
   }
-  .drp-waitlist__sub {
-    font-size: 14px; font-style: italic;
-    opacity: .55; margin-bottom: 48px;
-    color: var(--tira-white);
+  .drp-agenda-header {
+    text-align: center; margin-bottom: 64px;
   }
-  .drp-waitlist__form {
-    display: flex; gap: 0; max-width: 440px; margin: 0 auto;
-    border-bottom: 1px solid rgba(255,255,255,.3);
+  .drp-agenda-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+    opacity: .4; display: block; margin-bottom: 20px;
   }
-  .drp-waitlist__input {
-    flex: 1; background: transparent;
-    border: none; outline: none;
-    font-family: inherit; font-size: 14px;
-    color: var(--tira-white); padding: 12px 0;
+  .drp-agenda-title {
+    font-size: clamp(28px, 3.5vw, 44px);
+    font-weight: 400; letter-spacing: -.01em; margin-bottom: 20px;
   }
-  .drp-waitlist__input::placeholder { opacity: .4; }
-  .drp-waitlist__submit {
+  .drp-agenda-sub {
+    font-size: 13px; font-style: italic; opacity: .55;
+    max-width: 480px; margin: 0 auto; line-height: 1.65;
+  }
+  .drp-agenda-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 2px; max-width: 1200px; margin: 0 auto;
+  }
+  .drp-agenda-card {
+    display: grid; grid-template-columns: 1fr 1.2fr;
+    background: rgba(255,255,255,.03);
+    border: 1px solid rgba(255,255,255,.1);
+    transition: border-color .3s;
+  }
+  .drp-agenda-card:hover { border-color: rgba(255,255,255,.35); }
+  .drp-agenda-card--upcoming { grid-column: 1 / -1; }
+  .drp-agenda-card__img-col {
+    overflow: hidden; min-height: 420px;
+  }
+  .drp-agenda-card__img-col img {
+    width: 100%; height: 100%; object-fit: cover; opacity: .7;
+    transition: opacity .4s, transform .6s var(--tira-ease);
+  }
+  .drp-agenda-card:hover .drp-agenda-card__img-col img {
+    opacity: .85; transform: scale(1.03);
+  }
+  .drp-agenda-card__body {
+    padding: 48px 40px;
+    display: flex; flex-direction: column; justify-content: center; gap: 14px;
+  }
+  .drp-agenda-card__body--no-img {
+    grid-column: 1 / -1; padding: 40px 36px;
+  }
+  .drp-agenda-card__badge {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .18em;
+    border: 1px solid rgba(255,255,255,.25);
+    padding: 5px 14px; display: inline-block; align-self: flex-start;
+    color: rgba(255,255,255,.7);
+  }
+  .drp-agenda-card__badge--open {
+    border-color: rgba(255,255,255,.55); color: var(--tira-white);
+  }
+  .drp-agenda-card__season {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .15em;
+    opacity: .45; margin: 0;
+  }
+  .drp-agenda-card__name {
+    font-size: clamp(24px, 3vw, 36px);
+    font-weight: 400; letter-spacing: -.01em; margin: 0;
+  }
+  .drp-agenda-card__models {
+    font-size: 13px; font-style: italic; opacity: .6; margin: 0;
+  }
+  .drp-agenda-card__meta {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px; opacity: .45;
+  }
+  .drp-agenda-card__dot { opacity: .3; }
+  .drp-agenda-card__opening {
+    font-size: 12px; opacity: .55; line-height: 1.7;
+    border-top: 1px solid rgba(255,255,255,.1); padding-top: 16px;
+  }
+  .drp-agenda-card__opening strong { opacity: .9; font-weight: 400; }
+  .drp-agenda-card__form {
+    display: flex; gap: 0;
+    border-bottom: 1px solid rgba(255,255,255,.25); margin-top: 8px;
+  }
+  .drp-agenda-card__input {
+    flex: 1; background: transparent; border: none; outline: none;
+    font-family: inherit; font-size: 13px;
+    color: var(--tira-white); padding: 10px 0;
+  }
+  .drp-agenda-card__input::placeholder { color: rgba(255,255,255,.35); }
+  .drp-agenda-card__cta {
     background: transparent; border: none;
-    font-family: inherit; font-size: 11px;
+    font-family: inherit; font-size: 10px;
     text-transform: uppercase; letter-spacing: .14em;
-    color: var(--tira-white); cursor: pointer;
-    padding: 0 0 0 16px;
+    color: var(--tira-white); cursor: pointer; padding: 0 0 0 14px;
     text-decoration: underline; text-underline-offset: 3px;
-    opacity: .75; transition: opacity .2s;
+    opacity: .65; transition: opacity .2s;
   }
-  .drp-waitlist__submit:hover { opacity: 1; }
+  .drp-agenda-card__cta:hover { opacity: 1; }
+  .drp-agenda-card__success {
+    font-size: 13px; font-style: italic; opacity: .7;
+    border-top: 1px solid rgba(255,255,255,.1); padding-top: 14px;
+  }
+  @media (max-width: 767px) {
+    .drp-agenda-wrap { padding: 60px 24px; }
+    .drp-agenda-grid { grid-template-columns: 1fr; }
+    .drp-agenda-card { grid-template-columns: 1fr; }
+    .drp-agenda-card__img-col { min-height: 260px; }
+    .drp-agenda-card__body { padding: 32px 24px; }
+  }
 
   /* ─────────────────────────────────────────────
      4. PLANNING DES PROCHAINS DROPS
@@ -587,7 +662,7 @@
 <div class="drp-page">
 
   {%- comment -%} ── 1. HERO ── {%- endcomment -%}
-  <section class="drp-hero" aria-label="Drops & Éditions Limitées">
+  <section class="drp-hero" aria-label="Drops & Éditions Limitées" data-tira-dark-hero>
     <img
       class="drp-hero__img"
       src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/28092025-DSCF1828.jpg"
@@ -756,33 +831,99 @@
 
     {%- else -%}
 
-      <div class="drp-waitlist">
-        <h2 class="drp-waitlist__title">Aucun drop en cours</h2>
-        <p class="drp-waitlist__sub">
-          Le prochain drop est en préparation.
-          Inscrivez-vous pour être la première informée à la date d'ouverture.
-        </p>
-        {%- if form.posted_successfully? -%}
-          <p class="drp-newsletter__success" role="status">
-            Votre inscription est confirmée — vous serez alertée en avant-première.
+      {%- comment -%} Prochain drop — agenda card à venir {%- endcomment -%}
+      <div class="drp-agenda-wrap">
+        <div class="drp-agenda-header">
+          <span class="drp-agenda-label">Agenda drops</span>
+          <h2 class="drp-agenda-title">Prochains drops</h2>
+          <p class="drp-agenda-sub">
+            Chaque édition est façonnée après la clôture des inscriptions.
+            Inscrivez-vous pour être alertée en avant-première.
           </p>
-        {%- else -%}
-          {%- form 'contact', id: 'drp-waitlist-form' -%}
-            <input type="hidden" name="contact[type]" value="drop-waitlist">
-            <div class="drp-waitlist__form">
-              <input
-                class="drp-waitlist__input"
-                type="email"
-                name="contact[email]"
-                placeholder="votre@email.com"
-                autocomplete="email" required
+        </div>
+        <div class="drp-agenda-grid">
+
+          {%- comment -%} Prochain drop (depuis les settings) {%- endcomment -%}
+          <div class="drp-agenda-card drp-agenda-card--upcoming">
+            <div class="drp-agenda-card__img-col">
+              <img
+                src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0919.jpg"
+                alt="Drop {{ section.settings.drop_name | default: 'FW25' }}"
+                loading="lazy" width="720" height="960"
               >
-              <button type="submit" class="drp-waitlist__submit">
-                Me prévenir &rarr;
-              </button>
             </div>
-          {%- endform -%}
-        {%- endif -%}
+            <div class="drp-agenda-card__body">
+              <span class="drp-agenda-card__badge">À venir</span>
+              <p class="drp-agenda-card__season">{{ section.settings.drop_next_label | default: 'Automne 2025' }}</p>
+              <h3 class="drp-agenda-card__name">Drop {{ section.settings.drop_name | default: 'FW25' }}</h3>
+              <p class="drp-agenda-card__models">Victoire · Colette · Colette Mini</p>
+              <div class="drp-agenda-card__meta">
+                <span>10 pièces par modèle</span>
+                <span class="drp-agenda-card__dot">·</span>
+                <span>1 artisan · 48h de façonnage</span>
+              </div>
+              <div class="drp-agenda-card__opening">
+                Ouverture des inscriptions :<br>
+                <strong>{{ section.settings.drop_next_label | default: 'Automne 2025' }}</strong>
+              </div>
+              {%- if form.posted_successfully? -%}
+                <p class="drp-agenda-card__success" role="status">
+                  Votre inscription est confirmée — vous serez alertée en avant-première.
+                </p>
+              {%- else -%}
+                {%- form 'contact', id: 'drp-agenda-form' -%}
+                  <input type="hidden" name="contact[type]" value="drop-waitlist">
+                  <input type="hidden" name="contact[drop]" value="{{ section.settings.drop_name }}">
+                  <div class="drp-agenda-card__form">
+                    <input
+                      class="drp-agenda-card__input"
+                      type="email"
+                      name="contact[email]"
+                      placeholder="votre@email.com"
+                      autocomplete="email" required
+                    >
+                    <button type="submit" class="drp-agenda-card__cta">
+                      Me prévenir &rarr;
+                    </button>
+                  </div>
+                {%- endform -%}
+              {%- endif -%}
+            </div>
+          </div>
+
+          {%- comment -%} Drops à venir (blocks Shopify admin) {%- endcomment -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'drop_planning' -%}
+              <div class="drp-agenda-card" {{ block.shopify_attributes }}>
+                <div class="drp-agenda-card__body drp-agenda-card__body--no-img">
+                  {%- if block.settings.status == 'open' -%}
+                    <span class="drp-agenda-card__badge drp-agenda-card__badge--open">Ouvert</span>
+                  {%- else -%}
+                    <span class="drp-agenda-card__badge">À venir</span>
+                  {%- endif -%}
+                  <p class="drp-agenda-card__season">{{ block.settings.season_label | default: 'SS26' }}</p>
+                  <h3 class="drp-agenda-card__name">Drop {{ block.settings.season_label | default: 'SS26' }}</h3>
+                  <p class="drp-agenda-card__models">{{ block.settings.models_label | default: 'Victoire · Colette' }}</p>
+                  <div class="drp-agenda-card__meta">
+                    <span>{{ block.settings.pieces_label | default: '10' }} pièces par modèle</span>
+                    <span class="drp-agenda-card__dot">·</span>
+                    <span>{{ block.settings.date_label | default: 'Printemps 2026' }}</span>
+                  </div>
+                  {%- form 'contact', id: 'drp-block-form-{{ block.id }}' -%}
+                    <input type="hidden" name="contact[type]" value="drop-notify">
+                    <input type="hidden" name="contact[drop]" value="{{ block.settings.season_label }}">
+                    <div class="drp-agenda-card__form">
+                      <input class="drp-agenda-card__input" type="email" name="contact[email]"
+                             placeholder="votre@email.com" autocomplete="email" required>
+                      <button type="submit" class="drp-agenda-card__cta">Me prévenir &rarr;</button>
+                    </div>
+                  {%- endform -%}
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+
+        </div>
       </div>
 
     {%- endif -%}
