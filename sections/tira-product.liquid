@@ -960,14 +960,14 @@
 
     function getT(offset) {
       if (offset === 0) return { tx: '-50%', ry: '0deg', sc: 1, op: 1, zi: 100 };
-      var s    = offset < 0 ? -1 : 1;
-      var abs  = Math.abs(offset);
-      var gap  = 86 + abs * 14;
+      var s   = offset < 0 ? -1 : 1;
+      var abs = Math.abs(offset);
+      var gap = 96 + abs * 12;
       return {
         tx:  'calc(-50% + ' + (s * gap) + 'px)',
-        ry:  (-s * 44) + 'deg',
-        sc:  Math.max(0.5, 1 - abs * 0.22),
-        op:  Math.max(0, 1 - abs * 0.38),
+        ry:  (-s * 40) + 'deg',
+        sc:  Math.max(0.52, 1 - abs * 0.2),
+        op:  Math.max(0, 1 - abs * 0.35),
         zi:  Math.max(0, 100 - abs * 20)
       };
     }

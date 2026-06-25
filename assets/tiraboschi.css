@@ -1816,49 +1816,54 @@ body.hdr-hidden .col-filters {
 .prd-coverflow {
   display: flex; align-items: center; gap: 4px;
   position: relative; margin: 0 -8px;
+  /* overflow:hidden ici et PAS sur le stage — évite le bug perspective+overflow */
+  overflow: hidden;
 }
 .prd-coverflow__nav {
-  flex-shrink: 0; width: 28px; height: 28px;
+  flex-shrink: 0; width: 32px; height: 32px;
   background: none; border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   color: var(--tira-black); opacity: .3; transition: opacity .2s;
-  z-index: 10;
+  z-index: 10; position: relative;
 }
 .prd-coverflow__nav:hover:not(:disabled) { opacity: .9; }
 .prd-coverflow__nav:disabled { opacity: .1; cursor: default; }
 .prd-coverflow__nav svg { width: 16px; height: 16px; }
 
 .prd-coverflow__stage {
-  flex: 1; height: 114px; position: relative;
-  perspective: 900px; perspective-origin: center 50%;
-  overflow: hidden; cursor: grab;
+  flex: 1; height: 130px; position: relative;
+  /* perspective sur le parent DIRECT des cartes, sans overflow */
+  perspective: 800px; perspective-origin: 50% 50%;
+  cursor: grab;
 }
 .prd-coverflow__stage:active { cursor: grabbing; }
 
 .prd-coverflow__card {
   position: absolute;
   top: 50%; left: 50%;
-  width: 60px;
-  display: flex; flex-direction: column; align-items: center; gap: 6px;
-  transition: transform .42s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity .42s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 72px;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  transition: transform .45s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity .45s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, opacity;
   cursor: pointer;
   pointer-events: none;
+  /* initial state invisible avant JS */
+  opacity: 0;
 }
 .prd-coverflow__card.is-visible { pointer-events: auto; }
 
 .prd-coverflow__color {
-  width: 54px; height: 54px; flex-shrink: 0;
-  border: 1.5px solid rgba(0,0,0,.07);
+  width: 64px; height: 64px; flex-shrink: 0;
+  border: 1.5px solid rgba(0,0,0,.08);
   transition: border-color .2s, box-shadow .3s;
 }
 .prd-coverflow__card.is-center .prd-coverflow__color {
   border-color: var(--tira-black);
-  box-shadow: 0 6px 24px rgba(0,0,0,.16);
+  box-shadow: 0 8px 28px rgba(0,0,0,.18);
 }
 .prd-coverflow__card:not(.is-center).is-visible:hover .prd-coverflow__color {
-  border-color: rgba(0,0,0,.4);
+  border-color: rgba(0,0,0,.35);
 }
 .prd-coverflow__card[aria-disabled="true"] .prd-coverflow__color {
   opacity: .35;
@@ -1867,13 +1872,13 @@ body.hdr-hidden .col-filters {
 .prd-coverflow__label {
   font-size: 9px; text-transform: uppercase; letter-spacing: .08em;
   white-space: nowrap; opacity: 0;
-  transition: opacity .25s;
+  transition: opacity .3s;
 }
-.prd-coverflow__card.is-center .prd-coverflow__label { opacity: .55; }
+.prd-coverflow__card.is-center .prd-coverflow__label { opacity: .5; }
 
 .prd-coverflow__sold {
   font-size: 8px; text-transform: uppercase; letter-spacing: .06em;
-  opacity: .35; margin-top: -2px;
+  opacity: .35; margin-top: -4px;
 }
 
 /* Legacy swatch classes (masqués, gardés pour JS sheet) */
