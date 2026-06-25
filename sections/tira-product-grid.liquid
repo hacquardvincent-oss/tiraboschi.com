@@ -72,7 +72,7 @@
             <p class="card__type">{{ product.type }}</p>
           {%- endif -%}
           <p class="card__name"><a href="{{ product.url }}">{{ product.title }}</a></p>
-          <p class="card__price">{{ product.price | money }}</p>
+          {%- if customer -%}<p class="card__price">{{ product.price | money }}</p>{%- else -%}<p class="card__price card__price--request">Prix sur demande</p>{%- endif -%}
           {%- if product.metafields.custom.composition != blank -%}
             <p class="card__meta">{{ product.metafields.custom.composition }}</p>
           {%- endif -%}

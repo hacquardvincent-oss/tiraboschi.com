@@ -21,6 +21,7 @@
   endif
 -%}
 
+{%- if customer -%}<script>window.TIRA_SHOW_PRICE=true;</script>{%- endif -%}
 <div class="prd-main" id="MainContent-product">
 
   {%- comment -%} ─── GALERIE DESKTOP scroll vertical ─── {%- endcomment -%}
@@ -89,84 +90,102 @@
   {%- comment -%} ─── PANNEAU INFOS ─── {%- endcomment -%}
   <div class="prd-info" id="prd-info">
 
-    <nav class="prd-breadcrumb" aria-label="Fil d'Ariane">
-      <a href="{{ routes.root_url }}">Accueil</a><span>—</span>
-      {%- if collection -%}
-        <a href="{{ collection.url }}">{{ collection.title }}</a><span>—</span>
-      {%- else -%}
-        <a href="{{ routes.collections_url }}/sacs">Sacs</a><span>—</span>
-      {%- endif -%}
-      <span aria-current="page">{{ product.title }}</span>
-    </nav>
+    {%- comment -%} ─── Référence catalogue muséale ─── {%- endcomment -%}
+    <div class="prd-catalogue-ref">
+      <a href="{{ collection.url | default: routes.collections_url }}" class="prd-catalogue-ref__back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" width="14" height="14"><polyline points="15,18 9,12 15,6"/></svg>
+        {%- if collection -%}{{ collection.title }}{%- else -%}Collection{%- endif -%}
+      </a>
+      <span class="prd-catalogue-ref__num">FW25 · {{ product.metafields.custom.piece_number.value | default: product.type }}</span>
+    </div>
 
-    <p class="prd-type">{{ product.type }}</p>
     <h1 class="prd-name">{{ product.title }}</h1>
-    <p class="prd-price" id="prd-price-display">
-      {%- if current_variant.compare_at_price > current_variant.price -%}
-        <span class="prd-price--sale">{{ current_variant.price | money }}</span>
-        <span class="prd-price--compare">{{ current_variant.compare_at_price | money }}</span>
-      {%- else -%}
-        {{ current_variant.price | money }}
-      {%- endif -%}
-    </p>
+
+    {%- comment -%} ─── Prix — visible uniquement clients connectés ─── {%- endcomment -%}
+    {%- if customer -%}
+      <p class="prd-price" id="prd-price-display">
+        {%- if current_variant.compare_at_price > current_variant.price -%}
+          <span class="prd-price--sale">{{ current_variant.price | money }}</span>
+          <span class="prd-price--compare">{{ current_variant.compare_at_price | money }}</span>
+        {%- else -%}
+          {{ current_variant.price | money }}
+        {%- endif -%}
+      </p>
+    {%- else -%}
+      <p class="prd-price prd-price--on-request" id="prd-price-display">Prix sur demande</p>
+      <a class="prd-price__contact" href="/pages/contact?ref=prix&amp;piece={{ product.handle }}">Contacter la maison →</a>
+    {%- endif -%}
 
     {%- if product.variants.size > 1 -%}
       <div class="prd-colors">
-        <p class="prd-colors__label">
-          <span>Matière</span>
-          <span id="prd-variant-title">{{ current_variant.title }}</span>
-        </p>
+        <div class="prd-colors__meta">
+          <span class="prd-colors__type">Matière</span>
+          <span class="prd-colors__current" id="prd-variant-title">{{ current_variant.title }}</span>
+        </div>
 
-        <div class="prd-colors__swatches" role="radiogroup" aria-label="Choisir une matière" id="prd-swatches">
+        {%- comment -%} Inputs cachés — pour le formulaire + JS sync {%- endcomment -%}
+        <div id="prd-swatches" aria-hidden="true" style="display:none">
           {%- for variant in product.variants -%}
-            {%- assign swatch_img = variant.image | default: product.featured_image -%}
-            {%- comment -%} Color map par nom de variante {%- endcomment -%}
-            {%- assign v_lc = variant.title | downcase -%}
-            {%- if v_lc contains 'noir' -%}{%- assign sw_color = '#1a1a1a' -%}
-            {%- elsif v_lc contains 'blanc' -%}{%- assign sw_color = '#f0ede8' -%}
-            {%- elsif v_lc contains 'crème' or v_lc contains 'creme' -%}{%- assign sw_color = '#f0ead8' -%}
-            {%- elsif v_lc contains 'caramel' -%}{%- assign sw_color = '#bf7b3c' -%}
-            {%- elsif v_lc contains 'cognac' -%}{%- assign sw_color = '#9b3b2a' -%}
-            {%- elsif v_lc contains 'bordeaux' -%}{%- assign sw_color = '#6e2639' -%}
-            {%- elsif v_lc contains 'rouge' -%}{%- assign sw_color = '#b52535' -%}
-            {%- elsif v_lc contains 'marine' -%}{%- assign sw_color = '#1e3b5e' -%}
-            {%- elsif v_lc contains 'bleu' or v_lc contains 'blue' -%}{%- assign sw_color = '#2c5f8a' -%}
-            {%- elsif v_lc contains 'vert' or v_lc contains 'green' -%}{%- assign sw_color = '#2d5a3d' -%}
-            {%- elsif v_lc contains 'kaki' or v_lc contains 'olive' -%}{%- assign sw_color = '#6b7c45' -%}
-            {%- elsif v_lc contains 'brun' or v_lc contains 'marron' -%}{%- assign sw_color = '#5c3d2e' -%}
-            {%- elsif v_lc contains 'chocolat' -%}{%- assign sw_color = '#3d1c1a' -%}
-            {%- elsif v_lc contains 'taupe' -%}{%- assign sw_color = '#8b7b6b' -%}
-            {%- elsif v_lc contains 'gris' or v_lc contains 'grey' -%}{%- assign sw_color = '#888888' -%}
-            {%- elsif v_lc contains 'beige' -%}{%- assign sw_color = '#d4c4a8' -%}
-            {%- elsif v_lc contains 'naturel' or v_lc contains 'natur' -%}{%- assign sw_color = '#c8a97a' -%}
-            {%- elsif v_lc contains 'ivoire' or v_lc contains 'ivory' -%}{%- assign sw_color = '#f5f0e8' -%}
-            {%- elsif v_lc contains 'miel' -%}{%- assign sw_color = '#d4904a' -%}
-            {%- elsif v_lc contains 'sable' -%}{%- assign sw_color = '#d4b896' -%}
-            {%- elsif v_lc contains 'nuit' -%}{%- assign sw_color = '#1a1f3a' -%}
-            {%- elsif v_lc contains 'framboise' -%}{%- assign sw_color = '#9c2a5a' -%}
-            {%- else -%}{%- assign sw_color = '' -%}
-            {%- endif -%}
-            <label class="prd-swatch{% if variant.id == current_variant.id %} active{% endif %}"
-                   aria-label="{{ variant.title | escape }}">
-              <input type="radio"
-                     name="variant"
-                     value="{{ variant.id }}"
-                     data-variant-id="{{ variant.id }}"
-                     data-variant-title="{{ variant.title | escape }}"
-                     data-variant-price="{{ variant.price | money }}"
-                     {% if variant.id == current_variant.id %}checked{% endif %}
-                     {% unless variant.available %}disabled{% endunless %}>
-              <span class="prd-swatch__material"{% if sw_color != blank %} style="background:{{ sw_color }};"{% endif %}>
-                {%- if sw_color == blank and swatch_img -%}
-                  <img src="{{ swatch_img | image_url: width: 80, height: 80, crop: 'center' }}"
-                       alt="{{ variant.title | escape }}"
-                       width="40" height="40"
-                       loading="lazy">
-                {%- endif -%}
-              </span>
-              <span class="prd-swatch__name">{{ variant.title }}</span>
-            </label>
+            <input type="radio"
+                   name="variant"
+                   value="{{ variant.id }}"
+                   data-variant-id="{{ variant.id }}"
+                   data-variant-title="{{ variant.title | escape }}"
+                   data-variant-price="{%- if customer -%}{{ variant.price | money }}{%- else -%}—{%- endif -%}"
+                   {% if variant.id == current_variant.id %}checked{% endif %}
+                   {% unless variant.available %}disabled{% endunless %}>
           {%- endfor -%}
+        </div>
+
+        {%- comment -%} Cover Flow — style iPod {%- endcomment -%}
+        <div class="prd-coverflow" id="prd-coverflow" role="listbox" aria-label="Choisir une matière">
+          <button class="prd-coverflow__nav" id="prd-coverflow-prev" aria-label="Matière précédente" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="15,18 9,12 15,6"/></svg>
+          </button>
+          <div class="prd-coverflow__stage" id="prd-coverflow-stage">
+            {%- for variant in product.variants -%}
+              {%- assign v_lc = variant.title | downcase -%}
+              {%- if v_lc contains 'noir' -%}{%- assign sw_color = '#1a1a1a' -%}
+              {%- elsif v_lc contains 'blanc' -%}{%- assign sw_color = '#f0ede8' -%}
+              {%- elsif v_lc contains 'crème' or v_lc contains 'creme' -%}{%- assign sw_color = '#f0ead8' -%}
+              {%- elsif v_lc contains 'caramel' -%}{%- assign sw_color = '#bf7b3c' -%}
+              {%- elsif v_lc contains 'cognac' -%}{%- assign sw_color = '#9b3b2a' -%}
+              {%- elsif v_lc contains 'bordeaux' -%}{%- assign sw_color = '#6e2639' -%}
+              {%- elsif v_lc contains 'rouge' -%}{%- assign sw_color = '#b52535' -%}
+              {%- elsif v_lc contains 'marine' -%}{%- assign sw_color = '#1e3b5e' -%}
+              {%- elsif v_lc contains 'bleu' or v_lc contains 'blue' -%}{%- assign sw_color = '#2c5f8a' -%}
+              {%- elsif v_lc contains 'vert' or v_lc contains 'green' -%}{%- assign sw_color = '#2d5a3d' -%}
+              {%- elsif v_lc contains 'kaki' or v_lc contains 'olive' -%}{%- assign sw_color = '#6b7c45' -%}
+              {%- elsif v_lc contains 'brun' or v_lc contains 'marron' -%}{%- assign sw_color = '#5c3d2e' -%}
+              {%- elsif v_lc contains 'chocolat' -%}{%- assign sw_color = '#3d1c1a' -%}
+              {%- elsif v_lc contains 'taupe' -%}{%- assign sw_color = '#8b7b6b' -%}
+              {%- elsif v_lc contains 'gris' or v_lc contains 'grey' -%}{%- assign sw_color = '#888888' -%}
+              {%- elsif v_lc contains 'beige' -%}{%- assign sw_color = '#d4c4a8' -%}
+              {%- elsif v_lc contains 'naturel' or v_lc contains 'natur' -%}{%- assign sw_color = '#c8a97a' -%}
+              {%- elsif v_lc contains 'ivoire' or v_lc contains 'ivory' -%}{%- assign sw_color = '#f5f0e8' -%}
+              {%- elsif v_lc contains 'miel' -%}{%- assign sw_color = '#d4904a' -%}
+              {%- elsif v_lc contains 'sable' -%}{%- assign sw_color = '#d4b896' -%}
+              {%- elsif v_lc contains 'nuit' -%}{%- assign sw_color = '#1a1f3a' -%}
+              {%- elsif v_lc contains 'framboise' -%}{%- assign sw_color = '#9c2a5a' -%}
+              {%- else -%}{%- assign sw_color = '#c8a97a' -%}
+              {%- endif -%}
+              <div class="prd-coverflow__card{% if variant.id == current_variant.id %} is-center{% endif %}"
+                   data-variant-id="{{ variant.id }}"
+                   data-index="{{ forloop.index0 }}"
+                   role="option"
+                   aria-selected="{{ variant.id == current_variant.id }}"
+                   {% unless variant.available %}aria-disabled="true"{% endunless %}>
+                <div class="prd-coverflow__color" style="background:{{ sw_color }};"></div>
+                <span class="prd-coverflow__label">{{ variant.title | split: ' / ' | last }}</span>
+                {%- unless variant.available -%}
+                  <span class="prd-coverflow__sold">Épuisé</span>
+                {%- endunless -%}
+              </div>
+            {%- endfor -%}
+          </div>
+          <button class="prd-coverflow__nav" id="prd-coverflow-next" aria-label="Matière suivante" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="9,18 15,12 9,6"/></svg>
+          </button>
         </div>
       </div>
     {%- endif -%}
@@ -586,7 +605,7 @@
           <div class="card__info">
             <p class="card__type">{{ reco_product.type }}</p>
             <a class="card__name" href="{{ reco_product.url }}">{{ reco_product.title }}</a>
-            <p class="card__price">{{ reco_product.price | money }}</p>
+            {%- if customer -%}<p class="card__price">{{ reco_product.price | money }}</p>{%- endif -%}
           </div>
         </article>
       {%- endif -%}
@@ -657,7 +676,7 @@
   <div class="prd-volet__bar">
     <div class="prd-volet__info">
       <span class="prd-volet__name">{{ product.title }}</span>
-      <span class="prd-volet__price" id="volet-price">{{ current_variant.price | money }}</span>
+      <span class="prd-volet__price" id="volet-price">{%- if customer -%}{{ current_variant.price | money }}{%- else -%}Sur demande{%- endif -%}</span>
     </div>
     <div class="prd-volet__atc-wrap">
       {%- if is_preorder -%}
@@ -698,7 +717,7 @@
       if (variantInput)    variantInput.value = id;
       if (variantTitle)    variantTitle.textContent = title;
       if (priceDisplay)    priceDisplay.textContent = price;
-      if (voletPrice)      voletPrice.textContent = price;
+      if (voletPrice && window.TIRA_SHOW_PRICE) voletPrice.textContent = price;
       if (voletVariantName) voletVariantName.textContent = title;
       document.querySelectorAll('.prd-swatch').forEach(function(s) { s.classList.remove('active'); });
       this.closest('.prd-swatch').classList.add('active');
@@ -731,7 +750,7 @@
       if (variantInput)     variantInput.value = id;
       if (variantTitle)     variantTitle.textContent = title;
       if (priceDisplay)     priceDisplay.textContent = price;
-      if (voletPrice)       voletPrice.textContent = price;
+      if (voletPrice && window.TIRA_SHOW_PRICE) voletPrice.textContent = price;
       if (voletVariantName) voletVariantName.textContent = title;
       /* Sync desktop swatches */
       var radio = document.querySelector('#prd-swatches input[data-variant-id="' + id + '"]');
@@ -844,7 +863,7 @@
       if (variantInput)     variantInput.value = id;
       if (variantTitle)     variantTitle.textContent = title;
       if (priceDisplay)     priceDisplay.textContent = price;
-      if (voletPrice)       voletPrice.textContent = price;
+      if (voletPrice && window.TIRA_SHOW_PRICE) voletPrice.textContent = price;
       if (voletVariantName) voletVariantName.textContent = title;
 
       /* Mettre à jour le trigger (image + nom) */
@@ -923,6 +942,112 @@
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') { closePanel(); closeSwatchSheet(); }
   });
+
+  /* ══════════════════════════════════════════
+     COVER FLOW — navigation matières iPod-style
+  ══════════════════════════════════════════ */
+  (function() {
+    var stage = document.getElementById('prd-coverflow-stage');
+    if (!stage) return;
+
+    var cards  = Array.from(stage.querySelectorAll('.prd-coverflow__card'));
+    var radios = Array.from(document.querySelectorAll('#prd-swatches input[type=radio]'));
+    var count  = cards.length;
+    var cur    = 0;
+
+    /* Index initial depuis le radio coché */
+    radios.forEach(function(r, i) { if (r.checked) cur = i; });
+
+    function getT(offset) {
+      if (offset === 0) return { tx: '-50%', ry: '0deg', sc: 1, op: 1, zi: 100 };
+      var s    = offset < 0 ? -1 : 1;
+      var abs  = Math.abs(offset);
+      var gap  = 86 + abs * 14;
+      return {
+        tx:  'calc(-50% + ' + (s * gap) + 'px)',
+        ry:  (-s * 44) + 'deg',
+        sc:  Math.max(0.5, 1 - abs * 0.22),
+        op:  Math.max(0, 1 - abs * 0.38),
+        zi:  Math.max(0, 100 - abs * 20)
+      };
+    }
+
+    function render() {
+      cards.forEach(function(card, i) {
+        var t = getT(i - cur);
+        card.style.transform = 'translateX(' + t.tx + ') translateY(-50%) rotateY(' + t.ry + ') scale(' + t.sc + ')';
+        card.style.opacity   = t.op;
+        card.style.zIndex    = t.zi;
+        card.classList.toggle('is-center',  i === cur);
+        card.classList.toggle('is-visible', Math.abs(i - cur) <= 2);
+        card.setAttribute('aria-selected', i === cur ? 'true' : 'false');
+      });
+
+      var prevBtn = document.getElementById('prd-coverflow-prev');
+      var nextBtn = document.getElementById('prd-coverflow-next');
+      if (prevBtn) prevBtn.disabled = cur === 0;
+      if (nextBtn) nextBtn.disabled = cur === count - 1;
+    }
+
+    function goTo(idx) {
+      idx = Math.max(0, Math.min(count - 1, idx));
+      if (idx === cur) return;
+      cur = idx;
+      render();
+      var r = radios[idx];
+      if (r && !r.disabled) {
+        r.checked = true;
+        r.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    }
+
+    /* Clic sur une carte */
+    cards.forEach(function(card, i) {
+      card.addEventListener('click', function() { goTo(i); });
+    });
+
+    /* Boutons nav */
+    var prevBtn = document.getElementById('prd-coverflow-prev');
+    var nextBtn = document.getElementById('prd-coverflow-next');
+    if (prevBtn) prevBtn.addEventListener('click', function() { goTo(cur - 1); });
+    if (nextBtn) nextBtn.addEventListener('click', function() { goTo(cur + 1); });
+
+    /* Clavier */
+    document.getElementById('prd-coverflow') && document.getElementById('prd-coverflow').addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); goTo(cur - 1); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); goTo(cur + 1); }
+    });
+
+    /* Touch swipe */
+    var tx0 = 0;
+    stage.addEventListener('touchstart', function(e) { tx0 = e.touches[0].clientX; }, { passive: true });
+    stage.addEventListener('touchend',   function(e) {
+      var dx = e.changedTouches[0].clientX - tx0;
+      if (Math.abs(dx) > 32) goTo(cur + (dx < 0 ? 1 : -1));
+    }, { passive: true });
+
+    /* Mouse drag */
+    var mx0 = 0, dragging = false;
+    stage.addEventListener('mousedown',  function(e) { mx0 = e.clientX; dragging = true; });
+    stage.addEventListener('mouseup',    function(e) {
+      if (!dragging) return;
+      var dx = e.clientX - mx0;
+      if (Math.abs(dx) > 32) goTo(cur + (dx < 0 ? 1 : -1));
+      dragging = false;
+    });
+    stage.addEventListener('mouseleave', function() { dragging = false; });
+
+    /* Sync depuis la swatch-sheet */
+    radios.forEach(function(r, i) {
+      r.addEventListener('change', function() {
+        if (this.checked && i !== cur) { cur = i; render(); }
+      });
+    });
+
+    /* Rendu initial */
+    render();
+  })();
+
 })();
 </script>
 

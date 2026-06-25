@@ -717,6 +717,7 @@ body.nav-open { overflow: hidden; }
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .card__price { font-size: 12px; opacity: .5; letter-spacing: .04em; }
+.card__price--request { font-size: 10px; text-transform: uppercase; letter-spacing: .14em; opacity: .28; }
 .card__meta {
   font-size: 10px; opacity: .35; letter-spacing: .04em; margin-top: 3px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -1761,52 +1762,124 @@ body.hdr-hidden .col-filters {
   .prd-info { padding: 32px 24px 48px; }
 }
 
-/* Fil d'Ariane */
-.prd-breadcrumb {
-  display: flex; align-items: center; gap: 10px;
-  font-size: 10px; text-transform: uppercase; letter-spacing: .12em;
-  opacity: .35; margin-bottom: 28px;
+/* ── Référence catalogue muséale (remplace breadcrumb) ── */
+.prd-catalogue-ref {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 32px;
 }
-.prd-breadcrumb a { opacity: 1; transition: opacity .2s; }
-.prd-breadcrumb a:hover { opacity: .6; }
-.prd-breadcrumb span { opacity: .5; }
-
-/* Titre + prix */
-.prd-type {
+.prd-catalogue-ref__back {
+  display: inline-flex; align-items: center; gap: 6px;
   font-size: 10px; text-transform: uppercase; letter-spacing: .14em;
-  opacity: .35; margin-bottom: 10px;
+  color: var(--tira-black); text-decoration: none; opacity: .35;
+  transition: opacity .2s;
 }
-.prd-name {
-  font-size: clamp(40px, 5vw, 56px); line-height: .95;
-  letter-spacing: -.01em; margin-bottom: 20px;
-}
-.prd-price {
-  font-size: 16px; letter-spacing: .04em;
-  opacity: .65; margin-bottom: 32px;
+.prd-catalogue-ref__back:hover { opacity: .8; }
+.prd-catalogue-ref__num {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .18em; opacity: .25;
 }
 
-/* Swatches matieres — zooms cuir (remplace cercles couleur) */
+/* Titre monumental */
+.prd-name {
+  font-size: clamp(44px, 5.5vw, 68px); line-height: .92;
+  letter-spacing: -.02em; margin-bottom: 24px; font-weight: 400;
+}
+
+/* Prix */
+.prd-price {
+  font-size: 15px; letter-spacing: .06em;
+  opacity: .65; margin-bottom: 8px;
+}
+.prd-price--on-request {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .18em;
+  opacity: .4; margin-bottom: 6px;
+}
+.prd-price__contact {
+  display: inline-block; font-size: 11px; text-transform: uppercase;
+  letter-spacing: .12em; color: var(--tira-black);
+  text-decoration: underline; text-underline-offset: 3px;
+  opacity: .5; transition: opacity .2s; margin-bottom: 28px;
+}
+.prd-price__contact:hover { opacity: 1; }
+
+/* ── Cover Flow matières — iPod style ── */
 .prd-colors { margin-bottom: 28px; }
-.prd-colors__label {
-  font-size: 10px; text-transform: uppercase; letter-spacing: .12em;
-  opacity: .4; margin-bottom: 12px;
-  display: flex; justify-content: space-between;
+.prd-colors__meta {
+  display: flex; align-items: baseline; gap: 10px; margin-bottom: 16px;
 }
-.prd-colors__swatches { display: flex; flex-wrap: wrap; gap: 8px; max-height: 180px; overflow-y: auto; scrollbar-width: thin; }
-.prd-swatch {
-  display: flex; flex-direction: column; align-items: center; gap: 0;
+.prd-colors__type {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .14em; opacity: .35;
+}
+.prd-colors__current {
+  font-size: 11px; opacity: .7; font-style: italic;
+}
+
+.prd-coverflow {
+  display: flex; align-items: center; gap: 4px;
+  position: relative; margin: 0 -8px;
+}
+.prd-coverflow__nav {
+  flex-shrink: 0; width: 28px; height: 28px;
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--tira-black); opacity: .3; transition: opacity .2s;
+  z-index: 10;
+}
+.prd-coverflow__nav:hover:not(:disabled) { opacity: .9; }
+.prd-coverflow__nav:disabled { opacity: .1; cursor: default; }
+.prd-coverflow__nav svg { width: 16px; height: 16px; }
+
+.prd-coverflow__stage {
+  flex: 1; height: 114px; position: relative;
+  perspective: 900px; perspective-origin: center 50%;
+  overflow: hidden; cursor: grab;
+}
+.prd-coverflow__stage:active { cursor: grabbing; }
+
+.prd-coverflow__card {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 60px;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  transition: transform .42s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity .42s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
   cursor: pointer;
+  pointer-events: none;
 }
+.prd-coverflow__card.is-visible { pointer-events: auto; }
+
+.prd-coverflow__color {
+  width: 54px; height: 54px; flex-shrink: 0;
+  border: 1.5px solid rgba(0,0,0,.07);
+  transition: border-color .2s, box-shadow .3s;
+}
+.prd-coverflow__card.is-center .prd-coverflow__color {
+  border-color: var(--tira-black);
+  box-shadow: 0 6px 24px rgba(0,0,0,.16);
+}
+.prd-coverflow__card:not(.is-center).is-visible:hover .prd-coverflow__color {
+  border-color: rgba(0,0,0,.4);
+}
+.prd-coverflow__card[aria-disabled="true"] .prd-coverflow__color {
+  opacity: .35;
+}
+
+.prd-coverflow__label {
+  font-size: 9px; text-transform: uppercase; letter-spacing: .08em;
+  white-space: nowrap; opacity: 0;
+  transition: opacity .25s;
+}
+.prd-coverflow__card.is-center .prd-coverflow__label { opacity: .55; }
+
+.prd-coverflow__sold {
+  font-size: 8px; text-transform: uppercase; letter-spacing: .06em;
+  opacity: .35; margin-top: -2px;
+}
+
+/* Legacy swatch classes (masqués, gardés pour JS sheet) */
+.prd-swatch { display: none; }
 .prd-swatch input { position: absolute; opacity: 0; pointer-events: none; }
-.prd-swatch__material {
-  width: 44px; height: 44px; overflow: hidden;
-  border: 1px solid transparent;
-  transition: border-color .2s;
-}
-.prd-swatch input:checked ~ .prd-swatch__material,
-.prd-swatch:hover .prd-swatch__material { border-color: var(--tira-black); }
-.prd-swatch__material img { width: 100%; height: 100%; object-fit: cover; }
-/* Nom masqué sous chaque swatch — affiché dans le label via JS */
+.prd-swatch__material { width: 44px; height: 44px; }
 .prd-swatch__name { display: none; }
 
 /* ─── Volet sélection matière (bottom sheet mobile) ─── */

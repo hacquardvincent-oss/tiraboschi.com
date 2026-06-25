@@ -186,6 +186,7 @@
         <div class="card__info">
           <p class="card__type">{{ product.type }}</p>
           <a class="card__name" href="{{ product.url }}">{{ product.title }}</a>
+          {%- if customer -%}
           <p class="card__price">
             {%- if product.compare_at_price > product.price -%}
               <span class="card__price--sale">{{ product.price | money }}</span>
@@ -194,6 +195,9 @@
               {{ product.price | money }}
             {%- endif -%}
           </p>
+          {%- else -%}
+          <p class="card__price card__price--request">Prix sur demande</p>
+          {%- endif -%}
         </div>
       </article>
 
