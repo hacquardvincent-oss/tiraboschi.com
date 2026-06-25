@@ -1,0 +1,960 @@
+{% comment %}
+  ═══════════════════════════════════════════════════════════════
+  TIRABOSCHI · Espace Privé — Portail clients privés
+  ═══════════════════════════════════════════════════════════════
+  3 états :
+  1. Non connecté → invitation à se connecter + demande d'accès
+  2. Connecté sans tag 'private-client' → accès en traitement
+  3. Connecté + tag 'private-client' → portail complet
+     — Catalogue pièces exceptionnelles (collection 'espace-prive')
+     — Formulaire de demande de pièce → Draft Order manuel
+     — Atelier sur mesure
+{% endcomment %}
+
+<style>
+  .ep-page {
+    --tira-black: #0a0a0a;
+    --tira-white: #ffffff;
+    --tira-grey: #f7f5f2;
+    --tira-border: #e8e8e8;
+    --tira-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: 'Playfair Display', Georgia, serif;
+    color: var(--tira-black);
+  }
+
+  /* ── Accès refusé / connexion ── */
+  .ep-gate {
+    min-height: 100dvh;
+    background: var(--tira-black);
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center; padding: 40px;
+    padding-top: calc(var(--content-top, 68px) + 60px);
+  }
+  .ep-gate__filigree {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(120px, 22vw, 380px);
+    font-style: italic; color: var(--tira-white);
+    opacity: .03; white-space: nowrap;
+    pointer-events: none; line-height: 1;
+    letter-spacing: -0.03em; z-index: 0;
+    user-select: none;
+  }
+  .ep-gate__content { position: relative; z-index: 1; max-width: 540px; }
+  .ep-gate__eyebrow {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .22em;
+    color: var(--tira-white); opacity: .35; margin-bottom: 32px;
+  }
+  .ep-gate__title {
+    font-size: clamp(36px, 5.5vw, 56px); font-weight: 400; font-style: italic;
+    letter-spacing: -0.015em; line-height: 1;
+    color: var(--tira-white); margin-bottom: 20px;
+  }
+  .ep-gate__sub {
+    font-size: 13px; line-height: 1.7; color: var(--tira-white);
+    opacity: .45; margin-bottom: 48px; letter-spacing: .01em;
+  }
+  .ep-gate__actions { display: flex; flex-direction: column; gap: 16px; align-items: center; }
+  .ep-gate__btn {
+    display: inline-block;
+    font-size: 11px; text-transform: uppercase; letter-spacing: .16em;
+    padding: 14px 40px; border: 1px solid rgba(255,255,255,.6);
+    color: var(--tira-white); background: transparent;
+    transition: background .25s var(--tira-ease), border-color .25s;
+    cursor: pointer; text-decoration: none;
+  }
+  .ep-gate__btn:hover { background: rgba(255,255,255,.08); border-color: var(--tira-white); }
+  .ep-gate__btn--solid {
+    background: var(--tira-white); color: var(--tira-black); border-color: var(--tira-white);
+  }
+  .ep-gate__btn--solid:hover { background: #e8e8e8; }
+  .ep-gate__link {
+    font-size: 11px; color: var(--tira-white); opacity: .4;
+    text-decoration: underline; text-transform: uppercase; letter-spacing: .1em;
+    transition: opacity .2s;
+  }
+  .ep-gate__link:hover { opacity: .8; }
+  .ep-gate__divider {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .14em;
+    color: var(--tira-white); opacity: .2;
+  }
+
+  /* ── Formulaire demande d'accès ── */
+  .ep-request {
+    background: var(--tira-black); padding: 80px 40px;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .ep-request__inner { max-width: 480px; width: 100%; }
+  .ep-request__label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .18em;
+    color: var(--tira-white); opacity: .4; display: block; margin-bottom: 8px;
+  }
+  .ep-request__field {
+    width: 100%; background: transparent;
+    border: none; border-bottom: 1px solid rgba(255,255,255,.18);
+    padding: 10px 0; margin-bottom: 28px;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 14px; color: var(--tira-white);
+    outline: none; transition: border-color .2s;
+  }
+  .ep-request__field::placeholder { color: rgba(255,255,255,.25); }
+  .ep-request__field:focus { border-color: rgba(255,255,255,.6); }
+  .ep-request__select {
+    appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,.4)' stroke-width='1.2' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 4px center;
+    cursor: pointer;
+  }
+  .ep-request__btn {
+    width: 100%; padding: 16px;
+    background: transparent; border: 1px solid rgba(255,255,255,.5);
+    color: var(--tira-white);
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 11px; text-transform: uppercase; letter-spacing: .16em;
+    cursor: pointer; transition: background .25s, border-color .25s;
+    margin-top: 8px;
+  }
+  .ep-request__btn:hover { background: rgba(255,255,255,.06); border-color: var(--tira-white); }
+  .ep-request__note {
+    font-size: 11px; color: rgba(255,255,255,.3); margin-top: 20px; text-align: center;
+    letter-spacing: .02em;
+  }
+
+  /* ── En attente ── */
+  .ep-pending {
+    min-height: 80dvh; background: var(--tira-black);
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center; padding: 80px 40px;
+    padding-top: calc(var(--content-top, 68px) + 80px);
+  }
+  .ep-pending__icon {
+    width: 48px; height: 48px; border: 1px solid rgba(255,255,255,.2);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 32px; color: rgba(255,255,255,.4);
+  }
+  .ep-pending__icon svg { width: 20px; height: 20px; }
+  .ep-pending__title {
+    font-size: clamp(28px, 4vw, 44px); font-weight: 400; font-style: italic;
+    color: var(--tira-white); margin-bottom: 16px; letter-spacing: -0.01em;
+  }
+  .ep-pending__sub {
+    font-size: 13px; color: rgba(255,255,255,.4); max-width: 420px; line-height: 1.7; margin-bottom: 40px;
+  }
+  .ep-pending__cta {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .14em;
+    color: var(--tira-white); text-decoration: underline; opacity: .5; transition: opacity .2s;
+  }
+  .ep-pending__cta:hover { opacity: 1; }
+
+  /* ═══════════════════════════════════════════════════════
+     PORTAIL PRIVÉ (connecté + tag private-client)
+     ═══════════════════════════════════════════════════════ */
+
+  /* ── Welcome hero ── */
+  .ep-welcome {
+    min-height: 50dvh; background: var(--tira-black);
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 0 60px 80px;
+    padding-top: calc(var(--content-top, 68px) + 40px);
+    position: relative; overflow: hidden;
+  }
+  .ep-welcome__filigree {
+    position: absolute; top: 50%; right: -60px;
+    transform: translateY(-50%);
+    font-size: clamp(160px, 28vw, 480px);
+    font-style: italic; color: var(--tira-white);
+    opacity: .025; white-space: nowrap;
+    pointer-events: none; line-height: 1;
+    letter-spacing: -0.04em; z-index: 0;
+    user-select: none;
+  }
+  .ep-welcome__eyebrow {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .22em;
+    color: rgba(255,255,255,.35); margin-bottom: 20px; position: relative; z-index: 1;
+  }
+  .ep-welcome__name {
+    font-size: clamp(48px, 7vw, 88px); font-weight: 400;
+    letter-spacing: -0.02em; line-height: .92;
+    color: var(--tira-white); margin-bottom: 8px; position: relative; z-index: 1;
+  }
+  .ep-welcome__name em { font-style: italic; }
+  .ep-welcome__sub {
+    font-size: 13px; color: rgba(255,255,255,.38);
+    letter-spacing: .01em; position: relative; z-index: 1;
+  }
+  .ep-welcome__badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 10px; text-transform: uppercase; letter-spacing: .18em;
+    color: rgba(255,255,255,.5);
+    border: 1px solid rgba(255,255,255,.15); padding: 6px 16px;
+    margin-top: 32px; position: relative; z-index: 1;
+  }
+  .ep-welcome__badge-dot {
+    width: 5px; height: 5px; border-radius: 50%; background: #c8a96e; flex-shrink: 0;
+  }
+
+  /* ── Navigation interne ── */
+  .ep-nav {
+    background: var(--tira-black);
+    border-top: 1px solid rgba(255,255,255,.1);
+    padding: 0 60px;
+    display: flex; gap: 0; position: sticky; top: 68px; z-index: 40;
+  }
+  .ep-nav__item {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .14em;
+    color: rgba(255,255,255,.4); padding: 16px 24px 15px;
+    border-bottom: 1px solid transparent; transition: color .2s, border-color .2s;
+    cursor: pointer; white-space: nowrap;
+    background: none; border-top: none; border-left: none; border-right: none;
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+  .ep-nav__item:hover,
+  .ep-nav__item.is-active { color: var(--tira-white); border-bottom-color: var(--tira-white); }
+
+  /* ── Sections internes ── */
+  .ep-section { display: none; }
+  .ep-section.is-active { display: block; }
+
+  /* ── Catalogue ── */
+  .ep-catalogue {
+    background: var(--tira-black); padding: 80px 60px;
+  }
+  .ep-catalogue__header {
+    margin-bottom: 60px;
+  }
+  .ep-catalogue__title {
+    font-size: clamp(32px, 4vw, 52px); font-weight: 400; font-style: italic;
+    color: var(--tira-white); margin-bottom: 12px; letter-spacing: -0.015em;
+  }
+  .ep-catalogue__sub {
+    font-size: 12px; color: rgba(255,255,255,.35);
+    text-transform: uppercase; letter-spacing: .14em;
+  }
+  .ep-catalogue__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
+  }
+  .ep-card {
+    position: relative; overflow: hidden;
+    background: #111; aspect-ratio: 3/4;
+    cursor: pointer;
+  }
+  .ep-card__img {
+    width: 100%; height: 100%; object-fit: cover;
+    display: block; transition: transform .8s var(--tira-ease);
+  }
+  .ep-card:hover .ep-card__img { transform: scale(1.04); }
+  .ep-card__overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,.7) 0%, rgba(0,0,0,.1) 50%, transparent 100%);
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 28px 24px;
+    opacity: 0; transition: opacity .35s var(--tira-ease);
+  }
+  .ep-card:hover .ep-card__overlay { opacity: 1; }
+  .ep-card__ref {
+    font-size: 9px; text-transform: uppercase; letter-spacing: .18em;
+    color: rgba(255,255,255,.5); margin-bottom: 6px;
+  }
+  .ep-card__name {
+    font-size: 18px; font-weight: 400; color: var(--tira-white);
+    letter-spacing: -0.01em; margin-bottom: 4px;
+  }
+  .ep-card__price {
+    font-size: 13px; color: rgba(255,255,255,.7);
+    font-style: italic;
+  }
+  .ep-card__always {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 20px 24px;
+    background: linear-gradient(to top, rgba(0,0,0,.75) 0%, transparent 100%);
+  }
+  .ep-card__always-name {
+    font-size: 14px; font-weight: 400; color: var(--tira-white);
+    letter-spacing: -0.005em;
+  }
+  .ep-catalogue__empty {
+    font-size: 13px; color: rgba(255,255,255,.3); text-align: center;
+    padding: 80px 0; font-style: italic;
+  }
+
+  /* ── Demande de pièce ── */
+  .ep-order {
+    background: var(--tira-black); padding: 80px 60px;
+    border-top: 1px solid rgba(255,255,255,.08);
+  }
+  .ep-order__header { margin-bottom: 60px; }
+  .ep-order__title {
+    font-size: clamp(32px, 4vw, 52px); font-weight: 400; font-style: italic;
+    color: var(--tira-white); margin-bottom: 12px; letter-spacing: -0.015em;
+  }
+  .ep-order__sub {
+    font-size: 12px; color: rgba(255,255,255,.35);
+    text-transform: uppercase; letter-spacing: .14em; max-width: 480px; line-height: 1.8;
+  }
+  .ep-order__grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0 60px; max-width: 840px;
+  }
+  .ep-order__group {
+    margin-bottom: 32px;
+  }
+  .ep-order__group--full { grid-column: 1 / -1; }
+  .ep-order__lbl {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .18em;
+    color: rgba(255,255,255,.4); display: block; margin-bottom: 10px;
+  }
+  .ep-order__input,
+  .ep-order__select,
+  .ep-order__textarea {
+    width: 100%; background: transparent;
+    border: none; border-bottom: 1px solid rgba(255,255,255,.15);
+    padding: 10px 0;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 14px; color: var(--tira-white);
+    outline: none; transition: border-color .2s; box-sizing: border-box;
+  }
+  .ep-order__input::placeholder,
+  .ep-order__textarea::placeholder { color: rgba(255,255,255,.2); }
+  .ep-order__input:focus,
+  .ep-order__select:focus,
+  .ep-order__textarea:focus { border-color: rgba(255,255,255,.5); }
+  .ep-order__select {
+    appearance: none; -webkit-appearance: none; cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,.35)' stroke-width='1.2' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 4px center;
+  }
+  .ep-order__select option { background: #111; }
+  .ep-order__textarea { resize: vertical; min-height: 120px; }
+  .ep-order__hidden { display: none; }
+  .ep-order__submit {
+    margin-top: 48px;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 11px; text-transform: uppercase; letter-spacing: .18em;
+    color: var(--tira-white); background: transparent;
+    border: 1px solid rgba(255,255,255,.5); padding: 16px 48px;
+    cursor: pointer; transition: background .25s, border-color .25s;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .ep-order__submit:hover { background: rgba(255,255,255,.06); border-color: var(--tira-white); }
+  .ep-order__submit svg { width: 14px; height: 14px; }
+  .ep-order__confirm {
+    display: none; text-align: center; padding: 60px 0;
+  }
+  .ep-order__confirm.is-visible { display: block; }
+  .ep-order__confirm-icon {
+    width: 52px; height: 52px; border: 1px solid rgba(255,255,255,.2);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px; color: rgba(255,255,255,.6);
+  }
+  .ep-order__confirm-icon svg { width: 22px; height: 22px; }
+  .ep-order__confirm-title {
+    font-size: 28px; font-style: italic; color: var(--tira-white);
+    margin-bottom: 12px; letter-spacing: -0.01em;
+  }
+  .ep-order__confirm-sub {
+    font-size: 13px; color: rgba(255,255,255,.35); line-height: 1.7;
+  }
+
+  /* ── Sur Mesure brief ── */
+  .ep-bespoke {
+    background: #0d0d0d; padding: 80px 60px;
+    border-top: 1px solid rgba(255,255,255,.06);
+  }
+  .ep-bespoke__header { margin-bottom: 60px; }
+  .ep-bespoke__eyebrow {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .22em;
+    color: rgba(255,255,255,.35); margin-bottom: 16px;
+  }
+  .ep-bespoke__title {
+    font-size: clamp(32px, 4vw, 52px); font-weight: 400; font-style: italic;
+    color: var(--tira-white); margin-bottom: 16px; letter-spacing: -0.015em;
+  }
+  .ep-bespoke__desc {
+    font-size: 13px; color: rgba(255,255,255,.35); max-width: 520px;
+    line-height: 1.75; letter-spacing: .01em;
+  }
+  .ep-bespoke__process {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+    margin-bottom: 72px; background: rgba(255,255,255,.06);
+  }
+  .ep-bespoke__step {
+    background: #0d0d0d; padding: 32px 28px;
+  }
+  .ep-bespoke__step-num {
+    font-size: 32px; font-style: italic; color: rgba(255,255,255,.1);
+    line-height: 1; margin-bottom: 16px;
+  }
+  .ep-bespoke__step-name {
+    font-size: 13px; font-weight: 400; color: var(--tira-white);
+    margin-bottom: 8px; letter-spacing: -0.005em;
+  }
+  .ep-bespoke__step-desc {
+    font-size: 11px; color: rgba(255,255,255,.35); line-height: 1.7;
+  }
+  .ep-bespoke__configurator {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0 60px; max-width: 840px;
+  }
+  .ep-bespoke__cta-wrap { grid-column: 1 / -1; margin-top: 48px; }
+  .ep-bespoke__cta {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 11px; text-transform: uppercase; letter-spacing: .18em;
+    color: var(--tira-white); background: transparent;
+    border: 1px solid rgba(255,255,255,.5); padding: 16px 48px;
+    cursor: pointer; transition: background .25s, border-color .25s;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .ep-bespoke__cta:hover { background: rgba(255,255,255,.06); border-color: var(--tira-white); }
+  .ep-bespoke__cta svg { width: 14px; height: 14px; }
+
+  /* ── Conseiller dédié ── */
+  .ep-concierge {
+    background: var(--tira-black); padding: 80px 60px;
+    border-top: 1px solid rgba(255,255,255,.06);
+    display: flex; align-items: center; justify-content: space-between; gap: 60px;
+    flex-wrap: wrap;
+  }
+  .ep-concierge__text {}
+  .ep-concierge__eyebrow {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .18em;
+    color: rgba(255,255,255,.35); margin-bottom: 16px;
+  }
+  .ep-concierge__title {
+    font-size: clamp(24px, 3.5vw, 40px); font-weight: 400; font-style: italic;
+    color: var(--tira-white); letter-spacing: -0.01em; margin-bottom: 12px;
+  }
+  .ep-concierge__sub {
+    font-size: 13px; color: rgba(255,255,255,.35); max-width: 420px; line-height: 1.7;
+  }
+  .ep-concierge__actions { display: flex; flex-direction: column; gap: 12px; }
+  .ep-concierge__btn {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-size: 11px; text-transform: uppercase; letter-spacing: .16em;
+    padding: 14px 32px; border: 1px solid rgba(255,255,255,.35);
+    color: var(--tira-white); text-decoration: none;
+    transition: background .25s, border-color .25s; white-space: nowrap;
+  }
+  .ep-concierge__btn:hover { background: rgba(255,255,255,.06); border-color: var(--tira-white); }
+  .ep-concierge__btn svg { width: 14px; height: 14px; }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .ep-catalogue__grid { grid-template-columns: repeat(2, 1fr); }
+    .ep-bespoke__process { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .ep-welcome, .ep-nav, .ep-catalogue, .ep-order, .ep-bespoke, .ep-concierge {
+      padding-left: 20px; padding-right: 20px;
+    }
+    .ep-catalogue__grid { grid-template-columns: 1fr 1fr; gap: 2px; }
+    .ep-order__grid, .ep-bespoke__configurator { grid-template-columns: 1fr; gap: 0; }
+    .ep-bespoke__process { grid-template-columns: 1fr; }
+    .ep-nav { overflow-x: auto; padding: 0 20px; top: 60px; }
+    .ep-nav__item { padding: 14px 16px 13px; }
+    .ep-concierge { flex-direction: column; }
+    .ep-gate { padding: 40px 24px; padding-top: calc(var(--content-top, 68px) + 60px); }
+  }
+</style>
+
+<div class="ep-page">
+
+  {%- if customer -%}
+    {%- assign is_private = false -%}
+    {%- for tag in customer.tags -%}
+      {%- if tag == 'private-client' -%}
+        {%- assign is_private = true -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if is_private -%}
+      {# ════════════════════════════════════════════════════
+         PORTAIL PRIVÉ — client autorisé
+         ════════════════════════════════════════════════════ #}
+
+      {%- assign ep_coll = collections['espace-prive'] -%}
+
+      {# Welcome hero #}
+      <div class="ep-welcome" data-tira-dark-hero>
+        <span class="ep-welcome__filigree" aria-hidden="true">Privé</span>
+        <p class="ep-welcome__eyebrow">Espace Privé · TIRABOSCHI Paris</p>
+        <h1 class="ep-welcome__name">
+          Bienvenue,<br><em>{{ customer.first_name }}</em>
+        </h1>
+        <p class="ep-welcome__sub">Votre espace de création exclusive</p>
+        <div class="ep-welcome__badge">
+          <span class="ep-welcome__badge-dot"></span>
+          Client Privé
+        </div>
+      </div>
+
+      {# Navigation interne #}
+      <nav class="ep-nav" aria-label="Espace privé">
+        <button class="ep-nav__item is-active" data-ep-nav="catalogue" type="button">Catalogue Exceptionnel</button>
+        <button class="ep-nav__item" data-ep-nav="order" type="button">Réserver une Pièce</button>
+        <button class="ep-nav__item" data-ep-nav="bespoke" type="button">Pièce Unique</button>
+      </nav>
+
+      {# ── Section 1 : Catalogue ── #}
+      <div class="ep-section is-active" id="ep-section-catalogue">
+        <div class="ep-catalogue">
+          <div class="ep-catalogue__header" data-tira-reveal>
+            <h2 class="ep-catalogue__title">Pièces d'Exception</h2>
+            <p class="ep-catalogue__sub">
+              {%- if ep_coll and ep_coll.products_count > 0 -%}
+                {{ ep_coll.products_count }} pièce{%- if ep_coll.products_count > 1 -%}s{%- endif -%} · accès exclusif
+              {%- else -%}
+                Catalogue en préparation
+              {%- endif -%}
+            </p>
+          </div>
+
+          {%- if ep_coll and ep_coll.products_count > 0 -%}
+            <div class="ep-catalogue__grid">
+              {%- for product in ep_coll.products -%}
+                {%- assign img = product.featured_image -%}
+                <a href="{{ product.url }}" class="ep-card" data-tira-reveal>
+                  {%- if img -%}
+                    <img class="ep-card__img"
+                         src="{{ img | image_url: width: 800 }}"
+                         srcset="{{ img | image_url: width: 500 }} 500w, {{ img | image_url: width: 800 }} 800w, {{ img | image_url: width: 1200 }} 1200w"
+                         sizes="(max-width: 768px) 50vw, 33vw"
+                         alt="{{ img.alt | default: product.title | escape }}"
+                         width="800" height="1067" loading="lazy">
+                  {%- else -%}
+                    <div style="width:100%;height:100%;background:#1a1a1a;"></div>
+                  {%- endif -%}
+                  <div class="ep-card__overlay">
+                    <p class="ep-card__ref">Pièce {{ forloop.index | prepend: '00' | slice: -3, 3 }} · {{ product.type | default: 'Maroquinerie' }}</p>
+                    <p class="ep-card__name">{{ product.title }}</p>
+                    <p class="ep-card__price">{{ product.price | money }}</p>
+                  </div>
+                  <div class="ep-card__always">
+                    <p class="ep-card__always-name">{{ product.title }}</p>
+                  </div>
+                </a>
+              {%- endfor -%}
+            </div>
+          {%- else -%}
+            <p class="ep-catalogue__empty">
+              Les pièces d'exception seront présentées ici lors des prochaines sélections.<br>
+              Votre conseiller vous contactera dès qu'une nouvelle pièce sera disponible.
+            </p>
+          {%- endif -%}
+        </div>
+      </div>
+
+      {# ── Section 2 : Réserver une pièce ── #}
+      <div class="ep-section" id="ep-section-order">
+        <div class="ep-order">
+          <div class="ep-order__header" data-tira-reveal>
+            <h2 class="ep-order__title">Réserver une Pièce</h2>
+            <p class="ep-order__sub">
+              Votre demande nous parvient directement. Nous constituons votre commande et vous adressons un lien de paiement sécurisé sous 24 heures.
+            </p>
+          </div>
+
+          {%- form 'contact' -%}
+            {%- if form.posted_successfully? -%}
+              <div class="ep-order__confirm is-visible">
+                <div class="ep-order__confirm-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                </div>
+                <p class="ep-order__confirm-title">Demande reçue</p>
+                <p class="ep-order__confirm-sub">
+                  Votre conseiller vous contactera sous 24 heures<br>avec un lien de paiement sécurisé.
+                </p>
+              </div>
+            {%- else -%}
+              <div id="ep-order-form">
+                <input type="hidden" name="contact[tags]" value="espace-prive,demande-piece">
+                <input class="ep-order__hidden" type="text" name="contact[body_prefix]"
+                       value="[ESPACE PRIVÉ] Demande de pièce de {{ customer.first_name }} {{ customer.last_name }} ({{ customer.email }})">
+
+                <div class="ep-order__grid">
+                  <div class="ep-order__group">
+                    <label class="ep-order__lbl" for="ep-order-name">Prénom Nom</label>
+                    <input class="ep-order__input" type="text" id="ep-order-name"
+                           name="contact[name]"
+                           value="{{ customer.first_name }} {{ customer.last_name }}"
+                           required>
+                  </div>
+                  <div class="ep-order__group">
+                    <label class="ep-order__lbl" for="ep-order-email">Email</label>
+                    <input class="ep-order__input" type="email" id="ep-order-email"
+                           name="contact[email]"
+                           value="{{ customer.email }}"
+                           required>
+                  </div>
+                  <div class="ep-order__group">
+                    <label class="ep-order__lbl" for="ep-order-model">Modèle souhaité</label>
+                    <select class="ep-order__select ep-order__input" id="ep-order-model" name="contact[model]">
+                      <option value="">Sélectionner un modèle</option>
+                      <option>La Victoire</option>
+                      <option>La Colette</option>
+                      <option>La Colette Mini</option>
+                      <option>Le Rafaël</option>
+                      <option>La Jane</option>
+                      <option>L'Olympe</option>
+                      {%- if ep_coll -%}
+                        {%- for product in ep_coll.products -%}
+                          <option>{{ product.title }} (Espace Privé)</option>
+                        {%- endfor -%}
+                      {%- endif -%}
+                      <option>Je ne sais pas encore</option>
+                    </select>
+                  </div>
+                  <div class="ep-order__group">
+                    <label class="ep-order__lbl" for="ep-order-matiere">Matière / Couleur</label>
+                    <input class="ep-order__input" type="text" id="ep-order-matiere"
+                           name="contact[matiere]"
+                           placeholder="Ex : cuir noir, veau grainé ivoire…">
+                  </div>
+                  <div class="ep-order__group">
+                    <label class="ep-order__lbl" for="ep-order-qty">Quantité</label>
+                    <select class="ep-order__select ep-order__input" id="ep-order-qty" name="contact[quantity]">
+                      <option value="1">1 pièce</option>
+                      <option value="2">2 pièces</option>
+                      <option value="3">3 pièces et plus</option>
+                    </select>
+                  </div>
+                  <div class="ep-order__group">
+                    <label class="ep-order__lbl" for="ep-order-phone">Téléphone (optionnel)</label>
+                    <input class="ep-order__input" type="tel" id="ep-order-phone"
+                           name="contact[phone]"
+                           placeholder="+33 6 …">
+                  </div>
+                  <div class="ep-order__group ep-order__group--full">
+                    <label class="ep-order__lbl" for="ep-order-body">Précisions, questions, usage prévu</label>
+                    <textarea class="ep-order__textarea" id="ep-order-body"
+                              name="contact[body]"
+                              placeholder="Dites-nous tout ce qui peut guider notre sélection pour vous…"></textarea>
+                  </div>
+                </div>
+                <button class="ep-order__submit" type="submit">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                    <polyline points="12 5 19 12 12 19"/>
+                  </svg>
+                  Envoyer ma demande
+                </button>
+              </div>
+            {%- endif -%}
+          {%- endform -%}
+        </div>
+
+        {# Concierge block #}
+        <div class="ep-concierge">
+          <div class="ep-concierge__text">
+            <p class="ep-concierge__eyebrow">Votre Conseiller Privé</p>
+            <h3 class="ep-concierge__title">Une réponse sous 24 heures,<br>toujours</h3>
+            <p class="ep-concierge__sub">
+              Votre conseiller dédié constitue votre commande, sélectionne la pièce en atelier et vous adresse un lien de paiement sécurisé. Aucune transaction en ligne — un échange direct, à votre rythme.
+            </p>
+          </div>
+          <div class="ep-concierge__actions">
+            <a class="ep-concierge__btn" href="mailto:privé@tiraboschi-paris.com">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                <rect x="2" y="4" width="20" height="16" rx="0"/>
+                <polyline points="2,4 12,13 22,4"/>
+              </svg>
+              Écrire à votre conseiller
+            </a>
+            <a class="ep-concierge__btn" href="https://wa.me/33600000000" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+              </svg>
+              WhatsApp Privé
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {# ── Section 3 : Pièce Unique Sur Mesure ── #}
+      <div class="ep-section" id="ep-section-bespoke">
+        <div class="ep-bespoke">
+          <div class="ep-bespoke__header" data-tira-reveal>
+            <p class="ep-bespoke__eyebrow">Création · Sur Mesure</p>
+            <h2 class="ep-bespoke__title">Concevoir votre Pièce Unique</h2>
+            <p class="ep-bespoke__desc">
+              Un seul artisan. Votre matière, votre forme, vos initiales. De la sélection du cuir à la remise en main propre : 12 à 16 semaines de création exclusive.
+            </p>
+          </div>
+
+          <div class="ep-bespoke__process">
+            <div class="ep-bespoke__step">
+              <div class="ep-bespoke__step-num">01</div>
+              <p class="ep-bespoke__step-name">Le Brief</p>
+              <p class="ep-bespoke__step-desc">Vous décrivez votre vision. Votre conseiller affine avec vous les détails en 1 à 2 échanges.</p>
+            </div>
+            <div class="ep-bespoke__step">
+              <div class="ep-bespoke__step-num">02</div>
+              <p class="ep-bespoke__step-name">La Sélection</p>
+              <p class="ep-bespoke__step-desc">Nous sélectionnons ensemble les cuirs, les fils, les ferrures — parfois depuis nos tanneries partenaires.</p>
+            </div>
+            <div class="ep-bespoke__step">
+              <div class="ep-bespoke__step-num">03</div>
+              <p class="ep-bespoke__step-name">La Création</p>
+              <p class="ep-bespoke__step-desc">Un artisan unique façonne votre pièce. Vous recevez des photos de progression à chaque étape clé.</p>
+            </div>
+            <div class="ep-bespoke__step">
+              <div class="ep-bespoke__step-num">04</div>
+              <p class="ep-bespoke__step-name">La Remise</p>
+              <p class="ep-bespoke__step-desc">Livraison en main propre à l'atelier ou à domicile, avec certificat et numéro de série gravé.</p>
+            </div>
+          </div>
+
+          {%- form 'contact' -%}
+            {%- if form.posted_successfully? -%}
+              <div class="ep-order__confirm is-visible">
+                <div class="ep-order__confirm-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                </div>
+                <p class="ep-order__confirm-title">Brief reçu</p>
+                <p class="ep-order__confirm-sub">
+                  Votre conseiller vous répond sous 48 heures<br>pour initier votre création.
+                </p>
+              </div>
+            {%- else -%}
+              <div class="ep-bespoke__configurator">
+                <input type="hidden" name="contact[tags]" value="espace-prive,sur-mesure">
+                <input class="ep-order__hidden" type="text" name="contact[body_prefix]"
+                       value="[ESPACE PRIVÉ · SUR MESURE] Brief de {{ customer.first_name }} {{ customer.last_name }} ({{ customer.email }})">
+
+                <div class="ep-order__group">
+                  <label class="ep-order__lbl" for="ep-bespoke-name">Prénom Nom</label>
+                  <input class="ep-order__input" type="text" id="ep-bespoke-name"
+                         name="contact[name]"
+                         value="{{ customer.first_name }} {{ customer.last_name }}" required>
+                </div>
+                <div class="ep-order__group">
+                  <label class="ep-order__lbl" for="ep-bespoke-email">Email</label>
+                  <input class="ep-order__input" type="email" id="ep-bespoke-email"
+                         name="contact[email]"
+                         value="{{ customer.email }}" required>
+                </div>
+                <div class="ep-order__group">
+                  <label class="ep-order__lbl" for="ep-bespoke-model">Modèle de base</label>
+                  <select class="ep-order__select ep-order__input" id="ep-bespoke-model" name="contact[modele_base]">
+                    <option value="">Modèle existant comme base…</option>
+                    <option>La Victoire — sac cabas structure</option>
+                    <option>La Colette — sac à main mi-grand</option>
+                    <option>Le Rafaël — pochette à glissière</option>
+                    <option>La Jane — tote souple</option>
+                    <option>L'Olympe — sac du soir</option>
+                    <option>Forme entièrement nouvelle</option>
+                  </select>
+                </div>
+                <div class="ep-order__group">
+                  <label class="ep-order__lbl" for="ep-bespoke-cuir">Matière souhaitée</label>
+                  <select class="ep-order__select ep-order__input" id="ep-bespoke-cuir" name="contact[matiere]">
+                    <option value="">Type de cuir…</option>
+                    <option>Veau pleine fleur — tannage végétal</option>
+                    <option>Box calf — finition lisse</option>
+                    <option>Agneau nappa — souple et soyeux</option>
+                    <option>Cuir grainé — robuste et structuré</option>
+                    <option>Exotique — python, galuchat, ostrich (sur disponibilité)</option>
+                    <option>Je souhaite un conseil</option>
+                  </select>
+                </div>
+                <div class="ep-order__group">
+                  <label class="ep-order__lbl" for="ep-bespoke-couleur">Couleur</label>
+                  <input class="ep-order__input" type="text" id="ep-bespoke-couleur"
+                         name="contact[couleur]"
+                         placeholder="Noir, camel, bordeaux, RAL…">
+                </div>
+                <div class="ep-order__group">
+                  <label class="ep-order__lbl" for="ep-bespoke-ferrure">Ferrures</label>
+                  <select class="ep-order__select ep-order__input" id="ep-bespoke-ferrure" name="contact[ferrures]">
+                    <option value="">Finition métal…</option>
+                    <option>Laiton naturel</option>
+                    <option>Laiton vieilli</option>
+                    <option>Argent palladié</option>
+                    <option>Or jaune 24k</option>
+                    <option>Sans ferrures</option>
+                  </select>
+                </div>
+                <div class="ep-order__group">
+                  <label class="ep-order__lbl" for="ep-bespoke-initiales">Initiales / Dorure</label>
+                  <input class="ep-order__input" type="text" id="ep-bespoke-initiales"
+                         name="contact[initiales]"
+                         placeholder="Ex : V.T. — gravure intérieure ou embossage">
+                </div>
+                <div class="ep-order__group">
+                  <label class="ep-order__lbl" for="ep-bespoke-budget">Budget indicatif</label>
+                  <select class="ep-order__select ep-order__input" id="ep-bespoke-budget" name="contact[budget]">
+                    <option value="">Enveloppe…</option>
+                    <option>3 000 – 6 000 €</option>
+                    <option>6 000 – 12 000 €</option>
+                    <option>12 000 – 25 000 €</option>
+                    <option>+ 25 000 € — pièce d'exception</option>
+                  </select>
+                </div>
+                <div class="ep-order__group ep-order__group--full">
+                  <label class="ep-order__lbl" for="ep-bespoke-vision">Votre vision</label>
+                  <textarea class="ep-order__textarea" id="ep-bespoke-vision"
+                            name="contact[body]"
+                            placeholder="Décrivez votre idée, l'usage, l'occasion, une référence visuelle, une contrainte de format… Tout ce qui peut guider l'artisan."></textarea>
+                </div>
+                <div class="ep-bespoke__cta-wrap">
+                  <button class="ep-bespoke__cta" type="submit">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                      <line x1="5" y1="12" x2="19" y2="12"/>
+                      <polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                    Envoyer mon brief
+                  </button>
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endform -%}
+        </div>
+      </div>
+
+    {%- else -%}
+      {# ════════════════════════════════════════════════════
+         CONNECTÉ — accès en cours de traitement
+         ════════════════════════════════════════════════════ #}
+      <div class="ep-pending" data-tira-dark-hero>
+        <div class="ep-pending__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <h1 class="ep-pending__title">Accès en cours de traitement</h1>
+        <p class="ep-pending__sub">
+          Votre demande a bien été reçue, {{ customer.first_name }}.<br>
+          Notre équipe valide votre accès à l'Espace Privé sous 48 heures et vous contacte directement.
+        </p>
+        <a class="ep-pending__cta" href="/pages/contact">Nous contacter →</a>
+      </div>
+    {%- endif -%}
+
+  {%- else -%}
+    {# ════════════════════════════════════════════════════
+       NON CONNECTÉ — porte d'entrée
+       ════════════════════════════════════════════════════ #}
+    <div class="ep-gate" data-tira-dark-hero>
+      <span class="ep-gate__filigree" aria-hidden="true">Privé</span>
+      <div class="ep-gate__content">
+        <p class="ep-gate__eyebrow">Espace Privé · TIRABOSCHI Paris</p>
+        <h1 class="ep-gate__title">Un espace<br>réservé à quelques-uns</h1>
+        <p class="ep-gate__sub">
+          Les pièces d'exception ne sont pas sur la boutique. Elles sont présentées — sur invitation — à nos clients les plus proches, au moment où elles naissent.
+        </p>
+        <div class="ep-gate__actions">
+          <a class="ep-gate__btn ep-gate__btn--solid" href="/account/login?return_url=/pages/espace-prive">
+            Se connecter
+          </a>
+          <span class="ep-gate__divider">ou</span>
+          <a class="ep-gate__link" href="#ep-request-section">Demander l'accès</a>
+        </div>
+      </div>
+    </div>
+
+    {# Formulaire demande d'accès #}
+    <div class="ep-request" id="ep-request-section">
+      <div class="ep-request__inner">
+        <p style="font-size:11px;text-transform:uppercase;letter-spacing:.18em;color:rgba(255,255,255,.4);margin-bottom:40px;">
+          Demander l'accès à l'Espace Privé
+        </p>
+        {%- form 'contact' -%}
+          {%- if form.posted_successfully? -%}
+            <div style="text-align:center;padding:40px 0;">
+              <p style="font-size:22px;font-style:italic;color:#fff;margin-bottom:12px;">Demande envoyée</p>
+              <p style="font-size:13px;color:rgba(255,255,255,.4);line-height:1.7;">Notre équipe revient vers vous sous 48 heures.</p>
+            </div>
+          {%- else -%}
+            <input type="hidden" name="contact[tags]" value="demande-acces-prive">
+            <label class="ep-request__label" for="ep-req-name">Votre nom</label>
+            <input class="ep-request__field" type="text" id="ep-req-name"
+                   name="contact[name]" required placeholder="Prénom Nom">
+
+            <label class="ep-request__label" for="ep-req-email">Email</label>
+            <input class="ep-request__field" type="email" id="ep-req-email"
+                   name="contact[email]" required placeholder="votre@email.com">
+
+            <label class="ep-request__label" for="ep-req-how">Comment nous connaissez-vous ?</label>
+            <select class="ep-request__field ep-request__select" id="ep-req-how" name="contact[source]">
+              <option value="">Sélectionner…</option>
+              <option>Recommandation d'un client</option>
+              <option>Presse / Magazine</option>
+              <option>Instagram @boschi_paris</option>
+              <option>Boutique / Atelier</option>
+              <option>Autre</option>
+            </select>
+
+            <label class="ep-request__label" for="ep-req-body">Votre message (optionnel)</label>
+            <textarea class="ep-request__field" id="ep-req-body"
+                      name="contact[body]"
+                      rows="4"
+                      placeholder="Dites-nous ce qui vous attire dans TIRABOSCHI…"></textarea>
+
+            <button class="ep-request__btn" type="submit">Envoyer ma demande →</button>
+            <p class="ep-request__note">Réponse sous 48h · Aucune obligation d'achat</p>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+    </div>
+
+  {%- endif -%}
+</div>
+
+<script>
+(function() {
+  /* ── Navigation interne portail ── */
+  var navBtns = document.querySelectorAll('[data-ep-nav]');
+  if (!navBtns.length) return;
+
+  navBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var target = btn.getAttribute('data-ep-nav');
+      navBtns.forEach(function(b) { b.classList.remove('is-active'); });
+      btn.classList.add('is-active');
+      document.querySelectorAll('.ep-section').forEach(function(s) { s.classList.remove('is-active'); });
+      var sec = document.getElementById('ep-section-' + target);
+      if (sec) {
+        sec.classList.add('is-active');
+        sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  /* ── Scroll anchor pour "Demander l'accès" ── */
+  var anchor = document.querySelector('a[href="#ep-request-section"]');
+  if (anchor) {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      var target = document.getElementById('ep-request-section');
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
+  /* ── dark-hero ── */
+  if (document.querySelector('[data-tira-dark-hero]')) {
+    var hdr = document.getElementById('shopify-section-tira-header');
+    if (hdr) {
+      var inner = hdr.querySelector('.hdr');
+      if (inner) { inner.classList.add('hdr--dark-hero'); }
+    }
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Espace Privé",
+  "tag": "section",
+  "class": "tira-section tira-section--full tira-section--dark",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Espace Privé TIRABOSCHI"
+    }
+  ]
+}
+{% endschema %}

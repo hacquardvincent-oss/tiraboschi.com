@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "tira-espace-prive": {
+      "type": "tira-espace-prive",
+      "settings": {}
+    }
+  },
+  "order": ["tira-espace-prive"]
+}
