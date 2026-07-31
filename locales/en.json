@@ -3,7 +3,6 @@
   "_version": "1.0.0",
   "_date": "2026-05-26",
   "_note": "Human review required for all editorial content (Histoire, Savoir-Faire, Matières pages)",
-
   "general": {
     "accessibility": {
       "close": "Close",
@@ -17,23 +16,21 @@
     "currency": {
       "includes_tax": "incl. VAT",
       "excludes_tax": "excl. VAT"
-    }
+    },
+    "navigation": "Main navigation"
   },
-
   "localization": {
     "country_label": "Country / Region",
     "language_label": "Language",
     "submit": "Apply",
     "switch_currency": "Switch currency"
   },
-
   "geo": {
     "suggestion": "You appear to be browsing from another country.",
     "switch": "Continue in {currency} {symbol}",
     "stay": "Stay in € EUR",
     "dismiss_label": "Dismiss suggestion"
   },
-
   "header": {
     "search_placeholder": "Search a bag, a material...",
     "cart_count": {
@@ -42,7 +39,6 @@
     },
     "menu": "Menu"
   },
-
   "products": {
     "product": {
       "add_to_cart": "Add to bag",
@@ -79,7 +75,6 @@
       }
     }
   },
-
   "cart": {
     "title": "My bag",
     "empty": "Your bag is empty.",
@@ -93,7 +88,6 @@
       "other": "{{ count }} items"
     }
   },
-
   "checkout": {
     "contact": "Contact",
     "email_placeholder": "Your email address",
@@ -106,7 +100,6 @@
     "shipping_free": "Complimentary shipping",
     "shipping_calculated": "Calculated at next step"
   },
-
   "shipping": {
     "free": "Complimentary shipping",
     "free_threshold": "Complimentary shipping on orders over {amount}",
@@ -116,7 +109,6 @@
     "express": "Express delivery",
     "international": "DHL Express International"
   },
-
   "customer": {
     "login": "Sign in",
     "logout": "Sign out",
@@ -130,7 +122,6 @@
     "email_placeholder": "Your email address",
     "forgot_password": "Forgot your password?"
   },
-
   "la_societe": {
     "title": "La Société",
     "join": "Join La Société",
@@ -140,7 +131,6 @@
     "privileges": "Your privileges",
     "welcome": "Welcome to La Société"
   },
-
   "newsletter": {
     "title": "Enter the confidence",
     "subtitle": "News, first access to launches and behind the scenes of our atelier.",
@@ -150,7 +140,6 @@
     "error": "An error occurred. Please try again.",
     "legal": "Your data remains private. Unsubscribe in one click."
   },
-
   "sections": {
     "marquee": {
       "text": "Made in France, Only. · Since 1904 · Luxury Leather Goods · Paris · Handcrafted"
@@ -170,9 +159,11 @@
     },
     "sur_mesure": {
       "cta": "Book an appointment"
+    },
+    "collection_template": {
+      "empty": "No pieces available at the moment."
     }
   },
-
   "pages": {
     "histoire": {
       "title": "Our Story",
@@ -209,7 +200,6 @@
       "cta": "Return to home"
     }
   },
-
   "preorder": {
     "label": "Pre-order",
     "drop_bar_label": "Active drop announcement",
@@ -242,7 +232,6 @@
       "a3": "Delivery is estimated 4 to 6 weeks after closing. You will receive a tracking email as soon as your order ships."
     }
   },
-
   "accessibility": {
     "product_card_link": "View {{ title }}",
     "collection_card_link": "View the {{ title }} collection",

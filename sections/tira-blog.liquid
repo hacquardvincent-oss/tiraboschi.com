@@ -41,6 +41,11 @@
           <a href="{{ article.url }}" class="tira-blog__card-link">Lire →</a>
         </div>
       </article>
+    {%- else -%}
+      {%- comment -%} Sans ce bloc, un blog vide affichait l'en-tête suivi d'une grille vide {%- endcomment -%}
+      <p class="tira-empty">
+        Les premiers récits de l'Atelier seront publiés prochainement.
+      </p>
     {%- endfor -%}
   </div>
 

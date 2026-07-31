@@ -3,7 +3,6 @@
   "_version": "1.0.0",
   "_date": "2026-05-26",
   "_note": "Professional native translation MANDATORY before launch — this is draft only. RTL support required.",
-
   "general": {
     "accessibility": {
       "close": "إغلاق",
@@ -17,23 +16,21 @@
     "currency": {
       "includes_tax": "شامل الضريبة",
       "excludes_tax": "غير شامل الضريبة"
-    }
+    },
+    "navigation": "التنقل الرئيسي"
   },
-
   "localization": {
     "country_label": "الدولة / المنطقة",
     "language_label": "اللغة",
     "submit": "تطبيق",
     "switch_currency": "تغيير العملة"
   },
-
   "geo": {
     "suggestion": "يبدو أنك تتصفح من منطقة الشرق الأوسط.",
     "switch": "متابعة بالدولار الأمريكي ←",
     "stay": "البقاء باليورو",
     "dismiss_label": "تجاهل الاقتراح"
   },
-
   "header": {
     "search_placeholder": "ابحث عن حقيبة أو مادة...",
     "cart_count": {
@@ -42,7 +39,6 @@
     },
     "menu": "القائمة"
   },
-
   "products": {
     "product": {
       "add_to_cart": "أضف إلى الحقيبة",
@@ -65,7 +61,6 @@
       "clear_all": "مسح الكل"
     }
   },
-
   "cart": {
     "title": "حقيبتي",
     "empty": "حقيبتك فارغة.",
@@ -75,7 +70,6 @@
     "taxes_notice": "تحسب الضرائب والشحن عند الدفع",
     "remove_item": "إزالة هذا المنتج"
   },
-
   "checkout": {
     "contact": "معلومات الاتصال",
     "email_placeholder": "بريدك الإلكتروني",
@@ -86,13 +80,11 @@
     "payment": "الدفع",
     "summary": "ملخص الطلب"
   },
-
   "shipping": {
     "free": "شحن مجاني",
     "included": "الشحن مشمول",
     "worldwide": "الشحن الدولي متاح"
   },
-
   "customer": {
     "login": "تسجيل الدخول",
     "logout": "تسجيل الخروج",
@@ -102,13 +94,11 @@
     "la_societe": "La Société",
     "forgot_password": "نسيت كلمة المرور؟"
   },
-
   "la_societe": {
     "title": "La Société",
     "join": "انضم إلى La Société",
     "privileges": "امتيازاتك"
   },
-
   "newsletter": {
     "title": "انضم إلى دائرة الثقة",
     "subtitle": "أخبار حصرية، وصول مبكر إلى المجموعات الجديدة وكواليس الورشة.",
@@ -117,7 +107,6 @@
     "success": "شكرًا لثقتك.",
     "error": "حدث خطأ. يرجى المحاولة مرة أخرى."
   },
-
   "sections": {
     "marquee": {
       "text": "صُنع في فرنسا حصرًا · منذ 1904 · مصنوعات جلدية فاخرة · باريس · مصنوع يدويًا"
@@ -130,9 +119,11 @@
     },
     "sur_mesure": {
       "cta": "احجز موعدًا"
+    },
+    "collection_template": {
+      "empty": "لا توجد قطع متاحة حالياً."
     }
   },
-
   "pages": {
     "histoire": {
       "title": "قصتنا",

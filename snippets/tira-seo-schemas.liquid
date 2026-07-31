@@ -233,10 +233,15 @@
       "url": "{{ shop.url }}",
       "address": {
         "@type": "PostalAddress",
+        "streetAddress": "96 avenue de Clichy",
+        "postalCode": "75017",
         "addressLocality": "Paris",
+        "addressRegion": "Île-de-France",
         "addressCountry": "FR"
       },
+      {%- if shop.phone != blank -%}
       "telephone": "{{ shop.phone }}",
+      {%- endif -%}
       "email": "{{ shop.email }}",
       "openingHoursSpecification": [
         {
@@ -247,7 +252,6 @@
         }
       ],
       "priceRange": "€€€€",
-      "servesCuisine": null,
       "currenciesAccepted": "EUR",
       "paymentAccepted": "Carte bancaire, virement"
     },

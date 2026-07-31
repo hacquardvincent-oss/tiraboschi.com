@@ -3,7 +3,6 @@
   "_version": "1.0.0",
   "_date": "2026-05-26",
   "_note": "Professional translation required — this is machine-translated draft only",
-
   "general": {
     "accessibility": {
       "close": "閉じる",
@@ -17,23 +16,21 @@
     "currency": {
       "includes_tax": "税込",
       "excludes_tax": "税抜"
-    }
+    },
+    "navigation": "メインナビゲーション"
   },
-
   "localization": {
     "country_label": "国 / 地域",
     "language_label": "言語",
     "submit": "適用する",
     "switch_currency": "通貨を変更"
   },
-
   "geo": {
     "suggestion": "日本からアクセスされているようです。",
     "switch": "{symbol}（{currency}）で続ける →",
     "stay": "€ EURのまま続ける",
     "dismiss_label": "提案を閉じる"
   },
-
   "header": {
     "search_placeholder": "バッグ、素材を検索...",
     "cart_count": {
@@ -42,7 +39,6 @@
     },
     "menu": "メニュー"
   },
-
   "products": {
     "product": {
       "add_to_cart": "カートに追加",
@@ -69,7 +65,6 @@
       }
     }
   },
-
   "cart": {
     "title": "カート",
     "empty": "カートは空です。",
@@ -79,7 +74,6 @@
     "taxes_notice": "税・送料はお支払い時に計算されます",
     "remove_item": "削除"
   },
-
   "checkout": {
     "contact": "お客様情報",
     "email_placeholder": "メールアドレス",
@@ -90,13 +84,11 @@
     "payment": "お支払い",
     "summary": "注文内容"
   },
-
   "shipping": {
     "free": "送料無料",
     "included": "送料込み",
     "worldwide": "国際配送対応"
   },
-
   "customer": {
     "login": "ログイン",
     "logout": "ログアウト",
@@ -106,13 +98,11 @@
     "la_societe": "La Société",
     "forgot_password": "パスワードをお忘れですか？"
   },
-
   "la_societe": {
     "title": "La Société",
     "join": "ラ・ソシエテに参加する",
     "privileges": "あなたの特典"
   },
-
   "newsletter": {
     "title": "インサイダーになる",
     "subtitle": "新コレクションの先行アクセスとアトリエの舞台裏をお届けします。",
@@ -121,7 +111,6 @@
     "success": "ご登録ありがとうございます。",
     "error": "エラーが発生しました。再度お試しください。"
   },
-
   "sections": {
     "marquee": {
       "text": "Made in France, Only. · Since 1904 · 高級革製品 · パリ · 手作り"
@@ -134,9 +123,11 @@
     },
     "sur_mesure": {
       "cta": "予約する"
+    },
+    "collection_template": {
+      "empty": "現在ご紹介できる作品はございません。"
     }
   },
-
   "pages": {
     "histoire": {
       "title": "私たちの歴史",
