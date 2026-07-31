@@ -6,6 +6,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <link rel="canonical" href="{{ canonical_url }}">
+
+    {%- comment -%}
+      L'Espace Privé ne doit jamais être indexé ni apparaître dans les
+      résultats de recherche : c'est un espace sur invitation.
+    {%- endcomment -%}
+    {%- if page.handle == 'espace-prive' -%}
+      <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+    {%- endif -%}
     <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
