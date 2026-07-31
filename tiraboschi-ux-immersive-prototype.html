@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TIRABOSCHI — UX Immersive · Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════
+   TIRABOSCHI Paris — Prototype UX immersive
+   Charte respectée : Playfair 400, 0px radius, 1px borders,
+   #0a0a0a / #ffffff / #f7f5f2 / #e8e8e8
+   Visuels : photos réelles déjà en ligne sur le CDN Shopify
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  --tira-black:  #0a0a0a;
+  --tira-white:  #ffffff;
+  --tira-grey:   #f7f5f2;
+  --tira-border: #e8e8e8;
+  --tira-ease:   cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 400;
+  color: var(--tira-black);
+  background: var(--tira-white);
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* ── Repères de démo (retirés à l'intégration) ── */
+.demo-tag {
+  position: fixed; left: 0; top: 50%;
+  transform: translateY(-50%) rotate(180deg);
+  writing-mode: vertical-rl;
+  font-size: 9px; letter-spacing: .3em; text-transform: uppercase;
+  padding: 20px 8px; opacity: .3; z-index: 500;
+  pointer-events: none; mix-blend-mode: difference; color: #fff;
+}
+
+.marker {
+  padding: 120px 6vw 40px;
+  border-top: 1px solid var(--tira-border);
+}
+.marker__num {
+  font-size: 10px; letter-spacing: .3em; text-transform: uppercase;
+  opacity: .3; margin-bottom: 24px;
+}
+.marker__title {
+  font-size: clamp(30px, 4.5vw, 52px); line-height: 1; letter-spacing: -.02em;
+  margin-bottom: 18px;
+}
+.marker__title em { font-style: italic; }
+.marker__desc {
+  font-size: 13px; line-height: 1.8; opacity: .5; max-width: 560px;
+}
+.marker__desc strong { font-weight: 400; opacity: 1; font-style: italic; }
+
+/* ═══════════════════════════════════════════════════════════
+   1 · OUVERTURE — tracé du V
+   ═══════════════════════════════════════════════════════════ */
+#splash {
+  position: fixed; inset: 0; z-index: 10000;
+  background: var(--tira-black);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 32px;
+  transition: opacity .8s var(--tira-ease), visibility .8s;
+}
+#splash.done { opacity: 0; visibility: hidden; pointer-events: none; }
+#splash svg { width: 92px; height: 92px; overflow: visible; }
+#splash path {
+  fill: none; stroke: #fff; stroke-width: 1.25;
+  stroke-linecap: square; stroke-linejoin: miter;
+  stroke-dasharray: 300; stroke-dashoffset: 300;
+  animation: draw 1.5s var(--tira-ease) forwards;
+}
+@keyframes draw { to { stroke-dashoffset: 0; } }
+#splash .wordmark {
+  font-size: 10px; letter-spacing: .42em; text-transform: uppercase;
+  color: #fff; opacity: 0;
+  animation: fadeUp .9s var(--tira-ease) .9s forwards;
+}
+@keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: .55; transform: none; } }
+
+/* ═══════════════════════════════════════════════════════════
+   2 · GRILLE → FICHE : transition morphée (View Transitions)
+   ═══════════════════════════════════════════════════════════ */
+.stage { position: relative; min-height: 100vh; }
+
+.grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px;
+  padding: 0 6vw 120px;
+}
+.card { cursor: pointer; background: var(--tira-grey); }
+.card__media { position: relative; aspect-ratio: 3/4; overflow: hidden; }
+.card__media img { transition: transform 1.1s var(--tira-ease); }
+.card:hover .card__media img { transform: scale(1.03); }
+.card__info { padding: 18px 2px 0; }
+.card__type {
+  font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
+  opacity: .32; margin-bottom: 7px;
+}
+.card__name { font-size: 15px; letter-spacing: -.005em; }
+.card__price {
+  font-size: 10px; letter-spacing: .16em; text-transform: uppercase;
+  opacity: .3; margin-top: 6px;
+}
+
+/* Vue fiche produit */
+.pdp {
+  position: fixed; inset: 0; z-index: 900;
+  background: var(--tira-white);
+  display: none; grid-template-columns: 1fr 1fr;
+  overflow-y: auto;
+}
+.pdp.open { display: grid; }
+.pdp__media { position: relative; height: 100vh; background: var(--tira-grey); }
+.pdp__panel {
+  padding: 8vh 5vw; display: flex; flex-direction: column;
+  justify-content: center; position: relative;
+}
+.pdp__ref {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
+  opacity: .3; margin-bottom: 40px;
+}
+.pdp__back {
+  background: none; border: none; cursor: pointer;
+  font-family: inherit; font-size: 10px;
+  letter-spacing: .18em; text-transform: uppercase;
+  text-decoration: underline; text-underline-offset: 4px;
+  color: inherit; opacity: .55; transition: opacity .25s;
+}
+.pdp__back:hover { opacity: 1; }
+.pdp__name {
+  font-size: clamp(42px, 5vw, 72px); line-height: .92;
+  letter-spacing: -.025em; margin-bottom: 22px;
+}
+.pdp__desc {
+  font-size: 13px; line-height: 1.85; opacity: .55;
+  max-width: 42ch; margin-bottom: 44px;
+}
+.pdp__meta {
+  display: flex; gap: 48px; padding-top: 28px;
+  border-top: 1px solid var(--tira-border);
+}
+.pdp__meta-item { }
+.pdp__meta-label {
+  font-size: 9px; letter-spacing: .2em; text-transform: uppercase;
+  opacity: .3; margin-bottom: 8px;
+}
+.pdp__meta-val { font-size: 13px; font-style: italic; opacity: .75; }
+
+/* Le morphing lui-même : deux noms qui se correspondent d'une vue à l'autre */
+.card__media.is-morphing { view-transition-name: piece-media; }
+.pdp.open .pdp__media    { view-transition-name: piece-media; }
+
+::view-transition-old(piece-media),
+::view-transition-new(piece-media) {
+  mix-blend-mode: normal;
+  animation-duration: .78s;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+::view-transition-group(piece-media) { animation-duration: .78s; }
+::view-transition-old(root) { animation: fadeOut .34s var(--tira-ease) forwards; }
+::view-transition-new(root) { animation: fadeIn  .5s  var(--tira-ease) .1s backwards; }
+@keyframes fadeOut { to { opacity: 0; } }
+@keyframes fadeIn  { from { opacity: 0; } }
+
+.no-vt-note {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 950;
+  background: var(--tira-black); color: #fff;
+  font-size: 10px; letter-spacing: .16em; text-transform: uppercase;
+  padding: 12px 6vw; text-align: center; display: none;
+}
+.no-vt .no-vt-note { display: block; }
+
+/* ═══════════════════════════════════════════════════════════
+   3 · LE GESTE — scrub au scroll sur les visuels existants
+   ═══════════════════════════════════════════════════════════ */
+.scrub { position: relative; height: 380vh; background: var(--tira-black); }
+.scrub__sticky {
+  position: sticky; top: 0; height: 100vh;
+  overflow: hidden; display: flex;
+  align-items: center; justify-content: center;
+}
+.scrub__frames { position: absolute; inset: 0; }
+.scrub__frame {
+  position: absolute; inset: 0;
+  opacity: 0; transition: opacity .12s linear;
+}
+.scrub__frame img { opacity: .82; }
+.scrub__frame.on { opacity: 1; }
+
+.scrub__veil {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(10,10,10,.82) 0%, rgba(10,10,10,.15) 55%, rgba(10,10,10,.4) 100%);
+}
+.scrub__copy {
+  position: relative; z-index: 2; text-align: center;
+  color: #fff; padding: 0 6vw; max-width: 780px;
+}
+.scrub__eyebrow {
+  font-size: 10px; letter-spacing: .32em; text-transform: uppercase;
+  opacity: .4; margin-bottom: 26px;
+}
+.scrub__line {
+  font-size: clamp(30px, 5vw, 62px); line-height: 1.08;
+  letter-spacing: -.02em; font-style: italic;
+  min-height: 2.2em;
+}
+.scrub__line span {
+  display: inline-block; opacity: 0;
+  transform: translateY(12px);
+  transition: opacity .55s var(--tira-ease), transform .55s var(--tira-ease);
+}
+.scrub__line span.on { opacity: 1; transform: none; }
+
+.scrub__progress {
+  position: absolute; bottom: 7vh; left: 50%;
+  transform: translateX(-50%);
+  width: 190px; height: 1px;
+  background: rgba(255,255,255,.16); z-index: 2;
+}
+.scrub__progress i {
+  display: block; height: 100%; width: 0;
+  background: rgba(255,255,255,.85);
+}
+.scrub__count {
+  position: absolute; bottom: calc(7vh + 22px); left: 50%;
+  transform: translateX(-50%); z-index: 2;
+  font-size: 9px; letter-spacing: .28em; color: #fff; opacity: .32;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   4 · CHAPITRAGE ÉDITORIAL — section épinglée
+   ═══════════════════════════════════════════════════════════ */
+.chapters { position: relative; height: 420vh; background: var(--tira-grey); }
+.chapters__sticky {
+  position: sticky; top: 0; height: 100vh;
+  display: grid; grid-template-columns: 1fr 1fr; align-items: stretch;
+}
+.chapters__visual { position: relative; overflow: hidden; background: var(--tira-black); }
+.chapters__img {
+  position: absolute; inset: 0;
+  opacity: 0; transform: scale(1.06);
+  transition: opacity 1s var(--tira-ease), transform 1.4s var(--tira-ease);
+}
+.chapters__img.on { opacity: 1; transform: scale(1); }
+
+.chapters__text {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 6vw; position: relative;
+}
+.chapters__index {
+  display: flex; gap: 12px; margin-bottom: 52px;
+}
+.chapters__tick {
+  width: 30px; height: 1px; background: var(--tira-black);
+  opacity: .13; transition: opacity .5s var(--tira-ease);
+}
+.chapters__tick.on { opacity: 1; }
+
+.chapter { position: absolute; left: 6vw; right: 6vw; opacity: 0; pointer-events: none;
+  transform: translateY(18px);
+  transition: opacity .65s var(--tira-ease), transform .65s var(--tira-ease); }
+.chapter.on { opacity: 1; transform: none; pointer-events: auto; position: relative; }
+.chapter__num {
+  font-size: 10px; letter-spacing: .3em; text-transform: uppercase;
+  opacity: .32; margin-bottom: 22px;
+}
+.chapter__title {
+  font-size: clamp(30px, 3.6vw, 50px); line-height: 1.02;
+  letter-spacing: -.02em; margin-bottom: 24px;
+}
+.chapter__title em { font-style: italic; }
+.chapter__body {
+  font-size: 13px; line-height: 1.9; opacity: .55; max-width: 46ch;
+}
+.chapter__fact {
+  margin-top: 34px; padding-top: 22px;
+  border-top: 1px solid var(--tira-border);
+  font-size: 11px; letter-spacing: .16em; text-transform: uppercase; opacity: .4;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Clôture
+   ═══════════════════════════════════════════════════════════ */
+.outro {
+  background: var(--tira-black); color: #fff;
+  padding: 20vh 6vw; text-align: center;
+}
+.outro__title {
+  font-size: clamp(28px, 4vw, 54px); font-style: italic;
+  letter-spacing: -.02em; margin-bottom: 26px;
+}
+.outro__sub { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; opacity: .35; }
+
+/* ═══════════════════════════════════════════════════════════
+   Responsive — 70% du trafic est mobile
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .grid { grid-template-columns: 1fr 1fr; gap: 2px; padding: 0 4vw 80px; }
+  .marker { padding: 80px 5vw 32px; }
+
+  .pdp { grid-template-columns: 1fr; }
+  .pdp__media { height: 62vh; }
+  .pdp__panel { padding: 44px 6vw 80px; }
+  .pdp__meta { flex-direction: column; gap: 26px; }
+
+  /* Le scrub coûte trop cher en data : image fixe sur mobile */
+  .scrub { height: 150vh; }
+  .scrub__frame:not(:first-child) { display: none; }
+  .scrub__frame:first-child { opacity: 1; }
+
+  .chapters { height: 400vh; }
+  .chapters__sticky { grid-template-columns: 1fr; grid-template-rows: 42vh 1fr; }
+  .chapters__text { padding: 40px 6vw; justify-content: flex-start; }
+  .chapter { left: 6vw; right: 6vw; }
+  .demo-tag { display: none; }
+}
+
+/* Respect strict de la préférence système */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+  #splash { display: none; }
+  .scrub { height: auto; }
+  .scrub__sticky { position: relative; height: 78vh; }
+  .chapters { height: auto; }
+  .chapters__sticky { position: relative; height: auto; }
+  .chapter { position: relative; opacity: 1; transform: none; margin-bottom: 60px; }
+  .chapters__img { position: relative; opacity: 1; transform: none; height: 46vh; }
+  .scrub__line span { opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+
+<span class="demo-tag">Prototype · TIRABOSCHI Paris</span>
+
+<!-- ═══ 1 · OUVERTURE ═══ -->
+<div id="splash">
+  <svg viewBox="0 0 100 100" aria-hidden="true">
+    <path d="M18 26 L50 78 L82 26"/>
+  </svg>
+  <p class="wordmark">Tiraboschi · Paris</p>
+</div>
+
+<!-- ═══ 2 · GRILLE → FICHE ═══ -->
+<section class="marker">
+  <p class="marker__num">Moment 01</p>
+  <h2 class="marker__title">La transition <em>morphée</em></h2>
+  <p class="marker__desc">
+    Cliquez une pièce. L'image ne disparaît pas pour être remplacée : elle
+    <strong>se déplace et grandit</strong> jusqu'à devenir le visuel de la fiche.
+    C'est ce qui donne la sensation d'application native chez Louis&nbsp;Vuitton et Miu&nbsp;Miu —
+    et c'est le seul moment de cette page qui ne demande aucun nouvel asset.
+  </p>
+</section>
+
+<div class="stage">
+  <div class="grid" id="grid">
+    <article class="card" data-piece="victoire">
+      <div class="card__media">
+        <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/28092025-DSCF1828.jpg" alt="La Victoire">
+      </div>
+      <div class="card__info">
+        <p class="card__type">Sac à main</p>
+        <p class="card__name">La Victoire</p>
+        <p class="card__price">Prix sur demande</p>
+      </div>
+    </article>
+
+    <article class="card" data-piece="colette">
+      <div class="card__media">
+        <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0919.jpg" alt="La Colette">
+      </div>
+      <div class="card__info">
+        <p class="card__type">Sac à main</p>
+        <p class="card__name">La Colette</p>
+        <p class="card__price">Prix sur demande</p>
+      </div>
+    </article>
+
+    <article class="card" data-piece="rafael">
+      <div class="card__media">
+        <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0154.jpg" alt="Le Rafaël">
+      </div>
+      <div class="card__info">
+        <p class="card__type">Pochette</p>
+        <p class="card__name">Le Rafaël</p>
+        <p class="card__price">Prix sur demande</p>
+      </div>
+    </article>
+  </div>
+</div>
+
+<!-- Fiche produit (overlay) -->
+<div class="pdp" id="pdp" role="dialog" aria-modal="true" aria-label="Fiche produit">
+  <div class="pdp__media"><img id="pdpImg" src="" alt=""></div>
+  <div class="pdp__panel">
+    <div class="pdp__ref">
+      <button class="pdp__back" id="pdpBack">← Collection</button>
+      <span id="pdpRef">FW25 · 001</span>
+    </div>
+    <h1 class="pdp__name" id="pdpName">La Victoire</h1>
+    <p class="pdp__desc" id="pdpDesc"></p>
+    <div class="pdp__meta">
+      <div class="pdp__meta-item">
+        <p class="pdp__meta-label">Fabrication</p>
+        <p class="pdp__meta-val">Un seul artisan</p>
+      </div>
+      <div class="pdp__meta-item">
+        <p class="pdp__meta-label">Couture</p>
+        <p class="pdp__meta-val">3 400 points sellier</p>
+      </div>
+      <div class="pdp__meta-item">
+        <p class="pdp__meta-label">Atelier</p>
+        <p class="pdp__meta-val">Paris, 48–72 h</p>
+      </div>
+    </div>
+  </div>
+</div>
+<p class="no-vt-note">Votre navigateur ne prend pas encore en charge la transition morphée — repli en fondu, sans rupture.</p>
+
+<!-- ═══ 3 · LE GESTE ═══ -->
+<section class="marker">
+  <p class="marker__num">Moment 02</p>
+  <h2 class="marker__title">Le <em>geste</em>, révélé au scroll</h2>
+  <p class="marker__desc">
+    Le principe d'Audemars&nbsp;Piguet : le scroll ne fait pas défiler la page, il
+    <strong>déroule un geste</strong>. Cette démonstration enchaîne vos photos d'atelier
+    existantes — la version définitive demandera une prise de vue en séquence,
+    seule dépendance non logicielle de tout ce document.
+  </p>
+</section>
+
+<section class="scrub" id="scrub">
+  <div class="scrub__sticky">
+    <div class="scrub__frames" id="frames">
+      <div class="scrub__frame on"><img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0919.jpg" alt=""></div>
+      <div class="scrub__frame"><img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Asset_Mains_1.png" alt=""></div>
+      <div class="scrub__frame"><img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Asset_atelier_1.png" alt=""></div>
+      <div class="scrub__frame"><img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0154.jpg" alt=""></div>
+      <div class="scrub__frame"><img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Asset_Atelier_6.png" alt=""></div>
+      <div class="scrub__frame"><img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/28092025-DSCF1828.jpg" alt=""></div>
+    </div>
+    <div class="scrub__veil"></div>
+
+    <div class="scrub__copy">
+      <p class="scrub__eyebrow">Savoir-faire · depuis 1904</p>
+      <p class="scrub__line" id="scrubLine"></p>
+    </div>
+
+    <p class="scrub__count" id="scrubCount">01 / 06</p>
+    <div class="scrub__progress"><i id="scrubBar"></i></div>
+  </div>
+</section>
+
+<!-- ═══ 4 · CHAPITRAGE ═══ -->
+<section class="marker">
+  <p class="marker__num">Moment 03</p>
+  <h2 class="marker__title">Le chapitrage <em>éditorial</em></h2>
+  <p class="marker__desc">
+    L'image reste, le texte progresse. La structure des pages collection d'Audemars&nbsp;Piguet,
+    appliquée à Savoir-Faire : <strong>vos 700 mots deviennent un récit</strong> au lieu
+    d'un bloc qu'on survole.
+  </p>
+</section>
+
+<section class="chapters" id="chapters">
+  <div class="chapters__sticky">
+    <div class="chapters__visual">
+      <div class="chapters__img on"><img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Asset_atelier_1.png" alt=""></div>
+      <div class="chapters__img"><img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Asset_Mains_1.png" alt=""></div>
+      <div class="chapters__img"><img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0919.jpg" alt=""></div>
+      <div class="chapters__img"><img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Asset_Atelier_6.png" alt=""></div>
+    </div>
+
+    <div class="chapters__text">
+      <div class="chapters__index" id="ticks">
+        <span class="chapters__tick on"></span>
+        <span class="chapters__tick"></span>
+        <span class="chapters__tick"></span>
+        <span class="chapters__tick"></span>
+      </div>
+
+      <article class="chapter on">
+        <p class="chapter__num">Chapitre I</p>
+        <h3 class="chapter__title">Le choix de la <em>peau</em></h3>
+        <p class="chapter__body">
+          Tout commence par un refus. Sur dix peaux présentées par nos tanneries,
+          deux sont retenues. Le grain doit être régulier sans être uniforme —
+          une peau parfaite est une peau morte.
+        </p>
+        <p class="chapter__fact">Tannage végétal · 6 semaines</p>
+      </article>
+
+      <article class="chapter">
+        <p class="chapter__num">Chapitre II</p>
+        <h3 class="chapter__title">La coupe, <em>sans retour</em></h3>
+        <p class="chapter__body">
+          Le tranchet ne pardonne pas. Chaque pièce est placée en lisant le sens
+          des fibres, pour que le sac vieillisse droit. Une erreur ici, et la peau
+          entière repart.
+        </p>
+        <p class="chapter__fact">Un artisan · une pièce · de A à Z</p>
+      </article>
+
+      <article class="chapter">
+        <p class="chapter__num">Chapitre III</p>
+        <h3 class="chapter__title">Le point <em>sellier</em></h3>
+        <p class="chapter__body">
+          Deux aiguilles, un fil, huit points au centimètre. Le point sellier ne se
+          défait pas : si un fil cède, les autres tiennent. C'est plus lent qu'une
+          machine, et c'est tout l'intérêt.
+        </p>
+        <p class="chapter__fact">3 400 points par sac</p>
+      </article>
+
+      <article class="chapter">
+        <p class="chapter__num">Chapitre IV</p>
+        <h3 class="chapter__title">La <em>signature</em></h3>
+        <p class="chapter__body">
+          Quarante-huit à soixante-douze heures après la première découpe, l'artisan
+          grave son initiale à l'intérieur. La pièce porte le nom de la maison
+          au-dehors, et le sien au-dedans.
+        </p>
+        <p class="chapter__fact">Made in France, Only.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="outro">
+  <p class="outro__title">Trois moments, pas trois cents.</p>
+  <p class="outro__sub">La retenue est le luxe</p>
+</section>
+
+<script>
+(function () {
+  'use strict';
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var isMobile = window.matchMedia('(max-width: 900px)').matches;
+
+  /* ── 1 · Ouverture ───────────────────────────────────── */
+  var splash = document.getElementById('splash');
+  if (reduced || sessionStorage.getItem('tira_splash')) {
+    splash.remove();
+  } else {
+    setTimeout(function () {
+      splash.classList.add('done');
+      sessionStorage.setItem('tira_splash', '1');
+      setTimeout(function () { splash.remove(); }, 900);
+    }, 2000);
+  }
+
+  /* ── 2 · Transition morphée ──────────────────────────── */
+  var PIECES = {
+    victoire: {
+      name: 'La Victoire',
+      ref:  'FW25 · 001',
+      img:  'https://cdn.shopify.com/s/files/1/0927/5890/1079/files/28092025-DSCF1828.jpg',
+      desc: "Née en 1908, la Victoire est la pièce qui a fixé la silhouette de la maison. " +
+            "Sa structure tient sans armature : c'est l'épaisseur du cuir, choisie au dixième " +
+            "de millimètre, qui lui donne sa tenue."
+    },
+    colette: {
+      name: 'La Colette',
+      ref:  'FW25 · 002',
+      img:  'https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0919.jpg',
+      desc: "Plus souple, plus quotidienne. La Colette se porte à l'épaule ou en main, " +
+            "et s'assouplit avec le temps sans jamais se déformer — le propre d'un cuir " +
+            "tanné végétal."
+    },
+    rafael: {
+      name: 'Le Rafaël',
+      ref:  'FW25 · 003',
+      img:  'https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0154.jpg',
+      desc: "La pièce la plus difficile de la collection. Une pochette n'a nulle part où " +
+            "cacher un défaut : chaque couture est visible, chaque tranche est vue."
+    }
+  };
+
+  var pdp     = document.getElementById('pdp');
+  var pdpImg  = document.getElementById('pdpImg');
+  var pdpName = document.getElementById('pdpName');
+  var pdpDesc = document.getElementById('pdpDesc');
+  var pdpRef  = document.getElementById('pdpRef');
+  var lastCard = null;
+
+  var supportsVT = typeof document.startViewTransition === 'function';
+  if (!supportsVT) document.documentElement.classList.add('no-vt');
+
+  function run(mutate) {
+    if (supportsVT && !reduced) document.startViewTransition(mutate);
+    else mutate();
+  }
+
+  function openPiece(card) {
+    var data = PIECES[card.dataset.piece];
+    if (!data) return;
+    lastCard = card;
+    /* Le nom de transition n'est porté QUE par la carte cliquée :
+       deux éléments portant le même nom simultanément annulent l'animation. */
+    card.querySelector('.card__media').classList.add('is-morphing');
+
+    run(function () {
+      pdpImg.src = data.img;
+      pdpImg.alt = data.name;
+      pdpName.textContent = data.name;
+      pdpDesc.textContent = data.desc;
+      pdpRef.textContent  = data.ref;
+      pdp.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+  }
+
+  function closePiece() {
+    run(function () {
+      pdp.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+    setTimeout(function () {
+      if (lastCard) {
+        lastCard.querySelector('.card__media').classList.remove('is-morphing');
+        lastCard = null;
+      }
+    }, 850);
+  }
+
+  document.querySelectorAll('.card').forEach(function (card) {
+    card.addEventListener('click', function () { openPiece(card); });
+  });
+  document.getElementById('pdpBack').addEventListener('click', closePiece);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && pdp.classList.contains('open')) closePiece();
+  });
+
+  /* ── 3 · Le geste (scrub) ────────────────────────────── */
+  var LINES = [
+    'On commence par refuser neuf peaux sur dix.',
+    'Le tranchet ne pardonne rien.',
+    'Deux aiguilles. Un seul fil.',
+    'Huit points au centimètre.',
+    'Quarante-huit heures de main.',
+    'Puis une initiale, à l’intérieur.'
+  ];
+
+  var scrub  = document.getElementById('scrub');
+  var frames = Array.prototype.slice.call(document.querySelectorAll('.scrub__frame'));
+  var line   = document.getElementById('scrubLine');
+  var bar    = document.getElementById('scrubBar');
+  var count  = document.getElementById('scrubCount');
+  var lastIdx = -1;
+
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+
+  function paintLine(text) {
+    line.innerHTML = '';
+    text.split(' ').forEach(function (w, i) {
+      var s = document.createElement('span');
+      s.textContent = w + ' ';
+      s.style.transitionDelay = (i * 45) + 'ms';
+      line.appendChild(s);
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { s.classList.add('on'); });
+      });
+    });
+  }
+
+  function setFrame(i) {
+    if (i === lastIdx) return;
+    lastIdx = i;
+    if (!isMobile && !reduced) {
+      frames.forEach(function (f, j) { f.classList.toggle('on', j === i); });
+    }
+    count.textContent = pad(i + 1) + ' / ' + pad(frames.length);
+    paintLine(LINES[i]);
+  }
+
+  function onScrubScroll() {
+    var r = scrub.getBoundingClientRect();
+    var total = r.height - window.innerHeight;
+    if (total <= 0) return;
+    var p = Math.max(0, Math.min(1, -r.top / total));
+    bar.style.width = (p * 100) + '%';
+    setFrame(Math.min(frames.length - 1, Math.floor(p * frames.length)));
+  }
+
+  /* ── 4 · Chapitrage ─────────────────────────────────── */
+  var chaptersWrap = document.getElementById('chapters');
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  var visuals  = Array.prototype.slice.call(document.querySelectorAll('.chapters__img'));
+  var ticks    = Array.prototype.slice.call(document.querySelectorAll('.chapters__tick'));
+  var lastChap = -1;
+
+  function onChaptersScroll() {
+    var r = chaptersWrap.getBoundingClientRect();
+    var total = r.height - window.innerHeight;
+    if (total <= 0) return;
+    var p = Math.max(0, Math.min(0.999, -r.top / total));
+    var i = Math.floor(p * chapters.length);
+    if (i === lastChap) return;
+    lastChap = i;
+    chapters.forEach(function (c, j) { c.classList.toggle('on', j === i); });
+    visuals.forEach(function (v, j)  { v.classList.toggle('on', j === i); });
+    ticks.forEach(function (t, j)    { t.classList.toggle('on', j <= i); });
+  }
+
+  /* ── Boucle de scroll unique, throttlée par rAF ─────── */
+  var ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () {
+      onScrubScroll();
+      onChaptersScroll();
+      ticking = false;
+    });
+  }
+
+  if (!reduced) {
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+  }
+  setFrame(0);
+  onScroll();
+})();
+</script>
+</body>
+</html>
