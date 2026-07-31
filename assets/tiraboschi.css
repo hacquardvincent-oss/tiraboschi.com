@@ -2995,9 +2995,134 @@ body.hdr-hidden .col-filters {
 /* Cible d'arrivée du morphing : la première image de la galerie produit.
    Scopé par breakpoint — les deux galeries (desktop + mobile) coexistent
    dans le DOM, et deux éléments portant le même nom annulent la transition. */
+   Quand le hero plein écran est actif, c'est LUI la cible : les galeries
+   ne doivent surtout pas revendiquer le nom en plus (doublon = animation
+   annulée). D'où le :not(.prd-main--after-hero). */
 @media (min-width: 901px) {
-  .prd-gallery__img[data-img="0"] { view-transition-name: tira-piece; }
+  .prd-main:not(.prd-main--after-hero) .prd-gallery__img[data-img="0"] {
+    view-transition-name: tira-piece;
+  }
 }
 @media (max-width: 900px) {
-  .prd-vgallery__img:first-child { view-transition-name: tira-piece; }
+  .prd-main:not(.prd-main--after-hero) .prd-vgallery__img:first-child {
+    view-transition-name: tira-piece;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FICHE PRODUIT — Hero plein écran (moment 02)
+   Première image plein cadre, infos en surimpression sur fond
+   transparent, visuels qui s'enchaînent au scroll, puis retour à
+   la mise en page classique.
+   ═══════════════════════════════════════════════════════════════ */
+.prd-hero {
+  position: relative;
+  height: 230vh;                 /* course de scroll pour l'enchaînement */
+  background: var(--tira-black);
+}
+.prd-hero__sticky {
+  position: sticky; top: 0;
+  height: 100svh;
+  overflow: hidden;
+  display: flex; align-items: flex-end;
+}
+
+/* ── Visuels empilés ── */
+.prd-hero__frames { position: absolute; inset: 0; }
+.prd-hero__frame {
+  position: absolute; inset: 0;
+  opacity: 0;
+  transition: opacity .5s var(--tira-ease);
+}
+.prd-hero__frame.on { opacity: 1; }
+.prd-hero__frame img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  display: block;
+}
+
+/* Voile : garantit la lisibilité du texte quelle que soit la photo */
+.prd-hero__veil {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(to top, rgba(10,10,10,.72) 0%, rgba(10,10,10,.18) 42%, rgba(10,10,10,0) 68%),
+    linear-gradient(to bottom, rgba(10,10,10,.42) 0%, rgba(10,10,10,0) 26%);
+  pointer-events: none;
+}
+
+/* ── Infos en surimpression ── */
+.prd-hero__content {
+  position: relative; z-index: 2;
+  padding: 0 5vw 12vh;
+  color: var(--tira-white);
+  max-width: 900px;
+}
+.prd-hero__ref {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .22em;
+  opacity: .55; margin-bottom: 20px;
+}
+.prd-hero__name {
+  font-size: clamp(46px, 7.5vw, 104px);
+  font-weight: 400; line-height: .9; letter-spacing: -.025em;
+  margin-bottom: 20px;
+}
+.prd-hero__line {
+  font-size: 14px; font-style: italic; line-height: 1.6;
+  opacity: .62; max-width: 46ch; margin-bottom: 22px;
+}
+.prd-hero__price {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .2em;
+  opacity: .8;
+}
+
+/* ── Repères d'enchaînement ── */
+.prd-hero__count {
+  position: absolute; right: 5vw; bottom: 12vh; z-index: 2;
+  font-size: 11px; letter-spacing: .24em;
+  color: var(--tira-white); opacity: .4;
+}
+.prd-hero__progress {
+  position: absolute; right: 5vw; bottom: calc(12vh - 14px); z-index: 2;
+  width: 54px; height: 1px; background: rgba(255,255,255,.2);
+}
+.prd-hero__progress i {
+  display: block; height: 100%; width: 0;
+  background: rgba(255,255,255,.9);
+}
+.prd-hero__cue {
+  position: absolute; left: 50%; bottom: 3.5vh; z-index: 2;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  color: var(--tira-white); opacity: .45;
+  font-size: 9px; text-transform: uppercase; letter-spacing: .24em;
+  transition: opacity .4s var(--tira-ease);
+}
+.prd-hero__cue svg { width: 14px; height: 14px; }
+.prd-hero.is-engaged .prd-hero__cue { opacity: 0; }
+
+/* Le hero occupe déjà la zone sous le header : plus de décalage à réserver.
+   La galerie garde son offset sticky habituel (le header redevient solide
+   dès qu'on a quitté le hero). */
+.prd-main--after-hero { padding-top: 0; }
+
+@media (max-width: 900px) {
+  .prd-hero { height: 200vh; }
+  .prd-hero__content { padding: 0 6vw 14vh; }
+  .prd-hero__name { font-size: clamp(40px, 12vw, 64px); }
+  .prd-hero__line { font-size: 13px; }
+  .prd-hero__count,
+  .prd-hero__progress { right: 6vw; }
+  .prd-main--after-hero { padding-top: 0; }
+}
+
+/* Le hero est le point d'arrivée du morphing depuis la grille.
+   Neutralisé au départ d'une card (reco sur fiche produit) : deux
+   éléments portant le même nom annulent la transition. */
+.prd-hero .prd-hero__frame.on { view-transition-name: tira-piece; }
+.vt-from-card .prd-hero .prd-hero__frame.on { view-transition-name: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .prd-hero { height: auto; }
+  .prd-hero__sticky { position: relative; height: 88svh; }
+  .prd-hero__frame { transition: none; }
 }

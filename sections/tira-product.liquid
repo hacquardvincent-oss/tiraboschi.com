@@ -22,7 +22,78 @@
 -%}
 
 {%- if customer -%}<script>window.TIRA_SHOW_PRICE=true;</script>{%- endif -%}
-<div class="prd-main" id="MainContent-product">
+
+{%- comment -%}
+  ═══ HERO PLEIN ÉCRAN — première image, infos en surimpression ═══
+  Le header passe en transparent au-dessus (data-tira-dark-hero).
+  Au scroll, les visuels de la pièce s'enchaînent (moment 02), puis on
+  retombe sur la mise en page classique.
+{%- endcomment -%}
+{%- assign use_hero = section.settings.fullscreen_hero -%}
+{%- if product.images.size == 0 -%}{%- assign use_hero = false -%}{%- endif -%}
+
+{%- if use_hero -%}
+  {%- assign hero_img = product.featured_image | default: product.images[0] -%}
+  <link rel="preload" as="image"
+        href="{{ hero_img | image_url: width: 1600 }}"
+        imagesrcset="{{ hero_img | image_url: width: 900 }} 900w,
+                     {{ hero_img | image_url: width: 1600 }} 1600w,
+                     {{ hero_img | image_url: width: 2200 }} 2200w"
+        imagesizes="100vw">
+
+  <section class="prd-hero" id="prd-hero" data-tira-dark-hero
+           aria-label="{{ product.title | escape }}">
+    <div class="prd-hero__sticky">
+
+      <div class="prd-hero__frames" id="prd-hero-frames">
+        {%- for image in product.images limit: 5 -%}
+          <div class="prd-hero__frame{% if forloop.first %} on{% endif %}">
+            <img src="{{ image | image_url: width: 1600 }}"
+                 srcset="{{ image | image_url: width: 900 }} 900w,
+                         {{ image | image_url: width: 1600 }} 1600w,
+                         {{ image | image_url: width: 2200 }} 2200w"
+                 sizes="100vw"
+                 alt="{% if forloop.first %}{{ image.alt | default: product.title | escape }}{% endif %}"
+                 width="1600" height="2000"
+                 {% if forloop.first %}loading="eager" fetchpriority="high"{% else %}loading="lazy"{% endif %}>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <div class="prd-hero__veil" aria-hidden="true"></div>
+
+      <div class="prd-hero__content">
+        <p class="prd-hero__ref">
+          {%- if collection -%}{{ collection.title }} · {% endif -%}
+          FW25 · {{ product.metafields.custom.piece_number.value | default: product.type }}
+        </p>
+        <h1 class="prd-hero__name">{{ product.title }}</h1>
+        {%- if contenances != blank -%}
+          <p class="prd-hero__line">{{ contenances | truncate: 90 }}</p>
+        {%- elsif product.type != blank -%}
+          <p class="prd-hero__line">{{ product.type }} · Façonné à la main, Paris</p>
+        {%- endif -%}
+        <p class="prd-hero__price">
+          {%- if customer -%}{{ current_variant.price | money }}{%- else -%}Prix sur demande{%- endif -%}
+        </p>
+      </div>
+
+      {%- if product.images.size > 1 -%}
+        <p class="prd-hero__count" id="prd-hero-count" aria-hidden="true">01</p>
+        <div class="prd-hero__progress" aria-hidden="true"><i id="prd-hero-bar"></i></div>
+      {%- endif -%}
+
+      <div class="prd-hero__cue" aria-hidden="true">
+        <span>Découvrir</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+          <line x1="12" y1="4" x2="12" y2="19"/><polyline points="6,13 12,19 18,13"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+<div class="prd-main{% if use_hero %} prd-main--after-hero{% endif %}" id="MainContent-product">
 
   {%- comment -%} ─── GALERIE DESKTOP scroll vertical ─── {%- endcomment -%}
   <div class="prd-gallery" id="prd-gallery" aria-label="Galerie produit {{ product.title | escape }}">
@@ -99,7 +170,14 @@
       <span class="prd-catalogue-ref__num">FW25 · {{ product.metafields.custom.piece_number.value | default: product.type }}</span>
     </div>
 
-    <h1 class="prd-name">{{ product.title }}</h1>
+    {%- comment -%}
+      Un seul <h1> par page : le hero le porte déjà quand il est actif.
+    {%- endcomment -%}
+    {%- if use_hero -%}
+      <p class="prd-name">{{ product.title }}</p>
+    {%- else -%}
+      <h1 class="prd-name">{{ product.title }}</h1>
+    {%- endif -%}
 
     {%- comment -%} ─── Prix — visible uniquement clients connectés ─── {%- endcomment -%}
     {%- if customer -%}
@@ -959,6 +1037,49 @@
   });
 
   /* ══════════════════════════════════════════
+     HERO PLEIN ÉCRAN — enchaînement des visuels au scroll
+     Le nom de transition (morphing depuis la grille) reste porté par
+     le visuel actif : on le déplace en même temps que la classe .on.
+  ══════════════════════════════════════════ */
+  (function() {
+    var hero = document.getElementById('prd-hero');
+    if (!hero) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var frames = Array.prototype.slice.call(hero.querySelectorAll('.prd-hero__frame'));
+    var bar    = document.getElementById('prd-hero-bar');
+    var count  = document.getElementById('prd-hero-count');
+    var cur    = -1;
+    var pending = false;
+
+    function paint() {
+      pending = false;
+      var r = hero.getBoundingClientRect();
+      var course = r.height - window.innerHeight;
+      if (course <= 0) return;
+
+      var p = Math.max(0, Math.min(1, -r.top / course));
+      if (bar) bar.style.width = (p * 100) + '%';
+      hero.classList.toggle('is-engaged', p > 0.04);
+
+      var i = Math.min(frames.length - 1, Math.floor(p * frames.length));
+      if (i === cur) return;
+      cur = i;
+      frames.forEach(function(f, j) { f.classList.toggle('on', j === i); });
+      if (count) count.textContent = (i + 1 < 10 ? '0' : '') + (i + 1);
+    }
+
+    window.addEventListener('scroll', function() {
+      if (!pending) { pending = true; requestAnimationFrame(paint); }
+    }, { passive: true });
+    window.addEventListener('resize', function() {
+      if (!pending) { pending = true; requestAnimationFrame(paint); }
+    }, { passive: true });
+
+    paint();
+  })();
+
+  /* ══════════════════════════════════════════
      COVER FLOW — navigation matières iPod-style
   ══════════════════════════════════════════ */
   (function() {
@@ -1072,6 +1193,13 @@
   "tag": "div",
   "class": "tira-product-page",
   "settings": [
+    {
+      "type": "checkbox",
+      "id": "fullscreen_hero",
+      "label": "Premier écran plein cadre",
+      "info": "Affiche la première image en plein écran avec le nom et le prix en surimpression, puis retour à la mise en page classique.",
+      "default": true
+    },
     {
       "type": "checkbox",
       "id": "show_dimensions",

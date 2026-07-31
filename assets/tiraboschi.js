@@ -25,7 +25,8 @@
   const hdr = document.getElementById('hdr');
   const search = document.getElementById('hdr-search');
   const isHome = document.body.classList.contains('template-index');
-  const hasDarkHero = isHome || document.querySelector('[data-tira-dark-hero]') !== null;
+  const darkHero = document.querySelector('[data-tira-dark-hero]');
+  const hasDarkHero = isHome || darkHero !== null;
   let lastScrollY = window.scrollY;
   let ticking = false;
   let lastDir = 'up';
@@ -36,14 +37,29 @@
     document.body.classList.toggle('hdr-hidden', hidden);
   }
 
+  /* Le header reste transparent tant que le hero sombre est sous lui.
+     Un seuil fixe de 80px le rendait opaque en plein milieu d'un hero
+     plein écran (fiche produit, collection, drops). */
+  function solidThreshold() {
+    if (isHome) return window.innerHeight * 0.85;
+    if (darkHero) {
+      const h = darkHero.offsetHeight;
+      /* Hero à course longue (sticky interne) : on bascule quand le
+         panneau collé arrive en fin de course, pas à sa hauteur totale. */
+      const sticky = darkHero.querySelector('.prd-hero__sticky');
+      const visible = sticky ? sticky.offsetHeight : h;
+      return Math.max(80, Math.min(h, visible) - 90);
+    }
+    return 80;
+  }
+
   function updateHeader() {
     if (!hdr) { ticking = false; return; }
     const y = window.scrollY;
 
     /* 1. Transparent ↔ solide */
-    const threshold = isHome ? window.innerHeight * 0.85 : 80;
     /* Pas de hero sombre → jamais transparent, dès le premier pixel. */
-    const isSolid = hasDarkHero ? y >= threshold : true;
+    const isSolid = hasDarkHero ? y >= solidThreshold() : true;
     hdr.classList.toggle('solid', isSolid);
     if (search) search.classList.toggle('solid', isSolid);
     document.body.classList.toggle('on-dark', hasDarkHero && !isSolid);
@@ -288,7 +304,12 @@
       if (!card) return;
       document.querySelectorAll('.is-morphing').forEach(el => el.classList.remove('is-morphing'));
       const media = card.querySelector('.card__img, .card__media, img');
-      if (media) media.classList.add('is-morphing');
+      if (!media) return;
+      /* Sur une fiche produit, le hero porte déjà le nom via le CSS.
+         On le neutralise le temps du départ, sinon deux éléments le
+         partagent au moment du cliché et l'animation est annulée. */
+      document.documentElement.classList.add('vt-from-card');
+      media.classList.add('is-morphing');
     }, true);
   }
 
