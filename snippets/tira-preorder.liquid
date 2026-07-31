@@ -28,15 +28,18 @@
   assign edition_size    = product.metafields.custom.drop_edition_size | plus: 0
   assign reserved_count  = product.metafields.custom.drop_reserved | plus: 0
   assign available_count = edition_size | minus: reserved_count
-  assign fill_percent    = reserved_count | times: 100 | divided_by: edition_size
-  if fill_percent > 100
-    assign fill_percent = 100
+  assign fill_percent = 0
+  if edition_size > 0
+    assign fill_percent = reserved_count | times: 100 | divided_by: edition_size
+    if fill_percent > 100
+      assign fill_percent = 100
+    endif
   endif
 -%}
 
 <div class="tira-preorder" data-preorder data-drop-end="{{ drop_end_date }}">
 
-  {{- 'preorder.css' | asset_url | stylesheet_tag -}}
+  {%- comment -%} CSS chargé par layout/theme.liquid (tira-preorder.css) {%- endcomment -%}
 
   <!-- Badge précommande -->
   <div class="tira-preorder__badge">

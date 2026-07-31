@@ -55,52 +55,99 @@
   </div>
 </section>
 
-{%- comment -%} ═══ FILTER BAR (desktop) ═══ {%- endcomment -%}
+{%- comment -%}
+  ═══ FILTER BAR (desktop) ═══
+  Les options sont dérivées des produits réellement présents dans la
+  collection. Auparavant elles étaient codées en dur et ne correspondaient
+  à aucune donnée produit — le filtrage était impossible par construction.
+{%- endcomment -%}
+
+{%- comment -%} Inventaire des valeurs réelles {%- endcomment -%}
+{%- assign all_types = '' -%}
+{%- assign all_opt1  = '' -%}
+{%- assign all_opt3  = '' -%}
+{%- for product in collection.products -%}
+  {%- if product.type != blank -%}
+    {%- assign all_types = all_types | append: product.type | append: '|' -%}
+  {%- endif -%}
+  {%- for v in product.variants -%}
+    {%- if v.option1 != blank -%}{%- assign all_opt1 = all_opt1 | append: v.option1 | append: '|' -%}{%- endif -%}
+    {%- if v.option3 != blank -%}{%- assign all_opt3 = all_opt3 | append: v.option3 | append: '|' -%}{%- endif -%}
+  {%- endfor -%}
+{%- endfor -%}
+{%- assign types_list   = all_types | split: '|' | uniq | sort -%}
+{%- assign matiere_list = all_opt1  | split: '|' | uniq | sort -%}
+{%- assign couleur_list = all_opt3  | split: '|' | uniq | sort -%}
+
 <div class="col-filters" id="col-filters" role="search" aria-label="Filtres collection">
   <div class="col-filters__inner">
     <div class="col-filters__left">
 
+      {%- if types_list.size > 1 -%}
       <div class="col-filter-wrap">
         <button class="col-filter-btn" id="btn-type" aria-expanded="false" aria-controls="panel-type">
           Type <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="4,6 8,10 12,6"/></svg>
         </button>
         <div class="col-filter-panel" id="panel-type" role="region" aria-label="Filtrer par type">
-          <label class="col-filter-check"><input type="checkbox" name="filter-type" value="Sacs"> Sacs</label>
-          <label class="col-filter-check"><input type="checkbox" name="filter-type" value="Petite maroquinerie"> Petite maroquinerie</label>
-          <label class="col-filter-check"><input type="checkbox" name="filter-type" value="Accessoires"> Accessoires</label>
-          <button class="col-filter-apply">Appliquer</button>
+          {%- for t in types_list -%}
+            <label class="col-filter-check"><input type="checkbox" name="filter-type" value="{{ t | handleize }}"> {{ t }}</label>
+          {%- endfor -%}
+          <button class="col-filter-apply" type="button">Appliquer</button>
         </div>
       </div>
+      {%- endif -%}
 
+      {%- if matiere_list.size > 1 -%}
       <div class="col-filter-wrap">
         <button class="col-filter-btn" id="btn-matiere" aria-expanded="false" aria-controls="panel-matiere">
           Matière <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="4,6 8,10 12,6"/></svg>
         </button>
         <div class="col-filter-panel" id="panel-matiere" role="region" aria-label="Filtrer par matière">
-          <label class="col-filter-check"><input type="checkbox" name="filter-matiere" value="Veau grainé"> Veau grainé</label>
-          <label class="col-filter-check"><input type="checkbox" name="filter-matiere" value="Veau lisse"> Veau lisse</label>
-          <label class="col-filter-check"><input type="checkbox" name="filter-matiere" value="Agneau nappa"> Agneau nappa</label>
-          <label class="col-filter-check"><input type="checkbox" name="filter-matiere" value="Cuir buffle"> Cuir buffle</label>
-          <button class="col-filter-apply">Appliquer</button>
+          {%- for m in matiere_list -%}
+            <label class="col-filter-check"><input type="checkbox" name="filter-matiere" value="{{ m | handleize }}"> {{ m }}</label>
+          {%- endfor -%}
+          <button class="col-filter-apply" type="button">Appliquer</button>
         </div>
       </div>
+      {%- endif -%}
 
+      {%- if couleur_list.size > 1 -%}
       <div class="col-filter-wrap">
         <button class="col-filter-btn" id="btn-couleur" aria-expanded="false" aria-controls="panel-couleur">
           Couleur <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="4,6 8,10 12,6"/></svg>
         </button>
         <div class="col-filter-panel" id="panel-couleur" role="region" aria-label="Filtrer par couleur" style="min-width:260px">
           <div class="col-swatch-grid" role="list">
-            <label class="col-swatch" role="listitem" aria-label="Noir"><input type="checkbox" name="filter-couleur" value="Noir"><span class="col-swatch__color" style="background:#0a0a0a"></span><span class="col-swatch__name">Noir</span></label>
-            <label class="col-swatch" role="listitem" aria-label="Caramel"><input type="checkbox" name="filter-couleur" value="Caramel"><span class="col-swatch__color" style="background:#c4874b"></span><span class="col-swatch__name">Caramel</span></label>
-            <label class="col-swatch" role="listitem" aria-label="Cognac"><input type="checkbox" name="filter-couleur" value="Cognac"><span class="col-swatch__color" style="background:#8b4513"></span><span class="col-swatch__name">Cognac</span></label>
-            <label class="col-swatch" role="listitem" aria-label="Marine"><input type="checkbox" name="filter-couleur" value="Marine"><span class="col-swatch__color" style="background:#1a2744"></span><span class="col-swatch__name">Marine</span></label>
-            <label class="col-swatch" role="listitem" aria-label="Crème"><input type="checkbox" name="filter-couleur" value="Crème"><span class="col-swatch__color" style="background:#f0ede6;border:1px solid #ddd"></span><span class="col-swatch__name">Crème</span></label>
-            <label class="col-swatch" role="listitem" aria-label="Bordeaux"><input type="checkbox" name="filter-couleur" value="Bordeaux"><span class="col-swatch__color" style="background:#6d1a26"></span><span class="col-swatch__name">Bordeaux</span></label>
+            {%- for c in couleur_list -%}
+              {%- assign c_lc = c | downcase -%}
+              {%- if c_lc contains 'noir' -%}{%- assign c_hex = '#0a0a0a' -%}
+              {%- elsif c_lc contains 'blanc' -%}{%- assign c_hex = '#f0ede8' -%}
+              {%- elsif c_lc contains 'crème' or c_lc contains 'creme' -%}{%- assign c_hex = '#f0ead8' -%}
+              {%- elsif c_lc contains 'caramel' -%}{%- assign c_hex = '#c4874b' -%}
+              {%- elsif c_lc contains 'cognac' -%}{%- assign c_hex = '#8b4513' -%}
+              {%- elsif c_lc contains 'bordeaux' -%}{%- assign c_hex = '#6d1a26' -%}
+              {%- elsif c_lc contains 'rouge' -%}{%- assign c_hex = '#b52535' -%}
+              {%- elsif c_lc contains 'marine' -%}{%- assign c_hex = '#1a2744' -%}
+              {%- elsif c_lc contains 'bleu' -%}{%- assign c_hex = '#2c5f8a' -%}
+              {%- elsif c_lc contains 'vert' -%}{%- assign c_hex = '#2d5a3d' -%}
+              {%- elsif c_lc contains 'marron' or c_lc contains 'brun' -%}{%- assign c_hex = '#5c3d2e' -%}
+              {%- elsif c_lc contains 'taupe' -%}{%- assign c_hex = '#8b7b6b' -%}
+              {%- elsif c_lc contains 'gris' -%}{%- assign c_hex = '#888888' -%}
+              {%- elsif c_lc contains 'beige' -%}{%- assign c_hex = '#d4c4a8' -%}
+              {%- elsif c_lc contains 'gold' or c_lc contains 'or' -%}{%- assign c_hex = '#c8a96e' -%}
+              {%- else -%}{%- assign c_hex = '#c8a97a' -%}
+              {%- endif -%}
+              <label class="col-swatch" role="listitem" aria-label="{{ c | escape }}">
+                <input type="checkbox" name="filter-couleur" value="{{ c | handleize }}">
+                <span class="col-swatch__color" style="background:{{ c_hex }}"></span>
+                <span class="col-swatch__name">{{ c }}</span>
+              </label>
+            {%- endfor -%}
           </div>
-          <button class="col-filter-apply">Appliquer</button>
+          <button class="col-filter-apply" type="button">Appliquer</button>
         </div>
       </div>
+      {%- endif -%}
 
     </div>
     <div class="col-filters__right">
@@ -142,7 +189,28 @@
         {%- assign has_second = true -%}
       {%- endif -%}
 
-      <article class="card" role="listitem" data-product-type="{{ product.type | handleize }}" data-tira-reveal>
+      {%- comment -%} Valeurs d'options de la pièce, pour le filtrage client {%- endcomment -%}
+      {%- assign card_mat = '' -%}
+      {%- assign card_col = '' -%}
+      {%- for v in product.variants -%}
+        {%- if v.option1 != blank -%}
+          {%- assign o1 = v.option1 | handleize -%}
+          {%- unless card_mat contains o1 -%}
+            {%- assign card_mat = card_mat | append: ' ' | append: o1 -%}
+          {%- endunless -%}
+        {%- endif -%}
+        {%- if v.option3 != blank -%}
+          {%- assign o3 = v.option3 | handleize -%}
+          {%- unless card_col contains o3 -%}
+            {%- assign card_col = card_col | append: ' ' | append: o3 -%}
+          {%- endunless -%}
+        {%- endif -%}
+      {%- endfor -%}
+      <article class="card" role="listitem"
+               data-product-type="{{ product.type | handleize }}"
+               data-matieres="{{ card_mat | strip }}"
+               data-couleurs="{{ card_col | strip }}"
+               data-tira-reveal>
         <a href="{{ product.url }}" class="card__img" aria-label="{{ product.title | escape }}">
           <img src="{{ product.featured_image | image_url: width: 600 }}"
                srcset="{{ product.featured_image | image_url: width: 400 }} 400w,
@@ -265,6 +333,11 @@
   {%- endif -%}
 
   {%- endpaginate -%}
+
+  {%- comment -%} État vide — affiché par le JS quand aucun produit ne passe les filtres {%- endcomment -%}
+  <p class="tira-empty" id="col-filter-empty" hidden>
+    Aucune pièce ne correspond à votre sélection.
+  </p>
 </section>
 
 {%- comment -%} ═══ MOBILE — FAB Filtrer & Trier ═══ {%- endcomment -%}
@@ -314,9 +387,9 @@
       </button>
       <div class="filter-sheet__section-body">
         <ul>
-          <li><label><input type="checkbox" name="m-filter-type" value="Sacs"> Sacs</label></li>
-          <li><label><input type="checkbox" name="m-filter-type" value="Petite maroquinerie"> Petite maroquinerie</label></li>
-          <li><label><input type="checkbox" name="m-filter-type" value="Accessoires"> Accessoires</label></li>
+          {%- for t in types_list -%}
+            <li><label><input type="checkbox" name="m-filter-type" value="{{ t | handleize }}"> {{ t }}</label></li>
+          {%- endfor -%}
         </ul>
       </div>
     </div>
@@ -328,10 +401,9 @@
       </button>
       <div class="filter-sheet__section-body">
         <ul>
-          <li><label><input type="checkbox" name="m-filter-matiere" value="Veau grainé"> Veau grainé</label></li>
-          <li><label><input type="checkbox" name="m-filter-matiere" value="Veau lisse"> Veau lisse</label></li>
-          <li><label><input type="checkbox" name="m-filter-matiere" value="Agneau nappa"> Agneau nappa</label></li>
-          <li><label><input type="checkbox" name="m-filter-matiere" value="Cuir buffle"> Cuir buffle</label></li>
+          {%- for m in matiere_list -%}
+            <li><label><input type="checkbox" name="m-filter-matiere" value="{{ m | handleize }}"> {{ m }}</label></li>
+          {%- endfor -%}
         </ul>
       </div>
     </div>
@@ -343,12 +415,9 @@
       </button>
       <div class="filter-sheet__section-body">
         <ul>
-          <li><label><input type="checkbox" name="m-filter-couleur" value="Noir"> Noir</label></li>
-          <li><label><input type="checkbox" name="m-filter-couleur" value="Caramel"> Caramel</label></li>
-          <li><label><input type="checkbox" name="m-filter-couleur" value="Cognac"> Cognac</label></li>
-          <li><label><input type="checkbox" name="m-filter-couleur" value="Marine"> Marine</label></li>
-          <li><label><input type="checkbox" name="m-filter-couleur" value="Crème"> Crème</label></li>
-          <li><label><input type="checkbox" name="m-filter-couleur" value="Bordeaux"> Bordeaux</label></li>
+          {%- for c in couleur_list -%}
+            <li><label><input type="checkbox" name="m-filter-couleur" value="{{ c | handleize }}"> {{ c }}</label></li>
+          {%- endfor -%}
         </ul>
       </div>
     </div>
@@ -381,6 +450,8 @@
           requestAnimationFrame(function () {
             grid.querySelectorAll('[data-tira-reveal]:not(.is-visible)').forEach(function (el) { el.classList.add('is-visible'); });
           });
+          /* Repeindre les cœurs wishlist sur les cards fraîchement injectées */
+          document.dispatchEvent(new CustomEvent('tira:grid:appended'));
           var nextBtn = doc.getElementById('col-load-more-btn');
           if (nextBtn && nextBtn.getAttribute('data-next-url')) {
             btn.setAttribute('data-next-url', nextBtn.getAttribute('data-next-url'));
@@ -431,21 +502,6 @@
   fab      && fab.addEventListener('click', openSheet);
   backdrop && backdrop.addEventListener('click', closeSheet);
   closeBtn && closeBtn.addEventListener('click', closeSheet);
-  applyBtn && applyBtn.addEventListener('click', function () {
-    var val = document.querySelector('input[name="mobile-sort"]:checked');
-    if (val) {
-      var url = new URL(window.location.href);
-      url.searchParams.set('sort_by', val.value);
-      window.location.href = url.toString();
-    } else {
-      closeSheet();
-    }
-  });
-  resetBtn && resetBtn.addEventListener('click', function () {
-    sheet.querySelectorAll('input[type="checkbox"]').forEach(function (cb) { cb.checked = false; });
-    var firstRadio = sheet.querySelector('input[type="radio"]');
-    if (firstRadio) firstRadio.checked = true;
-  });
 
   /* Accordéon sections du sheet */
   document.querySelectorAll('.filter-sheet__section-btn').forEach(function (sBtn) {
@@ -457,9 +513,151 @@
     });
   });
 
+  /* ══════════════════════════════════════════
+     FILTRAGE — desktop (panneaux) + mobile (sheet)
+     Les panneaux n'étaient bindés nulle part : les boutons Type /
+     Matière / Couleur étaient inertes au clic, et cocher une case
+     dans le sheet mobile n'avait aucun effet.
+  ══════════════════════════════════════════ */
+
+  /* ── Ouverture / fermeture des panneaux desktop ── */
+  document.querySelectorAll('.col-filter-wrap').forEach(function (wrap) {
+    var b = wrap.querySelector('.col-filter-btn');
+    var p = wrap.querySelector('.col-filter-panel');
+    if (!b || !p) return;
+    b.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var willOpen = !p.classList.contains('open');
+      document.querySelectorAll('.col-filter-panel.open').forEach(function (o) {
+        o.classList.remove('open');
+        var ob = o.closest('.col-filter-wrap').querySelector('.col-filter-btn');
+        if (ob) ob.setAttribute('aria-expanded', 'false');
+      });
+      p.classList.toggle('open', willOpen);
+      b.setAttribute('aria-expanded', String(willOpen));
+    });
+    p.addEventListener('click', function (e) { e.stopPropagation(); });
+  });
+  document.addEventListener('click', function () {
+    document.querySelectorAll('.col-filter-panel.open').forEach(function (o) {
+      o.classList.remove('open');
+      var ob = o.closest('.col-filter-wrap').querySelector('.col-filter-btn');
+      if (ob) ob.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  /* ── Application des filtres sur les cards rendues ── */
+  var grid = document.getElementById('col-grid') || document.querySelector('.col-grid');
+
+  function checkedValues(name) {
+    var out = [];
+    document.querySelectorAll('input[name="' + name + '"]:checked').forEach(function (cb) {
+      if (out.indexOf(cb.value) === -1) out.push(cb.value);
+    });
+    return out;
+  }
+
+  function matches(card, types, mats, cols) {
+    if (types.length && types.indexOf(card.dataset.productType) === -1) return false;
+    var cm = (card.dataset.matieres || '').split(/\s+/);
+    if (mats.length && !mats.some(function (m) { return cm.indexOf(m) !== -1; })) return false;
+    var cc = (card.dataset.couleurs || '').split(/\s+/);
+    if (cols.length && !cols.some(function (c) { return cc.indexOf(c) !== -1; })) return false;
+    return true;
+  }
+
+  function applyFilters() {
+    var types = checkedValues('filter-type').concat(checkedValues('m-filter-type'));
+    var mats  = checkedValues('filter-matiere').concat(checkedValues('m-filter-matiere'));
+    var cols  = checkedValues('filter-couleur').concat(checkedValues('m-filter-couleur'));
+    var active = types.length + mats.length + cols.length;
+    var shown = 0;
+
+    document.querySelectorAll('.card[data-product-type]').forEach(function (card) {
+      var ok = matches(card, types, mats, cols);
+      card.hidden = !ok;
+      if (ok) shown++;
+    });
+
+    /* Les encarts éditoriaux perturbent la lecture quand on filtre */
+    document.querySelectorAll('[class^="col-editorial-"]').forEach(function (ed) {
+      ed.hidden = active > 0;
+    });
+
+    var counter = document.querySelector('.col-filters__count');
+    if (counter) {
+      counter.textContent = shown + ' pièce' + (shown !== 1 ? 's' : '');
+    }
+    if (applyBtn) {
+      applyBtn.textContent = 'Voir ' + shown + ' résultat' + (shown !== 1 ? 's' : '');
+    }
+
+    var empty = document.getElementById('col-filter-empty');
+    if (empty) empty.hidden = shown !== 0;
+
+    /* "Charger plus" n'a plus de sens sur un sous-ensemble filtré */
+    var lm = document.getElementById('col-load-more');
+    if (lm) lm.hidden = active > 0;
+  }
+
+  /* Synchronise desktop <-> mobile pour une même valeur */
+  function syncTwin(cb) {
+    var pair = { 'filter-type': 'm-filter-type', 'm-filter-type': 'filter-type',
+                 'filter-matiere': 'm-filter-matiere', 'm-filter-matiere': 'filter-matiere',
+                 'filter-couleur': 'm-filter-couleur', 'm-filter-couleur': 'filter-couleur' }[cb.name];
+    if (!pair) return;
+    document.querySelectorAll('input[name="' + pair + '"]').forEach(function (t) {
+      if (t.value === cb.value) t.checked = cb.checked;
+    });
+  }
+
+  document.addEventListener('change', function (e) {
+    var cb = e.target;
+    if (!cb.matches || !cb.matches('input[type="checkbox"][name*="filter-"]')) return;
+    syncTwin(cb);
+    applyFilters();
+  });
+
+  /* "Appliquer" ferme simplement le panneau : le filtrage est déjà live */
+  document.querySelectorAll('.col-filter-apply').forEach(function (b) {
+    b.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var p = b.closest('.col-filter-panel');
+      if (p) {
+        p.classList.remove('open');
+        var ob = p.closest('.col-filter-wrap').querySelector('.col-filter-btn');
+        if (ob) ob.setAttribute('aria-expanded', 'false');
+      }
+    });
+  });
+
+  applyBtn && applyBtn.addEventListener('click', function () {
+    var val = document.querySelector('input[name="mobile-sort"]:checked');
+    if (val && val.value !== '{{ sort_by }}') {
+      var url = new URL(window.location.href);
+      url.searchParams.set('sort_by', val.value);
+      window.location.href = url.toString();
+    } else {
+      closeSheet();
+    }
+  });
+
+  resetBtn && resetBtn.addEventListener('click', function () {
+    document.querySelectorAll('input[type="checkbox"][name*="filter-"]').forEach(function (cb) {
+      cb.checked = false;
+    });
+    var firstRadio = sheet && sheet.querySelector('input[type="radio"]');
+    if (firstRadio) firstRadio.checked = true;
+    applyFilters();
+  });
+
   /* Fermeture ESC */
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') { closeSheet(); sortPanel && sortPanel.classList.remove('open'); }
+    if (e.key === 'Escape') {
+      closeSheet();
+      sortPanel && sortPanel.classList.remove('open');
+      document.querySelectorAll('.col-filter-panel.open').forEach(function (o) { o.classList.remove('open'); });
+    }
   });
 })();
 </script>

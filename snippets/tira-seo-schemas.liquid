@@ -80,7 +80,7 @@
   "@type": "Product",
   "@id": "{{ product_url }}#product",
   "name": "{{ product.title | escape }}",
-  "description": "{{ product.description | strip_html | truncate: 300 | escape }}",
+  "description": "{{ product.description | strip_html | strip_newlines | truncate: 300 | escape }}",
   "url": "{{ product_url }}",
   "image": [
     {%- for image in product.images limit: 5 -%}
@@ -152,7 +152,7 @@
   "@context": "https://schema.org",
   "@type": "CollectionPage",
   "name": "{{ collection.title | escape }}",
-  "description": "{{ collection.description | strip_html | truncate: 200 | escape }}",
+  "description": "{{ collection.description | strip_html | strip_newlines | truncate: 200 | escape }}",
   "url": "{{ shop.url }}{{ collection.url }}",
   "breadcrumb": {
     "@type": "BreadcrumbList",
@@ -172,7 +172,7 @@
       "@type": "Article",
       "@id": "{{ article_url }}#article",
       "headline": "{{ article.title | escape }}",
-      "description": "{{ article.excerpt | strip_html | truncate: 200 | escape }}",
+      "description": "{{ article.excerpt | strip_html | strip_newlines | truncate: 200 | escape }}",
       "url": "{{ article_url }}",
       "datePublished": "{{ article.published_at | date: '%Y-%m-%d' }}",
       "dateModified": "{{ article.updated_at | date: '%Y-%m-%d' }}",
@@ -316,7 +316,7 @@
     {
       "@type": "Article",
       "headline": "Savoir-Faire TIRABOSCHI Paris — Maroquinerie Artisanale Depuis 1904",
-      "description": "{{ page.content | strip_html | truncate: 200 | escape }}",
+      "description": "{{ page.content | strip_html | strip_newlines | truncate: 200 | escape }}",
       "url": "{{ shop.url }}/pages/savoir-faire",
       "author": {"@type": "Organization", "name": "TIRABOSCHI Paris"},
       "speakable": {
@@ -382,13 +382,13 @@
   "@context": "https://schema.org",
   "@type": "WebPage",
   "name": "{{ page.title | escape }} — TIRABOSCHI Paris",
-  "description": "{{ page.content | strip_html | truncate: 160 | escape }}",
+  "description": "{{ page.content | strip_html | strip_newlines | truncate: 160 | escape }}",
   "url": "{{ shop.url }}/pages/{{ page.handle }}",
   "isPartOf": {"@type": "WebSite", "name": "TIRABOSCHI Paris", "url": "{{ shop.url }}"}
 }
 {%- endif -%}
 
-{%- endif -%}{# end template_name #}
+{%- endif -%}{%- comment -%} end template_name {%- endcomment -%}
 
 {%- endcapture -%}
 

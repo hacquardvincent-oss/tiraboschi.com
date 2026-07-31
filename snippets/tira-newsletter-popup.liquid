@@ -109,7 +109,14 @@
 
   if (closeBtn) closeBtn.addEventListener('click', close);
   if (backdrop) backdrop.addEventListener('click', close);
-  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') close(); });
+
+  /* Escape ne ferme QUE si la popup est réellement ouverte.
+     Sans ce test, fermer le bottom sheet filtres ou le panneau Détails
+     avec Escape marquait la popup comme rejetée pour 30 jours — alors
+     que le visiteur ne l'avait jamais vue — et remettait body.overflow. */
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && !popup.hasAttribute('hidden')) close();
+  });
 })();
 </script>
 {%- endunless -%}

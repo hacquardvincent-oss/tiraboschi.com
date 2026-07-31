@@ -704,30 +704,11 @@
 
 </div>
 
-<script>
-(function () {
-  // Word-by-word split
-  document.querySelectorAll('[data-words]').forEach(function (el) {
-    el.innerHTML = el.textContent.trim().split(' ')
-      .map(function (w, i) { return '<span style="--i:' + i + '">' + w + '</span>'; })
-      .join(' ');
-  });
-
-  // IntersectionObserver for reveals + words
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        io.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.15 });
-
-  document.querySelectorAll('.cre-page [data-reveal], .cre-page [data-words]').forEach(function (el) {
-    io.observe(el);
-  });
-})();
-</script>
+{%- comment -%}
+  Word-split et IntersectionObserver retirés : assets/tiraboschi.js les gère
+  déjà globalement. Le doublon re-découpait du HTML déjà balisé et affichait
+  des fragments de code dans les titres.
+{%- endcomment -%}
 
 {% schema %}
 {

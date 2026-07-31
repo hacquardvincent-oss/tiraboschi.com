@@ -58,6 +58,8 @@
       }
       lastDir = 'up';
     }
+    /* Miroir sur <body> : le CSS repositionne .col-filters via body.hdr-hidden */
+    document.body.classList.toggle('hdr-hidden', hdr.classList.contains('hidden'));
     lastScrollY = y;
     ticking = false;
   }
@@ -66,8 +68,13 @@
   }, { passive: true });
   updateHeader();
 
-  /* ════════ Word reveal ════════ */
+  /* ════════ Word reveal ════════
+     Idempotent : un <script> inline de section peut avoir déjà découpé
+     l'élément. Sans ce garde-fou, la 2e passe re-split du HTML déjà balisé
+     et produit des fragments de code visibles à l'écran. */
   document.querySelectorAll('[data-words], [data-tira-word-reveal]').forEach(el => {
+    if (el.dataset.wordsDone) return;
+    el.dataset.wordsDone = '1';
     const raw = el.innerHTML.replace(/<br\s*\/?>/gi, '\n');
     const words = raw.split(/\s+/);
     el.innerHTML = words
@@ -110,39 +117,70 @@
     });
   }
 
-  /* ════════ Wishlist toggle (localStorage) ════════ */
-  document.querySelectorAll('.card__wish').forEach(btn => {
+  /* ════════ Wishlist (localStorage) ════════
+     Store unique 'tira_wishlist' (tableau d'ids), partagé entre les cards
+     de collection/homepage et la fiche produit. Auparavant deux systèmes
+     coexistaient (clé par titre vs tableau d'ids) et ne se voyaient pas.
+     Délégation sur document : couvre aussi les cards injectées par
+     "Charger plus", qui n'étaient jamais bindées. */
+  const WISHLIST_KEY = 'tira_wishlist';
+
+  function readWishlist() {
+    try { return JSON.parse(localStorage.getItem(WISHLIST_KEY) || '[]'); }
+    catch (e) { return []; }
+  }
+  function writeWishlist(list) {
+    localStorage.setItem(WISHLIST_KEY, JSON.stringify(list));
+  }
+  function wishKeyOf(btn) {
+    if (btn.dataset.productId) return String(btn.dataset.productId);
+    if (btn.dataset.productHandle) return String(btn.dataset.productHandle);
     const article = btn.closest('article');
     const nameEl = article && article.querySelector('.card__name');
-    if (!nameEl) return;
-    const key = 'tira-wish-' + nameEl.textContent.trim();
-    if (localStorage.getItem(key)) btn.classList.add('active');
-    btn.addEventListener('click', e => {
-      e.preventDefault();
-      btn.classList.toggle('active');
-      localStorage.setItem(key, btn.classList.contains('active') ? '1' : '');
+    return nameEl ? nameEl.textContent.trim() : null;
+  }
+
+  function paintWishlist() {
+    const list = readWishlist();
+    document.querySelectorAll('.card__wish, .prd-gallery__wish').forEach(btn => {
+      const key = wishKeyOf(btn);
+      if (key) btn.classList.toggle('active', list.indexOf(key) !== -1);
     });
+  }
+
+  document.addEventListener('click', e => {
+    const btn = e.target.closest && e.target.closest('.card__wish, .prd-gallery__wish');
+    if (!btn) return;
+    e.preventDefault();
+    const key = wishKeyOf(btn);
+    if (!key) return;
+    const list = readWishlist();
+    const i = list.indexOf(key);
+    if (i > -1) list.splice(i, 1); else list.push(key);
+    writeWishlist(list);
+    btn.classList.toggle('active', i === -1);
+    btn.setAttribute('aria-pressed', String(i === -1));
+    document.dispatchEvent(new CustomEvent('tira:wishlist:updated', { detail: list }));
   });
 
-  /* ════════ Join the Society form (Shopify newsletter) ════════ */
+  paintWishlist();
+  /* Repeindre après un "Charger plus" */
+  document.addEventListener('tira:grid:appended', paintWishlist);
+
+  /* ════════ Join the Society form (Shopify newsletter) ════════
+     La soumission est native ({% form 'customer' %}) : Shopify recharge la
+     page et Liquid affiche la confirmation via form.posted_successfully?.
+     On se contente de masquer le champ quand la confirmation est visible. */
   const societyForm = document.getElementById('society-form');
   if (societyForm) {
-    societyForm.addEventListener('submit', function (e) {
-      const emailInput = this.querySelector('input[type="email"]');
-      if (!emailInput || !emailInput.value.trim()) return;
-      e.preventDefault();
-      // Soumettre à Shopify via fetch (best-effort, sans rechargement)
-      const formData = new FormData(this);
-      fetch(this.getAttribute('action') || '/contact', { method: 'POST', body: formData })
-        .catch(() => {});
-      // Afficher la confirmation client-side immédiatement (UX fluide)
-      const confirmEl = this.querySelector('.society-crm__confirm');
-      const field = this.querySelector('.society-crm__field');
-      const gdpr  = this.querySelector('.society-crm__gdpr');
-      if (confirmEl) confirmEl.hidden = false;
+    const confirmEl = societyForm.querySelector('.society-crm__confirm');
+    if (confirmEl && !confirmEl.hidden) {
+      const field = societyForm.querySelector('.society-crm__field');
+      const gdpr  = societyForm.querySelector('.society-crm__gdpr');
       if (field) field.style.display = 'none';
       if (gdpr)  gdpr.style.display  = 'none';
-    });
+      confirmEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
   }
 
   /* ════════ Footer accordion (mobile) ════════ */
@@ -181,7 +219,7 @@
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') closeMobileMenu();
     });
-    const closeBtn = document.getElementById('mobile-nav-close');
+    const closeBtn = document.querySelector('[data-tira-menu-close], .mobile-nav__close');
     if (closeBtn) closeBtn.addEventListener('click', closeMobileMenu);
   }
 
@@ -234,22 +272,63 @@
     if (!form.matches('form[action*="/cart/add"]')) return;
     e.preventDefault();
     const btn = form.querySelector('[type="submit"]');
-    const originalLabel = btn ? btn.textContent : '';
+    /* innerHTML (pas textContent) : le bouton précommande contient un <span> de note */
+    const originalHTML = btn ? btn.innerHTML : '';
     if (btn) { btn.disabled = true; btn.textContent = '...'; }
+
+    function restoreBtn() {
+      if (btn) { btn.innerHTML = originalHTML; btn.disabled = false; }
+    }
 
     fetch('/cart/add.js', {
       method: 'POST',
       headers: { 'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams(new FormData(form)).toString()
     })
-      .then(r => r.json())
-      .then(() => fetch('/cart.js').then(r => r.json()))
+      /* Tester r.ok : un 422 (rupture, variante invalide) renvoie du JSON valide
+         et enchaînerait sinon sur le message de succès. */
+      .then(r => r.json().then(d => ({ ok: r.ok, d })))
+      .then(({ ok, d }) => {
+        if (!ok) throw new Error(d.description || d.message || 'add failed');
+        return fetch('/cart.js').then(r => r.json());
+      })
       .then(cart => {
-        if (btn) { btn.textContent = 'Ajouté ✓'; setTimeout(() => { btn.textContent = originalLabel; btn.disabled = false; }, 1800); }
-        document.querySelectorAll('[data-cart-count]').forEach(el => el.textContent = cart.item_count);
+        if (btn) { btn.textContent = 'Ajouté ✓'; setTimeout(restoreBtn, 1800); }
+        updateCartCount(cart.item_count);
         document.dispatchEvent(new CustomEvent('tira:cart:updated', { detail: cart }));
       })
-      .catch(() => { if (btn) { btn.textContent = originalLabel; btn.disabled = false; } });
+      .catch(err => {
+        if (btn) {
+          btn.textContent = 'Indisponible';
+          setTimeout(restoreBtn, 2200);
+        }
+        document.dispatchEvent(new CustomEvent('tira:cart:error', { detail: err }));
+      });
   });
+
+  /* Met à jour le compteur SANS détruire le picto sac.
+     [data-cart-count] est porté par le <a class="hdr__bag"> qui contient
+     l'<img> de l'icône : un textContent = N effacerait l'icône. */
+  function updateCartCount(count) {
+    document.querySelectorAll('[data-cart-count]').forEach(el => {
+      el.setAttribute('data-cart-count', count);
+      let badge = el.querySelector('.hdr__bag-count');
+      if (count > 0) {
+        if (!badge) {
+          badge = document.createElement('span');
+          badge.className = 'hdr__bag-count';
+          badge.setAttribute('aria-hidden', 'true');
+          el.appendChild(badge);
+        }
+        badge.textContent = count;
+      } else if (badge) {
+        badge.remove();
+      }
+      const label = el.getAttribute('aria-label');
+      if (label && /^Panier/.test(label)) {
+        el.setAttribute('aria-label', 'Panier — ' + count + ' article' + (count !== 1 ? 's' : ''));
+      }
+    });
+  }
 
 })();

@@ -392,14 +392,14 @@
         <p>Nous répondons sous 24h ouvrées</p>
       </div>
 
-      {%- if form.posted_successfully? -%}
-        <div class="ctt-form-success ctt-visible" role="status">
-          Votre message a bien été envoyé. Nous vous répondons sous 24h ouvrées.
-          À très bientôt chez TIRABOSCHI Paris.
-        </div>
-      {%- endif -%}
-
       {%- form 'contact', id: 'ctt-contact-form' -%}
+        {%- if form.posted_successfully? -%}
+          <div class="ctt-form-success ctt-visible" role="status">
+            Votre message a bien été envoyé. Nous vous répondons sous 24h ouvrées.
+            À très bientôt chez TIRABOSCHI Paris.
+          </div>
+        {%- endif -%}
+        {{ form.errors | default_errors }}
         <div class="ctt-form-row">
           <div class="ctt-form-group">
             <label for="ctt-prenom">Prénom</label>

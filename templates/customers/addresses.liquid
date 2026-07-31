@@ -1,4 +1,9 @@
-{% comment %} TIRABOSCHI · Addresses {% endcomment %}
+{% comment %}
+  TIRABOSCHI · Addresses
+  Édition/suppression en Liquid natif + vanilla JS.
+  Auparavant : appels à Shopify.CustomerAddress (fourni par shopify_common.js,
+  jamais chargé) → ReferenceError, aucune adresse éditable ni supprimable.
+{% endcomment %}
 <div class="tira-account-page">
   <a href="{{ routes.account_url }}" class="tira-account__back">← Mon compte</a>
   <h1 class="tira-account__title">Mes adresses</h1>
@@ -7,14 +12,33 @@
     {{ form.errors | default_errors }}
     <div class="tira-account__address-form">
       <h2>Nouvelle adresse</h2>
-      <div class="tira-form__field"><label>Prénom</label><input type="text" name="address[first_name]" value="{{ form.first_name }}"></div>
-      <div class="tira-form__field"><label>Nom</label><input type="text" name="address[last_name]" value="{{ form.last_name }}"></div>
-      <div class="tira-form__field"><label>Adresse</label><input type="text" name="address[address1]" value="{{ form.address1 }}"></div>
-      <div class="tira-form__field"><label>Complément</label><input type="text" name="address[address2]" value="{{ form.address2 }}"></div>
-      <div class="tira-form__field"><label>Ville</label><input type="text" name="address[city]" value="{{ form.city }}"></div>
-      <div class="tira-form__field"><label>Code postal</label><input type="text" name="address[zip]" value="{{ form.zip }}" autocapitalize="characters"></div>
-      <div class="tira-form__field"><label>Pays</label>
-        <select name="address[country]" id="AddressCountryNew" data-default="{{ form.country }}">{{ country_option_tags }}</select>
+      <div class="tira-form__field">
+        <label for="AddressFirstNameNew">Prénom</label>
+        <input type="text" id="AddressFirstNameNew" name="address[first_name]" value="{{ form.first_name }}" autocomplete="given-name">
+      </div>
+      <div class="tira-form__field">
+        <label for="AddressLastNameNew">Nom</label>
+        <input type="text" id="AddressLastNameNew" name="address[last_name]" value="{{ form.last_name }}" autocomplete="family-name">
+      </div>
+      <div class="tira-form__field">
+        <label for="AddressAddress1New">Adresse</label>
+        <input type="text" id="AddressAddress1New" name="address[address1]" value="{{ form.address1 }}" autocomplete="address-line1">
+      </div>
+      <div class="tira-form__field">
+        <label for="AddressAddress2New">Complément</label>
+        <input type="text" id="AddressAddress2New" name="address[address2]" value="{{ form.address2 }}" autocomplete="address-line2">
+      </div>
+      <div class="tira-form__field">
+        <label for="AddressCityNew">Ville</label>
+        <input type="text" id="AddressCityNew" name="address[city]" value="{{ form.city }}" autocomplete="address-level2">
+      </div>
+      <div class="tira-form__field">
+        <label for="AddressZipNew">Code postal</label>
+        <input type="text" id="AddressZipNew" name="address[zip]" value="{{ form.zip }}" autocapitalize="characters" autocomplete="postal-code">
+      </div>
+      <div class="tira-form__field">
+        <label for="AddressCountryNew">Pays</label>
+        <select name="address[country]" id="AddressCountryNew" data-default="{{ form.country }}" autocomplete="country">{{ country_option_tags }}</select>
       </div>
       <button type="submit" class="tira-account__btn">Enregistrer</button>
     </div>
@@ -35,12 +59,100 @@
           {% if address == customer.default_address %}
             <span class="tira-account__default-badge">Adresse par défaut</span>
           {% endif %}
+
           <div class="tira-account__address-actions">
-            <a href="#" onclick="Shopify.CustomerAddress.toggleForm('{{ address.id }}'); return false;">Modifier</a>
-            <a href="#" onclick="Shopify.CustomerAddress.destroy('{{ address.id }}', '{{ 'Êtes-vous sûr ?' }}'); return false;">Supprimer</a>
+            <button type="button" class="tira-account__link-btn"
+                    data-address-toggle="{{ address.id }}"
+                    aria-expanded="false"
+                    aria-controls="EditAddress-{{ address.id }}">Modifier</button>
+
+            {% form 'customer_address', address %}
+              <input type="hidden" name="_method" value="delete">
+              <button type="submit" class="tira-account__link-btn tira-account__link-btn--danger"
+                      data-address-delete>Supprimer</button>
+            {% endform %}
+          </div>
+
+          <div class="tira-account__address-edit" id="EditAddress-{{ address.id }}" hidden>
+            {% form 'customer_address', address %}
+              {{ form.errors | default_errors }}
+              <div class="tira-form__field">
+                <label for="AddressFirstName-{{ address.id }}">Prénom</label>
+                <input type="text" id="AddressFirstName-{{ address.id }}" name="address[first_name]" value="{{ address.first_name }}" autocomplete="given-name">
+              </div>
+              <div class="tira-form__field">
+                <label for="AddressLastName-{{ address.id }}">Nom</label>
+                <input type="text" id="AddressLastName-{{ address.id }}" name="address[last_name]" value="{{ address.last_name }}" autocomplete="family-name">
+              </div>
+              <div class="tira-form__field">
+                <label for="AddressAddress1-{{ address.id }}">Adresse</label>
+                <input type="text" id="AddressAddress1-{{ address.id }}" name="address[address1]" value="{{ address.address1 }}" autocomplete="address-line1">
+              </div>
+              <div class="tira-form__field">
+                <label for="AddressAddress2-{{ address.id }}">Complément</label>
+                <input type="text" id="AddressAddress2-{{ address.id }}" name="address[address2]" value="{{ address.address2 }}" autocomplete="address-line2">
+              </div>
+              <div class="tira-form__field">
+                <label for="AddressCity-{{ address.id }}">Ville</label>
+                <input type="text" id="AddressCity-{{ address.id }}" name="address[city]" value="{{ address.city }}" autocomplete="address-level2">
+              </div>
+              <div class="tira-form__field">
+                <label for="AddressZip-{{ address.id }}">Code postal</label>
+                <input type="text" id="AddressZip-{{ address.id }}" name="address[zip]" value="{{ address.zip }}" autocapitalize="characters" autocomplete="postal-code">
+              </div>
+              <div class="tira-form__field">
+                <label for="AddressCountry-{{ address.id }}">Pays</label>
+                <select name="address[country]" id="AddressCountry-{{ address.id }}" data-default="{{ address.country }}" autocomplete="country">{{ country_option_tags }}</select>
+              </div>
+              <div class="tira-form__field tira-form__field--check">
+                <input type="checkbox" id="AddressDefault-{{ address.id }}" name="address[default]" value="1"
+                       {% if address == customer.default_address %}checked{% endif %}>
+                <label for="AddressDefault-{{ address.id }}">Définir comme adresse par défaut</label>
+              </div>
+              <button type="submit" class="tira-account__btn">Mettre à jour</button>
+              <button type="button" class="tira-account__link-btn" data-address-cancel="{{ address.id }}">Annuler</button>
+            {% endform %}
           </div>
         </div>
       {% endfor %}
     </div>
   {% endif %}
 </div>
+
+<script>
+(function () {
+  /* Sélectionne le pays enregistré dans chaque <select> */
+  document.querySelectorAll('select[data-default]').forEach(function (sel) {
+    var d = sel.getAttribute('data-default');
+    if (d) sel.value = d;
+  });
+
+  /* Ouvre / ferme le formulaire d'édition */
+  function setOpen(id, open) {
+    var panel  = document.getElementById('EditAddress-' + id);
+    var toggle = document.querySelector('[data-address-toggle="' + id + '"]');
+    if (panel)  panel.hidden = !open;
+    if (toggle) toggle.setAttribute('aria-expanded', String(open));
+  }
+
+  document.querySelectorAll('[data-address-toggle]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var id = btn.getAttribute('data-address-toggle');
+      setOpen(id, btn.getAttribute('aria-expanded') !== 'true');
+    });
+  });
+
+  document.querySelectorAll('[data-address-cancel]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      setOpen(btn.getAttribute('data-address-cancel'), false);
+    });
+  });
+
+  /* Confirmation avant suppression */
+  document.querySelectorAll('[data-address-delete]').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      if (!window.confirm('Supprimer définitivement cette adresse ?')) e.preventDefault();
+    });
+  });
+})();
+</script>

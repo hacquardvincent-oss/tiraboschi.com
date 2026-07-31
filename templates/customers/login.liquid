@@ -1,6 +1,6 @@
 {% comment %} TIRABOSCHI · Login {% endcomment %}
 <div class="tira-account-page">
-  <div class="tira-account__form-wrap">
+  <div class="tira-account__form-wrap" id="login-form-main">
     <h1 class="tira-account__title">Connexion</h1>
     {% form 'customer_login' %}
       {{ form.errors | default_errors }}

@@ -40,9 +40,12 @@
     </div>
 
     <div class="society-crm__right">
-      <form id="society-form" action="{{ routes.root_url }}contact#contact_form" method="post" accept-charset="UTF-8" novalidate>
-        <input type="hidden" name="form_type" value="customer">
-        <input type="hidden" name="utf8" value="✓">
+      {%- comment -%}
+        {% form 'customer' %} et non un <form> brut : sans le tag Liquid,
+        l'objet `form` est nil et form.posted_successfully? ne s'evalue jamais
+        -> aucune confirmation d'inscription n'etait possible.
+      {%- endcomment -%}
+      {%- form 'customer', id: 'society-form' -%}
         <input type="hidden" name="contact[tags]" value="newsletter">
         <input type="hidden" name="contact[accepts_marketing]" value="yes">
 
@@ -68,10 +71,11 @@
           Vous pouvez vous désinscrire à tout moment.
         </p>
 
-        <p class="society-crm__confirm" aria-live="polite" hidden>
+        <p class="society-crm__confirm" aria-live="polite"
+           {% unless form.posted_successfully? %}hidden{% endunless %}>
           Bienvenue — votre inscription est confirmée.
         </p>
-      </form>
+      {%- endform -%}
     </div>
 
     {%- comment -%} ─── Bloc social Instagram ─── {%- endcomment -%}

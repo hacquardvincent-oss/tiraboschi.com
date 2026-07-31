@@ -5,6 +5,7 @@
 <section class="tira-cart" aria-label="Votre panier">
   <div class="tira-cart__inner">
     <h1 class="tira-cart__title">Votre sélection</h1>
+    <p class="tira-cart__error" id="tira-cart-error" role="alert" hidden></p>
 
     {%- if cart.item_count > 0 -%}
       <form action="{{ routes.cart_url }}" method="post" novalidate>
@@ -67,28 +68,49 @@
 
 <script>
 (function() {
+  /* Remonte les erreurs Shopify (stock insuffisant notamment).
+     Auparavant : .then(reload) sans test — la quantité revenait
+     silencieusement à sa valeur précédente, sans aucune explication. */
+  function showError(msg) {
+    var box = document.getElementById('tira-cart-error');
+    if (!box) return;
+    box.textContent = msg;
+    box.hidden = false;
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function changeQty(key, qty, btn) {
+    if (btn) btn.disabled = true;
+    fetch('/cart/change.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ id: key, quantity: qty })
+    })
+      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+      .then(function (res) {
+        if (!res.ok) {
+          throw new Error(res.d.description || res.d.message || 'Modification impossible.');
+        }
+        location.reload();
+      })
+      .catch(function (err) {
+        if (btn) btn.disabled = false;
+        showError(err.message || 'Une erreur est survenue. Merci de réessayer.');
+      });
+  }
+
   document.querySelectorAll('.tira-cart__qty-btn').forEach(function(btn) {
     btn.addEventListener('click', function() {
-      var key = this.dataset.key;
-      var action = this.dataset.action;
       var qtyEl = this.closest('.tira-cart__qty').querySelector('.tira-cart__qty-num');
-      var qty = parseInt(qtyEl.textContent) + (action === 'increase' ? 1 : -1);
+      var qty = parseInt(qtyEl.textContent, 10) + (this.dataset.action === 'increase' ? 1 : -1);
       if (qty < 0) qty = 0;
-      fetch('/cart/change.js', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: key, quantity: qty })
-      }).then(function() { location.reload(); });
+      changeQty(this.dataset.key, qty, this);
     });
   });
+
   document.querySelectorAll('.tira-cart__remove').forEach(function(btn) {
     btn.addEventListener('click', function() {
-      var key = this.dataset.key;
-      fetch('/cart/change.js', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: key, quantity: 0 })
-      }).then(function() { location.reload(); });
+      changeQty(this.dataset.key, 0, this);
     });
   });
 })();

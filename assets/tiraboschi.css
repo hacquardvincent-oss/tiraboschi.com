@@ -1733,9 +1733,11 @@ body.hdr-hidden .col-filters {
   .prd-vdots { display: flex; }
   .prd-gallery__wish { display: flex; }
   .prd-details-trigger { display: flex; }
-  /* Trust + accordion masqués dans le flux normal → panel */
-  .prd-trust { display: none; }
-  .prd-accordion { display: none; }
+  /* Trust + accordion masqués dans le flux normal → panel.
+     Scopé à .prd-info : sans ça la règle frappait aussi l'accordéon
+     situé DANS le panneau "Détails du produit", qui s'ouvrait vide. */
+  .prd-info > .prd-trust { display: none; }
+  .prd-info > .prd-accordion { display: none; }
   /* Swatches : petits carrés scroll horizontal */
   .prd-colors__swatches {
     display: flex;
@@ -2820,3 +2822,133 @@ body.hdr-hidden .col-filters {
   will-change: opacity;
 }
 #tira-page-overlay.active { opacity: 1; pointer-events: all; }
+
+/* ═══════════════════════════════════════════════════════════════
+   CORRECTIFS RECETTE — vague 1
+   Classes émises par le Liquid qui n'avaient aucune règle CSS.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Utilitaire d'accessibilité ──
+   Utilisée par tira-newsletter-popup et tira-search. Non définie
+   jusqu'ici (base.css d'Horizon n'est pas chargé) : les libellés
+   "Email" et "Rechercher" s'affichaient en clair. */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%);
+  white-space: nowrap; border: 0;
+}
+
+/* ── Prix promotionnel sur les cards collection ──
+   Le Liquid émet ces deux classes ; sans style les deux prix
+   s'affichaient côte à côte, même taille, sans barré. */
+.card__price--sale { color: var(--tira-black); }
+.card__price--compare {
+  opacity: .35;
+  text-decoration: line-through;
+  margin-left: 8px;
+}
+
+/* ── Labels des filtres collection ──
+   Le sélecteur historique exigeait un <ul><li>, absent du markup.
+   Les options s'affichaient en texte navigateur brut. */
+.col-filter-panel > .col-filter-check,
+.col-filter-panel li label {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 11px; text-transform: uppercase; letter-spacing: .08em;
+  cursor: pointer; opacity: .65;
+  transition: opacity .2s;
+  padding: 8px 0;               /* cible tactile */
+}
+.col-filter-panel > .col-filter-check:hover,
+.col-filter-panel li label:hover { opacity: 1; }
+.col-filter-panel > .col-filter-check input[type="checkbox"] {
+  width: 13px; height: 13px;
+  accent-color: var(--tira-black);
+  flex-shrink: 0; margin: 0;
+}
+
+/* ── Badges card : hiérarchie visuelle ──
+   --sold et --pre étaient rendus identiques au badge "Nouveau". */
+.card__badge--sold {
+  background: var(--tira-white);
+  color: var(--tira-black);
+  border: 1px solid var(--tira-border);
+  opacity: .75;
+}
+.card__badge--pre {
+  background: var(--tira-white);
+  color: var(--tira-black);
+  border: 1px solid var(--tira-black);
+}
+
+/* ── Message collection vide ── */
+.tira-empty {
+  grid-column: 1 / -1;
+  padding: 80px 0;
+  text-align: center;
+  font-size: 13px; font-style: italic;
+  opacity: .4;
+}
+
+/* ── Contrastes WCAG ──
+   Texte fonctionnel remonté au-dessus du seuil lisible.
+   Les opacités très basses restent réservées au décoratif. */
+.footer__copy,
+.footer__policies a { opacity: .55; }
+.footer__sitemap-links { opacity: .5; }
+.tira-cart__remove { opacity: .6; }
+.card__type, .card__meta,
+.col-filters__count,
+.story-specs-table th { opacity: .6; }
+.tira-blog__card-date, .tira-blog__label { opacity: .55; }
+
+/* ── Cibles tactiles ≥ 44px sur mobile ── */
+@media (hover: none) {
+  .card__wish,
+  .nl-popup__close,
+  .mobile-nav__close,
+  .filter-sheet__close,
+  .prd-details-panel__close,
+  .tira-cart__qty-btn {
+    min-width: 44px; min-height: 44px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .footer__col ul a { display: inline-block; padding: 6px 0; }
+}
+.hdr__m > a,
+.hdr__m > button {
+  display: flex; align-items: center; justify-content: center;
+  min-width: 44px; min-height: 44px;
+}
+
+/* ── Espace client : actions sur les adresses ── */
+.tira-account__address-actions { display: flex; align-items: center; gap: 20px; margin-top: 12px; }
+.tira-account__address-actions form { display: inline; }
+.tira-account__link-btn {
+  background: none; border: none; padding: 0;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 11px; text-transform: uppercase; letter-spacing: .12em;
+  color: var(--tira-black); text-decoration: underline; text-underline-offset: 3px;
+  cursor: pointer; opacity: .6; transition: opacity .2s;
+}
+.tira-account__link-btn:hover { opacity: 1; }
+.tira-account__link-btn--danger:hover { color: #8b2020; }
+.tira-account__address-edit {
+  margin-top: 24px; padding-top: 24px;
+  border-top: 1px solid var(--tira-border);
+}
+.tira-form__field--check { display: flex; align-items: center; gap: 10px; }
+.tira-form__field--check input { width: 13px; height: 13px; accent-color: var(--tira-black); }
+.tira-form__field--check label { margin: 0; }
+
+/* ── Panier : message d'erreur (stock insuffisant, etc.) ── */
+.tira-cart__error {
+  margin: 16px 0 0;
+  padding: 14px 18px;
+  border: 1px solid #8b2020;
+  color: #8b2020;
+  font-size: 12px; letter-spacing: .02em;
+}

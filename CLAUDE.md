@@ -37,6 +37,26 @@ THÈME LIVE    → ID 187554070871 (Phantom)       ← NE JAMAIS TOUCHER
 THÈME DE TEST → ID 199706411351 (tiraboschibespoke) ← Travailler ICI uniquement
 ```
 
+### 📍 Où vit le code — source de vérité unique
+
+```
+Branche de travail : shopify-deploy-local  →  push vers origin/shopify-deploy
+Emplacement du thème : LA RACINE du dépôt (assets/ sections/ snippets/ templates/ layout/)
+```
+
+**Une seule copie du thème existe.** Le dossier `shopify-theme-tiraboschi/` a été
+supprimé le 31/07/2026 : c'était un doublon désynchronisé (26 fichiers divergents)
+qui a fait auditer et corriger du code mort. Ne jamais le recréer.
+
+`shopify-theme/` = export Horizon d'origine, référence en lecture seule uniquement.
+
+**Avant toute modification** : vérifier `git branch --show-current` et l'existence
+de `sections/` à la racine. Si `sections/` n'est pas à la racine, la mauvaise
+branche est active :
+```bash
+git fetch origin && git checkout -B shopify-deploy-local origin/shopify-deploy
+```
+
 ---
 
 ## SETUP SHOPIFY CLI (référence uniquement — non utilisé)
@@ -1312,6 +1332,21 @@ Avant tout push sur thème test :
 □ Mobile : sticky ATC visible
 □ Mobile : bottom sheet filtres fonctionne
 □ Pas d'erreurs console
+
+Règles structurelles (à l'origine de bugs réels — recette 31/07/2026) :
+□ UNE seule convention de reveal : data-reveal/data-tira-reveal observés par
+  tiraboschi.js, qui pose 'visible' ET 'is-visible'. Ne jamais réimplémenter
+  un IntersectionObserver ou un word-split dans un <script> inline de section.
+□ Aucun <script> inline de section ne doit utiliser un sélecteur GLOBAL déjà
+  traité par tiraboschi.js ([data-words], .card__wish, [data-reveal]...) :
+  le double traitement casse le rendu.
+□ Commentaires Liquid = {% comment %}, JAMAIS {# #} (syntaxe Jinja, émise
+  littéralement — a invalidé tout le JSON-LD du site).
+□ Tout {% if form.posted_successfully? %} doit être À L'INTÉRIEUR du {% form %}
+  (hors du bloc, l'objet form est nil et la confirmation ne s'affiche jamais).
+□ Ne jamais faire textContent= sur un élément qui contient une icône
+  (ex: [data-cart-count] porte l'<img> du picto sac).
+□ Toute classe utilisée en Liquid doit avoir une règle CSS — sinon élément nu.
 ```
 
 ---

@@ -467,13 +467,13 @@
     {%- endfor -%}
 
     {%- if is_private -%}
-      {# ════════════════════════════════════════════════════
+      {%- comment -%} ════════════════════════════════════════════════════
          PORTAIL PRIVÉ — client autorisé
-         ════════════════════════════════════════════════════ #}
+         ════════════════════════════════════════════════════ {%- endcomment -%}
 
       {%- assign ep_coll = collections['espace-prive'] -%}
 
-      {# Welcome hero #}
+      {%- comment -%} Welcome hero {%- endcomment -%}
       <div class="ep-welcome" data-tira-dark-hero>
         <span class="ep-welcome__filigree" aria-hidden="true">Privé</span>
         <p class="ep-welcome__eyebrow">Espace Privé · TIRABOSCHI Paris</p>
@@ -487,14 +487,14 @@
         </div>
       </div>
 
-      {# Navigation interne #}
+      {%- comment -%} Navigation interne {%- endcomment -%}
       <nav class="ep-nav" aria-label="Espace privé">
         <button class="ep-nav__item is-active" data-ep-nav="catalogue" type="button">Catalogue Exceptionnel</button>
         <button class="ep-nav__item" data-ep-nav="order" type="button">Réserver une Pièce</button>
         <button class="ep-nav__item" data-ep-nav="bespoke" type="button">Pièce Unique</button>
       </nav>
 
-      {# ── Section 1 : Catalogue ── #}
+      {%- comment -%} ── Section 1 : Catalogue ── {%- endcomment -%}
       <div class="ep-section is-active" id="ep-section-catalogue">
         <div class="ep-catalogue">
           <div class="ep-catalogue__header" data-tira-reveal>
@@ -543,7 +543,7 @@
         </div>
       </div>
 
-      {# ── Section 2 : Réserver une pièce ── #}
+      {%- comment -%} ── Section 2 : Réserver une pièce ── {%- endcomment -%}
       <div class="ep-section" id="ep-section-order">
         <div class="ep-order">
           <div class="ep-order__header" data-tira-reveal>
@@ -644,7 +644,7 @@
           {%- endform -%}
         </div>
 
-        {# Concierge block #}
+        {%- comment -%} Concierge block {%- endcomment -%}
         <div class="ep-concierge">
           <div class="ep-concierge__text">
             <p class="ep-concierge__eyebrow">Votre Conseiller Privé</p>
@@ -671,7 +671,7 @@
         </div>
       </div>
 
-      {# ── Section 3 : Pièce Unique Sur Mesure ── #}
+      {%- comment -%} ── Section 3 : Pièce Unique Sur Mesure ── {%- endcomment -%}
       <div class="ep-section" id="ep-section-bespoke">
         <div class="ep-bespoke">
           <div class="ep-bespoke__header" data-tira-reveal>
@@ -815,9 +815,9 @@
       </div>
 
     {%- else -%}
-      {# ════════════════════════════════════════════════════
+      {%- comment -%} ════════════════════════════════════════════════════
          CONNECTÉ — accès en cours de traitement
-         ════════════════════════════════════════════════════ #}
+         ════════════════════════════════════════════════════ {%- endcomment -%}
       <div class="ep-pending" data-tira-dark-hero>
         <div class="ep-pending__icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
@@ -835,9 +835,9 @@
     {%- endif -%}
 
   {%- else -%}
-    {# ════════════════════════════════════════════════════
+    {%- comment -%} ════════════════════════════════════════════════════
        NON CONNECTÉ — porte d'entrée
-       ════════════════════════════════════════════════════ #}
+       ════════════════════════════════════════════════════ {%- endcomment -%}
     <div class="ep-gate" data-tira-dark-hero>
       <span class="ep-gate__filigree" aria-hidden="true">Privé</span>
       <div class="ep-gate__content">
@@ -856,7 +856,7 @@
       </div>
     </div>
 
-    {# Formulaire demande d'accès #}
+    {%- comment -%} Formulaire demande d'accès {%- endcomment -%}
     <div class="ep-request" id="ep-request-section">
       <div class="ep-request__inner">
         <p style="font-size:11px;text-transform:uppercase;letter-spacing:.18em;color:rgba(255,255,255,.4);margin-bottom:40px;">

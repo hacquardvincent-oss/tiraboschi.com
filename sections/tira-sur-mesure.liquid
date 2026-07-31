@@ -458,10 +458,14 @@
     <div class="surm-form__inner">
       <span class="surm-form__label" data-reveal>Prendre rendez-vous</span>
       <h2 class="surm-form__title" data-reveal>Rencontrons-nous</h2>
-      <form action="/contact" method="POST" data-reveal>
-        {%- comment -%} Champ caché requis par Shopify Contact Form {%- endcomment -%}
-        <input type="hidden" name="form_type" value="contact">
-        <input type="hidden" name="utf8" value="✓">
+      {%- form 'contact', id: 'surm-contact-form', class: 'surm-form__form' -%}
+        {%- if form.posted_successfully? -%}
+          <p class="surm-form__success" role="status">
+            Votre demande de rendez-vous a bien été envoyée.
+            Nous vous recontactons sous 48h ouvrées.
+          </p>
+        {%- endif -%}
+        {{ form.errors | default_errors }}
         <input type="hidden" name="contact[tags]" value="sur-mesure,rdv">
 
         <div class="surm-form__row">
@@ -517,7 +521,7 @@
         <button class="surm-form__submit" type="submit">
           Demander un rendez-vous
         </button>
-      </form>
+      {%- endform -%}
     </div>
   </section>
 

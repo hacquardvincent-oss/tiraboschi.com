@@ -126,12 +126,23 @@
         {%- comment -%} Inputs cachés — pour le formulaire + JS sync {%- endcomment -%}
         <div id="prd-swatches" aria-hidden="true" style="display:none">
           {%- for variant in product.variants -%}
+            {%- comment -%} Index de l'image de la variante dans product.images {%- endcomment -%}
+            {%- assign v_img_idx = -1 -%}
+            {%- if variant.image -%}
+              {%- for img in product.images -%}
+                {%- if img.id == variant.image.id -%}
+                  {%- assign v_img_idx = forloop.index0 -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endif -%}
             <input type="radio"
                    name="variant"
                    value="{{ variant.id }}"
                    data-variant-id="{{ variant.id }}"
                    data-variant-title="{{ variant.title | escape }}"
                    data-variant-price="{%- if customer -%}{{ variant.price | money }}{%- else -%}—{%- endif -%}"
+                   data-variant-compare="{%- if customer and variant.compare_at_price > variant.price -%}{{ variant.compare_at_price | money }}{%- endif -%}"
+                   data-variant-imgidx="{{ v_img_idx }}"
                    {% if variant.id == current_variant.id %}checked{% endif %}
                    {% unless variant.available %}disabled{% endunless %}>
           {%- endfor -%}
@@ -424,7 +435,7 @@
                 type="button"
                 data-variant-id="{{ variant.id }}"
                 data-variant-title="{{ variant.title | escape }}"
-                data-variant-price="{{ variant.price | money }}"
+                data-variant-price="{%- if customer -%}{{ variant.price | money }}{%- else -%}—{%- endif -%}"
                 {%- if s_img -%}
                   data-variant-img="{{ s_img | image_url: width: 88, height: 88, crop: 'center' }}"
                 {%- endif -%}
@@ -656,7 +667,7 @@
           <button class="prd-volet-sw{% if variant.id == current_variant.id %} active{% endif %}"
                   data-variant-id="{{ variant.id }}"
                   data-variant-title="{{ variant.title | escape }}"
-                  data-variant-price="{{ variant.price | money }}"
+                  data-variant-price="{%- if customer -%}{{ variant.price | money }}{%- else -%}—{%- endif -%}"
                   aria-label="{{ variant.title | escape }}"
                   {% unless variant.available %}disabled{% endunless %}>
             <span class="prd-volet-sw__dot"{% if sw_color != blank %} style="background:{{ sw_color }};"{% endif %}></span>
@@ -708,23 +719,68 @@
   var voletPrice       = document.getElementById('volet-price');
   var voletVariantName = document.getElementById('volet-variant-name');
 
+  /* Fait défiler les galeries jusqu'à l'image de la variante.
+     data-variant-img vaut -1 si la variante n'a pas d'image dédiée. */
+  function syncGallery(imgIdx) {
+    var idx = parseInt(imgIdx, 10);
+    if (isNaN(idx) || idx < 0) return;
+
+    var deskTarget = document.querySelector('.prd-gallery__img[data-img="' + idx + '"]');
+    var gallery    = document.getElementById('prd-gallery');
+    if (deskTarget && gallery && gallery.offsetParent !== null) {
+      gallery.scrollTo({ top: deskTarget.offsetTop - gallery.offsetTop, behavior: 'smooth' });
+    }
+
+    var mobTarget = document.getElementById('vimg-' + idx);
+    if (mobTarget && mobTarget.offsetParent !== null) {
+      mobTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  /* Reconstruit le prix en préservant le balisage promo (prix barré). */
+  function renderPrice(el, price, compare) {
+    if (!el) return;
+    if (compare) {
+      el.innerHTML = '<span class="prd-price--sale"></span> <span class="prd-price--compare"></span>';
+      el.querySelector('.prd-price--sale').textContent = price;
+      el.querySelector('.prd-price--compare').textContent = compare;
+    } else {
+      el.textContent = price;
+    }
+  }
+
+  /* Point d'entrée unique — utilisé par le Cover Flow, le volet et la sheet. */
+  function applyVariant(radio) {
+    if (!radio) return;
+    var d = radio.dataset;
+    if (variantInput) variantInput.value = d.variantId;
+    if (variantTitle) variantTitle.textContent = d.variantTitle;
+    if (window.TIRA_SHOW_PRICE) {
+      renderPrice(priceDisplay, d.variantPrice, d.variantCompare);
+      if (voletPrice) voletPrice.textContent = d.variantPrice;
+    }
+    if (voletVariantName) voletVariantName.textContent = d.variantTitle;
+
+    document.querySelectorAll('.prd-volet-sw').forEach(function(b) {
+      b.classList.toggle('active', b.dataset.variantId === d.variantId);
+    });
+    document.querySelectorAll('.prd-swatch-sheet__item').forEach(function(b) {
+      b.classList.toggle('active', b.dataset.variantId === d.variantId);
+    });
+
+    syncGallery(d.variantImgidx);
+
+    /* URL canonique de variante — attendu par la checklist SEO */
+    if (window.history && history.replaceState) {
+      var u = new URL(window.location.href);
+      u.searchParams.set('variant', d.variantId);
+      history.replaceState({}, '', u);
+    }
+  }
+
   swatches.forEach(function(sw) {
     sw.addEventListener('change', function() {
-      if (!this.checked) return;
-      var id    = this.dataset.variantId;
-      var title = this.dataset.variantTitle;
-      var price = this.dataset.variantPrice;
-      if (variantInput)    variantInput.value = id;
-      if (variantTitle)    variantTitle.textContent = title;
-      if (priceDisplay)    priceDisplay.textContent = price;
-      if (voletPrice && window.TIRA_SHOW_PRICE) voletPrice.textContent = price;
-      if (voletVariantName) voletVariantName.textContent = title;
-      document.querySelectorAll('.prd-swatch').forEach(function(s) { s.classList.remove('active'); });
-      this.closest('.prd-swatch').classList.add('active');
-      /* Sync volet swatches */
-      document.querySelectorAll('.prd-volet-sw').forEach(function(b) {
-        b.classList.toggle('active', b.dataset.variantId === id);
-      });
+      if (this.checked) applyVariant(this);
     });
   });
 
@@ -744,24 +800,12 @@
   /* ── Volet : sélection variante depuis le drawer ── */
   document.querySelectorAll('.prd-volet-sw').forEach(function(btn) {
     btn.addEventListener('click', function() {
-      var id    = this.dataset.variantId;
-      var title = this.dataset.variantTitle;
-      var price = this.dataset.variantPrice;
-      if (variantInput)     variantInput.value = id;
-      if (variantTitle)     variantTitle.textContent = title;
-      if (priceDisplay)     priceDisplay.textContent = price;
-      if (voletPrice && window.TIRA_SHOW_PRICE) voletPrice.textContent = price;
-      if (voletVariantName) voletVariantName.textContent = title;
-      /* Sync desktop swatches */
-      var radio = document.querySelector('#prd-swatches input[data-variant-id="' + id + '"]');
-      if (radio) {
-        radio.checked = true;
-        document.querySelectorAll('.prd-swatch').forEach(function(s) { s.classList.remove('active'); });
-        radio.closest('.prd-swatch') && radio.closest('.prd-swatch').classList.add('active');
-      }
-      document.querySelectorAll('.prd-volet-sw').forEach(function(b) {
-        b.classList.toggle('active', b.dataset.variantId === id);
-      });
+      /* Passe par le radio caché : il porte data-variant-img et data-variant-compare,
+         et son 'change' resynchronise le Cover Flow. */
+      var radio = document.querySelector('#prd-swatches input[data-variant-id="' + this.dataset.variantId + '"]');
+      if (!radio || radio.disabled) return;
+      radio.checked = true;
+      radio.dispatchEvent(new Event('change', { bubbles: true }));
     });
   });
 
@@ -854,36 +898,17 @@
   document.querySelectorAll('.prd-swatch-sheet__item').forEach(function(item) {
     item.addEventListener('click', function() {
       if (this.getAttribute('aria-disabled') === 'true') return;
-      var id    = this.dataset.variantId;
-      var title = this.dataset.variantTitle;
-      var price = this.dataset.variantPrice;
-      var img   = this.dataset.variantImg;
 
-      /* Mettre à jour le formulaire principal */
-      if (variantInput)     variantInput.value = id;
-      if (variantTitle)     variantTitle.textContent = title;
-      if (priceDisplay)     priceDisplay.textContent = price;
-      if (voletPrice && window.TIRA_SHOW_PRICE) voletPrice.textContent = price;
-      if (voletVariantName) voletVariantName.textContent = title;
+      /* Trigger visuel propre à la sheet (image + nom) */
+      if (triggerImg && this.dataset.variantImg) triggerImg.src = this.dataset.variantImg;
+      if (triggerName) triggerName.textContent = this.dataset.variantTitle;
 
-      /* Mettre à jour le trigger (image + nom) */
-      if (triggerImg && img) triggerImg.src = img;
-      if (triggerName)       triggerName.textContent = title;
-
-      /* Synchroniser la grille desktop */
-      var radio = document.querySelector('#prd-swatches input[data-variant-id="' + id + '"]');
-      if (radio) {
+      /* Le reste passe par applyVariant via le radio caché */
+      var radio = document.querySelector('#prd-swatches input[data-variant-id="' + this.dataset.variantId + '"]');
+      if (radio && !radio.disabled) {
         radio.checked = true;
-        document.querySelectorAll('.prd-swatch').forEach(function(s) { s.classList.remove('active'); });
-        radio.closest('.prd-swatch') && radio.closest('.prd-swatch').classList.add('active');
+        radio.dispatchEvent(new Event('change', { bubbles: true }));
       }
-
-      /* Marquer l'item actif dans le volet */
-      document.querySelectorAll('.prd-swatch-sheet__item').forEach(function(s) { s.classList.remove('active'); });
-      this.classList.add('active');
-      document.querySelectorAll('.prd-volet-sw').forEach(function(b) {
-        b.classList.toggle('active', b.dataset.variantId === id);
-      });
 
       closeSwatchSheet();
     });
@@ -923,20 +948,10 @@
     });
   });
 
-  /* ── Wishlist (mobile + localStorage) ── */
-  var wishBtn = document.getElementById('prd-gallery-wish');
-  if (wishBtn) {
-    var pid = wishBtn.dataset.productId;
-    var wl  = JSON.parse(localStorage.getItem('tira_wishlist') || '[]');
-    if (wl.includes(pid)) wishBtn.classList.add('active');
-    wishBtn.addEventListener('click', function() {
-      wl = JSON.parse(localStorage.getItem('tira_wishlist') || '[]');
-      var idx = wl.indexOf(pid);
-      if (idx > -1) { wl.splice(idx, 1); wishBtn.classList.remove('active'); }
-      else          { wl.push(pid);      wishBtn.classList.add('active'); }
-      localStorage.setItem('tira_wishlist', JSON.stringify(wl));
-    });
-  }
+  /* ── Wishlist ──
+     Gérée globalement par assets/tiraboschi.js (délégation + store unique
+     'tira_wishlist'). Le handler local a été retiré : il doublonnait le
+     handler global sur le même bouton, chaque clic s'annulait donc lui-même. */
 
   /* ESC ferme les panels */
   document.addEventListener('keydown', function(e) {

@@ -451,13 +451,13 @@
     <div class="ent-form-inner">
       <h2 class="ent-form-title" data-reveal>Demander un bilan</h2>
 
-      {%- if form.posted_successfully? -%}
-        <p class="ent-form-success" role="status">
-          Votre demande a bien été envoyée — nous vous répondrons sous 48h ouvrées.
-        </p>
-      {%- endif -%}
-
       {%- form 'contact', id: 'ent-contact-form' -%}
+        {%- if form.posted_successfully? -%}
+          <p class="ent-form-success" role="status">
+            Votre demande a bien été envoyée — nous vous répondrons sous 48h ouvrées.
+          </p>
+        {%- endif -%}
+        {{ form.errors | default_errors }}
         <div class="ent-form-row">
           <div class="ent-form-field">
             <label for="ent-prenom">Prénom</label>

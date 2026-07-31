@@ -733,7 +733,11 @@
       {%- assign pieces_total = section.settings.drop_pieces_total | plus: 0 -%}
       {%- assign pieces_left  = section.settings.drop_pieces_left  | plus: 0 -%}
       {%- assign pieces_reserved = pieces_total | minus: pieces_left -%}
-      {%- assign fill_pct = pieces_reserved | times: 100 | divided_by: pieces_total -%}
+      {%- comment -%} Garde : drop_pieces_total est un setting texte, vide ou 0 → Liquid error {%- endcomment -%}
+      {%- assign fill_pct = 0 -%}
+      {%- if pieces_total > 0 -%}
+        {%- assign fill_pct = pieces_reserved | times: 100 | divided_by: pieces_total -%}
+      {%- endif -%}
 
       <div class="drp-active__grid">
         <div class="drp-active__img-col" aria-hidden="true">
@@ -1117,30 +1121,10 @@
 (function() {
   'use strict';
 
-  /* ── Reveal ── */
-  var revealEls = document.querySelectorAll('[data-reveal]');
-  var wordsEls  = document.querySelectorAll('[data-words]');
-
-  wordsEls.forEach(function(el) {
-    el.innerHTML = el.textContent.split(' ')
-      .map(function(w, i) { return '<span style="--i:' + i + '">' + w + '</span>'; })
-      .join(' ');
-  });
-
-  var allReveal = Array.from(revealEls).concat(Array.from(wordsEls));
-  if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function(entries) {
-      entries.forEach(function(e) {
-        if (e.isIntersecting) {
-          e.target.classList.add('is-visible');
-          io.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.12 });
-    allReveal.forEach(function(el) { io.observe(el); });
-  } else {
-    allReveal.forEach(function(el) { el.classList.add('is-visible'); });
-  }
+  /* ── Reveal ──
+     Word-split et IntersectionObserver retirés : assets/tiraboschi.js les gère
+     déjà globalement et pose 'visible' + 'is-visible'. Le doublon re-découpait
+     du HTML déjà balisé et affichait des fragments de code dans les titres. */
 
   /* ── Countdown ── */
   function pad(n) { return String(n).padStart(2, '0'); }
