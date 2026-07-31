@@ -31,7 +31,11 @@
   --content-top:   calc(var(--header-h) + var(--search-h));
 }
 @media (min-width: 1201px) {
-  :root { --content-top: var(--header-h); }
+  /* Sur desktop la search bar externe est masquée (elle est intégrée au
+     header). On met --search-h à 0 plutôt que de corriger --content-top
+     seul : une douzaine de règles calculent `--header-h + --search-h`
+     directement, et réservaient donc 44px de vide sous le header. */
+  :root { --search-h: 0px; --content-top: var(--header-h); }
 }
 
 body {
@@ -324,7 +328,7 @@ body.on-dark .hdr__m .tira-bag-icon { filter: brightness(0) invert(1); }
   height: var(--search-h); padding: 0 40px;
   background: transparent;
   border-bottom: 1px solid rgba(255,255,255,.15);
-  transition: top .35s var(--tira-ease),
+  transition: transform .35s var(--tira-ease),
               background .5s ease,
               border-color .5s ease,
               backdrop-filter .5s ease;
@@ -333,12 +337,12 @@ body.on-dark .hdr__m .tira-bag-icon { filter: brightness(0) invert(1); }
   background: var(--tira-white);
   border-bottom: 1px solid var(--tira-border);
 }
-.hdr-search.sticky-mode {
-  top: 0;
-  background: rgba(255,255,255,0.88);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--tira-border);
+/* La search bar suit le header : elle se rétracte AVEC lui.
+   Auparavant elle passait en `sticky-mode` (top:0 + fond blanc) pendant
+   que le header remontait — d'où une bande blanche inexpliquée en haut
+   de l'écran. Le cahier des charges la spécifie non-sticky. */
+.hdr-search.hidden {
+  transform: translateY(calc(-1 * (var(--header-h) + var(--search-h))));
 }
 /* Variante : barre search toujours solide (pages internes, fiche produit) */
 .hdr-search--always-solid {
@@ -2951,4 +2955,49 @@ body.hdr-hidden .col-filters {
   border: 1px solid #8b2020;
   color: #8b2020;
   font-size: 12px; letter-spacing: .02em;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MOMENT 01 — Transition morphée entre les pages
+   L'image de la carte se déplace et grandit jusqu'à devenir le
+   visuel de la fiche produit, au lieu d'un fondu blanc.
+   Repli automatique en fondu sur les navigateurs sans support.
+   ═══════════════════════════════════════════════════════════════ */
+@view-transition { navigation: auto; }
+
+/* Fondu de fond, court et discret : le sujet, c'est l'image qui bouge */
+::view-transition-old(root) { animation: tira-vt-out .28s var(--tira-ease) both; }
+::view-transition-new(root) { animation: tira-vt-in  .42s var(--tira-ease) .06s both; }
+@keyframes tira-vt-out { to   { opacity: 0; } }
+@keyframes tira-vt-in  { from { opacity: 0; } }
+
+/* L'élément qui morphe — nom posé par le JS sur la seule carte cliquée */
+.is-morphing { view-transition-name: tira-piece; }
+
+::view-transition-group(tira-piece) {
+  animation-duration: .72s;
+  animation-timing-function: var(--tira-ease);
+}
+::view-transition-old(tira-piece),
+::view-transition-new(tira-piece) {
+  /* Les deux visuels se superposent pendant le trajet : pas de clignotement */
+  mix-blend-mode: normal;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) { animation: none !important; }
+}
+
+/* Cible d'arrivée du morphing : la première image de la galerie produit.
+   Scopé par breakpoint — les deux galeries (desktop + mobile) coexistent
+   dans le DOM, et deux éléments portant le même nom annulent la transition. */
+@media (min-width: 901px) {
+  .prd-gallery__img[data-img="0"] { view-transition-name: tira-piece; }
+}
+@media (max-width: 900px) {
+  .prd-vgallery__img:first-child { view-transition-name: tira-piece; }
 }

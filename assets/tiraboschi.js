@@ -9,57 +9,55 @@
   const noMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isDesktop = window.matchMedia('(hover: hover)').matches;
 
-  /* ════════ Header : transparent → opaque, sticky directionnel ════════ */
+  /* ════════ Header ════════════════════════════════════════════════════
+     UNE seule règle, appliquée partout :
+
+     • La page a un hero sombre plein cadre ([data-tira-dark-hero] ou la
+       homepage) → header transparent au-dessus, puis solide après le seuil.
+     • Sinon → header solide dès le chargement.
+
+     Sans cette distinction, le header flottait sans fond sur les pages
+     éditoriales : rien ne le séparait du contenu, il paraissait absent.
+
+     La search bar suit le header au lieu de passer en position collée :
+     elles se rétractent et reviennent ensemble.
+  ═══════════════════════════════════════════════════════════════════════ */
   const hdr = document.getElementById('hdr');
   const search = document.getElementById('hdr-search');
   const isHome = document.body.classList.contains('template-index');
+  const hasDarkHero = isHome || document.querySelector('[data-tira-dark-hero]') !== null;
   let lastScrollY = window.scrollY;
   let ticking = false;
   let lastDir = 'up';
 
+  function setHidden(hidden) {
+    hdr.classList.toggle('hidden', hidden);
+    if (search) search.classList.toggle('hidden', hidden);
+    document.body.classList.toggle('hdr-hidden', hidden);
+  }
+
   function updateHeader() {
     if (!hdr) { ticking = false; return; }
     const y = window.scrollY;
-    const heroH = window.innerHeight;
 
-    /* 1. Transparent ↔ solid — sur toutes les pages (seuil 80px hors homepage) */
-    const threshold = isHome ? heroH * 0.85 : 80;
-    const isSolid = y >= threshold;
+    /* 1. Transparent ↔ solide */
+    const threshold = isHome ? window.innerHeight * 0.85 : 80;
+    /* Pas de hero sombre → jamais transparent, dès le premier pixel. */
+    const isSolid = hasDarkHero ? y >= threshold : true;
     hdr.classList.toggle('solid', isSolid);
-    if (search && !search.classList.contains('sticky-mode')) {
-      search.classList.toggle('solid', isSolid);
-    }
-    const hasDarkHero = isHome || document.querySelector('[data-tira-dark-hero]') !== null;
+    if (search) search.classList.toggle('solid', isSolid);
     document.body.classList.toggle('on-dark', hasDarkHero && !isSolid);
 
-    /* 2. Header directionnel (désactivé sur homepage : le header reste visible pour le hero) */
+    /* 2. Sticky directionnel — jamais sur la homepage (le hero garde le header) */
     const delta = y - lastScrollY;
     if (!isHome && y > 120) {
-      if (delta > 4 && lastDir !== 'down') {
-        hdr.classList.add('hidden');
-        if (search) {
-          search.classList.add('sticky-mode');
-          search.classList.remove('solid');
-        }
-        lastDir = 'down';
-      } else if (delta < -4 && lastDir !== 'up') {
-        hdr.classList.remove('hidden');
-        if (search) {
-          search.classList.remove('sticky-mode');
-          search.classList.toggle('solid', isSolid);
-        }
-        lastDir = 'up';
-      }
+      if (delta > 4 && lastDir !== 'down') { setHidden(true);  lastDir = 'down'; }
+      else if (delta < -4 && lastDir !== 'up') { setHidden(false); lastDir = 'up'; }
     } else {
-      hdr.classList.remove('hidden');
-      if (search) {
-        search.classList.remove('sticky-mode');
-        search.classList.toggle('solid', isSolid);
-      }
+      setHidden(false);
       lastDir = 'up';
     }
-    /* Miroir sur <body> : le CSS repositionne .col-filters via body.hdr-hidden */
-    document.body.classList.toggle('hdr-hidden', hdr.classList.contains('hidden'));
+
     lastScrollY = y;
     ticking = false;
   }
@@ -244,26 +242,54 @@
     });
   }
 
-  /* ════════ Transitions entre pages ════════ */
+  /* ════════ Transitions entre pages ════════
+     Le navigateur gère la transition nativement quand il sait le faire
+     (@view-transition dans le CSS) : l'image de la carte se déplace
+     jusqu'à devenir le visuel de la fiche. L'overlay en fondu blanc n'est
+     qu'un repli pour les navigateurs sans View Transitions. */
+  const supportsVT = 'startViewTransition' in document;
   const pageOverlay = document.getElementById('tira-page-overlay');
-  if (pageOverlay && !noMotion) {
-    window.addEventListener('pageshow', () => pageOverlay.classList.remove('active'));
 
+  /* Retour arrière depuis le cache : le DOM est restauré tel quel, header
+     éventuellement rétracté. On remet tout à plat. */
+  window.addEventListener('pageshow', function () {
+    if (pageOverlay) pageOverlay.classList.remove('active');
+    if (hdr) { setHidden(false); lastDir = 'up'; lastScrollY = window.scrollY; updateHeader(); }
+  });
+
+  if (pageOverlay && !noMotion && !supportsVT) {
     document.addEventListener('click', function (e) {
       const link = e.target.closest('a[href]');
       if (!link) return;
-      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-      if (link.target === '_blank') return;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      if (link.target === '_blank' || link.hasAttribute('download')) return;
       const href = link.getAttribute('href');
       if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
       try {
         const url = new URL(href, location.origin);
         if (url.origin !== location.origin) return;
+        /* Pas de fondu sur le panier ni le compte : on veut la réponse immédiate */
+        if (/^\/(cart|account|checkout)/.test(url.pathname)) return;
       } catch (_) { return; }
       e.preventDefault();
       pageOverlay.classList.add('active');
       setTimeout(() => { location.href = link.href; }, 350);
     });
+  }
+
+  /* ════════ Moment 01 — transition morphée grille → fiche ════════
+     Seule la carte cliquée porte le nom de transition : deux éléments
+     partageant le même nom au même instant annulent l'animation. */
+  if (supportsVT && !noMotion) {
+    document.addEventListener('click', function (e) {
+      const link = e.target.closest('a[href*="/products/"]');
+      if (!link) return;
+      const card = link.closest('.card, .ep-card, .reco-card');
+      if (!card) return;
+      document.querySelectorAll('.is-morphing').forEach(el => el.classList.remove('is-morphing'));
+      const media = card.querySelector('.card__img, .card__media, img');
+      if (media) media.classList.add('is-morphing');
+    }, true);
   }
 
   /* ════════ Cart AJAX (ajout panier sans rechargement) ════════ */
