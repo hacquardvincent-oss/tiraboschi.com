@@ -2182,12 +2182,19 @@ body.hdr-hidden .col-filters {
 .story-section__inner.flip { direction: rtl; }
 .story-section__inner.flip > * { direction: ltr; }
 
-/* Visuel sticky pendant le scroll — image continue hors ecran */
+/* Visuel du chapitre — remplit sa rangée, sans course sticky.
+   Il était auparavant `sticky` avec une hauteur de 100svh − header dans
+   une rangée de 100svh : soit exactement 68px de course. L'image dérivait
+   donc de 68px vers le bas à chaque section, lentement et sans produire
+   d'effet — l'œil y lit un défaut de calage. Mesuré à 68px sur chacune
+   des sections, viewport 1440×900.
+   align-self reste à sa valeur par défaut (stretch) : l'image épouse la
+   hauteur réelle de la rangée, même si le texte la dépasse. */
 .story-section__img {
-  position: sticky; top: calc(var(--header-h) + var(--search-h));
-  height: calc(100vh - var(--header-h) - var(--search-h)); height: calc(100svh - var(--header-h) - var(--search-h));
+  position: relative;
   overflow: hidden;
-  align-self: start;
+  min-height: calc(100vh - var(--header-h) - var(--search-h));
+  min-height: calc(100svh - var(--header-h) - var(--search-h));
 }
 .story-section__img img { width: 100%; height: 100%; object-fit: cover; }
 
