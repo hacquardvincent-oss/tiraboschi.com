@@ -514,7 +514,7 @@ body.nav-open { overflow: hidden; }
    7. HERO — video responsive (9:16 mobile / 16:9 desktop)
 ════════════════════════════════════════════ */
 .hero {
-  position: relative; height: 100vh; min-height: 600px;
+  position: relative; height: 100vh; min-height: 600px; height: 100svh;
   overflow: hidden; background: #0a0a0a;
 }
 
@@ -816,10 +816,10 @@ body.nav-open { overflow: hidden; }
 
 .stack__panel {
   position: sticky; top: 0;
-  height: 100vh; overflow: hidden;
+  height: 100vh; overflow: hidden; height: 100svh;
   display: flex; align-items: center;
 }
-@media (max-width: 768px) { .stack__panel { height: 90vh; } }
+@media (max-width: 768px) { .stack__panel { height: 90vh; } height: 90svh; }
 
 .stack__panel:nth-child(1) { z-index: 1; }
 .stack__panel:nth-child(2) { z-index: 2; }
@@ -901,7 +901,7 @@ body.nav-open { overflow: hidden; }
 .editorial {
   display: grid; grid-template-columns: 55% 45%;
   border-top: 1px solid var(--tira-border);
-  min-height: 72vh;
+  min-height: 72vh; min-height: 72svh;
 }
 .editorial.flip { direction: rtl; }
 .editorial.flip > * { direction: ltr; }
@@ -949,7 +949,7 @@ a.editorial__img { overflow: hidden; position: relative; display: block; cursor:
    SECTION VIDEO ATELIER (homepage)
 ════════════════════════════════════════════ */
 .atelier-vid {
-  position: relative; height: 80vh; min-height: 500px; overflow: hidden;
+  position: relative; height: 80vh; min-height: 500px; overflow: hidden; height: 80svh;
   background: var(--tira-black);
 }
 .atelier-vid__video {
@@ -1212,7 +1212,7 @@ a.editorial__img { overflow: hidden; position: relative; display: block; cursor:
 /* ─── Hero collection — 52vh, Ken Burns, breadcrumb ─── */
 .col-hero {
   position: relative;
-  height: 52vh; min-height: 340px;
+  height: 52vh; min-height: 340px; height: 52svh;
   overflow: hidden; background: #0a0a0a;
   margin-top: calc(var(--header-h) + var(--search-h));
 }
@@ -1255,7 +1255,7 @@ a.editorial__img { overflow: hidden; position: relative; display: block; cursor:
 }
 
 @media (max-width: 768px) {
-  .col-hero { height: 45vh; }
+  .col-hero { height: 45vh; height: 45svh; }
   .col-hero__content { left: 24px; bottom: 28px; }
 }
 
@@ -1468,7 +1468,7 @@ body.hdr-hidden .col-filters {
 .filter-sheet__inner {
   position: absolute; left: 0; right: 0; bottom: 0;
   background: var(--tira-white);
-  max-height: 88vh; overflow-y: auto;
+  max-height: 88vh; overflow-y: auto; max-height: 88svh;
   transform: translateY(100%);
   transition: transform .4s var(--tira-ease);
 }
@@ -1547,7 +1547,7 @@ body.hdr-hidden .col-filters {
 .prd-main {
   display: grid;
   grid-template-columns: 55% 45%;
-  min-height: 100vh;
+  min-height: 100vh; min-height: 100svh;
   padding-top: calc(var(--header-h) + var(--search-h));
 }
 /* Barre de recherche cachée sur mobile → retirer son espace du padding */
@@ -1561,7 +1561,7 @@ body.hdr-hidden .col-filters {
 /* ─── Galerie desktop : scroll vertical style Miu Miu / LV ─── */
 .prd-gallery {
   position: sticky; top: calc(var(--header-h) + var(--search-h));
-  height: calc(100vh - var(--header-h) - var(--search-h));
+  height: calc(100vh - var(--header-h) - var(--search-h)); height: calc(100svh - var(--header-h) - var(--search-h));
   overflow-y: scroll; scrollbar-width: none;
   background: var(--tira-grey);
   cursor: zoom-in;
@@ -1604,7 +1604,7 @@ body.hdr-hidden .col-filters {
   display: none; align-items: center; justify-content: center;
 }
 .prd-lightbox.open { display: flex; }
-.prd-lightbox__img { max-width: 90vw; max-height: 90vh; object-fit: contain; }
+.prd-lightbox__img { max-width: 90vw; max-height: 90vh; object-fit: contain; max-height: 90svh; }
 .prd-lightbox__close {
   position: absolute; top: 24px; right: 24px;
   background: none; border: none; cursor: pointer;
@@ -1634,8 +1634,11 @@ body.hdr-hidden .col-filters {
 
 /* Première image : hauteur limitée pour que les infos restent accessibles */
 .prd-vgallery__img:first-child {
-  height: 65vh;
-  max-height: 65vh;
+  /* svh (petit viewport) et non vh : vh se recalcule quand la barre
+     d'adresse mobile se rétracte au scroll — la première image changeait
+     de hauteur et décalait toutes les suivantes vers le bas. */
+  height: 65vh; height: 65svh;
+  max-height: 65vh; max-height: 65svh;
   aspect-ratio: unset;
 }
 
@@ -1702,7 +1705,7 @@ body.hdr-hidden .col-filters {
 .prd-details-panel__inner {
   position: absolute; left: 0; right: 0; bottom: 0;
   background: var(--tira-white);
-  max-height: 88vh; overflow-y: auto;
+  max-height: 88vh; overflow-y: auto; max-height: 88svh;
   transform: translateY(100%);
   transition: transform .4s var(--tira-ease);
 }
@@ -1905,7 +1908,7 @@ body.hdr-hidden .col-filters {
 .prd-swatch-sheet__inner {
   position: absolute; left: 0; right: 0; bottom: 0;
   background: var(--tira-white);
-  max-height: 85vh; overflow-y: auto;
+  max-height: 85vh; overflow-y: auto; max-height: 85svh;
   transform: translateY(100%);
   transition: transform .4s var(--tira-ease);
 }
@@ -2156,7 +2159,7 @@ body.hdr-hidden .col-filters {
 }
 .story-section__inner {
   display: grid; grid-template-columns: 1fr 1fr;
-  min-height: 100vh;
+  min-height: 100vh; min-height: 100svh;
 }
 .story-section__inner.flip { direction: rtl; }
 .story-section__inner.flip > * { direction: ltr; }
@@ -2164,7 +2167,7 @@ body.hdr-hidden .col-filters {
 /* Visuel sticky pendant le scroll — image continue hors ecran */
 .story-section__img {
   position: sticky; top: calc(var(--header-h) + var(--search-h));
-  height: calc(100vh - var(--header-h) - var(--search-h));
+  height: calc(100vh - var(--header-h) - var(--search-h)); height: calc(100svh - var(--header-h) - var(--search-h));
   overflow: hidden;
   align-self: start;
 }
@@ -2223,7 +2226,7 @@ body.hdr-hidden .col-filters {
 
 /* Section Atelier — fond sombre */
 .story-atelier {
-  position: relative; min-height: 70vh;
+  position: relative; min-height: 70vh; min-height: 70svh;
   display: flex; align-items: center;
   overflow: hidden; background: var(--tira-black);
 }
@@ -2430,7 +2433,7 @@ body.hdr-hidden .col-filters {
 
 /* ─── Page éditoriale (generic page) ─── */
 .page-editorial { padding-top: calc(var(--header-h) + var(--search-h)); }
-.page-hero { position: relative; min-height: 40vh; display: flex; align-items: flex-end; overflow: hidden; }
+.page-hero { position: relative; min-height: 40vh; display: flex; align-items: flex-end; overflow: hidden; min-height: 40svh; }
 .page-hero__img { position: absolute; inset: 0; }
 .page-hero__img img { width: 100%; height: 100%; object-fit: cover; }
 .page-hero__overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.6) 0%, rgba(0,0,0,.2) 60%, transparent 100%); }
@@ -2452,7 +2455,7 @@ body.hdr-hidden .col-filters {
 
 /* ─── 404 ─── */
 .tira-404-page { padding-top: calc(var(--header-h) + var(--search-h)); }
-.tira-404 { min-height: 70vh; display: flex; align-items: center; justify-content: center; }
+.tira-404 { min-height: 70vh; display: flex; align-items: center; justify-content: center; min-height: 70svh; }
 .tira-404__inner { text-align: center; padding: 48px 24px; }
 .tira-404__code { font-size: 10px; text-transform: uppercase; letter-spacing: .22em; opacity: .25; margin-bottom: 24px; }
 .tira-404__title { font-size: clamp(36px, 6vw, 72px); line-height: 1.1; letter-spacing: -.01em; margin-bottom: 24px; }
@@ -2543,7 +2546,7 @@ body.hdr-hidden .col-filters {
 /* ─── Article ─── */
 .tira-article-page { padding-top: calc(var(--header-h) + var(--search-h)); }
 .tira-article { max-width: 860px; margin: 0 auto; }
-.tira-article__hero { height: 50vh; overflow: hidden; }
+.tira-article__hero { height: 50vh; overflow: hidden; height: 50svh; }
 .tira-article__hero img { width: 100%; height: 100%; object-fit: cover; }
 .tira-article__body { padding: 48px; }
 .tira-article__breadcrumb { font-size: 10px; opacity: .35; letter-spacing: .08em; margin-bottom: 32px; }
@@ -3017,7 +3020,7 @@ body.hdr-hidden .col-filters {
    ═══════════════════════════════════════════════════════════════ */
 .prd-hero {
   position: relative;
-  height: 230vh;                 /* course de scroll pour l'enchaînement */
+  height: 230vh;                 /* course de scroll pour l'enchaînement */ height: 230svh;
   background: var(--tira-black);
 }
 .prd-hero__sticky {
@@ -3106,7 +3109,7 @@ body.hdr-hidden .col-filters {
 .prd-main--after-hero { padding-top: 0; }
 
 @media (max-width: 900px) {
-  .prd-hero { height: 200vh; }
+  .prd-hero { height: 200vh; height: 200svh; }
   .prd-hero__content { padding: 0 6vw 14vh; }
   .prd-hero__name { font-size: clamp(40px, 12vw, 64px); }
   .prd-hero__line { font-size: 13px; }
