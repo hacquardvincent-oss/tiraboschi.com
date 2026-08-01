@@ -1558,15 +1558,18 @@ body.hdr-hidden .col-filters {
   .prd-main { grid-template-columns: 1fr; min-height: auto; }
 }
 
-/* ─── Galerie desktop : scroll vertical style Miu Miu / LV ─── */
+/* ─── Galerie desktop : scroll vertical style Miu Miu / LV ───
+   La galerie reste dans le flux. Elle était auparavant une boîte sticky
+   de la hauteur de l'écran, avec son propre ascenseur, posée dans une
+   cellule de grille bien plus haute (dictée par la colonne d'infos) :
+   elle s'épinglait puis se libérait ~800px plus bas qu'elle n'avait
+   commencé — les images semblaient descendre au scroll.
+   Mesuré à 808px de dérive sur un viewport 1440×900.
+   C'est désormais le panneau d'infos qui est collé (voir .prd-info). */
 .prd-gallery {
-  position: sticky; top: calc(var(--header-h) + var(--search-h));
-  height: calc(100vh - var(--header-h) - var(--search-h)); height: calc(100svh - var(--header-h) - var(--search-h));
-  overflow-y: scroll; scrollbar-width: none;
   background: var(--tira-grey);
   cursor: zoom-in;
 }
-.prd-gallery::-webkit-scrollbar { display: none; }
 
 .prd-gallery__img {
   position: relative; aspect-ratio: 3/4;
@@ -1766,6 +1769,21 @@ body.hdr-hidden .col-filters {
 .prd-info {
   padding: 48px 56px 80px;
   display: flex; flex-direction: column; gap: 0;
+}
+/* C'est l'info qui reste, pas la galerie : les images défilent
+   naturellement, le prix et l'ajout au panier restent sous les yeux.
+   align-self:start est indispensable — sans lui l'élément est étiré à la
+   hauteur de la rangée et sticky n'a plus de course. */
+@media (min-width: 901px) {
+  .prd-info {
+    position: sticky;
+    top: calc(var(--header-h) + var(--search-h));
+    align-self: start;
+    max-height: calc(100svh - var(--header-h) - var(--search-h));
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .prd-info::-webkit-scrollbar { display: none; }
 }
 @media (max-width: 900px) {
   .prd-info { padding: 32px 24px 48px; }
