@@ -129,67 +129,102 @@
     .sf-intro__quote { font-size: 22px; }
   }
 
-  /* ── 3. Les 6 Techniques ── */
-  .sf-techniques {
-    background: var(--tira-grey);
-    padding: 96px 40px;
-  }
-  .sf-techniques__header {
-    text-align: center;
-    margin-bottom: 64px;
-  }
-  .sf-techniques__label {
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    opacity: 0.5;
-    display: block;
-    margin-bottom: 16px;
-  }
-  .sf-techniques__title {
-    font-size: 40px;
-    font-weight: 400;
-    margin: 0;
-  }
-  .sf-techniques__grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  .sf-tech-card {
-    background: var(--tira-white);
-    padding: 48px 40px;
+  /* ── 3. Les 6 Techniques — chapitrage épinglé ──
+     L'image reste, le texte progresse. Structure des pages collection
+     d'Audemars Piguet appliquée aux six gestes de l'atelier. */
+  .sf-chapters {
     position: relative;
+    height: 500vh;
+    background: var(--tira-grey);
   }
-  .sf-tech-card__num {
-    font-size: 56px;
-    font-weight: 400;
-    color: var(--tira-border);
-    display: block;
-    line-height: 1;
-    margin-bottom: 24px;
-    font-style: italic;
+  .sf-chapters__sticky {
+    position: sticky; top: 0;
+    height: 100svh;
+    display: grid; grid-template-columns: 1fr 1fr;
   }
-  .sf-tech-card__name {
-    font-size: 18px;
-    font-weight: 400;
-    margin: 0 0 16px;
+
+  .sf-chapters__visual {
+    position: relative; overflow: hidden;
+    background: var(--tira-black);
   }
-  .sf-tech-card__desc {
-    font-size: 13px;
-    line-height: 1.75;
-    opacity: 0.65;
-    margin: 0;
+  .sf-chapters__img {
+    position: absolute; inset: 0;
+    opacity: 0; transform: scale(1.05);
+    transition: opacity 1s var(--tira-ease), transform 1.5s var(--tira-ease);
   }
+  .sf-chapters__img.on { opacity: 1; transform: scale(1); }
+  .sf-chapters__img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .sf-chapters__text {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 0 5vw; position: relative;
+  }
+  .sf-chapters__head { margin-bottom: 40px; }
+  .sf-chapters__label {
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+    opacity: 0.35; display: block; margin-bottom: 12px;
+  }
+  .sf-chapters__title {
+    font-size: clamp(26px, 3vw, 40px); font-weight: 400;
+    letter-spacing: -0.02em; margin: 0;
+  }
+
+  .sf-chapters__ticks { display: flex; gap: 10px; margin-bottom: 44px; }
+  .sf-chapters__tick {
+    width: 26px; height: 1px; background: var(--tira-black);
+    opacity: 0.12; transition: opacity 0.5s var(--tira-ease);
+  }
+  .sf-chapters__tick.on { opacity: 1; }
+
+  .sf-chapters__stack { position: relative; }
+  .sf-chapter {
+    position: absolute; top: 0; left: 0; right: 0;
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.6s var(--tira-ease), visibility 0.6s;
+  }
+  .sf-chapter.on { position: relative; opacity: 1; visibility: visible; }
+  .sf-chapter__num {
+    font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+    opacity: 0.32; margin: 0 0 18px;
+  }
+  .sf-chapter__name {
+    font-size: clamp(28px, 3.4vw, 46px); font-weight: 400;
+    line-height: 1.04; letter-spacing: -0.02em; margin: 0 0 20px;
+  }
+  .sf-chapter__desc {
+    font-size: 13px; line-height: 1.9; opacity: 0.58;
+    max-width: 46ch; margin: 0;
+  }
+  .sf-chapter__fact {
+    margin: 30px 0 0; padding-top: 20px;
+    border-top: 1px solid var(--tira-border);
+    font-size: 11px; letter-spacing: 0.16em;
+    text-transform: uppercase; opacity: 0.4;
+  }
+
   @media (max-width: 900px) {
-    .sf-techniques { padding: 64px 24px; }
-    .sf-techniques__grid { grid-template-columns: repeat(2, 1fr); }
+    .sf-chapters { height: 440vh; }
+    .sf-chapters__sticky { grid-template-columns: 1fr; grid-template-rows: 40svh 1fr; }
+    .sf-chapters__text { padding: 32px 6vw; justify-content: flex-start; }
+    .sf-chapters__head { margin-bottom: 24px; }
+    .sf-chapters__ticks { margin-bottom: 28px; }
+    .sf-chapter__desc { font-size: 13px; }
   }
-  @media (max-width: 600px) {
-    .sf-techniques__grid { grid-template-columns: 1fr; }
-    .sf-techniques__title { font-size: 28px; }
+
+  /* Sans animation : les six techniques redeviennent une liste lisible */
+  @media (prefers-reduced-motion: reduce) {
+    .sf-chapters { height: auto; }
+    .sf-chapters__sticky {
+      position: relative; height: auto;
+      grid-template-columns: 1fr; gap: 0;
+    }
+    .sf-chapters__visual { display: none; }
+    .sf-chapters__ticks { display: none; }
+    .sf-chapters__text { padding: 64px 6vw; }
+    .sf-chapter {
+      position: relative; opacity: 1; visibility: visible;
+      margin-bottom: 56px;
+    }
   }
 
   /* ── 4. La Transmission ── */
@@ -390,66 +425,174 @@
   </section>
 
   {%- comment -%} ══ 3. LES 6 TECHNIQUES ══ {%- endcomment -%}
-  <section class="sf-techniques" aria-labelledby="sf-tech-title">
-    <div class="sf-techniques__header">
-      <span class="sf-techniques__label" data-tira-reveal>Expertise</span>
-      <h2 class="sf-techniques__title" id="sf-tech-title" data-tira-reveal>Les 6 Techniques</h2>
-    </div>
-    <div class="sf-techniques__grid">
-      <article class="sf-tech-card" data-tira-reveal>
-        <span class="sf-tech-card__num" aria-hidden="true">01</span>
-        <h3 class="sf-tech-card__name">Couture Sellier</h3>
-        <p class="sf-tech-card__desc">
-          Point sellier à deux aiguilles, fil de lin ciré, 8 à 10 points par centimètre.
+  <section class="sf-chapters" id="sf-chapters" aria-labelledby="sf-tech-title">
+    <div class="sf-chapters__sticky">
+
+      <div class="sf-chapters__visual" aria-hidden="true">
+        <div class="sf-chapters__img on">
+          {%- if section.settings.tech_img_1 != blank -%}
+            <img src="{{ section.settings.tech_img_1 | image_url: width: 1400 }}"
+                 srcset="{{ section.settings.tech_img_1 | image_url: width: 800 }} 800w,
+                         {{ section.settings.tech_img_1 | image_url: width: 1400 }} 1400w"
+                 sizes="(max-width: 900px) 100vw, 50vw"
+                 alt="{{ section.settings.tech_img_1.alt | default: 'Couture Sellier — atelier TIRABOSCHI Paris' }}"
+                 width="1400" height="1750" loading="eager">
+          {%- else -%}
+            <img src="{{ 'BOSCHI0919.jpg' | file_url }}"
+                 alt="Couture Sellier — atelier TIRABOSCHI Paris"
+                 width="1400" height="1750" loading="eager">
+          {%- endif -%}
+        </div>
+        <div class="sf-chapters__img">
+          {%- if section.settings.tech_img_2 != blank -%}
+            <img src="{{ section.settings.tech_img_2 | image_url: width: 1400 }}"
+                 srcset="{{ section.settings.tech_img_2 | image_url: width: 800 }} 800w,
+                         {{ section.settings.tech_img_2 | image_url: width: 1400 }} 1400w"
+                 sizes="(max-width: 900px) 100vw, 50vw"
+                 alt="{{ section.settings.tech_img_2.alt | default: 'Coupe et Gabarit — atelier TIRABOSCHI Paris' }}"
+                 width="1400" height="1750" loading="lazy">
+          {%- else -%}
+            <img src="{{ 'Asset_Mains_1.png' | file_url }}"
+                 alt="Coupe et Gabarit — atelier TIRABOSCHI Paris"
+                 width="1400" height="1750" loading="lazy">
+          {%- endif -%}
+        </div>
+        <div class="sf-chapters__img">
+          {%- if section.settings.tech_img_3 != blank -%}
+            <img src="{{ section.settings.tech_img_3 | image_url: width: 1400 }}"
+                 srcset="{{ section.settings.tech_img_3 | image_url: width: 800 }} 800w,
+                         {{ section.settings.tech_img_3 | image_url: width: 1400 }} 1400w"
+                 sizes="(max-width: 900px) 100vw, 50vw"
+                 alt="{{ section.settings.tech_img_3.alt | default: 'Teinture et Finitions — atelier TIRABOSCHI Paris' }}"
+                 width="1400" height="1750" loading="lazy">
+          {%- else -%}
+            <img src="{{ 'BOSCHI0103.jpg' | file_url }}"
+                 alt="Teinture et Finitions — atelier TIRABOSCHI Paris"
+                 width="1400" height="1750" loading="lazy">
+          {%- endif -%}
+        </div>
+        <div class="sf-chapters__img">
+          {%- if section.settings.tech_img_4 != blank -%}
+            <img src="{{ section.settings.tech_img_4 | image_url: width: 1400 }}"
+                 srcset="{{ section.settings.tech_img_4 | image_url: width: 800 }} 800w,
+                         {{ section.settings.tech_img_4 | image_url: width: 1400 }} 1400w"
+                 sizes="(max-width: 900px) 100vw, 50vw"
+                 alt="{{ section.settings.tech_img_4.alt | default: 'Assemblage — atelier TIRABOSCHI Paris' }}"
+                 width="1400" height="1750" loading="lazy">
+          {%- else -%}
+            <img src="{{ 'Asset_atelier_1.png' | file_url }}"
+                 alt="Assemblage — atelier TIRABOSCHI Paris"
+                 width="1400" height="1750" loading="lazy">
+          {%- endif -%}
+        </div>
+        <div class="sf-chapters__img">
+          {%- if section.settings.tech_img_5 != blank -%}
+            <img src="{{ section.settings.tech_img_5 | image_url: width: 1400 }}"
+                 srcset="{{ section.settings.tech_img_5 | image_url: width: 800 }} 800w,
+                         {{ section.settings.tech_img_5 | image_url: width: 1400 }} 1400w"
+                 sizes="(max-width: 900px) 100vw, 50vw"
+                 alt="{{ section.settings.tech_img_5.alt | default: 'Pose des Quincailleries — atelier TIRABOSCHI Paris' }}"
+                 width="1400" height="1750" loading="lazy">
+          {%- else -%}
+            <img src="{{ 'Asset_Atelier_6.png' | file_url }}"
+                 alt="Pose des Quincailleries — atelier TIRABOSCHI Paris"
+                 width="1400" height="1750" loading="lazy">
+          {%- endif -%}
+        </div>
+        <div class="sf-chapters__img">
+          {%- if section.settings.tech_img_6 != blank -%}
+            <img src="{{ section.settings.tech_img_6 | image_url: width: 1400 }}"
+                 srcset="{{ section.settings.tech_img_6 | image_url: width: 800 }} 800w,
+                         {{ section.settings.tech_img_6 | image_url: width: 1400 }} 1400w"
+                 sizes="(max-width: 900px) 100vw, 50vw"
+                 alt="{{ section.settings.tech_img_6.alt | default: 'Lustre et Contrôle — atelier TIRABOSCHI Paris' }}"
+                 width="1400" height="1750" loading="lazy">
+          {%- else -%}
+            <img src="{{ 'BOSCHI0154.jpg' | file_url }}"
+                 alt="Lustre et Contrôle — atelier TIRABOSCHI Paris"
+                 width="1400" height="1750" loading="lazy">
+          {%- endif -%}
+        </div>
+      </div>
+
+      <div class="sf-chapters__text">
+        <div class="sf-chapters__head">
+          <span class="sf-chapters__label">Expertise</span>
+          <h2 class="sf-chapters__title" id="sf-tech-title">Les 6 Techniques</h2>
+        </div>
+
+        <div class="sf-chapters__ticks" aria-hidden="true">
+          <span class="sf-chapters__tick on"></span>
+          <span class="sf-chapters__tick"></span>
+          <span class="sf-chapters__tick"></span>
+          <span class="sf-chapters__tick"></span>
+          <span class="sf-chapters__tick"></span>
+          <span class="sf-chapters__tick"></span>
+        </div>
+
+        <div class="sf-chapters__stack">
+        <article class="sf-chapter on" aria-labelledby="sf-tech-01">
+          <p class="sf-chapter__num">Technique 01</p>
+          <h3 class="sf-chapter__name" id="sf-tech-01">Couture Sellier</h3>
+          <p class="sf-chapter__desc">
+            Point sellier à deux aiguilles, fil de lin ciré, 8 à 10 points par centimètre.
           La couture la plus robuste qui soit — celle des selliers de cour depuis le
           XVIII<sup>e</sup> siècle. Chaque point est passé à la main, l'un après l'autre.
-        </p>
-      </article>
-      <article class="sf-tech-card" data-tira-reveal>
-        <span class="sf-tech-card__num" aria-hidden="true">02</span>
-        <h3 class="sf-tech-card__name">Coupe &amp; Gabarit</h3>
-        <p class="sf-tech-card__desc">
-          Gabarits en bois centenaires, coupe entièrement à la main, respect absolu du sens
+          </p>
+          <p class="sf-chapter__fact">8 à 10 points au centimètre</p>
+        </article>
+        <article class="sf-chapter" aria-labelledby="sf-tech-02">
+          <p class="sf-chapter__num">Technique 02</p>
+          <h3 class="sf-chapter__name" id="sf-tech-02">Coupe &amp; Gabarit</h3>
+          <p class="sf-chapter__desc">
+            Gabarits en bois centenaires, coupe entièrement à la main, respect absolu du sens
           du grain. Chaque peau est lue avant d'être taillée — aucune coupe n'est identique.
           Le tracé, la lame, le geste : tout est à la main.
-        </p>
-      </article>
-      <article class="sf-tech-card" data-tira-reveal>
-        <span class="sf-tech-card__num" aria-hidden="true">03</span>
-        <h3 class="sf-tech-card__name">Teinture &amp; Finitions</h3>
-        <p class="sf-tech-card__desc">
-          Teintures à l'eau naturelles, trois passes successives, séchage de 24 heures entre
+          </p>
+          <p class="sf-chapter__fact">Gabarits centenaires</p>
+        </article>
+        <article class="sf-chapter" aria-labelledby="sf-tech-03">
+          <p class="sf-chapter__num">Technique 03</p>
+          <h3 class="sf-chapter__name" id="sf-tech-03">Teinture &amp; Finitions</h3>
+          <p class="sf-chapter__desc">
+            Teintures à l'eau naturelles, trois passes successives, séchage de 24 heures entre
           chaque couche. La couleur pénètre la fibre plutôt que de la recouvrir.
           Le résultat vieillit, il ne s'écaille pas.
-        </p>
-      </article>
-      <article class="sf-tech-card" data-tira-reveal>
-        <span class="sf-tech-card__num" aria-hidden="true">04</span>
-        <h3 class="sf-tech-card__name">Assemblage</h3>
-        <p class="sf-tech-card__desc">
-          Collage à la colle de peau naturelle, martelage à main levée, pressage à froid.
+          </p>
+          <p class="sf-chapter__fact">Trois passes · 24 h de séchage</p>
+        </article>
+        <article class="sf-chapter" aria-labelledby="sf-tech-04">
+          <p class="sf-chapter__num">Technique 04</p>
+          <h3 class="sf-chapter__name" id="sf-tech-04">Assemblage</h3>
+          <p class="sf-chapter__desc">
+            Collage à la colle de peau naturelle, martelage à main levée, pressage à froid.
           L'assemblage définit la tenue de la pièce pour les décennies à venir.
           Aucune colle synthétique, aucun raccourci.
-        </p>
-      </article>
-      <article class="sf-tech-card" data-tira-reveal>
-        <span class="sf-tech-card__num" aria-hidden="true">05</span>
-        <h3 class="sf-tech-card__name">Pose des Quincailleries</h3>
-        <p class="sf-tech-card__desc">
-          Fermoirs, passants, anneaux — chaque quincaillerie est sertie à la main, jamais à
+          </p>
+          <p class="sf-chapter__fact">Colle de peau · pressage à froid</p>
+        </article>
+        <article class="sf-chapter" aria-labelledby="sf-tech-05">
+          <p class="sf-chapter__num">Technique 05</p>
+          <h3 class="sf-chapter__name" id="sf-tech-05">Pose des Quincailleries</h3>
+          <p class="sf-chapter__desc">
+            Fermoirs, passants, anneaux — chaque quincaillerie est sertie à la main, jamais à
           la machine. La précision au dixième de millimètre, à l'œil et au toucher.
           Laiton massif, finition satiné, pour l'éternité.
-        </p>
-      </article>
-      <article class="sf-tech-card" data-tira-reveal>
-        <span class="sf-tech-card__num" aria-hidden="true">06</span>
-        <h3 class="sf-tech-card__name">Lustre &amp; Contrôle</h3>
-        <p class="sf-tech-card__desc">
-          Lustrage à la cire naturelle d'abeille, contrôle qualité en 32 points, livraison
+          </p>
+          <p class="sf-chapter__fact">Laiton massif · sertissage main</p>
+        </article>
+        <article class="sf-chapter" aria-labelledby="sf-tech-06">
+          <p class="sf-chapter__num">Technique 06</p>
+          <h3 class="sf-chapter__name" id="sf-tech-06">Lustre &amp; Contrôle</h3>
+          <p class="sf-chapter__desc">
+            Lustrage à la cire naturelle d'abeille, contrôle qualité en 32 points, livraison
           signée de la main de l'artisan. Chaque pièce est unique — et certifiée telle.
           Votre sac porte un prénom.
-        </p>
-      </article>
+          </p>
+          <p class="sf-chapter__fact">Contrôle en 32 points</p>
+        </article>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -537,12 +680,63 @@
 
 </div>
 
+
+<script>
+(function () {
+  'use strict';
+  /* Chapitrage épinglé — l'image reste, le texte progresse.
+     Un seul écouteur de scroll, throttlé par requestAnimationFrame. */
+  var wrap = document.getElementById('sf-chapters');
+  if (!wrap) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var chapters = Array.prototype.slice.call(wrap.querySelectorAll('.sf-chapter'));
+  var visuals  = Array.prototype.slice.call(wrap.querySelectorAll('.sf-chapters__img'));
+  var ticks    = Array.prototype.slice.call(wrap.querySelectorAll('.sf-chapters__tick'));
+  if (!chapters.length) return;
+
+  var cur = -1;
+  var pending = false;
+
+  function paint() {
+    pending = false;
+    var r = wrap.getBoundingClientRect();
+    var course = r.height - window.innerHeight;
+    if (course <= 0) return;
+
+    var p = Math.max(0, Math.min(0.9999, -r.top / course));
+    var i = Math.floor(p * chapters.length);
+    if (i === cur) return;
+    cur = i;
+
+    chapters.forEach(function (c, j) { c.classList.toggle('on', j === i); });
+    visuals.forEach(function (v, j)  { v.classList.toggle('on', j === i); });
+    ticks.forEach(function (t, j)    { t.classList.toggle('on', j <= i); });
+  }
+
+  function onScroll() {
+    if (!pending) { pending = true; requestAnimationFrame(paint); }
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+  paint();
+})();
+</script>
+
 {% schema %}
 {
   "name": "Savoir-Faire TIRABOSCHI",
   "tag": "main",
   "class": "section",
-  "settings": [],
+  "settings": [
+    { "type": "image_picker", "id": "tech_img_1", "label": "Visuel technique 01" },
+    { "type": "image_picker", "id": "tech_img_2", "label": "Visuel technique 02" },
+    { "type": "image_picker", "id": "tech_img_3", "label": "Visuel technique 03" },
+    { "type": "image_picker", "id": "tech_img_4", "label": "Visuel technique 04" },
+    { "type": "image_picker", "id": "tech_img_5", "label": "Visuel technique 05" },
+    { "type": "image_picker", "id": "tech_img_6", "label": "Visuel technique 06" }
+  ],
   "presets": [{ "name": "Savoir-Faire TIRABOSCHI" }]
 }
 {% endschema %}

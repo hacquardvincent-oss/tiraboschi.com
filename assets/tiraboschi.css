@@ -3126,3 +3126,22 @@ body.hdr-hidden .col-filters {
   .prd-hero__sticky { position: relative; height: 88svh; }
   .prd-hero__frame { transition: none; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   FICHE PRODUIT — apparition sans déplacement
+   Les sections de storytelling portaient data-tira-reveal sur le BLOC
+   entier : une section pleine hauteur dérivait de 28px pendant 0,9 s,
+   ce qui se lit comme un défaut de calage, pas comme une animation.
+   On garde le fondu, on supprime le déplacement.
+   ═══════════════════════════════════════════════════════════════ */
+.tira-product-page [data-tira-reveal],
+.tira-product-page [data-reveal] {
+  transform: none;
+  transition: opacity .55s var(--tira-ease);
+}
+.tira-product-page [data-tira-reveal].is-visible,
+.tira-product-page [data-tira-reveal].visible,
+.tira-product-page [data-reveal].is-visible,
+.tira-product-page [data-reveal].visible {
+  transform: none;
+}
