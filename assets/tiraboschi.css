@@ -1212,9 +1212,15 @@ a.editorial__img { overflow: hidden; position: relative; display: block; cursor:
 /* ─── Hero collection — 52vh, Ken Burns, breadcrumb ─── */
 .col-hero {
   position: relative;
-  height: 52vh; min-height: 340px; height: 52svh;
+  /* Le hero passe SOUS le header au lieu d'être poussé en dessous.
+     Avec margin-top, la bande derrière le header restait blanche — alors
+     que data-tira-dark-hero fait passer le header en texte blanc :
+     header blanc sur fond blanc, donc invisible.
+     Le contenu est en position absolue (bottom: 40px), il ne bouge pas. */
+  height: calc(52vh + var(--header-h) + var(--search-h));
+  height: calc(52svh + var(--header-h) + var(--search-h));
+  min-height: calc(340px + var(--header-h) + var(--search-h));
   overflow: hidden; background: #0a0a0a;
-  margin-top: calc(var(--header-h) + var(--search-h));
 }
 .col-hero__img {
   position: absolute; inset: 0; overflow: hidden;

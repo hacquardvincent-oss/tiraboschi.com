@@ -26,7 +26,22 @@
   const search = document.getElementById('hdr-search');
   const isHome = document.body.classList.contains('template-index');
   const darkHero = document.querySelector('[data-tira-dark-hero]');
-  const hasDarkHero = isHome || darkHero !== null;
+
+  /* Garde-fou : l'attribut annonce un fond sombre derrière le header, mais
+     il ment si la mise en page pousse le hero SOUS le header (margin-top).
+     On vérifie donc que le hero couvre réellement la bande du header —
+     sinon le header resterait en texte blanc sur fond blanc, invisible.
+     C'est exactement ce qui se produisait sur la collection et les drops. */
+  function darkHeroCoversHeader() {
+    if (isHome) return true;
+    if (!darkHero) return false;
+    const band = (parseFloat(getComputedStyle(document.documentElement)
+      .getPropertyValue('--header-h')) || 68);
+    const r = darkHero.getBoundingClientRect();
+    return r.top <= band * 0.5 && r.bottom > band;
+  }
+
+  const hasDarkHero = darkHeroCoversHeader();
   let lastScrollY = window.scrollY;
   let ticking = false;
   let lastDir = 'up';

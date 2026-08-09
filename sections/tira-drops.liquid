@@ -29,10 +29,14 @@
   ───────────────────────────────────────────── */
   .drp-hero {
     position: relative;
-    height: 70vh; min-height: 520px; height: 70svh;
+    /* Le hero passe SOUS le header (voir .col-hero) : avec margin-top la
+       bande derrière le header restait blanche, alors que le header y est
+       en texte blanc — donc invisible. Le contenu est en absolu. */
+    height: calc(70vh + var(--content-top));
+    height: calc(70svh + var(--content-top));
+    min-height: calc(520px + var(--content-top));
     overflow: hidden;
     background: var(--tira-black);
-    margin-top: var(--content-top);
   }
   .drp-hero__img {
     position: absolute; inset: 0;
@@ -644,7 +648,7 @@
     .drp-past__grid { grid-template-columns: 1fr; }
   }
   @media (max-width: 767px) {
-    .drp-hero { margin-top: var(--content-top); }
+    .drp-hero { min-height: calc(420px + var(--content-top)); }
     .drp-hero__content { left: 24px; right: 24px; bottom: 40px; }
     .drp-how { padding: 72px 24px; }
     .drp-how__steps { grid-template-columns: 1fr; gap: 40px; }
