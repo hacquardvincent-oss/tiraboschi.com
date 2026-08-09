@@ -30,6 +30,26 @@ mention « Prix sur demande ».
 Validé contre le code d'avant correctif : il y détecte les trois défauts
 (texte à 3px du bord, 1 image cassée, contraste à 1.94).
 
+## offsets.js — bandeau vide sous le header
+
+    NODE_PATH=$(npm root -g) node offsets.js .
+
+Vérifie un invariant simple sur 8 largeurs :
+**l'espace réservé sous le header doit égaler l'espace réellement occupé.**
+
+Le piège : `sections/tira-header.liquid` injecte du CSS critique dans le
+`<body>`, donc APRÈS la feuille de style. Un `:root{--search-h:44px}` y
+écrasait silencieusement le `--search-h:0` de `tiraboschi.css` sur desktop,
+alors que la barre de recherche y est masquée. Résultat : 44px réservés
+pour du vide, à travers lesquels le contenu défilait — entre le header et
+la barre de filtres.
+
+Règle à retenir : masquage d'un élément et hauteur qu'il réserve doivent
+être déclarés au même endroit, sinon ils dérivent.
+
+Validé contre le code d'avant correctif : 44px d'écart détectés sur les
+quatre largeurs desktop.
+
 ## Ce qu'il ne couvre pas
 
 Les pages de test sont des reconstructions du markup, pas les pages Shopify

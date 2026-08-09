@@ -29,6 +29,13 @@ img,video,iframe,svg,canvas{max-width:100%!important;}
   .hdr__d{display:flex!important;}
   .hdr__m{display:none!important;}
   #hdr-search{display:none!important;}
+  /* La search bar est masquée ici : elle ne doit plus réserver d'espace.
+     Sans cette ligne, le :root ci-dessus (déclaré dans le <body>, donc APRÈS
+     la feuille de style) écrasait le --search-h:0 de tiraboschi.css et tout
+     ce qui se cale sous le header réservait 44px pour du vide — d'où la
+     bande invisible entre le header et la barre de filtres.
+     Masquage et hauteur réservée doivent rester déclarés ensemble. */
+  :root{--search-h:0px;}
 }
 /* Mobile ≤1200px : .hdr__d caché, .hdr__m visible, .hdr__search-inline caché */
 @media(max-width:1200px){

@@ -2,7 +2,59 @@
 <link rel="stylesheet" href="../../assets/tiraboschi.css">
 <style>.ph{width:100%;height:100%;object-fit:cover;background:#ddd}</style>
 </head><body class="template-collection">
-<header class="hdr solid" id="hdr"><div class="hdr__d">HEADER</div></header>
+<style id="critique">
+/* ── CSS critique injecté directement dans la section (indépendant du chargement des assets) ── */
+:root{--header-h:68px;--search-h:44px;}
+html{overflow-x:clip!important;max-width:100vw;}
+body{overflow-x:clip!important;max-width:100vw;width:100%;}
+img,video,iframe,svg,canvas{max-width:100%!important;}
+
+/* Desktop ≥1201px : .hdr__d visible, .hdr__m caché, #hdr-search caché */
+@media(min-width:1201px){
+  .hdr__d{display:flex!important;}
+  .hdr__m{display:none!important;}
+  #hdr-search{display:none!important;}
+  /* La search bar est masquée ici : elle ne doit plus réserver d'espace.
+     Sans cette ligne, le :root ci-dessus (déclaré dans le <body>, donc APRÈS
+     la feuille de style) écrasait le --search-h:0 de tiraboschi.css et tout
+     ce qui se cale sous le header réservait 44px pour du vide — d'où la
+     bande invisible entre le header et la barre de filtres.
+     Masquage et hauteur réservée doivent rester déclarés ensemble. */
+  :root{--search-h:0px;}
+}
+/* Mobile ≤1200px : .hdr__d caché, .hdr__m visible, .hdr__search-inline caché */
+@media(max-width:1200px){
+  .hdr__d{display:none!important;}
+  .hdr__m{display:grid!important;grid-template-columns:1fr auto auto auto;}
+  .hdr__search-inline{display:none!important;}
+  .mega{display:none!important;}
+  .mega-backdrop{display:none!important;}
+}
+
+/* ── Mobile nav accordion sous-menus ── */
+.mobile-nav__row{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.mobile-nav__row>a{flex:1;}
+.mobile-nav__toggle{background:none;border:none;cursor:pointer;padding:6px;color:inherit;opacity:.5;line-height:0;transition:opacity .2s;}
+.mobile-nav__toggle:hover{opacity:1;}
+.mobile-nav__toggle svg{width:14px;height:14px;transition:transform .25s;}
+.mobile-nav__toggle[aria-expanded="true"] svg{transform:rotate(180deg);}
+.mobile-nav__sub{list-style:none;padding:0 0 6px 12px;margin:0;overflow:hidden;max-height:0;transition:max-height .3s ease;}
+.mobile-nav__sub.is-open{max-height:400px;}
+.mobile-nav__sub li{border-top:1px solid rgba(255,255,255,.07);}
+.mobile-nav__sub a{display:block;padding:10px 0;font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.6;text-decoration:none;color:inherit;transition:opacity .2s;}
+.mobile-nav__sub a:hover{opacity:1;}
+</style>
+<header class="hdr" id="hdr"><div class="hdr__d">
+  <div class="hdr__left">
+    <div class="hdr__logo"><a href="/"><span style="display:block;font-size:22px;letter-spacing:.06em">Tiraboschi</span><span style="display:block;font-size:7px;letter-spacing:.3em">SINCE 1904</span></a></div>
+    <nav class="hdr__nav"><a href="#" class="hdr__nav-link">Collections</a><a href="#" class="hdr__nav-link">Sur Mesure</a><a href="#" class="hdr__nav-link">La Maison</a></nav>
+  </div>
+  <div class="hdr__search-inline"><input type="search" placeholder="Demander a Tiraboschi"></div>
+  <div class="hdr__right"><a href="#" class="hdr__bag" data-cart-count="0">Panier</a></div>
+</div>
+<div class="hdr__m"><a href="/" class="hdr__m-logo">Tiraboschi</a><a href="#" class="hdr__bag">Panier</a></div>
+</header>
+<div class="hdr-search" id="hdr-search"><div class="hdr-search__field"><input type="search" placeholder="Demander a Tiraboschi"></div></div>
 <section class="col-hero" data-tira-dark-hero><div class="col-hero__content"><h1 class="col-hero__title">FW25</h1></div></section>
 <div class="col-filters" id="col-filters"><div class="col-filters__inner">
   <div class="col-filters__left"><div class="col-filter-wrap"><button class="col-filter-btn" id="btn-type">Type</button></div></div>
