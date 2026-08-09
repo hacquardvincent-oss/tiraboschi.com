@@ -3179,3 +3179,26 @@ body.hdr-hidden .col-filters {
 .tira-product-page [data-reveal].visible {
   transform: none;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   GRILLE COLLECTION — coquilles d'affichage
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Produit sans image : aplat neutre plutôt que l'icône d'image cassée */
+.card__img-empty {
+  display: block; width: 100%; aspect-ratio: 3/4;
+  background: var(--tira-grey);
+  border: 1px solid var(--tira-border);
+}
+
+/* Le texte des cards touchait le bord de l'écran sur la première colonne
+   (grille pleine largeur, padding de 3px) : la première lettre paraissait
+   coupée. Les visuels restent bord à bord, seul le texte respire. */
+.card__info { padding: 12px 14px 22px; }
+@media (max-width: 900px) {
+  .card__info { padding: 10px 10px 18px; }
+}
+
+/* "Prix sur demande" était à 0.28 d'opacité : ~2:1 de contraste, illisible.
+   0.6 donne 5.7:1 et s'aligne sur les autres textes secondaires de card. */
+.card__price--request { opacity: .6; }

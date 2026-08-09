@@ -212,15 +212,24 @@
                data-couleurs="{{ card_col | strip }}"
                data-tira-reveal>
         <a href="{{ product.url }}" class="card__img" aria-label="{{ product.title | escape }}">
-          <img src="{{ product.featured_image | image_url: width: 600 }}"
-               srcset="{{ product.featured_image | image_url: width: 400 }} 400w,
-                       {{ product.featured_image | image_url: width: 600 }} 600w,
-                       {{ product.featured_image | image_url: width: 900 }} 900w"
-               sizes="(max-width:768px) 50vw, 25vw"
-               alt="{{ product.featured_image.alt | default: product.title | escape }}"
-               width="600" height="800"
-               loading="lazy">
-          {%- if has_second -%}
+          {%- comment -%}
+            Un produit sans image assignée produisait src="" — donc l'icône
+            d'image cassée du navigateur, avec le titre en texte alternatif,
+            en pleine grille. On rend un aplat neutre à la place.
+          {%- endcomment -%}
+          {%- if product.featured_image -%}
+            <img src="{{ product.featured_image | image_url: width: 600 }}"
+                 srcset="{{ product.featured_image | image_url: width: 400 }} 400w,
+                         {{ product.featured_image | image_url: width: 600 }} 600w,
+                         {{ product.featured_image | image_url: width: 900 }} 900w"
+                 sizes="(max-width:768px) 50vw, 25vw"
+                 alt="{{ product.featured_image.alt | default: product.title | escape }}"
+                 width="600" height="800"
+                 loading="lazy">
+          {%- else -%}
+            <span class="card__img-empty" aria-hidden="true"></span>
+          {%- endif -%}
+          {%- if has_second and product.images[1] -%}
             <img class="img-alt"
                  src="{{ product.images[1] | image_url: width: 600 }}"
                  alt="{{ product.images[1].alt | default: product.title | escape }}"

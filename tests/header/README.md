@@ -19,6 +19,17 @@ aucune erreur console. C'est arrivé sur la collection et sur les drops.
 
 Le test échoue si un contraste passe sous 4.5:1.
 
+## grid.js — grille collection
+
+    NODE_PATH=$(npm root -g) node grid.js .
+
+Contrôle : débordement horizontal, distance du texte de card au bord de
+l'écran, images sans `src` (icône d'image cassée), et contraste de la
+mention « Prix sur demande ».
+
+Validé contre le code d'avant correctif : il y détecte les trois défauts
+(texte à 3px du bord, 1 image cassée, contraste à 1.94).
+
 ## Ce qu'il ne couvre pas
 
 Les pages de test sont des reconstructions du markup, pas les pages Shopify
