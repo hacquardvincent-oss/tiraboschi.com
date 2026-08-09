@@ -102,7 +102,46 @@ button{font-family:inherit;color:inherit;background:none;border:none;cursor:poin
   height:min(680px, calc(100svh - 64px - var(--bar-h) - 200px));
   width:auto;max-width:92vw}
 .hub__stage img{object-fit:contain}
-.hub__glow{position:absolute;inset:12%;background:radial-gradient(ellipse at center,rgba(10,10,10,.06),transparent 68%)}
+
+/* ── Sac en volume — vraie boîte 3D CSS, faces habillées de cuir ── */
+.bag{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-bottom:26px;
+  perspective:1500px;perspective-origin:50% 42%;cursor:grab;touch-action:pan-y}
+.bag:active{cursor:grabbing}
+.bag__box{position:relative;width:300px;height:320px;
+  transform-style:preserve-3d;transform:rotateX(-6deg) rotateY(-22deg);
+  transition:transform .12s linear}
+.bag__box.settle{transition:transform .9s var(--tira-ease)}
+.bag__face,.bag__side,.bag__base,.bag__lining,.bag__handle,.bag__hw{
+  position:absolute;backface-visibility:hidden}
+.bag__face{inset:0}
+.bag__face--front{transform:translateZ(45px)}
+.bag__face--back{transform:translateZ(-45px) rotateY(180deg)}
+/* Boîte 3D : les flancs pivotent puis avancent d'une DEMI-LARGEUR,
+   pas d'une demi-profondeur — sinon ils flottent à côté du volume. */
+.bag__side{top:0;left:50%;width:90px;height:320px}
+.bag__side--l{transform:translateX(-50%) rotateY(-90deg) translateZ(150px)}
+.bag__side--r{transform:translateX(-50%) rotateY(90deg)  translateZ(150px)}
+.bag__base{left:0;top:50%;width:300px;height:90px;
+  transform:translateY(-50%) rotateX(-90deg) translateZ(160px)}
+.bag__lining{left:0;top:50%;width:300px;height:90px;
+  transform:translateY(-50%) rotateX(90deg) translateZ(160px)}
+.bag__face svg,.bag__side svg,.bag__base svg,.bag__lining svg{width:100%;height:100%;display:block}
+.bag__handle{left:0;top:-176px;width:300px;height:200px;transform:translateZ(10px)}
+.bag__hw{left:0;top:-176px;width:300px;height:200px;transform:translateZ(48px)}
+.bag__handle svg,.bag__hw svg{width:100%;height:100%;overflow:visible}
+.bag__engrave{position:absolute;left:0;right:0;bottom:64px;text-align:center;
+  transform:translateZ(46px);font-size:11px;letter-spacing:.42em;
+  color:rgba(255,255,255,.5);text-shadow:0 1px 2px rgba(0,0,0,.5);pointer-events:none}
+.bag__shadow{position:absolute;left:50%;bottom:16%;width:340px;height:26px;
+  transform:translateX(-50%);pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(10,10,10,.22),transparent 70%)}
+.hub__hint{position:absolute;left:50%;bottom:2%;transform:translateX(-50%);
+  font-size:9px;text-transform:uppercase;letter-spacing:.24em;opacity:.3;
+  transition:opacity .5s var(--tira-ease);pointer-events:none}
+.hub__hint.off{opacity:0}
+@media(max-width:760px){.bag__box{transform:rotateX(-6deg) rotateY(-18deg) scale(.78)}}
+@media(prefers-reduced-motion:reduce){.bag__box{transition:none}}
+
 
 .pin{position:absolute;display:flex;align-items:center;gap:9px;
   padding:9px 16px 9px 12px;background:var(--tira-white);
@@ -159,17 +198,18 @@ button{font-family:inherit;color:inherit;background:none;border:none;cursor:poin
 .flow{flex:1;position:relative;perspective:1100px;perspective-origin:50% 50%;
   cursor:grab;min-height:0}
 .flow:active{cursor:grabbing}
-.flow__card{position:absolute;top:50%;left:50%;width:min(340px,64vw);
-  aspect-ratio:1/1;opacity:0;pointer-events:none;
+.flow__card{position:absolute;top:50%;left:50%;
+  /* Immersion : la matière occupe l'écran plutôt qu'une vignette */
+  width:min(560px,78vw);height:min(560px,62svh);
+  opacity:0;pointer-events:none;
   transition:transform .5s var(--tira-ease),opacity .5s var(--tira-ease);
   will-change:transform,opacity}
 .flow__card.vis{pointer-events:auto}
-.flow__skin{width:100%;height:100%;border:1px solid rgba(255,255,255,.14);position:relative;overflow:hidden}
+.flow__skin{width:100%;height:100%;border:1px solid rgba(255,255,255,.14);
+  position:relative;overflow:hidden}
+.flow__skin svg{width:100%;height:100%;display:block}
 .flow__card.mid .flow__skin{border-color:rgba(255,255,255,.55);
   box-shadow:0 24px 70px rgba(0,0,0,.6)}
-.flow__ph{position:absolute;inset:0;display:flex;align-items:flex-end;padding:14px;
-  font-size:8px;letter-spacing:.16em;text-transform:uppercase;
-  color:rgba(255,255,255,.3)}
 
 .matiere__caption{text-align:center;padding:0 20px 6px}
 .matiere__name{font-size:clamp(22px,3vw,34px);letter-spacing:-.01em;min-height:1.2em}
@@ -270,6 +310,70 @@ button{font-family:inherit;color:inherit;background:none;border:none;cursor:poin
 </head>
 <body>
 
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs id="pats">
+  <filter id="lth-graine" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" stitchTiles="stitch" baseFrequency="0.62" numOctaves="4" seed="7" result="n"/>
+    <feDiffuseLighting in="n" lighting-color="#ffffff" surfaceScale="1.5" diffuseConstant="1.15" result="d">
+      <feDistantLight azimuth="128" elevation="60"/></feDiffuseLighting>
+    <feComposite in="d" in2="SourceGraphic" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="tex"/>
+    <feSpecularLighting in="n" lighting-color="#ffffff" surfaceScale="1.5"
+      specularConstant="0.16" specularExponent="12" result="s">
+      <feDistantLight azimuth="128" elevation="60"/></feSpecularLighting>
+    <feComposite in="s" in2="tex" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="lit"/>
+    <feComposite in="lit" in2="SourceGraphic" operator="in"/>
+  </filter>
+  <filter id="lth-lisse" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" stitchTiles="stitch" baseFrequency="0.32" numOctaves="2" seed="3" result="n"/>
+    <feDiffuseLighting in="n" lighting-color="#ffffff" surfaceScale="0.1" diffuseConstant="1.02" result="d">
+      <feDistantLight azimuth="118" elevation="74"/></feDiffuseLighting>
+    <feComposite in="d" in2="SourceGraphic" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="tex"/>
+    <feSpecularLighting in="n" lighting-color="#ffffff" surfaceScale="0.1"
+      specularConstant="0.34" specularExponent="55" result="s">
+      <feDistantLight azimuth="118" elevation="74"/></feSpecularLighting>
+    <feComposite in="s" in2="tex" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="lit"/>
+    <feComposite in="lit" in2="SourceGraphic" operator="in"/>
+  </filter>
+  <filter id="lth-daim" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" stitchTiles="stitch" baseFrequency="1.7" numOctaves="5" seed="11" result="n"/>
+    <feDiffuseLighting in="n" lighting-color="#ffffff" surfaceScale="0.75" diffuseConstant="1.1" result="d">
+      <feDistantLight azimuth="140" elevation="48"/></feDiffuseLighting>
+    <feComposite in="d" in2="SourceGraphic" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="tex"/>
+    <feSpecularLighting in="n" lighting-color="#ffffff" surfaceScale="0.75"
+      specularConstant="0.04" specularExponent="5" result="s">
+      <feDistantLight azimuth="140" elevation="48"/></feSpecularLighting>
+    <feComposite in="s" in2="tex" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="lit"/>
+    <feComposite in="lit" in2="SourceGraphic" operator="in"/>
+  </filter>
+  <filter id="lth-exotique" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" stitchTiles="stitch" baseFrequency="0.10 0.30" numOctaves="3" seed="5" result="n"/>
+    <feDiffuseLighting in="n" lighting-color="#ffffff" surfaceScale="1.9" diffuseConstant="1.12" result="d">
+      <feDistantLight azimuth="120" elevation="54"/></feDiffuseLighting>
+    <feComposite in="d" in2="SourceGraphic" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="tex"/>
+    <feSpecularLighting in="n" lighting-color="#ffffff" surfaceScale="1.9"
+      specularConstant="0.22" specularExponent="18" result="s">
+      <feDistantLight azimuth="120" elevation="54"/></feSpecularLighting>
+    <feComposite in="s" in2="tex" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="lit"/>
+    <feComposite in="lit" in2="SourceGraphic" operator="in"/>
+  </filter>
+  <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0"   stop-color="#e8d5a8"/><stop offset=".38" stop-color="#b9975b"/>
+    <stop offset=".62" stop-color="#f0e2bd"/><stop offset="1"   stop-color="#8f7237"/>
+  </linearGradient>
+  <linearGradient id="metal-pall" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#eceef0"/><stop offset=".4" stop-color="#a8adb2"/>
+    <stop offset=".65" stop-color="#f3f5f7"/><stop offset="1" stop-color="#7e848a"/>
+  </linearGradient>
+  <linearGradient id="metal-vieilli" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#c9ab74"/><stop offset=".45" stop-color="#8a6f42"/>
+    <stop offset=".7" stop-color="#d8be8e"/><stop offset="1" stop-color="#6b552f"/>
+  </linearGradient>
+  <linearGradient id="metal-or24" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#ffe9a8"/><stop offset=".4" stop-color="#d4a92e"/>
+    <stop offset=".68" stop-color="#fff3c9"/><stop offset="1" stop-color="#a37d15"/>
+  </linearGradient>
+</defs></svg>
+
 <header class="top">
   <button class="top__back" id="back">
     <svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg>
@@ -306,14 +410,67 @@ button{font-family:inherit;color:inherit;background:none;border:none;cursor:poin
     </p>
   </div>
   <div class="hub">
-    <div class="hub__stage">
-      <div class="hub__glow"></div>
-      <img id="hubImg" src="" alt="">
+    <div class="hub__stage" id="stage">
+      <div class="bag" id="bag">
+        <div class="bag__box" id="bagBox">
+
+          <!-- Flanc gauche -->
+          <div class="bag__side bag__side--l"><svg viewBox="0 0 90 320" preserveAspectRatio="none">
+            <rect width="90" height="320" fill="#6b4a32" data-part="corps"/></svg></div>
+          <!-- Flanc droit -->
+          <div class="bag__side bag__side--r"><svg viewBox="0 0 90 320" preserveAspectRatio="none">
+            <rect width="90" height="320" fill="#6b4a32" data-part="corps"/></svg></div>
+          <!-- Fond -->
+          <div class="bag__base"><svg viewBox="0 0 300 90" preserveAspectRatio="none">
+            <rect width="300" height="90" fill="#5a3d29" data-part="corps"/></svg></div>
+          <!-- Doublure visible par l'ouverture -->
+          <div class="bag__lining"><svg viewBox="0 0 300 90" preserveAspectRatio="none">
+            <rect width="300" height="90" fill="#c9bda8" data-part="doublure"/></svg></div>
+
+          <!-- Dos -->
+          <div class="bag__face bag__face--back"><svg viewBox="0 0 300 320">
+            <path d="M8 8 H292 V300 Q292 312 280 312 H20 Q8 312 8 300 Z"
+                  fill="#5e412c" data-part="corps"/></svg></div>
+
+          <!-- Face avant : corps + signature en V -->
+          <div class="bag__face bag__face--front"><svg viewBox="0 0 300 320" id="bagSvg">
+            <path id="pCorps" d="M8 8 H292 V300 Q292 312 280 312 H20 Q8 312 8 300 Z"
+                  fill="#6b4a32" data-part="corps"/>
+            <path id="pV" d="M8 8 L150 118 L292 8 L292 46 L150 156 L8 46 Z"
+                  fill="#5a3d29" data-part="corps" opacity=".92"/>
+            <path d="M8 8 L150 118 L292 8" fill="none" stroke="rgba(0,0,0,.35)" stroke-width="1.2"/>
+            <path d="M8 46 L150 156 L292 46" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="1"/>
+            <path d="M18 300 H282" stroke="rgba(0,0,0,.22)" stroke-width="1" fill="none"/>
+          </svg></div>
+
+          <!-- Anse -->
+          <div class="bag__handle"><svg viewBox="0 0 300 200">
+            <path id="pAnse" d="M62 196 C62 46 238 46 238 196"
+                  fill="none" stroke="#6b4a32" stroke-width="17" stroke-linecap="round"
+                  filter="url(#lth-graine)" data-part="anse"/>
+          </svg></div>
+
+          <!-- Ferrures -->
+          <div class="bag__hw"><svg viewBox="0 0 300 200">
+            <rect id="hwL" x="52" y="180" width="22" height="15" fill="url(#metal)" data-part="ferrures"/>
+            <rect id="hwR" x="226" y="180" width="22" height="15" fill="url(#metal)" data-part="ferrures"/>
+            <path id="hwV" d="M138 176 L150 190 L162 176" fill="none" stroke="url(#metal)"
+                  stroke-width="4.5" stroke-linecap="round" data-part="ferrures"/>
+          </svg></div>
+
+          <!-- Gravure -->
+          <div class="bag__engrave" id="engrave" hidden><span id="engraveTxt"></span></div>
+        </div>
+        <div class="bag__shadow"></div>
+      </div>
+
       <button class="pin pin--corps"    data-el="corps"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>Le corps</span><span class="pin__val" data-val="corps"></span></button>
       <button class="pin pin--anse"     data-el="anse"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>L'anse</span><span class="pin__val" data-val="anse"></span></button>
       <button class="pin pin--ferrures" data-el="ferrures"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>Les ferrures</span><span class="pin__val" data-val="ferrures"></span></button>
       <button class="pin pin--doublure" data-el="doublure"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>La doublure</span><span class="pin__val" data-val="doublure"></span></button>
       <button class="pin pin--gravure"  data-el="gravure"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>La gravure</span><span class="pin__val" data-val="gravure"></span></button>
+
+      <p class="hub__hint" id="hint">Faites pivoter la pièce</p>
     </div>
   </div>
 </section>
@@ -384,15 +541,15 @@ var CDN='https://cdn.shopify.com/s/files/1/0927/5890/1079/files/';
    En production elle vient de métachamps Shopify, pas du JS.
    ═══════════════════════════════════════════════════════════ */
 var MODELES=[
-  {id:'victoire',nom:'La Victoire',type:'Sac à main structuré',base:3200,img:CDN+'28092025-DSCF1828.jpg'},
-  {id:'colette', nom:'La Colette', type:'Sac à main souple',    base:2800,img:CDN+'BOSCHI0919.jpg'},
-  {id:'jane',    nom:'La Jane',    type:'Tote',                 base:2400,img:CDN+'Asset_atelier_1.png'},
-  {id:'rafael',  nom:'Le Rafaël',  type:'Pochette',             base:1600,img:CDN+'BOSCHI0154.jpg'}
+  {id:'victoire',nom:'La Victoire',type:'Sac à main structuré',base:3200,img:CDN+'28092025-DSCF1828.jpg',w:300,h:320,d:92},
+  {id:'colette', nom:'La Colette', type:'Sac à main souple',    base:2800,img:CDN+'BOSCHI0919.jpg',    w:290,h:280,d:78},
+  {id:'jane',    nom:'La Jane',    type:'Tote',                 base:2400,img:CDN+'Asset_atelier_1.png',w:320,h:300,d:110},
+  {id:'rafael',  nom:'Le Rafaël',  type:'Pochette',             base:1600,img:CDN+'BOSCHI0154.jpg',   w:300,h:190,d:44}
 ];
 
 /* Textures de substitution — en attente des macros de cuir.
    Volontairement sobres et différenciées par type, pas réalistes. */
-function skin(base,type){
+function _skinLegacy(base,type){
   var t={
     graine:"radial-gradient(circle at 30% 30%,rgba(255,255,255,.10) 0 1px,transparent 1.6px) 0 0/7px 7px",
     lisse:"linear-gradient(135deg,rgba(255,255,255,.16),transparent 45%)",
@@ -478,12 +635,12 @@ MODELES.forEach(function(m){
   b.addEventListener('click',function(){
     S.modele=m; S.choix={};
     document.querySelectorAll('.model').forEach(function(x){x.classList.toggle('on',x.dataset.id===m.id)});
-    $('hubImg').src=m.img; $('hubImg').alt=m.nom;
+    poserSilhouette(m);
     document.querySelectorAll('.pin').forEach(function(p){
       p.classList.remove('done'); p.querySelector('.pin__val').textContent='';
     });
     $('next').disabled=false;
-    majPrix();
+    majPrix(); rendreSac();
   });
   $('models').appendChild(b);
 });
@@ -538,8 +695,8 @@ function construireFlow(){
   listeMat().forEach(function(m,i){
     var c=document.createElement('div');
     c.className='flow__card'; c.dataset.i=i;
-    c.innerHTML='<div class="flow__skin" style="background:'+skin(m.c,m.type)+'">'+
-                '<span class="flow__ph">Macro cuir à venir</span></div>';
+    c.innerHTML='<div class="flow__skin"><svg viewBox="0 0 560 560" preserveAspectRatio="none">'+
+      '<rect width="560" height="560" fill="'+motif(m.c,m.type)+'"/></svg></div>';
     c.addEventListener('click',function(){ if(i!==flowIdx){ flowIdx=i; rendreFlow(); } });
     f.appendChild(c); cartes.push(c);
   });
@@ -553,9 +710,9 @@ function rendreFlow(){
     var tx,ry,sc,op,z;
     if(d===0){ tx='-50%'; ry='0deg'; sc=1; op=1; z=100; }
     else{
-      var gap=190+a*54;
+      var gap=330+a*86;
       tx='calc(-50% + '+(s*gap)+'px)'; ry=(-s*46)+'deg';
-      sc=Math.max(.5,1-a*.16); op=Math.max(0,1-a*.3); z=100-a*10;
+      sc=Math.max(.46,1-a*.19); op=Math.max(0,1-a*.34); z=100-a*10;
     }
     c.style.transform='translateX('+tx+') translateY(-50%) rotateY('+ry+') scale('+sc+')';
     c.style.opacity=op; c.style.zIndex=z;
@@ -592,7 +749,7 @@ $('matNext').addEventListener('click',function(){ if(flowIdx<listeMat().length-1
 $('matPick').addEventListener('click',function(){
   var m=listeMat()[flowIdx]; if(!m) return;
   S.choix[S.elCourant]={id:m.id,nom:m.nom,delta:m.delta};
-  marquer(S.elCourant,m.nom); majPrix(); fermerMatiere();
+  marquer(S.elCourant,m.nom); majPrix(); rendreSac(); fermerMatiere();
 });
 /* Clavier, glisser, balayage */
 document.addEventListener('keydown',function(e){
@@ -656,7 +813,7 @@ $('panDone').addEventListener('click',function(){
     S.choix[el]=c; marquer(el,o.nom);
   }
   $('panel').classList.remove('on'); document.body.style.overflow='';
-  majPrix();
+  majPrix(); rendreSac();
 });
 $('panel').addEventListener('click',function(e){
   if(e.target===$('panel')){ $('panel').classList.remove('on'); document.body.style.overflow=''; }
@@ -704,7 +861,150 @@ function demander(){
         '\n\n— Démonstration : en production, cette spécification part au conseiller,\nqui établit le devis et le lien de paiement.');
 }
 
-majPrix();
+
+/* ═══════════════════════════════════════════════════════════
+   LE SAC EN VOLUME
+   Boîte 3D CSS dont chaque face porte un SVG rempli du cuir
+   retenu. Changer de matière repeint réellement la pièce.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ═══ Motifs cuir — tuile unique, répétée ═══
+   feTurbulence coûte cher : appliqué à une surface plein écran il fige
+   le navigateur. On le calcule une fois sur une tuile de 140px, que
+   stitchTiles raccorde sans couture visible. */
+var NS='http://www.w3.org/2000/svg';
+var motifsFaits={};
+function motif(couleur,type){
+  var id='pat-'+type+'-'+couleur.replace('#','');
+  if(!motifsFaits[id]){
+    var defs=document.getElementById('pats');
+    var pat=document.createElementNS(NS,'pattern');
+    pat.setAttribute('id',id);
+    pat.setAttribute('width','140'); pat.setAttribute('height','140');
+    pat.setAttribute('patternUnits','userSpaceOnUse');
+    var r=document.createElementNS(NS,'rect');
+    r.setAttribute('width','140'); r.setAttribute('height','140');
+    r.setAttribute('fill',couleur); r.setAttribute('filter','url(#lth-'+type+')');
+    pat.appendChild(r); defs.appendChild(pat);
+    motifsFaits[id]=true;
+  }
+  return 'url(#'+id+')';
+}
+
+/* Chaque modèle a ses proportions : la boîte 3D et ses faces s'ajustent,
+   l'anse remonte ou s'efface selon la pièce (une pochette n'en a pas). */
+function poserSilhouette(m){
+  var box=document.getElementById('bagBox'); if(!box) return;
+  var w=m.w||300,h=m.h||320,d=m.d||92,dz=d/2;
+  box.style.width=w+'px'; box.style.height=h+'px';
+  var q=function(sel){return document.querySelector(sel)};
+  q('.bag__face--front').style.transform='translateZ('+dz+'px)';
+  q('.bag__face--back').style.transform='translateZ(-'+dz+'px) rotateY(180deg)';
+  var hw=w/2, hh=h/2;
+  ['l','r'].forEach(function(c){
+    var e=q('.bag__side--'+c);
+    e.style.width=d+'px'; e.style.height=h+'px';
+    /* demi-LARGEUR : c'est elle qui place le flanc au bord du volume */
+    e.style.transform='translateX(-50%) rotateY('+(c==='l'?'-':'')+'90deg) translateZ('+hw+'px)';
+  });
+  var base=q('.bag__base'), lin=q('.bag__lining');
+  base.style.width=w+'px'; base.style.height=d+'px';
+  base.style.transform='translateY(-50%) rotateX(-90deg) translateZ('+hh+'px)';
+  lin.style.width=w+'px'; lin.style.height=d+'px';
+  lin.style.transform='translateY(-50%) rotateX(90deg) translateZ('+hh+'px)';
+  [q('.bag__handle'),q('.bag__hw')].forEach(function(e,i){
+    e.style.width=w+'px';
+    e.style.transform='translateZ('+(i?dz+3:10)+'px)';
+  });
+  /* La pochette n'a pas d'anse */
+  var sansAnse = m.id==='rafael';
+  q('.bag__handle').style.display = sansAnse?'none':'';
+  var pinAnse=document.querySelector('.pin[data-el="anse"]');
+  if(pinAnse) pinAnse.style.display = sansAnse?'none':'';
+  if(sansAnse) delete S.choix.anse;
+}
+var METAUX={laiton:'metal',vieilli:'metal-vieilli',palladium:'metal-pall',or24:'metal-or24'};
+
+function peindre(part,couleur,type,assombrir){
+  document.querySelectorAll('[data-part="'+part+'"]').forEach(function(n){
+    var c=couleur;
+    if(assombrir){ /* les faces cachées prennent la même teinte, en retrait */
+      c=ombrer(couleur,.82);
+    }
+    if(n.tagName==='path'&&n.getAttribute('stroke')) n.setAttribute('stroke',c);
+    else n.setAttribute('fill',c);
+    n.setAttribute('filter','url(#lth-'+type+')');
+  });
+}
+function ombrer(hex,k){
+  var n=parseInt(hex.slice(1),16);
+  var r=Math.round(((n>>16)&255)*k),g=Math.round(((n>>8)&255)*k),b=Math.round((n&255)*k);
+  return '#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);
+}
+function rendreSac(){
+  /* Corps : face avant, dos, flancs, fond */
+  var m=S.choix.corps;
+  var mc=m?matiereById(m.id):null;
+  var col=mc?mc.c:'#6b4a32', typ=mc?mc.type:'graine';
+  document.querySelectorAll('[data-part="corps"]').forEach(function(n,i){
+    n.setAttribute('fill', motif(i===0?col:ombrer(col,.86), typ));
+    n.removeAttribute('filter');
+  });
+  /* Le V garde la même matière, une nuance en dessous */
+  var v=document.getElementById('pV');
+  if(v){ v.setAttribute('fill',motif(ombrer(col,.8),typ)); v.removeAttribute('filter'); }
+
+  /* Anse — matière propre si reprise, sinon celle du corps */
+  var a=S.choix.anse?matiereById(S.choix.anse.id):mc;
+  var an=document.getElementById('pAnse');
+  if(an){
+    an.setAttribute('stroke', motif(a?a.c:col, a?a.type:typ));
+    an.removeAttribute('filter');
+  }
+  /* Doublure */
+  var d=S.choix.doublure;
+  var dcol={agneau:'#c9bda8',chevreau:'#ddd2bc',soie:'#b9a68c'}[d?d.id:'agneau']||'#c9bda8';
+  document.querySelectorAll('[data-part="doublure"]').forEach(function(n){
+    n.setAttribute('fill',motif(dcol,'lisse')); n.removeAttribute('filter');
+  });
+  /* Ferrures */
+  var g='url(#'+(METAUX[S.choix.ferrures?S.choix.ferrures.id:'laiton']||'metal')+')';
+  ['hwL','hwR'].forEach(function(id){var n=document.getElementById(id);if(n)n.setAttribute('fill',g)});
+  var hv=document.getElementById('hwV'); if(hv) hv.setAttribute('stroke',g);
+  /* Gravure */
+  var gr=S.choix.gravure, e=document.getElementById('engrave');
+  if(e){
+    var txt=gr&&gr.id!=='aucune'&&gr.initiales?gr.initiales:'';
+    e.hidden=!txt; document.getElementById('engraveTxt').textContent=txt;
+  }
+}
+function matiereById(id){ return MATIERES.filter(function(m){return m.id===id})[0]||null; }
+
+/* ── Rotation ── */
+(function(){
+  var box=document.getElementById('bagBox'), zone=document.getElementById('bag');
+  if(!box||!zone) return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var ry=-22, x0=null, ry0=0, bouge=false;
+  function pose(){ box.style.transform='rotateX(-6deg) rotateY('+ry+'deg)'; }
+  function debut(x){ x0=x; ry0=ry; box.classList.remove('settle'); }
+  function pendant(x){
+    if(x0===null) return;
+    ry=Math.max(-62,Math.min(62, ry0+(x-x0)*0.42));
+    pose();
+    if(!bouge){ bouge=true; var h=document.getElementById('hint'); if(h) h.classList.add('off'); }
+  }
+  function fin(){ if(x0===null) return; x0=null; box.classList.add('settle'); }
+  zone.addEventListener('mousedown',function(e){e.preventDefault();debut(e.clientX)});
+  window.addEventListener('mousemove',function(e){pendant(e.clientX)});
+  window.addEventListener('mouseup',fin);
+  zone.addEventListener('touchstart',function(e){debut(e.touches[0].clientX)},{passive:true});
+  zone.addEventListener('touchmove',function(e){pendant(e.touches[0].clientX)},{passive:true});
+  zone.addEventListener('touchend',fin,{passive:true});
+  window.tiraPoseSac=pose;
+})();
+
+majPrix(); rendreSac();
 })();
 </script>
 </body>
