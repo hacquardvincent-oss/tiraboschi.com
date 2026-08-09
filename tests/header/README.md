@@ -50,6 +50,21 @@ Règle à retenir : masquage d'un élément et hauteur qu'il réserve doivent
 Validé contre le code d'avant correctif : 44px d'écart détectés sur les
 quatre largeurs desktop.
 
+## sticky.js — cohabitation header / barre de filtres
+
+    NODE_PATH=$(npm root -g) node sticky.js .
+
+Deux invariants au scroll (aller-retour) :
+- le header ne se rétracte jamais sur une page qui porte une barre collée ;
+- une fois accostée, la barre colle exactement au bas du header.
+
+Sans ça, le header directionnel se rétractait et la barre de filtres venait
+prendre sa place en haut de l'écran : le visiteur voyait le menu remplacé
+par les filtres, deux navigations pour un même emplacement.
+
+Contrôle aussi le rendu du CTA souligné (soulignement navigateur remplacé,
+espace texte/filet, épaisseur, interlettrage).
+
 ## Ce qu'il ne couvre pas
 
 Les pages de test sont des reconstructions du markup, pas les pages Shopify

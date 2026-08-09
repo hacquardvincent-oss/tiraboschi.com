@@ -68,6 +68,14 @@
     return 80;
   }
 
+  /* Barre collée sous le header (filtres collection). Elle disparaît sous
+     900px au profit du bouton flottant : on relit donc l'état réel plutôt
+     que de se fier à la seule présence dans le DOM. */
+  const subBar = document.querySelector('.col-filters');
+  function hasVisibleSubBar() {
+    return !!subBar && getComputedStyle(subBar).display !== 'none';
+  }
+
   function updateHeader() {
     if (!hdr) { ticking = false; return; }
     const y = window.scrollY;
@@ -79,9 +87,15 @@
     if (search) search.classList.toggle('solid', isSolid);
     document.body.classList.toggle('on-dark', hasDarkHero && !isSolid);
 
-    /* 2. Sticky directionnel — jamais sur la homepage (le hero garde le header) */
+    /* 2. Sticky directionnel
+       Désactivé sur la homepage (le hero garde le header) ET sur les pages
+       qui portent une barre collée sous le header : sinon le header se
+       rétracte et cette barre vient prendre sa place en haut de l'écran.
+       Le visiteur voit le menu remplacé par les filtres — deux éléments de
+       navigation qui se disputent le même emplacement. Le header reste
+       l'ancre permanente, la barre se cale dessous. */
     const delta = y - lastScrollY;
-    if (!isHome && y > 120) {
+    if (!isHome && !hasVisibleSubBar() && y > 120) {
       if (delta > 4 && lastDir !== 'down') { setHidden(true);  lastDir = 'down'; }
       else if (delta < -4 && lastDir !== 'up') { setHidden(false); lastDir = 'up'; }
     } else {

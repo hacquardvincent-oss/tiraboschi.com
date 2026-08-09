@@ -1270,9 +1270,14 @@ a.editorial__img { overflow: hidden; position: relative; display: block; cursor:
   position: sticky;
   top: calc(var(--header-h) + var(--search-h));
   z-index: 100;
-  background: var(--tira-white);
-  border-bottom: 1px solid var(--tira-border);
-  transition: top .35s var(--tira-ease);
+  /* Même verre dépoli que .hdr.solid : les deux barres se lisent comme
+     une seule pièce de chrome, pas comme deux bandeaux qui se disputent
+     le haut de l'écran. Le header ne se rétracte plus sur ces pages. */
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(232,232,232,0.6);
+  transition: top .35s var(--tira-ease), background .4s ease;
 }
 body.hdr-hidden .col-filters {
   top: var(--search-h);
@@ -3202,3 +3207,75 @@ body.hdr-hidden .col-filters {
 /* "Prix sur demande" était à 0.28 d'opacité : ~2:1 de contraste, illisible.
    0.6 donne 5.7:1 et s'aligne sur les autres textes secondaires de card. */
 .card__price--request { opacity: .6; }
+
+/* ═══════════════════════════════════════════════════════════════
+   CTA TEXTE SOULIGNÉ — traitement unifié
+   Le soulignement navigateur (text-decoration) rend un trait épais et
+   irrégulier sur une serif en 10px, collé au texte, et souligne aussi
+   l'espace final. On le remplace par un filet 1px maîtrisé, posé plus
+   bas, qui se redessine au survol.
+   Charte : bouton = texte souligné uppercase, jamais de boîte.
+   ═══════════════════════════════════════════════════════════════ */
+.col-editorial-2x2__link,
+.col-editorial-4x1__link,
+.tira-cta-underline {
+  display: inline-block;
+  position: relative;
+  text-decoration: none;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .18em;
+  padding-bottom: 10px;          /* le filet respire au lieu de coller */
+  opacity: .9;
+  transition: opacity .3s var(--tira-ease);
+  cursor: pointer;
+}
+
+/* Filet au repos — part de la gauche */
+.col-editorial-2x2__link::after,
+.col-editorial-4x1__link::after,
+.tira-cta-underline::after {
+  content: '';
+  position: absolute; left: 0; bottom: 0;
+  width: 100%; height: 1px;
+  background: currentColor;
+  opacity: .5;
+  transform: scaleX(1);
+  transform-origin: right center;
+  transition: transform .45s var(--tira-ease), opacity .3s var(--tira-ease);
+}
+/* Filet au survol — se retire par la droite… */
+.col-editorial-2x2:hover .col-editorial-2x2__link::after,
+.col-editorial-4x1:hover .col-editorial-4x1__link::after,
+.tira-cta-underline:hover::after {
+  transform: scaleX(0);
+}
+/* …pendant qu'un second se redessine depuis la gauche */
+.col-editorial-2x2__link::before,
+.col-editorial-4x1__link::before,
+.tira-cta-underline::before {
+  content: '';
+  position: absolute; left: 0; bottom: 0;
+  width: 100%; height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform .45s var(--tira-ease) .1s;
+}
+.col-editorial-2x2:hover .col-editorial-2x2__link::before,
+.col-editorial-4x1:hover .col-editorial-4x1__link::before,
+.tira-cta-underline:hover::before {
+  transform: scaleX(1);
+}
+
+.col-editorial-2x2:hover .col-editorial-2x2__link,
+.col-editorial-4x1:hover .col-editorial-4x1__link,
+.tira-cta-underline:hover { opacity: 1; }
+
+/* Le bloc éditorial respire : le texte ne doit pas toucher le bord */
+.col-editorial-2x2__body { padding: 40px 40px 38px; }
+.col-editorial-4x1__body { padding: 48px 56px; }
+@media (max-width: 900px) {
+  .col-editorial-2x2__body { padding: 28px 24px 26px; }
+  .col-editorial-4x1__body { padding: 36px 24px; }
+}
