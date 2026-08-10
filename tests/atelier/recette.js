@@ -81,25 +81,45 @@ const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m);
     ok(fantomes.length === 0, 'rien de fantôme sur un écran d\'option ' + JSON.stringify(fantomes));
     ok(colles.length === 0, 'nom et description séparés ' + JSON.stringify(colles));
 
-    // ── 2. Le fond de la plongée tient le texte blanc sur les 55 nuances
+    // ── 2. Le fond de la plongée est neutre et CONSTANT : il ne prend
+    //      plus la teinte du cuir (défaut signalé par le client)
     await p.click('.aj[data-k="ext"]'); await p.waitForTimeout(700);
-    const pireCuir = await p.evaluate(() => {
-      if (!window.__mat) return { pire: 0, coupable: 'crochet de recette absent' };
-      const L = window.__mat();
-      let pire = 99, coupable = '';
-      const el = document.createElement('div'); document.body.appendChild(el);
-      for (const m of L) {
-        el.style.background = window.__fond(m.c);
-        const c = getComputedStyle(el).backgroundColor.match(/\d+/g).slice(0, 3).map(Number);
-        const f = c.map(v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); });
-        const l = .2126 * f[0] + .7152 * f[1] + .0722 * f[2];
-        const r = 1.05 / (l + .05);
-        if (r < pire) { pire = r; coupable = m.nom; }
-      }
-      el.remove();
-      return { pire, coupable };
+    const fondAv = await p.evaluate(() => getComputedStyle(document.getElementById('plgBg')).background);
+    await p.evaluate(() => { for (let i = 0; i < 30; i++) document.getElementById('plgN').click(); });
+    await p.waitForTimeout(500);
+    const fondAp = await p.evaluate(() => getComputedStyle(document.getElementById('plgBg')).background);
+    ok(fondAv === fondAp, 'le fond ne se recolore pas quand la nuance change');
+    await p.evaluate(() => { for (let i = 0; i < 30; i++) document.getElementById('plgP').click(); });
+    await p.waitForTimeout(400);
+
+    // ── 2bis. L'ascenseur de nuances : 52 crans, clic + frottement
+    const rail = await p.evaluate(() => {
+      const r = document.getElementById('plgRail');
+      const b = r.getBoundingClientRect();
+      return { n: r.children.length, visible: !r.hidden && b.width > 200, y: b.y, x: b.x, w: b.width, h: b.height };
     });
-    ok(pireCuir.pire >= 4.5, `fond plongée × 55 cuirs — pire ${pireCuir.pire.toFixed(2)}:1 sur ${pireCuir.coupable}`);
+    ok(rail.n === 52 && rail.visible, `ascenseur de nuances : ${rail.n} crans visibles`);
+    const chev = await p.evaluate(() => {
+      const st = document.getElementById('plgStage').getBoundingClientRect();
+      const r = document.getElementById('plgRail').getBoundingClientRect();
+      return Math.round(st.bottom - r.top);
+    });
+    ok(chev <= 0, `le rail ne chevauche pas la scène (écart ${-chev}px)`);
+    await p.mouse.click(rail.x + rail.w * 0.83, rail.y + rail.h / 2);
+    await p.waitForTimeout(500);
+    const saut = await p.evaluate(() => ({ i: window.__pi(), on: document.querySelectorAll('#plgRail i.on').length,
+      onIdx: +document.querySelector('#plgRail i.on').dataset.i }));
+    ok(saut.i === Math.floor(0.83 * 52) && saut.on === 1 && saut.onIdx === saut.i,
+       `un clic sur le rail saute à la nuance visée (${saut.i})`);
+    // frottement : glisser le long du rail
+    await p.mouse.move(rail.x + rail.w * 0.2, rail.y + rail.h / 2);
+    await p.mouse.down();
+    for (let k = 1; k <= 8; k++) await p.mouse.move(rail.x + rail.w * (0.2 + 0.06 * k), rail.y + rail.h / 2);
+    await p.mouse.up(); await p.waitForTimeout(500);
+    const frotte = await p.evaluate(() => window.__pi());
+    ok(Math.abs(frotte - Math.floor(0.68 * 52)) <= 1, `le frottement du rail suit le doigt (${frotte})`);
+    await p.evaluate(() => { const n = window.__pi(); for (let i = 0; i < n; i++) document.getElementById('plgP').click(); });
+    await p.waitForTimeout(400);
 
     // ── 2b. Changer de matière conserve la nuance visée
     await p.evaluate(() => { for (let i = 0; i < 5; i++) document.getElementById('plgN').click(); });

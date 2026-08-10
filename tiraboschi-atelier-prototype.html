@@ -253,8 +253,10 @@ body.clair .rep:hover .rep__l,body.clair .rep.set .rep__l{padding:7px 12px;margi
      de body.clair (--txt:#0a0a0a) et affichait du noir sur du noir. */
   color:#fff}
 .plg.on{opacity:1;visibility:visible;pointer-events:auto}
-.plg{--plg-bas:clamp(190px,26svh,240px)}
-.plg__bg{position:absolute;inset:0;transition:background 1.1s var(--e)}
+.plg{--plg-bas:clamp(236px,31svh,296px)}   /* réserve l'ascenseur sous la scène */
+/* Le fond ne prend PLUS la teinte du cuir : une salle sombre, constante. */
+.plg__bg{position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 38%,#141210 0%,#0a0a0a 78%)}
 .plg__stage{position:absolute;left:0;right:0;top:112px;
   /* la scène s'arrête au-dessus de la légende : le nom du cuir
      se posait par-dessus la matière */
@@ -289,6 +291,15 @@ body.clair .rep:hover .rep__l,body.clair .rep.set .rep__l{padding:7px 12px;margi
   transform:scaleX(0);transform-origin:left;transition:transform .45s var(--e)}
 .fm.on{opacity:1}.fm.on::after{transform:scaleX(1)}
 .plg__cap{position:absolute;left:0;right:0;bottom:clamp(22px,5vh,48px);z-index:5;text-align:center}
+/* L'ascenseur : 52 crans de couleur, cliquables et frottables. */
+.plg__rail{display:flex;gap:1px;width:min(620px,86vw);margin:0 auto 16px;
+  height:14px;align-items:flex-end;cursor:pointer;touch-action:none}
+.plg__rail i{flex:1;height:7px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22);   /* délimite les crans sombres */
+  transition:height .25s var(--e),box-shadow .25s}
+.plg__rail:hover i{height:9px}
+.plg__rail i.on{height:14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),
+  0 0 0 1px rgba(255,255,255,.85)}
 .plg__n{font-size:clamp(28px,4.4vw,58px);letter-spacing:-.02em;min-height:1.1em}
 .plg__d{font-size:10px;letter-spacing:.24em;text-transform:uppercase;opacity:.5;margin-top:12px}
 .plg__c{font-size:9px;letter-spacing:.26em;opacity:.28;margin-top:16px}
@@ -466,6 +477,7 @@ body.clair .rep__l{color:#0a0a0a}
   <button class="plg__a plg__a--p" id="plgP" aria-label="Précédent"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg></button>
   <button class="plg__a plg__a--n" id="plgN" aria-label="Suivant"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></button>
   <div class="plg__cap">
+    <div class="plg__rail" id="plgRail" aria-label="Aller à une nuance"></div>
     <p class="plg__n" id="plgNom"></p>
     <p class="plg__d" id="plgD"></p>
     <p class="plg__c" id="plgC"></p>
@@ -659,15 +671,6 @@ function peindre(el,o,taille){
   }
   el.style.backgroundColor=o.f;
   if(o.g){el.style.backgroundImage=o.g;el.style.backgroundSize='auto'}
-}
-
-function fonceCap(h,k){
-  /* Le fond de la plongée doit rester assez sombre pour que le blanc tienne :
-     une craie à 30 % passait encore trop clair sur certains écrans. */
-  var n=parseInt(h.slice(1),16),r=(n>>16)&255,g=(n>>8)&255,b=n&255;
-  var l=(.2126*r+.7152*g+.0722*b)/255;
-  var f=Math.min(k,l>.001?(0.13/l):k);
-  return '#'+((1<<24)+(Math.round(r*f)<<16)+(Math.round(g*f)<<8)+Math.round(b*f)).toString(16).slice(1);
 }
 
 /* ═══ Prix ═══ */
@@ -935,6 +938,37 @@ function matiere(i){
   var c=COULEURS[i],t=typePar(typ);
   return {id:typ+':'+c.id,nom:c.nom,c:c.c,delta:t.d,tx:t.tx};
 }
+/* L'ascenseur de nuances : un cran par couleur, dans l'ordre chromatique. */
+var crans=[];
+COULEURS.forEach(function(c,i){
+  var t=document.createElement('i');
+  t.style.background=c.c;t.title=c.nom;t.dataset.i=i;
+  crans.push(t);$('plgRail').appendChild(t);
+});
+(function(){
+  var rail=$('plgRail'),id=null;
+  function vise(e){
+    var r=rail.getBoundingClientRect();
+    var i=Math.max(0,Math.min(COULEURS.length-1,
+      Math.floor((e.clientX-r.left)/r.width*COULEURS.length)));
+    if(i!==pi){pi=i;placer(0);legende(pi)}
+  }
+  rail.addEventListener('pointerdown',function(e){
+    id=e.pointerId;
+    $('plgStage').classList.add('tire');   /* transitions coupées : le frottement répond au doigt */
+    vise(e);
+    try{rail.setPointerCapture(id)}catch(_){}
+  });
+  rail.addEventListener('pointermove',function(e){
+    if(id===null||e.pointerId!==id)return;vise(e);
+  });
+  function fin(e){
+    if(id===null||e.pointerId!==id)return;
+    id=null;$('plgStage').classList.remove('tire');placer(0);
+  }
+  rail.addEventListener('pointerup',fin);
+  rail.addEventListener('pointercancel',fin);
+})();
 var cartes=[];
 /* Le cover flow ne se reconstruit plus à chaque pas : les cartes restent en
    place et seul leur transform change. C'est ce qui rend le mouvement — avant,
@@ -974,17 +1008,12 @@ function placer(off){
     d.classList.toggle('mid',a<.5);
   }
 }
-var fondPose='';
 function legende(idx){
   var m=matiere(idx),t=typePar(typ);
   $('plgNom').textContent=m.nom;
   $('plgD').textContent=t.n+' · '+(t.d?'+ '+euros(t.d):'sans supplément');
   $('plgC').textContent=(idx+1)+' sur '+COULEURS.length;
-  if(m.c!==fondPose){
-    fondPose=m.c;
-    $('plgBg').style.background=
-      'radial-gradient(ellipse at 50% 40%,'+fonceCap(m.c,.34)+' 0%,'+fonceCap(m.c,.16)+' 100%)';
-  }
+  for(var i=0;i<crans.length;i++)crans[i].classList.toggle('on',i===idx);
   $('plgP').disabled=idx<=0;$('plgN').disabled=idx>=COULEURS.length-1;
 }
 function rendreC(){placer(0);legende(pi)}
@@ -998,6 +1027,7 @@ function plonger(a){
   $('plgT').textContent=a.n;
   var estCuir=a.type==='cuir';
   $('plgFam').hidden=!estCuir;$('plgStage').hidden=!estCuir;
+  $('plgRail').hidden=!estCuir;
   $('plgP').hidden=!estCuir;$('plgN').hidden=!estCuir;
   $('plgOpts').hidden=estCuir;
   $('plgOk').textContent=estCuir?'Retenir ce cuir':'Valider';
@@ -1013,7 +1043,6 @@ function plonger(a){
     batirCartes();legende(pi);
     $('plgNom').style.display='';$('plgD').style.display='';$('plgC').style.display='';
   }else{
-    fondPose='';$('plgBg').style.background='#0a0a0a';
     $('plgNom').style.display='none';$('plgD').style.display='none';$('plgC').style.display='none';
     var o=$('plgOpts');o.innerHTML='';
     if(a.type==='liste'){
@@ -1146,7 +1175,6 @@ document.querySelectorAll('.pa').forEach(function(b){
 /* Crochets de recette — lus par tests/atelier/recette.js */
 window.__mat=function(){return COULEURS};
 window.__pi=function(){return pi};
-window.__fond=function(c){return 'radial-gradient(ellipse at 50% 40%,'+fonceCap(c,.34)+' 0%,'+fonceCap(c,.16)+' 100%)'};
 
 vBk(0);ligner();majTotal();
 })();
