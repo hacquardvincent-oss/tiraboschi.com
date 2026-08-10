@@ -60,8 +60,12 @@ img{display:block;width:100%;height:100%;object-fit:cover}
   position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:3;
   font-size:10px;letter-spacing:.2em;text-transform:uppercase;opacity:.3;text-align:center;
   width:70%;line-height:2}
+.sil__f img{object-fit:contain;object-position:72% center;
+  /* packshots centrés sur fond blanc : on les décale à droite pour
+     dégager la colonne de texte, et on ne les rogne jamais */
+  filter:brightness(.94)}
 .sil__f::after{content:'';position:absolute;inset:0;
-  background:linear-gradient(90deg,rgba(10,10,10,.86) 0%,rgba(10,10,10,.35) 46%,rgba(10,10,10,.72) 100%)}
+  background:linear-gradient(90deg,rgba(10,10,10,.92) 0%,rgba(10,10,10,.55) 38%,rgba(10,10,10,.12) 66%,rgba(10,10,10,.4) 100%)}
 .sil__txt{position:absolute;left:clamp(20px,7vw,110px);top:50%;transform:translateY(-50%);
   z-index:5;max-width:min(560px,60vw)}
 .sil__n{font-size:clamp(46px,8.4vw,124px);line-height:.86;letter-spacing:-.035em;
@@ -99,10 +103,11 @@ img{display:block;width:100%;height:100%;object-fit:cover}
 
 /* ═══ 2 · L'ATELIER — la pièce en plein cadre ═══ */
 .atl__ph{position:absolute;inset:0}
-.atl__ph img{transition:transform 5s var(--e),filter 1.1s var(--e)}
+.atl__ph img{object-fit:contain;transition:transform 5s var(--e),filter 1.1s var(--e)}
 .atl.zoom .atl__ph img{transform:scale(1.14)}
+.atl__ph{background:#efeae3}
 .atl__ph::after{content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 50% 44%,transparent 22%,rgba(10,10,10,.62) 78%)}
+  background:radial-gradient(ellipse at 50% 42%,transparent 34%,rgba(10,10,10,.28) 86%)}
 
 /* Repères posés sur la photo */
 .rep{position:absolute;z-index:8;display:flex;align-items:center;gap:0;
@@ -248,6 +253,24 @@ img{display:block;width:100%;height:100%;object-fit:cover}
 .cert__tl{font-size:9px;letter-spacing:.26em;text-transform:uppercase;opacity:.4;margin-bottom:7px}
 .cert__note{font-size:10px;line-height:1.7;opacity:.35;max-width:38ch;margin-top:14px;flex-basis:100%}
 @media(max-width:760px){.cert__g{grid-template-columns:1fr}}
+
+/* ═══ L'atelier passe en salle claire ═══
+   Les packshots sont sur fond blanc : garder le chrome en texte blanc
+   le rendrait invisible — le défaut exact rencontré sur le header. */
+body.clair{--amb:#efeae3;--txt:#0a0a0a}
+body.clair .hud__back,body.clair .hud__mark,body.clair .hud__idx{color:#0a0a0a}
+body.clair .rub{background:linear-gradient(0deg,rgba(239,234,227,.96) 42%,transparent)}
+body.clair .aj{border-color:rgba(10,10,10,.14);color:#0a0a0a}
+body.clair .aj:hover{border-color:rgba(10,10,10,.5);background:rgba(10,10,10,.04)}
+body.clair .aj.set{border-color:rgba(10,10,10,.42)}
+body.clair .tot{color:#0a0a0a}
+body.clair .rep__o{border-color:rgba(10,10,10,.5)}
+body.clair .rep__o::after{background:#0a0a0a}
+body.clair .rep:hover .rep__o{background:rgba(10,10,10,.12);border-color:#0a0a0a}
+body.clair .rep.set .rep__o{background:#0a0a0a}
+body.clair .rep.set .rep__o::after{background:#efeae3}
+body.clair .rep__pulse{border-color:#0a0a0a}
+body.clair .rep__l{color:#0a0a0a}
 
 @media(prefers-reduced-motion:reduce){
   *{animation-duration:.01ms!important;transition-duration:.01ms!important}
@@ -460,18 +483,18 @@ var FAM=[{id:'tous',n:'Tous'},{id:'graine',n:'Grainé'},{id:'lisse',n:'Lisse'},
    détourés dès qu'ils existent — les repères se posent sur des zones
    approximatives tant que le cadrage n'est pas maîtrisé. */
 var MODELES=[
- {id:'victoire',nom:'',nom2:'Victoire',t:'Sac à main · porté épaule',base:3200,
-  ph:CDN+'packshot-victoire.jpg',
+ {id:'colette',nom:'',nom2:'Colette',t:'Sac à main · porté épaule',base:3200,
+  ph:'https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0633.jpg?v=1769462827',
   d:"La signature de la maison : un V taillé dans la masse, qui ouvre le sac sans fermoir. Sa tenue ne doit rien à une armature — seulement à l'épaisseur du cuir.",
-  reps:{ext:[50,58],anse:[50,17],v:[50,40],int:[38,30],pieds:[50,90],bijou:[63,26]}},
+  reps:{ext:[50,60],v:[50,42],anse:[50,16],int:[37,30],pieds:[50,92],bijou:[63,25]}},
  {id:'olympe',nom:'',nom2:'Olympe',t:'Seau · pochon amovible',base:2900,
-  ph:CDN+'packshot-olympe.jpg',
+  ph:'https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0757.jpg?v=1769441367',
   d:"Un seau strict, et à l'intérieur un pochon de soie qui se retire. Deux pièces en une : la rigueur dehors, la souplesse dedans.",
-  reps:{ext:[50,72],pochon:[50,50],anse:[50,20],ferrures:[63,52],int:[40,52],bijou:[36,66]}},
+  reps:{ext:[50,74],pochon:[50,48],anse:[50,22],ferrures:[62,50],int:[38,50],bijou:[36,68]}},
  {id:'rafael',nom:'',nom2:'Rafaël',t:'Pochette · bandoulière amovible',base:1900,
-  ph:CDN+'packshot-rafael.jpg',
+  ph:'https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0774_85f74e95-56cc-4478-aba9-5c523a543565.jpg?v=1769440532',
   d:"La pièce la plus difficile de la collection. Une pochette n'a nulle part où cacher un défaut : chaque couture est vue, chaque tranche est nue.",
-  reps:{ext:[50,72],ferrures:[50,76],anse:[50,26],int:[38,66],grav:[62,84]}}
+  reps:{ext:[50,74],ferrures:[50,80],anse:[50,26],int:[36,70],grav:[64,86]}}
 ];
 
 var FERRURES=[{id:'laiton',n:'Laiton naturel',d2:'Patine avec le temps.',d:0},
@@ -824,7 +847,9 @@ function aller(n){
   $('back').hidden=n===1;
   $('backL').textContent=n===3?"Revenir à l'atelier":'Changer de silhouette';
   $('idx').textContent=n===1?('0'+(si+1)+' / 0'+MODELES.length):'';
-  document.documentElement.style.setProperty('--amb',n===3?'#0d0d0d':'#0a0a0a');
+  document.body.classList.toggle('clair',n===2);
+  document.documentElement.style.setProperty('--amb',
+    n===2?'#efeae3':(n===3?'#0d0d0d':'#0a0a0a'));
   var m=$('mark');m.classList.add('br');setTimeout(function(){m.classList.remove('br')},760);
   if(n===1)ligner();
 }
