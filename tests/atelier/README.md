@@ -32,15 +32,18 @@ ou latéral hors d'un conteneur défilable, est compté comme un défaut.
 
 ## Textures
 
-`tools/cuirs.py` régénère les sept tuiles 512 px (`tools/cuirs/*.png`) — champ
-cellulaire Worley périodique + éclairage — et vérifie leur raccord : le saut au
-bord doit rester sous 1.6× le saut interne moyen. `tools/preview.js` en tire
-une planche de contrôle (7 matières × 4 nuances), `tools/vue.js` des vues du
-parcours avec un faux packshot sur fond blanc.
+Les six tuiles 512 px (`tools/cuirs/*.png`) sont découpées dans les
+PHOTOGRAPHIES du client (`tools/photos/`) par `tools/tuiles.py` : recadrage
+de la zone nette (rotation si la peau est drapée), niveaux de gris,
+aplanissement de l'éclairage, égalisation locale des reflets, raccord par
+demi-tour fondu — pour l'alligator, bords posés dans les sillons entre rangs.
+La nuance vient du navigateur (`background-blend-mode:hard-light`), c'est
+ainsi qu'une photo noire donne les 52 couleurs. Le contrôle de raccord admet
+un raccord au niveau des sillons naturels de la peau (97e centile des sauts
+de lignes × 1.1).
 
 ```bash
-python3 tools/cuirs.py                                     # régénère + vérifie
-NODE_PATH=/opt/node22/lib/node_modules node tools/preview.js
+python3 tools/tuiles.py                                    # redécoupe + vérifie
 python3 tools/injecter.py                                  # réinjecte dans le prototype
 ```
 

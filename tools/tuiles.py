@@ -33,8 +33,9 @@ def sstep(a, b, x):
     return t * t * (3 - 2 * t)
 
 def tuile(src, crop, nom, contraste=(1, 99, 0.10, 0.90), r_aplat=64,
-          fondu=(0.52, 0.96), lissage=0.0, egalise=0, fondu_axe='xy'):
+          fondu=(0.52, 0.96), lissage=0.0, egalise=0, fondu_axe='xy', rot=0):
     im = Image.open('tools/photos/' + src).convert('L')
+    if rot: im = im.rotate(rot, resample=Image.BICUBIC, expand=True)
     if crop: im = im.crop(crop)
     c = min(im.size)
     im = im.crop(((im.width - c) // 2, (im.height - c) // 2,
@@ -109,9 +110,22 @@ tuile('aligator-noir.jpg', (18, 102, 582, 497), 'alligator',
       contraste=(2, 98, 0.10, 0.88), r_aplat=28, fondu=(0.80, 0.99),
       egalise=22, fondu_axe='x')
 
+# ── grainé : la photo à plat du client ; le bandeau « Pebbled Leather »
+#    (en bas au centre) est hors cadre
+tuile('graine-noir.jpg', (100, 0, 415, 315), 'graine',
+      contraste=(1, 98, 0.14, 0.86), r_aplat=20, lissage=0.4, egalise=14,
+      fondu=(0.42, 0.93))
+# ── daim : photo drapée — les rouleaux font de larges dégradés que
+#    l'aplanissement + l'égalisation effacent ; le velours est isotrope
+#    la photo est un drapé : on la fait pivoter de -21° pour coucher la face
+#    éclairée du rouleau central à l'horizontale, et on découpe DEDANS,
+#    sans toucher les ombres de pli
+tuile('daim-noir.jpg', (185, 445, 585, 645), 'daim', rot=-21,
+      contraste=(2, 98, 0.40, 0.60), r_aplat=22, lissage=0.8, egalise=18)
+
 print()
 echecs = 0
-for n in ['caviar', 'lisse', 'galuchat', 'alligator']:
+for n in ['graine', 'caviar', 'lisse', 'daim', 'galuchat', 'alligator']:
     a = np.asarray(Image.open('tools/cuirs/%s.png' % n), dtype=float)
     for axe, nomax in ((1, 'vertical'), (0, 'horizontal')):
         # saut par paire de lignes adjacentes : les sillons d'une peau
