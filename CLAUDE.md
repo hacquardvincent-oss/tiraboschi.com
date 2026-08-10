@@ -1347,6 +1347,21 @@ Règles structurelles (à l'origine de bugs réels — recette 31/07/2026) :
 □ Ne jamais faire textContent= sur un élément qui contient une icône
   (ex: [data-cart-count] porte l'<img> du picto sac).
 □ Toute classe utilisée en Liquid doit avoir une règle CSS — sinon élément nu.
+□ [hidden] PERD contre display:flex/grid posé par une classe. Déclarer une fois
+  `[hidden]{display:none!important}` — sinon un élément « masqué » en JS reste
+  affiché (filtres de famille et flèches visibles sur un écran d'option).
+□ Un overlay plein écran doit déclarer SA propre couleur de texte. S'il hérite
+  du body et que le body change de thème (body.clair), on obtient du noir sur
+  noir — contraste mesuré 1.00:1.
+□ Un cover flow qui se reconstruit (innerHTML='') ne s'anime jamais : les
+  nœuds naissent déjà à leur transform final. Garder les cartes, ne changer
+  que le transform.
+□ Une tuile de texture doit être vérifiée seamless (saut au raccord < 1.6× le
+  saut interne). PIL.resize et feTurbulence non tuilés laissent des coutures.
+□ background-size ≠ taille native de l'image = rééchantillonnage, et Chromium
+  ne boucle pas le filtrage : coutures visibles. Utiliser la taille native.
+□ Un repère positionné en % de la section peut tomber sous une barre fixe :
+  le cantonner à la bande réellement libre (top/bottom du conteneur).
 ```
 
 ---
