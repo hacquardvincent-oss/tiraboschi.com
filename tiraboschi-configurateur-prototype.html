@@ -3,771 +3,872 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TIRABOSCHI — L'Expérience · Configurateur sur mesure</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<title>TIRABOSCHI — L'Expérience · Atelier sur mesure</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════════════════════
-   TIRABOSCHI Paris — Configurateur sur mesure
-   Charte : Playfair 400, 0 radius, filets 1px, palette stricte.
-   Modèle d'interaction : hub central (la carte de la pièce) plutôt
-   qu'un tunnel — on y revient après chaque choix, comme chez FRED.
+   TIRABOSCHI Paris — Atelier sur mesure
+   Parti pris : il se passe toujours quelque chose. Le fond respire
+   avec le cuir retenu, la pièce flotte, le prix se compose chiffre
+   par chiffre, chaque élément repris se signale.
    ═══════════════════════════════════════════════════════════════ */
 :root{
-  --tira-black:#0a0a0a; --tira-white:#fff; --tira-grey:#f7f5f2;
-  --tira-border:#e8e8e8; --tira-ease:cubic-bezier(.16,1,.3,1);
-  --bar-h:88px;
+  --noir:#0a0a0a; --blanc:#fff; --gris:#f7f5f2; --filet:#e8e8e8;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --amb:#f7f5f2;          /* ambiance : prend la teinte du cuir */
+  --amb-txt:#0a0a0a;
+  --bar:92px;
 }
 *{margin:0;padding:0;box-sizing:border-box;border-radius:0!important}
+html{scroll-behavior:smooth}
 body{
-  font-family:'Playfair Display',Georgia,serif;font-weight:400;
-  color:var(--tira-black);background:var(--tira-white);
-  -webkit-font-smoothing:antialiased;overflow-x:clip;
-  padding-bottom:var(--bar-h);
+  font-family:'Playfair Display',Georgia,serif;
+  color:var(--amb-txt);background:var(--amb);
+  transition:background 1.1s var(--ease),color .8s var(--ease);
+  -webkit-font-smoothing:antialiased;overflow-x:clip;padding-bottom:var(--bar);
 }
-img{display:block;width:100%;height:100%;object-fit:cover}
 button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer}
 
-/* ── Filet de CTA maison (repris du thème) ── */
-.cta{
-  display:inline-block;position:relative;text-decoration:none;
-  font-size:10px;text-transform:uppercase;letter-spacing:.18em;
-  padding-bottom:10px;opacity:.9;transition:opacity .3s var(--tira-ease);
-}
-.cta::after,.cta::before{
-  content:'';position:absolute;left:0;bottom:0;width:100%;height:1px;
-  background:currentColor;
-}
-.cta::after{opacity:.5;transform:scaleX(1);transform-origin:right;
-  transition:transform .45s var(--tira-ease)}
-.cta::before{transform:scaleX(0);transform-origin:left;
-  transition:transform .45s var(--tira-ease) .1s}
-.cta:hover{opacity:1}
-.cta:hover::after{transform:scaleX(0)}
-.cta:hover::before{transform:scaleX(1)}
+/* ── Grain d'ambiance : le fond n'est jamais tout à fait plat ── */
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.5;mix-blend-mode:multiply}
+.grain svg{width:100%;height:100%}
 
-/* ═══ En-tête de parcours ═══ */
-.top{
-  position:fixed;top:0;left:0;right:0;z-index:300;height:64px;
+/* ═══ Bandeau ═══ */
+.top{position:fixed;top:0;left:0;right:0;z-index:300;height:66px;
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 clamp(20px,4vw,48px);
-  background:rgba(255,255,255,.9);backdrop-filter:blur(16px);
-  border-bottom:1px solid rgba(232,232,232,.7);
-}
-.top__back{font-size:10px;text-transform:uppercase;letter-spacing:.18em;
-  opacity:.5;transition:opacity .2s;display:flex;align-items:center;gap:8px}
-.top__back:hover{opacity:1}
+  padding:0 clamp(18px,4vw,46px);
+  background:color-mix(in srgb,var(--amb) 86%,transparent);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid color-mix(in srgb,var(--amb-txt) 10%,transparent);
+  transition:background 1.1s var(--ease),border-color .8s}
+.top__back{font-size:10px;text-transform:uppercase;letter-spacing:.18em;opacity:.45;
+  display:flex;align-items:center;gap:9px;transition:opacity .25s,gap .35s var(--ease)}
+.top__back:hover{opacity:1;gap:14px}
 .top__back svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.4}
-.top__mark{font-size:13px;letter-spacing:.28em;text-transform:uppercase}
-.top__rail{display:flex;gap:6px;align-items:center}
-.rail__tick{width:26px;height:1px;background:var(--tira-black);opacity:.14;
-  transition:opacity .45s var(--tira-ease)}
-.rail__tick.on{opacity:1}
-@media(max-width:760px){.top__rail{display:none}}
+.mark{font-size:13px;text-transform:uppercase;letter-spacing:.3em;
+  transition:letter-spacing 1s var(--ease),opacity .5s}
+.mark.pulse{letter-spacing:.56em;opacity:.55}
+.rail{display:flex;gap:7px}
+.rail i{width:24px;height:1px;background:currentColor;opacity:.14;
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .7s var(--ease),opacity .5s}
+.rail i.on{opacity:.9;transform:scaleX(1)}
+@media(max-width:780px){.rail{display:none}}
 
 /* ═══ Écrans ═══ */
-.screen{display:none;min-height:100svh;padding-top:64px}
-.screen.on{display:block}
-.screen__head{padding:clamp(40px,7vh,72px) clamp(20px,4vw,48px) clamp(24px,4vh,40px);text-align:center}
-.screen__step{font-size:10px;text-transform:uppercase;letter-spacing:.28em;opacity:.32;margin-bottom:18px}
-.screen__title{font-size:clamp(30px,4.4vw,54px);line-height:1.02;letter-spacing:-.02em}
-.screen__title em{font-style:italic}
-.screen__sub{font-size:13px;line-height:1.75;opacity:.5;max-width:52ch;margin:16px auto 0}
+.scr{display:none;min-height:100svh;padding-top:66px;position:relative;z-index:2}
+.scr.on{display:block}
+.hd{padding:clamp(34px,6vh,64px) clamp(18px,4vw,46px) clamp(20px,3vh,32px);text-align:center}
+.hd__step{font-size:10px;text-transform:uppercase;letter-spacing:.3em;opacity:.32;margin-bottom:16px}
+.hd__t{font-size:clamp(30px,4.6vw,58px);line-height:1;letter-spacing:-.025em}
+.hd__t em{font-style:italic}
+.hd__s{font-size:13px;line-height:1.75;opacity:.5;max-width:50ch;margin:15px auto 0}
+/* Apparition par mots */
+.wrd{display:inline-block;opacity:0;transform:translateY(14px) rotate(1.2deg);
+  transition:opacity .7s var(--ease),transform .9s var(--ease)}
+.wrd.in{opacity:1;transform:none}
 
-/* ── 1. Le modèle ── */
-.models{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;padding:0 3px}
-.model{position:relative;cursor:pointer;background:var(--tira-grey);text-align:left}
-.model__img{position:relative;aspect-ratio:3/4;overflow:hidden}
-.model__img img{transition:transform 1.1s var(--tira-ease)}
-.model:hover .model__img img{transform:scale(1.04)}
-.model__veil{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,10,.5),transparent 55%);
-  opacity:0;transition:opacity .4s var(--tira-ease)}
-.model:hover .model__veil,.model.on .model__veil{opacity:1}
-.model__info{padding:16px 16px 26px}
-.model__name{font-size:17px;letter-spacing:-.01em}
-.model__meta{font-size:10px;text-transform:uppercase;letter-spacing:.16em;opacity:.42;margin-top:6px}
-.model__from{font-size:11px;opacity:.6;margin-top:8px;font-style:italic}
-.model.on{outline:1px solid var(--tira-black);outline-offset:-1px}
-@media(max-width:900px){.models{grid-template-columns:1fr 1fr;gap:2px;padding:0 2px}}
+/* ═══ 1 · Le modèle — vitrine animée ═══ */
+.vitrine{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:color-mix(in srgb,var(--amb-txt) 8%,transparent);padding:1px}
+.mdl{position:relative;background:var(--amb);cursor:pointer;overflow:hidden;
+  padding:36px 22px 30px;text-align:left;min-height:clamp(320px,46vh,440px);
+  display:flex;flex-direction:column;justify-content:flex-end;
+  opacity:0;transform:translateY(26px);
+  transition:opacity .8s var(--ease),transform .9s var(--ease),background .6s}
+.mdl.in{opacity:1;transform:none}
+.mdl__glow{position:absolute;inset:0;opacity:0;pointer-events:none;
+  transition:opacity .7s var(--ease)}
+.mdl:hover .mdl__glow{opacity:1}
+.mdl__sil{position:absolute;left:50%;top:46%;width:64%;
+  transform:translate(-50%,-50%) rotate(-3deg) scale(.94) var(--sil,scale(1));
+  opacity:.14;pointer-events:none;
+  transition:transform 1.1s var(--ease),opacity .7s var(--ease)}
+.mdl:hover .mdl__sil{transform:translate(-50%,-52%) rotate(2deg) scale(1.06) var(--sil,scale(1));opacity:.3}
+.mdl__n{font-size:clamp(20px,2.1vw,27px);letter-spacing:-.015em;position:relative}
+.mdl__m{font-size:10px;text-transform:uppercase;letter-spacing:.18em;opacity:.42;margin-top:8px;position:relative}
+.mdl__p{font-size:11px;font-style:italic;opacity:.55;margin-top:12px;position:relative;
+  transition:opacity .4s,transform .5s var(--ease)}
+.mdl:hover .mdl__p{opacity:.9;transform:translateX(4px)}
+.mdl__go{position:absolute;right:22px;bottom:30px;width:30px;height:30px;
+  border:1px solid currentColor;opacity:0;transform:translateX(-8px) rotate(-20deg);
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity .5s var(--ease),transform .6s var(--ease)}
+.mdl:hover .mdl__go{opacity:.65;transform:none}
+.mdl__go svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.3}
+@media(max-width:900px){.vitrine{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.vitrine{grid-template-columns:1fr}.mdl{min-height:230px}}
 
-/* ── 2. La carte de la pièce (hub) ── */
-#sc-hub .screen__head{padding-top:26px;padding-bottom:14px}
-.hub{position:relative;min-height:calc(100svh - 64px - var(--bar-h) - 150px);
-  display:flex;align-items:center;justify-content:center;padding:20px}
-.hub__stage{position:relative;aspect-ratio:1/1;
-  /* Pilotée par la HAUTEUR : la scène et ses cinq repères doivent tenir
-     dans l'écran sans scroll, sinon les repères du bas passent sous la
-     ligne de flottaison. */
-  height:min(680px, calc(100svh - 64px - var(--bar-h) - 200px));
-  width:auto;max-width:92vw}
-.hub__stage img{object-fit:contain}
+/* Transition d'entrée dans l'atelier */
+.curtain{position:fixed;inset:0;z-index:500;pointer-events:none;
+  background:var(--amb);clip-path:inset(0 0 100% 0);
+  transition:clip-path .85s var(--ease)}
+.curtain.down{clip-path:inset(0 0 0 0)}
+.curtain.up{clip-path:inset(100% 0 0 0)}
 
-/* ── Sac en volume — vraie boîte 3D CSS, faces habillées de cuir ── */
-.bag{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-bottom:26px;
-  perspective:1500px;perspective-origin:50% 42%;cursor:grab;touch-action:pan-y}
-.bag:active{cursor:grabbing}
-.bag__box{position:relative;width:300px;height:320px;
-  transform-style:preserve-3d;transform:rotateX(-6deg) rotateY(-22deg);
-  transition:transform .12s linear}
-.bag__box.settle{transition:transform .9s var(--tira-ease)}
-.bag__face,.bag__side,.bag__base,.bag__lining,.bag__handle,.bag__hw{
-  position:absolute;backface-visibility:hidden}
-.bag__face{inset:0}
-.bag__face--front{transform:translateZ(45px)}
-.bag__face--back{transform:translateZ(-45px) rotateY(180deg)}
-/* Boîte 3D : les flancs pivotent puis avancent d'une DEMI-LARGEUR,
-   pas d'une demi-profondeur — sinon ils flottent à côté du volume. */
-.bag__side{top:0;left:50%;width:90px;height:320px}
-.bag__side--l{transform:translateX(-50%) rotateY(-90deg) translateZ(150px)}
-.bag__side--r{transform:translateX(-50%) rotateY(90deg)  translateZ(150px)}
-.bag__base{left:0;top:50%;width:300px;height:90px;
-  transform:translateY(-50%) rotateX(-90deg) translateZ(160px)}
-.bag__lining{left:0;top:50%;width:300px;height:90px;
-  transform:translateY(-50%) rotateX(90deg) translateZ(160px)}
-.bag__face svg,.bag__side svg,.bag__base svg,.bag__lining svg{width:100%;height:100%;display:block}
-.bag__handle{left:0;top:-176px;width:300px;height:200px;transform:translateZ(10px)}
-.bag__hw{left:0;top:-176px;width:300px;height:200px;transform:translateZ(48px)}
-.bag__handle svg,.bag__hw svg{width:100%;height:100%;overflow:visible}
-.bag__engrave{position:absolute;left:0;right:0;bottom:64px;text-align:center;
-  transform:translateZ(46px);font-size:11px;letter-spacing:.42em;
-  color:rgba(255,255,255,.5);text-shadow:0 1px 2px rgba(0,0,0,.5);pointer-events:none}
-.bag__shadow{position:absolute;left:50%;bottom:16%;width:340px;height:26px;
-  transform:translateX(-50%);pointer-events:none;
-  background:radial-gradient(ellipse at center,rgba(10,10,10,.22),transparent 70%)}
-.hub__hint{position:absolute;left:50%;bottom:2%;transform:translateX(-50%);
-  font-size:9px;text-transform:uppercase;letter-spacing:.24em;opacity:.3;
-  transition:opacity .5s var(--tira-ease);pointer-events:none}
-.hub__hint.off{opacity:0}
-@media(max-width:760px){.bag__box{transform:rotateX(-6deg) rotateY(-18deg) scale(.78)}}
-@media(prefers-reduced-motion:reduce){.bag__box{transition:none}}
+/* ═══ 2 · L'atelier ═══ */
+.atl{position:relative;display:grid;grid-template-columns:1fr 340px;
+  min-height:calc(100svh - 66px - var(--bar))}
+@media(max-width:1000px){.atl{grid-template-columns:1fr;min-height:auto}}
 
+.scene{position:relative;display:flex;align-items:center;justify-content:center;
+  padding:10px 20px 40px;overflow:hidden}
+.piece{position:relative;
+  /* contrainte par la hauteur : sinon l'anse longue sort en haut
+     et le fond passe sous la barre de prix */
+  height:min(560px, calc(100svh - 66px - var(--bar) - 150px));
+  width:auto;max-width:88%;
+  animation:flotte 7s ease-in-out infinite;
+  transition:transform .7s var(--ease)}
+@keyframes flotte{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-11px) rotate(.5deg)}}
+.piece svg{height:100%;width:auto;display:block;overflow:visible}
+.piece.shift{transform:scale(1.035)}
+/* Balayage de lumière au changement */
+.sweep{position:absolute;inset:0;pointer-events:none;opacity:0;
+  background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.5) 50%,transparent 62%);
+  background-size:280% 100%}
+.sweep.go{animation:balaye 1s var(--ease)}
+@keyframes balaye{0%{opacity:0;background-position:180% 0}
+  22%{opacity:1}100%{opacity:0;background-position:-80% 0}}
 
-.pin{position:absolute;display:flex;align-items:center;gap:9px;
-  padding:9px 16px 9px 12px;background:var(--tira-white);
-  border:1px solid var(--tira-border);
-  font-size:10px;text-transform:uppercase;letter-spacing:.16em;
-  white-space:nowrap;cursor:pointer;
-  box-shadow:0 6px 24px rgba(10,10,10,.09);
-  transition:border-color .25s,box-shadow .3s,transform .3s var(--tira-ease);
-}
-.pin:hover{border-color:var(--tira-black);transform:translateY(-1px);
-  box-shadow:0 10px 30px rgba(10,10,10,.14)}
-.pin svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.3;flex-shrink:0;opacity:.55}
-.pin__val{opacity:.4;letter-spacing:.06em;text-transform:none;font-style:italic}
-.pin.done{border-color:var(--tira-black)}
-.pin.done svg{opacity:1}
+/* Partie mise en avant */
+.hl{transition:opacity .4s var(--ease)}
+.dim .hl:not(.act){opacity:.3}
 
-/* Positions des repères sur la pièce */
-.pin--corps{top:26%;right:4%}
-.pin--anse{top:6%;left:16%}
-.pin--ferrures{bottom:28%;left:2%}
-.pin--doublure{bottom:8%;right:14%}
-.pin--gravure{bottom:2%;left:34%}
-@media(max-width:760px){
-  .hub{padding:8px}
-  .hub__stage{width:96vw;aspect-ratio:3/4}
-  .pin{font-size:9px;letter-spacing:.12em;padding:7px 12px 7px 9px}
-  .pin--corps{top:18%;right:0}
-  .pin--anse{top:3%;left:2%}
-  .pin--ferrures{bottom:32%;left:0}
-  .pin--doublure{bottom:16%;right:0}
-  .pin--gravure{bottom:4%;left:6%}
-}
+/* ═══ Panneau des ajustements ═══ */
+.side{border-left:1px solid color-mix(in srgb,var(--amb-txt) 10%,transparent);
+  padding:26px 26px 40px;display:flex;flex-direction:column;gap:2px;
+  max-height:calc(100svh - 66px - var(--bar));overflow-y:auto;scrollbar-width:none}
+.side::-webkit-scrollbar{display:none}
+@media(max-width:1000px){.side{border-left:none;
+  border-top:1px solid color-mix(in srgb,var(--amb-txt) 10%,transparent);max-height:none}}
+.side__t{font-size:10px;text-transform:uppercase;letter-spacing:.24em;opacity:.35;
+  margin-bottom:16px}
+.adj{display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:15px 0;border-bottom:1px solid color-mix(in srgb,var(--amb-txt) 9%,transparent);
+  width:100%;text-align:left;position:relative;
+  transition:padding-left .4s var(--ease)}
+.adj:hover{padding-left:8px}
+.adj::before{content:'';position:absolute;left:0;top:50%;width:0;height:1px;
+  background:currentColor;opacity:.5;transition:width .4s var(--ease)}
+.adj:hover::before{width:4px}
+.adj__n{font-size:13px;display:block}
+.adj__v{font-size:10px;text-transform:uppercase;letter-spacing:.14em;opacity:.4;display:block;
+  margin-top:4px;transition:opacity .3s}
+.adj.set .adj__v{opacity:.75;font-style:italic;text-transform:none;letter-spacing:.02em}
+.adj__x{font-size:9px;text-transform:uppercase;letter-spacing:.14em;opacity:.3;white-space:nowrap}
+.adj.set .adj__x{opacity:.7}
 
-/* ── 3. Cover Flow matière — plein écran ── */
-.matiere{position:fixed;inset:0;z-index:400;background:var(--tira-black);
-  display:none;flex-direction:column;color:var(--tira-white)}
-.matiere.on{display:flex}
-.matiere__head{padding:26px clamp(20px,4vw,48px) 0;display:flex;
-  justify-content:space-between;align-items:flex-start;gap:20px}
-.matiere__title{font-size:clamp(20px,2.4vw,30px);font-style:italic;letter-spacing:-.01em}
-.matiere__close{font-size:10px;text-transform:uppercase;letter-spacing:.18em;
-  color:#fff;opacity:.5;transition:opacity .2s}
-.matiere__close:hover{opacity:1}
+/* Curseur de longueur d'anse */
+.rng{width:100%;-webkit-appearance:none;appearance:none;height:1px;
+  background:color-mix(in srgb,var(--amb-txt) 22%,transparent);margin:16px 0 4px;cursor:pointer}
+.rng::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;
+  background:var(--amb-txt);cursor:grab;transition:transform .2s}
+.rng::-webkit-slider-thumb:active{transform:scale(1.35);cursor:grabbing}
+.rng::-moz-range-thumb{width:13px;height:13px;border:none;background:var(--amb-txt)}
 
-.matiere__types{display:flex;gap:26px;justify-content:center;padding:26px 20px 0;flex-wrap:wrap}
-.mtype{font-size:10px;text-transform:uppercase;letter-spacing:.2em;
-  color:#fff;opacity:.35;padding-bottom:8px;position:relative;transition:opacity .3s}
-.mtype::after{content:'';position:absolute;left:0;bottom:0;width:100%;height:1px;
-  background:#fff;transform:scaleX(0);transform-origin:left;
-  transition:transform .4s var(--tira-ease)}
-.mtype.on{opacity:1}
-.mtype.on::after{transform:scaleX(1)}
+/* Bascules */
+.tgl{display:flex;align-items:center;gap:11px}
+.tgl__b{width:32px;height:16px;border:1px solid currentColor;opacity:.35;
+  position:relative;transition:opacity .3s,background .3s}
+.tgl__b::after{content:'';position:absolute;top:2px;left:2px;width:10px;height:10px;
+  background:currentColor;transition:transform .35s var(--ease)}
+.adj.set .tgl__b{opacity:1}
+.adj.set .tgl__b::after{transform:translateX(16px)}
 
-.flow{flex:1;position:relative;perspective:1100px;perspective-origin:50% 50%;
-  cursor:grab;min-height:0}
+/* ═══ Cover Flow matière — plein écran ═══ */
+.mat{position:fixed;inset:0;z-index:400;display:none;flex-direction:column;
+  background:var(--mat-bg,#0a0a0a);color:#fff;transition:background 1s var(--ease)}
+.mat.on{display:flex;animation:matIn .5s var(--ease)}
+@keyframes matIn{from{opacity:0}to{opacity:1}}
+.mat__h{padding:24px clamp(18px,4vw,46px) 0;display:flex;justify-content:space-between;gap:18px}
+.mat__t{font-size:clamp(19px,2.3vw,29px);font-style:italic}
+.mat__x{font-size:10px;text-transform:uppercase;letter-spacing:.18em;color:#fff;opacity:.5}
+.mat__x:hover{opacity:1}
+.mat__f{display:flex;gap:22px;justify-content:center;padding:22px 18px 0;flex-wrap:wrap}
+.ft{font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:#fff;opacity:.32;
+  padding-bottom:7px;position:relative;transition:opacity .3s}
+.ft::after{content:'';position:absolute;left:0;bottom:0;width:100%;height:1px;background:#fff;
+  transform:scaleX(0);transform-origin:left;transition:transform .45s var(--ease)}
+.ft.on{opacity:1}.ft.on::after{transform:scaleX(1)}
+.flow{flex:1;position:relative;perspective:1250px;cursor:grab;min-height:0}
 .flow:active{cursor:grabbing}
-.flow__card{position:absolute;top:50%;left:50%;
-  /* Immersion : la matière occupe l'écran plutôt qu'une vignette */
-  width:min(560px,78vw);height:min(560px,62svh);
+.card{position:absolute;top:50%;left:50%;
+  width:min(520px,74vw);height:min(520px,54svh);
   opacity:0;pointer-events:none;
-  transition:transform .5s var(--tira-ease),opacity .5s var(--tira-ease);
-  will-change:transform,opacity}
-.flow__card.vis{pointer-events:auto}
-.flow__skin{width:100%;height:100%;border:1px solid rgba(255,255,255,.14);
-  position:relative;overflow:hidden}
-.flow__skin svg{width:100%;height:100%;display:block}
-.flow__card.mid .flow__skin{border-color:rgba(255,255,255,.55);
-  box-shadow:0 24px 70px rgba(0,0,0,.6)}
+  transition:transform .55s var(--ease),opacity .55s var(--ease)}
+.card.vis{pointer-events:auto}
+.card__s{width:100%;height:100%;position:relative;overflow:hidden;
+  border:1px solid rgba(255,255,255,.13)}
+.card.mid .card__s{border-color:rgba(255,255,255,.5);box-shadow:0 30px 80px rgba(0,0,0,.62)}
+.card__s svg{width:100%;height:100%;display:block}
+.mat__cap{text-align:center;padding:0 18px}
+.mat__n{font-size:clamp(21px,2.9vw,33px);min-height:1.2em}
+.mat__d{font-size:11px;text-transform:uppercase;letter-spacing:.18em;opacity:.45;
+  margin-top:9px;min-height:1.4em}
+.mat__c{font-size:9px;letter-spacing:.24em;opacity:.28;margin-top:12px}
+.mat__ft{display:flex;gap:20px;align-items:center;justify-content:center;padding:18px 18px 30px}
+.nav{width:37px;height:37px;border:1px solid rgba(255,255,255,.26);color:#fff;
+  display:flex;align-items:center;justify-content:center;transition:border-color .25s,background .25s}
+.nav:hover:not(:disabled){border-color:#fff;background:rgba(255,255,255,.07)}
+.nav:disabled{opacity:.16}
+.nav svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.3}
+.pick{border:1px solid rgba(255,255,255,.6);color:#fff;padding:13px 38px;
+  font-size:10px;text-transform:uppercase;letter-spacing:.2em;
+  transition:background .25s,border-color .25s,letter-spacing .4s var(--ease)}
+.pick:hover{background:rgba(255,255,255,.09);border-color:#fff;letter-spacing:.26em}
 
-.matiere__caption{text-align:center;padding:0 20px 6px}
-.matiere__name{font-size:clamp(22px,3vw,34px);letter-spacing:-.01em;min-height:1.2em}
-.matiere__delta{font-size:11px;text-transform:uppercase;letter-spacing:.18em;
-  opacity:.45;margin-top:10px;min-height:1.4em}
-.matiere__foot{display:flex;gap:22px;align-items:center;justify-content:center;
-  padding:20px 20px 34px}
-.matiere__nav{width:38px;height:38px;border:1px solid rgba(255,255,255,.28);
-  display:flex;align-items:center;justify-content:center;color:#fff;
-  transition:border-color .25s,background .25s}
-.matiere__nav:hover:not(:disabled){border-color:#fff;background:rgba(255,255,255,.07)}
-.matiere__nav:disabled{opacity:.18}
-.matiere__nav svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.3}
-.matiere__pick{border:1px solid rgba(255,255,255,.6);color:#fff;
-  padding:14px 42px;font-size:10px;text-transform:uppercase;letter-spacing:.2em;
-  transition:background .25s,border-color .25s}
-.matiere__pick:hover{background:rgba(255,255,255,.08);border-color:#fff}
+/* ═══ Récapitulatif ═══ */
+.rec{max-width:780px;margin:0 auto;padding:0 clamp(18px,4vw,46px) 60px}
+.rec__r{display:flex;justify-content:space-between;gap:18px;padding:16px 0;
+  border-top:1px solid color-mix(in srgb,var(--amb-txt) 11%,transparent);
+  opacity:0;transform:translateY(10px);
+  transition:opacity .6s var(--ease),transform .7s var(--ease)}
+.rec__r.in{opacity:1;transform:none}
+.rec__k{font-size:10px;text-transform:uppercase;letter-spacing:.18em;opacity:.4}
+.rec__v{font-size:14px;text-align:right}
+.rec__v small{display:block;font-size:11px;opacity:.45;margin-top:3px;font-style:italic}
+.rec__tot{display:flex;justify-content:space-between;align-items:baseline;
+  padding:24px 0;border-top:1px solid currentColor;margin-top:6px}
+.rec__tk{font-size:11px;text-transform:uppercase;letter-spacing:.2em}
+.rec__tv{font-size:clamp(25px,3.3vw,37px)}
+.rec__n{font-size:12px;line-height:1.8;opacity:.5;margin-top:22px;padding-top:20px;
+  border-top:1px solid color-mix(in srgb,var(--amb-txt) 11%,transparent)}
+.rec__c{display:block;width:100%;margin-top:26px;border:1px solid currentColor;
+  padding:18px;font-size:11px;text-transform:uppercase;letter-spacing:.2em;text-align:center;
+  transition:background .3s,color .3s,letter-spacing .5s var(--ease)}
+.rec__c:hover{background:var(--amb-txt);color:var(--amb);letter-spacing:.28em}
 
-/* ── 4. Panneau d'option (ferrures, doublure, gravure) ── */
-.panel{position:fixed;inset:0;z-index:400;background:rgba(10,10,10,.55);
-  display:none;align-items:flex-end;justify-content:center}
-.panel.on{display:flex}
-.panel__sheet{background:var(--tira-white);width:min(680px,100%);
-  max-height:88svh;overflow-y:auto;padding:40px clamp(24px,4vw,48px) 34px}
-.panel__title{font-size:clamp(22px,2.6vw,32px);letter-spacing:-.01em;margin-bottom:6px}
-.panel__title em{font-style:italic}
-.panel__sub{font-size:12px;opacity:.45;margin-bottom:30px}
-.opt{display:flex;align-items:center;justify-content:space-between;gap:18px;
-  padding:17px 0;border-top:1px solid var(--tira-border);cursor:pointer;
-  transition:opacity .2s;width:100%;text-align:left}
-.opt:last-of-type{border-bottom:1px solid var(--tira-border)}
-.opt:hover{opacity:.62}
-.opt__l{display:flex;align-items:center;gap:15px;min-width:0}
-.opt__dot{width:15px;height:15px;border:1px solid var(--tira-black);
-  opacity:.28;flex-shrink:0;position:relative;transition:opacity .2s}
-.opt.on .opt__dot{opacity:1}
-.opt.on .opt__dot::after{content:'';position:absolute;inset:3px;background:var(--tira-black)}
-.opt__name{font-size:14px}
-.opt__desc{font-size:11px;opacity:.42;margin-top:3px;line-height:1.5}
-.opt__price{font-size:11px;text-transform:uppercase;letter-spacing:.14em;
-  opacity:.5;white-space:nowrap}
-.panel__field{margin-top:26px}
-.panel__label{font-size:10px;text-transform:uppercase;letter-spacing:.2em;
-  opacity:.42;display:block;margin-bottom:10px}
-.panel__input{width:100%;border:none;border-bottom:1px solid var(--tira-border);
-  padding:11px 0;font-family:inherit;font-size:19px;letter-spacing:.22em;
-  text-transform:uppercase;outline:none;transition:border-color .2s;background:none}
-.panel__input:focus{border-bottom-color:var(--tira-black)}
-.panel__hint{font-size:11px;opacity:.4;margin-top:9px;font-style:italic}
-.panel__done{margin-top:32px;width:100%;border:1px solid var(--tira-black);
-  padding:16px;font-size:10px;text-transform:uppercase;letter-spacing:.2em;
-  transition:background .25s,color .25s}
-.panel__done:hover{background:var(--tira-black);color:var(--tira-white)}
-
-/* ── 5. Récapitulatif ── */
-.recap{max-width:820px;margin:0 auto;padding:0 clamp(20px,4vw,48px) 70px}
-.recap__row{display:flex;justify-content:space-between;align-items:baseline;
-  gap:20px;padding:18px 0;border-top:1px solid var(--tira-border)}
-.recap__k{font-size:10px;text-transform:uppercase;letter-spacing:.18em;opacity:.4}
-.recap__v{font-size:15px;text-align:right}
-.recap__v small{display:block;font-size:11px;opacity:.45;margin-top:4px;font-style:italic}
-.recap__total{display:flex;justify-content:space-between;align-items:baseline;
-  padding:26px 0;border-top:1px solid var(--tira-black);margin-top:8px}
-.recap__total-k{font-size:11px;text-transform:uppercase;letter-spacing:.2em}
-.recap__total-v{font-size:clamp(26px,3.4vw,38px);letter-spacing:-.01em}
-.recap__note{font-size:12px;line-height:1.8;opacity:.5;margin-top:26px;
-  padding-top:22px;border-top:1px solid var(--tira-border)}
-.recap__cta{display:block;width:100%;margin-top:30px;border:1px solid var(--tira-black);
-  padding:19px;font-size:11px;text-transform:uppercase;letter-spacing:.2em;text-align:center;
-  transition:background .25s,color .25s}
-.recap__cta:hover{background:var(--tira-black);color:var(--tira-white)}
-
-/* ── Barre de prix persistante ── */
-.bar{position:fixed;left:0;right:0;bottom:0;z-index:350;height:var(--bar-h);
-  background:rgba(255,255,255,.94);backdrop-filter:blur(18px);
-  border-top:1px solid var(--tira-border);
+/* ═══ Barre de prix ═══ */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:350;height:var(--bar);
+  background:color-mix(in srgb,var(--amb) 92%,transparent);backdrop-filter:blur(20px);
+  border-top:1px solid color-mix(in srgb,var(--amb-txt) 11%,transparent);
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 clamp(20px,4vw,48px);gap:20px}
-.bar__l{min-width:0}
-.bar__piece{font-size:10px;text-transform:uppercase;letter-spacing:.2em;opacity:.4}
-.bar__price{font-size:clamp(20px,2.4vw,27px);letter-spacing:-.01em;margin-top:5px;
-  transition:opacity .18s}
-.bar__price.flash{opacity:.28}
-.bar__next{border:1px solid var(--tira-black);padding:15px 34px;
-  font-size:10px;text-transform:uppercase;letter-spacing:.2em;white-space:nowrap;
-  transition:background .25s,color .25s}
-.bar__next:hover:not(:disabled){background:var(--tira-black);color:var(--tira-white)}
-.bar__next:disabled{opacity:.22;cursor:default}
-@media(max-width:600px){
-  :root{--bar-h:78px}
-  .bar__next{padding:13px 20px;font-size:9px;letter-spacing:.14em}
-}
+  padding:0 clamp(18px,4vw,46px);gap:18px;transition:background 1.1s var(--ease)}
+.bar__l{font-size:10px;text-transform:uppercase;letter-spacing:.2em;opacity:.4}
+.bar__p{font-size:clamp(21px,2.5vw,29px);margin-top:5px;display:flex;gap:1px}
+.bar__p span{display:inline-block;white-space:pre;transition:transform .4s var(--ease),opacity .4s}
+.bar__p span.roll{animation:roll .5s var(--ease)}
+@keyframes roll{0%{transform:translateY(-70%);opacity:0}100%{transform:none;opacity:1}}
+.bar__n{border:1px solid currentColor;padding:14px 32px;font-size:10px;
+  text-transform:uppercase;letter-spacing:.2em;white-space:nowrap;
+  transition:background .3s,color .3s,letter-spacing .5s var(--ease)}
+.bar__n:hover:not(:disabled){background:var(--amb-txt);color:var(--amb);letter-spacing:.27em}
+.bar__n:disabled{opacity:.2;cursor:default}
+@media(max-width:600px){:root{--bar:80px}.bar__n{padding:12px 18px;font-size:9px;letter-spacing:.13em}}
 
 @media(prefers-reduced-motion:reduce){
   *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  .piece{animation:none}.wrd{opacity:1;transform:none}
+  .mdl{opacity:1;transform:none}.rec__r{opacity:1;transform:none}
+  .rail i{transform:scaleX(1)}
 }
 </style>
 </head>
 <body>
 
+<!-- Grain d'ambiance -->
+<div class="grain" aria-hidden="true"><svg><filter id="gr">
+  <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" stitchTiles="stitch"/>
+  <feColorMatrix values="0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 .045 0"/></filter>
+  <rect width="100%" height="100%" filter="url(#gr)"/></svg></div>
 
+<!-- Filtres cuir + motifs -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs id="pats">
   <filter id="lth-graine" x="0" y="0" width="100%" height="100%">
     <feTurbulence type="fractalNoise" stitchTiles="stitch" baseFrequency="0.62" numOctaves="4" seed="7" result="n"/>
-    <feDiffuseLighting in="n" lighting-color="#ffffff" surfaceScale="1.5" diffuseConstant="1.15" result="d">
+    <feDiffuseLighting in="n" lighting-color="#fff" surfaceScale="1.5" diffuseConstant="1.15" result="d">
       <feDistantLight azimuth="128" elevation="60"/></feDiffuseLighting>
-    <feComposite in="d" in2="SourceGraphic" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="tex"/>
-    <feSpecularLighting in="n" lighting-color="#ffffff" surfaceScale="1.5"
+    <feComposite in="d" in2="SourceGraphic" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="t"/>
+    <feSpecularLighting in="n" lighting-color="#fff" surfaceScale="1.5"
       specularConstant="0.16" specularExponent="12" result="s">
       <feDistantLight azimuth="128" elevation="60"/></feSpecularLighting>
-    <feComposite in="s" in2="tex" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="lit"/>
-    <feComposite in="lit" in2="SourceGraphic" operator="in"/>
+    <feComposite in="s" in2="t" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="l"/>
+    <feComposite in="l" in2="SourceGraphic" operator="in"/>
   </filter>
   <filter id="lth-lisse" x="0" y="0" width="100%" height="100%">
     <feTurbulence type="fractalNoise" stitchTiles="stitch" baseFrequency="0.32" numOctaves="2" seed="3" result="n"/>
-    <feDiffuseLighting in="n" lighting-color="#ffffff" surfaceScale="0.1" diffuseConstant="1.02" result="d">
+    <feDiffuseLighting in="n" lighting-color="#fff" surfaceScale="0.1" diffuseConstant="1.02" result="d">
       <feDistantLight azimuth="118" elevation="74"/></feDiffuseLighting>
-    <feComposite in="d" in2="SourceGraphic" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="tex"/>
-    <feSpecularLighting in="n" lighting-color="#ffffff" surfaceScale="0.1"
+    <feComposite in="d" in2="SourceGraphic" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="t"/>
+    <feSpecularLighting in="n" lighting-color="#fff" surfaceScale="0.1"
       specularConstant="0.34" specularExponent="55" result="s">
       <feDistantLight azimuth="118" elevation="74"/></feSpecularLighting>
-    <feComposite in="s" in2="tex" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="lit"/>
-    <feComposite in="lit" in2="SourceGraphic" operator="in"/>
+    <feComposite in="s" in2="t" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="l"/>
+    <feComposite in="l" in2="SourceGraphic" operator="in"/>
   </filter>
   <filter id="lth-daim" x="0" y="0" width="100%" height="100%">
     <feTurbulence type="fractalNoise" stitchTiles="stitch" baseFrequency="1.7" numOctaves="5" seed="11" result="n"/>
-    <feDiffuseLighting in="n" lighting-color="#ffffff" surfaceScale="0.75" diffuseConstant="1.1" result="d">
+    <feDiffuseLighting in="n" lighting-color="#fff" surfaceScale="0.75" diffuseConstant="1.1" result="d">
       <feDistantLight azimuth="140" elevation="48"/></feDiffuseLighting>
-    <feComposite in="d" in2="SourceGraphic" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="tex"/>
-    <feSpecularLighting in="n" lighting-color="#ffffff" surfaceScale="0.75"
+    <feComposite in="d" in2="SourceGraphic" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="t"/>
+    <feSpecularLighting in="n" lighting-color="#fff" surfaceScale="0.75"
       specularConstant="0.04" specularExponent="5" result="s">
       <feDistantLight azimuth="140" elevation="48"/></feSpecularLighting>
-    <feComposite in="s" in2="tex" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="lit"/>
-    <feComposite in="lit" in2="SourceGraphic" operator="in"/>
+    <feComposite in="s" in2="t" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="l"/>
+    <feComposite in="l" in2="SourceGraphic" operator="in"/>
   </filter>
   <filter id="lth-exotique" x="0" y="0" width="100%" height="100%">
     <feTurbulence type="fractalNoise" stitchTiles="stitch" baseFrequency="0.10 0.30" numOctaves="3" seed="5" result="n"/>
-    <feDiffuseLighting in="n" lighting-color="#ffffff" surfaceScale="1.9" diffuseConstant="1.12" result="d">
+    <feDiffuseLighting in="n" lighting-color="#fff" surfaceScale="1.9" diffuseConstant="1.12" result="d">
       <feDistantLight azimuth="120" elevation="54"/></feDiffuseLighting>
-    <feComposite in="d" in2="SourceGraphic" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="tex"/>
-    <feSpecularLighting in="n" lighting-color="#ffffff" surfaceScale="1.9"
+    <feComposite in="d" in2="SourceGraphic" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="t"/>
+    <feSpecularLighting in="n" lighting-color="#fff" surfaceScale="1.9"
       specularConstant="0.22" specularExponent="18" result="s">
       <feDistantLight azimuth="120" elevation="54"/></feSpecularLighting>
-    <feComposite in="s" in2="tex" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="lit"/>
-    <feComposite in="lit" in2="SourceGraphic" operator="in"/>
+    <feComposite in="s" in2="t" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="l"/>
+    <feComposite in="l" in2="SourceGraphic" operator="in"/>
   </filter>
-  <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0"   stop-color="#e8d5a8"/><stop offset=".38" stop-color="#b9975b"/>
-    <stop offset=".62" stop-color="#f0e2bd"/><stop offset="1"   stop-color="#8f7237"/>
-  </linearGradient>
-  <linearGradient id="metal-pall" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#eceef0"/><stop offset=".4" stop-color="#a8adb2"/>
-    <stop offset=".65" stop-color="#f3f5f7"/><stop offset="1" stop-color="#7e848a"/>
-  </linearGradient>
-  <linearGradient id="metal-vieilli" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#c9ab74"/><stop offset=".45" stop-color="#8a6f42"/>
-    <stop offset=".7" stop-color="#d8be8e"/><stop offset="1" stop-color="#6b552f"/>
-  </linearGradient>
-  <linearGradient id="metal-or24" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#ffe9a8"/><stop offset=".4" stop-color="#d4a92e"/>
-    <stop offset=".68" stop-color="#fff3c9"/><stop offset="1" stop-color="#a37d15"/>
-  </linearGradient>
 </defs></svg>
+
+<div class="curtain" id="curtain" aria-hidden="true"></div>
 
 <header class="top">
   <button class="top__back" id="back">
-    <svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg>
-    <span id="backLabel">Retour</span>
+    <svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg><span id="backL">Retour</span>
   </button>
-  <span class="top__mark">Tiraboschi</span>
-  <div class="top__rail" id="rail" aria-hidden="true">
-    <span class="rail__tick on"></span><span class="rail__tick"></span>
-    <span class="rail__tick"></span><span class="rail__tick"></span>
-  </div>
+  <span class="mark" id="mark">Tiraboschi</span>
+  <div class="rail" id="rail" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
 </header>
 
-<!-- ═══ 1 · LE MODÈLE ═══ -->
-<section class="screen on" id="sc-modele">
-  <div class="screen__head">
-    <p class="screen__step">Première étape</p>
-    <h1 class="screen__title">Choisissez la <em>silhouette</em></h1>
-    <p class="screen__sub">
-      Chaque pièce sur mesure part d'un modèle de la maison. C'est la structure —
-      tout le reste se reprend.
-    </p>
+<!-- ═══ 1 · VITRINE ═══ -->
+<section class="scr on" id="s1">
+  <div class="hd">
+    <p class="hd__step">Atelier sur mesure</p>
+    <h1 class="hd__t" data-split>Tout part d'une <em>silhouette</em></h1>
+    <p class="hd__s" data-split>Choisissez la pièce que vous voulez reprendre. Sa structure reste ; tout le reste vous appartient.</p>
   </div>
-  <div class="models" id="models"></div>
+  <div class="vitrine" id="vitrine"></div>
 </section>
 
-<!-- ═══ 2 · LA CARTE DE LA PIÈCE (hub) ═══ -->
-<section class="screen" id="sc-hub">
-  <div class="screen__head">
-    <p class="screen__step">Deuxième étape</p>
-    <h1 class="screen__title">Reprenez ce qui <em>doit l'être</em></h1>
-    <p class="screen__sub">
-      Touchez un repère pour reprendre cet élément. Ce que vous ne touchez pas
-      reste tel que la maison l'a dessiné.
-    </p>
+<!-- ═══ 2 · ATELIER ═══ -->
+<section class="scr" id="s2">
+  <div class="hd">
+    <p class="hd__step">L'atelier</p>
+    <h1 class="hd__t" id="atlT">Reprenez ce qui <em>doit l'être</em></h1>
   </div>
-  <div class="hub">
-    <div class="hub__stage" id="stage">
-      <div class="bag" id="bag">
-        <div class="bag__box" id="bagBox">
+  <div class="atl">
+    <div class="scene">
+      <div class="piece" id="piece">
+<svg viewBox="0 0 460 560" id="svgPiece" aria-label="La pièce en cours de conception">
+  <defs>
+    <linearGradient id="volume" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0"    stop-color="#000" stop-opacity=".26"/>
+      <stop offset=".22"  stop-color="#000" stop-opacity="0"/>
+      <stop offset=".62"  stop-color="#fff" stop-opacity=".10"/>
+      <stop offset="1"    stop-color="#000" stop-opacity=".30"/>
+    </linearGradient>
+    <linearGradient id="volH" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity=".14"/>
+      <stop offset="1" stop-color="#000" stop-opacity=".22"/>
+    </linearGradient>
+    <radialGradient id="sol" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#000" stop-opacity=".26"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="mtl" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f0e0b4"/><stop offset=".36" stop-color="#bb9a5c"/>
+      <stop offset=".62" stop-color="#fdf3d4"/><stop offset="1" stop-color="#8e7134"/>
+    </linearGradient>
+    <clipPath id="clipCorps"><path d="M74 196 Q74 188 84 188 L376 188 Q386 188 386 196 L366 470
+      Q363 492 342 492 L118 492 Q97 492 94 470 Z"/></clipPath>
+  </defs>
 
-          <!-- Flanc gauche -->
-          <div class="bag__side bag__side--l"><svg viewBox="0 0 90 320" preserveAspectRatio="none">
-            <rect width="90" height="320" fill="#6b4a32" data-part="corps"/></svg></div>
-          <!-- Flanc droit -->
-          <div class="bag__side bag__side--r"><svg viewBox="0 0 90 320" preserveAspectRatio="none">
-            <rect width="90" height="320" fill="#6b4a32" data-part="corps"/></svg></div>
-          <!-- Fond -->
-          <div class="bag__base"><svg viewBox="0 0 300 90" preserveAspectRatio="none">
-            <rect width="300" height="90" fill="#5a3d29" data-part="corps"/></svg></div>
-          <!-- Doublure visible par l'ouverture -->
-          <div class="bag__lining"><svg viewBox="0 0 300 90" preserveAspectRatio="none">
-            <rect width="300" height="90" fill="#c9bda8" data-part="doublure"/></svg></div>
+  <ellipse id="ombre" cx="230" cy="508" rx="150" ry="17" fill="url(#sol)"/>
 
-          <!-- Dos -->
-          <div class="bag__face bag__face--back"><svg viewBox="0 0 300 320">
-            <path d="M8 8 H292 V300 Q292 312 280 312 H20 Q8 312 8 300 Z"
-                  fill="#5e412c" data-part="corps"/></svg></div>
+  <!-- Anse : le tracé change de courbure avec la longueur -->
+  <g class="hl" data-part="anse">
+    <path id="anse" d="M152 190 C152 78 308 78 308 190" fill="none"
+          stroke="#7d4a24" stroke-width="15" stroke-linecap="round"/>
+    <path id="anseOmbre" d="M152 190 C152 78 308 78 308 190" fill="none"
+          stroke="#000" stroke-opacity=".16" stroke-width="15" stroke-linecap="round"
+          transform="translate(3,4)"/>
+  </g>
 
-          <!-- Face avant : corps + signature en V -->
-          <div class="bag__face bag__face--front"><svg viewBox="0 0 300 320" id="bagSvg">
-            <path id="pCorps" d="M8 8 H292 V300 Q292 312 280 312 H20 Q8 312 8 300 Z"
-                  fill="#6b4a32" data-part="corps"/>
-            <path id="pV" d="M8 8 L150 118 L292 8 L292 46 L150 156 L8 46 Z"
-                  fill="#5a3d29" data-part="corps" opacity=".92"/>
-            <path d="M8 8 L150 118 L292 8" fill="none" stroke="rgba(0,0,0,.35)" stroke-width="1.2"/>
-            <path d="M8 46 L150 156 L292 46" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="1"/>
-            <path d="M18 300 H282" stroke="rgba(0,0,0,.22)" stroke-width="1" fill="none"/>
-          </svg></div>
+  <!-- Soufflet droit : donne le volume -->
+  <path id="soufflet" class="hl" data-part="corps"
+        d="M386 196 L410 210 L392 462 Q389 486 368 490 L366 470 Z" fill="#6b4a32"/>
+  <path d="M386 196 L410 210 L392 462 Q389 486 368 490 L366 470 Z" fill="url(#volH)"/>
 
-          <!-- Anse -->
-          <div class="bag__handle"><svg viewBox="0 0 300 200">
-            <path id="pAnse" d="M62 196 C62 46 238 46 238 196"
-                  fill="none" stroke="#6b4a32" stroke-width="17" stroke-linecap="round"
-                  filter="url(#lth-graine)" data-part="anse"/>
-          </svg></div>
+  <!-- Corps -->
+  <path id="corps" class="hl" data-part="corps"
+        d="M74 196 Q74 188 84 188 L376 188 Q386 188 386 196 L366 470
+           Q363 492 342 492 L118 492 Q97 492 94 470 Z" fill="#6b4a32"/>
 
-          <!-- Ferrures -->
-          <div class="bag__hw"><svg viewBox="0 0 300 200">
-            <rect id="hwL" x="52" y="180" width="22" height="15" fill="url(#metal)" data-part="ferrures"/>
-            <rect id="hwR" x="226" y="180" width="22" height="15" fill="url(#metal)" data-part="ferrures"/>
-            <path id="hwV" d="M138 176 L150 190 L162 176" fill="none" stroke="url(#metal)"
-                  stroke-width="4.5" stroke-linecap="round" data-part="ferrures"/>
-          </svg></div>
+  <!-- Signature en V : matière propre si bi-matière -->
+  <path id="pV" class="hl" data-part="v" clip-path="url(#clipCorps)"
+        d="M84 188 L230 322 L376 188 L376 150 L230 284 L84 150 Z" fill="#5a3d29"/>
+  <path d="M84 188 L230 322 L376 188" fill="none" stroke="#000" stroke-opacity=".3" stroke-width="1.4"/>
+  <path d="M84 150 L230 284 L376 150" fill="none" stroke="#fff" stroke-opacity=".13" stroke-width="1.1"/>
 
-          <!-- Gravure -->
-          <div class="bag__engrave" id="engrave" hidden><span id="engraveTxt"></span></div>
-        </div>
-        <div class="bag__shadow"></div>
-      </div>
+  <!-- Modelé sur toute la face -->
+  <path d="M74 196 Q74 188 84 188 L376 188 Q386 188 386 196 L366 470
+           Q363 492 342 492 L118 492 Q97 492 94 470 Z" fill="url(#volume)" pointer-events="none"/>
 
-      <button class="pin pin--corps"    data-el="corps"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>Le corps</span><span class="pin__val" data-val="corps"></span></button>
-      <button class="pin pin--anse"     data-el="anse"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>L'anse</span><span class="pin__val" data-val="anse"></span></button>
-      <button class="pin pin--ferrures" data-el="ferrures"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>Les ferrures</span><span class="pin__val" data-val="ferrures"></span></button>
-      <button class="pin pin--doublure" data-el="doublure"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>La doublure</span><span class="pin__val" data-val="doublure"></span></button>
-      <button class="pin pin--gravure"  data-el="gravure"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>La gravure</span><span class="pin__val" data-val="gravure"></span></button>
+  <!-- Couture du bas -->
+  <path d="M104 468 H356" fill="none" stroke="#000" stroke-opacity=".2"
+        stroke-width="1.2" stroke-dasharray="5 4"/>
 
-      <p class="hub__hint" id="hint">Faites pivoter la pièce</p>
+  <!-- Doublure entrevue par l'ouverture -->
+  <path id="doublure" class="hl" data-part="doublure"
+        d="M84 188 L376 188 L370 176 L90 176 Z" fill="#c9bda8"/>
+
+  <!-- Ferrures -->
+  <g class="hl" data-part="ferrures" id="grpFer">
+    <rect x="142" y="180" width="21" height="15" fill="url(#mtl)"/>
+    <rect x="297" y="180" width="21" height="15" fill="url(#mtl)"/>
+    <path d="M214 300 L230 318 L246 300" fill="none" stroke="url(#mtl)"
+          stroke-width="5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Pieds de protection sous le sac -->
+  <g class="hl" data-part="pieds" id="grpPieds" opacity="0">
+    <ellipse cx="118" cy="492" rx="9" ry="5" fill="url(#mtl)"/>
+    <ellipse cx="174" cy="495" rx="9" ry="5" fill="url(#mtl)"/>
+    <ellipse cx="230" cy="496" rx="9" ry="5" fill="url(#mtl)"/>
+    <ellipse cx="286" cy="495" rx="9" ry="5" fill="url(#mtl)"/>
+    <ellipse cx="342" cy="492" rx="9" ry="5" fill="url(#mtl)"/>
+  </g>
+
+  <!-- Bijou suspendu -->
+  <g class="hl" data-part="bijou" id="grpBijou" opacity="0">
+    <path d="M308 190 C312 214 306 232 300 244" fill="none" stroke="url(#mtl)" stroke-width="2.4"/>
+    <circle cx="300" cy="252" r="9" fill="none" stroke="url(#mtl)" stroke-width="2.4"/>
+    <path d="M294 249 L300 258 L306 249" fill="none" stroke="url(#mtl)" stroke-width="2"/>
+  </g>
+
+  <!-- Gravure -->
+  <text id="grav" x="230" y="440" text-anchor="middle" opacity="0"
+        font-family="Playfair Display, serif" font-size="15" letter-spacing="7"
+        fill="#fff" fill-opacity=".42"></text>
+</svg>
+<div class="sweep" id="sweep"></div></div>
     </div>
+    <aside class="side" id="side"></aside>
   </div>
 </section>
 
-<!-- ═══ 4 · RÉCAPITULATIF ═══ -->
-<section class="screen" id="sc-recap">
-  <div class="screen__head">
-    <p class="screen__step">Dernière étape</p>
-    <h1 class="screen__title">Votre <em>pièce</em></h1>
-    <p class="screen__sub">
-      Voici la spécification exacte que recevra l'atelier. Rien n'est engagé :
-      votre conseiller vous répond sous 48 heures.
-    </p>
+<!-- ═══ 3 · RÉCAPITULATIF ═══ -->
+<section class="scr" id="s3">
+  <div class="hd">
+    <p class="hd__step">Votre pièce</p>
+    <h1 class="hd__t" data-split>Une seule au <em>monde</em></h1>
   </div>
-  <div class="recap" id="recap"></div>
+  <div class="rec" id="rec"></div>
 </section>
 
-<!-- ═══ COVER FLOW MATIÈRE — plein écran ═══ -->
-<div class="matiere" id="matiere" role="dialog" aria-modal="true" aria-label="Choisir une matière">
-  <div class="matiere__head">
-    <p class="matiere__title" id="matTitle">La matière du corps</p>
-    <button class="matiere__close" id="matClose">Fermer</button>
+<!-- ═══ COVER FLOW ═══ -->
+<div class="mat" id="mat" role="dialog" aria-modal="true" aria-label="Choisir un cuir">
+  <div class="mat__h">
+    <p class="mat__t" id="matT">Le cuir</p>
+    <button class="mat__x" id="matX">Fermer</button>
   </div>
-  <div class="matiere__types" id="matTypes"></div>
+  <div class="mat__f" id="matF"></div>
   <div class="flow" id="flow"></div>
-  <div class="matiere__caption">
-    <p class="matiere__name" id="matName"></p>
-    <p class="matiere__delta" id="matDelta"></p>
+  <div class="mat__cap">
+    <p class="mat__n" id="matN"></p>
+    <p class="mat__d" id="matD"></p>
+    <p class="mat__c" id="matC"></p>
   </div>
-  <div class="matiere__foot">
-    <button class="matiere__nav" id="matPrev" aria-label="Matière précédente"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg></button>
-    <button class="matiere__pick" id="matPick">Retenir cette matière</button>
-    <button class="matiere__nav" id="matNext" aria-label="Matière suivante"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></button>
-  </div>
-</div>
-
-<!-- ═══ PANNEAU D'OPTION ═══ -->
-<div class="panel" id="panel" role="dialog" aria-modal="true">
-  <div class="panel__sheet">
-    <h2 class="panel__title" id="panTitle"></h2>
-    <p class="panel__sub" id="panSub"></p>
-    <div id="panOpts"></div>
-    <div class="panel__field" id="panField" hidden>
-      <label class="panel__label" for="panInput">Initiales — trois lettres, points compris</label>
-      <input class="panel__input" id="panInput" maxlength="4" placeholder="V.T." autocomplete="off">
-      <p class="panel__hint">Gravée à chaud à l'intérieur, sous la couture de rabat.</p>
-    </div>
-    <button class="panel__done" id="panDone">Valider</button>
+  <div class="mat__ft">
+    <button class="nav" id="matP" aria-label="Précédent"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg></button>
+    <button class="pick" id="matK">Retenir ce cuir</button>
+    <button class="nav" id="matN2" aria-label="Suivant"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></button>
   </div>
 </div>
 
-<!-- ═══ BARRE DE PRIX ═══ -->
 <div class="bar">
-  <div class="bar__l">
-    <p class="bar__piece" id="barPiece">Aucune silhouette retenue</p>
-    <p class="bar__price" id="barPrice">—</p>
+  <div>
+    <p class="bar__l" id="barL">Aucune silhouette</p>
+    <p class="bar__p" id="barP">—</p>
   </div>
-  <button class="bar__next" id="next" disabled>Continuer</button>
+  <button class="bar__n" id="next" disabled>Continuer</button>
 </div>
 
 <script>
 (function(){
 'use strict';
-var CDN='https://cdn.shopify.com/s/files/1/0927/5890/1079/files/';
+var RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var $ = function(i){return document.getElementById(i)};
+var NS = 'http://www.w3.org/2000/svg';
 
-/* ═══════════════════════════════════════════════════════════
-   TABLE DE PRIX — c'est ELLE qui pilote le calcul en direct.
-   En production elle vient de métachamps Shopify, pas du JS.
-   ═══════════════════════════════════════════════════════════ */
-var MODELES=[
-  {id:'victoire',nom:'La Victoire',type:'Sac à main structuré',base:3200,img:CDN+'28092025-DSCF1828.jpg',w:300,h:320,d:92},
-  {id:'colette', nom:'La Colette', type:'Sac à main souple',    base:2800,img:CDN+'BOSCHI0919.jpg',    w:290,h:280,d:78},
-  {id:'jane',    nom:'La Jane',    type:'Tote',                 base:2400,img:CDN+'Asset_atelier_1.png',w:320,h:300,d:110},
-  {id:'rafael',  nom:'Le Rafaël',  type:'Pochette',             base:1600,img:CDN+'BOSCHI0154.jpg',   w:300,h:190,d:44}
-];
-
-/* Textures de substitution — en attente des macros de cuir.
-   Volontairement sobres et différenciées par type, pas réalistes. */
-function _skinLegacy(base,type){
-  var t={
-    graine:"radial-gradient(circle at 30% 30%,rgba(255,255,255,.10) 0 1px,transparent 1.6px) 0 0/7px 7px",
-    lisse:"linear-gradient(135deg,rgba(255,255,255,.16),transparent 45%)",
-    daim:"radial-gradient(circle at 50% 50%,rgba(255,255,255,.07),transparent 70%)",
-    exotique:"repeating-linear-gradient(115deg,rgba(255,255,255,.11) 0 2px,transparent 2px 11px)"
-  }[type]||'';
-  return t?t+','+base:base;
-}
 var MATIERES=[
-  {id:'veau-graine',   nom:'Veau grainé',        type:'graine',  delta:0,    c:'#6b4a32'},
-  {id:'veau-graine-n', nom:'Veau grainé noir',   type:'graine',  delta:0,    c:'#1b1b1b'},
-  {id:'veau-graine-c', nom:'Veau grainé cognac', type:'graine',  delta:60,   c:'#8b4a24'},
-  {id:'box-calf',      nom:'Box calf noir',      type:'lisse',   delta:320,  c:'#141414'},
-  {id:'box-calf-b',    nom:'Box calf bordeaux',  type:'lisse',   delta:320,  c:'#5e1f2c'},
-  {id:'nappa',         nom:'Agneau nappa ivoire',type:'lisse',   delta:280,  c:'#ded4c4'},
-  {id:'daim-taupe',    nom:'Veau velours taupe', type:'daim',    delta:240,  c:'#7d7062'},
-  {id:'daim-nuit',     nom:'Veau velours nuit',  type:'daim',    delta:240,  c:'#232838'},
-  {id:'python',        nom:'Python naturel',     type:'exotique',delta:2400, c:'#9a8c6e'},
-  {id:'galuchat',      nom:'Galuchat gris',      type:'exotique',delta:3100, c:'#6e7276'}
+  {id:'galuchat-perle',nom:'Galuchat Perle',type:'exotique',c:'#b9b7ae',delta:3100},
+  {id:'gris-tourterelle',nom:'Gris Tourterelle',type:'daim',c:'#b3b0a8',delta:240},
+  {id:'gris-perle',nom:'Gris Perle',type:'lisse',c:'#9a9da2',delta:320},
+  {id:'galuchat-ardoise',nom:'Galuchat Ardoise',type:'exotique',c:'#6e7276',delta:3100},
+  {id:'etain',nom:'Étain',type:'daim',c:'#6b6e73',delta:240},
+  {id:'graphite',nom:'Graphite',type:'lisse',c:'#4a4d52',delta:320},
+  {id:'ardoise',nom:'Ardoise',type:'daim',c:'#3a3d42',delta:240},
+  {id:'python-nuit',nom:'Python Nuit',type:'exotique',c:'#3a3a42',delta:2600},
+  {id:'anthracite',nom:'Anthracite',type:'graine',c:'#2b2b2e',delta:0},
+  {id:'alligator-noir',nom:'Alligator Noir',type:'exotique',c:'#1f1f22',delta:3800},
+  {id:'noir-graine',nom:'Noir Grainé',type:'graine',c:'#161616',delta:0},
+  {id:'noir-absolu',nom:'Noir Absolu',type:'lisse',c:'#0d0d0d',delta:320},
+  {id:'vieux-rose',nom:'Vieux Rose',type:'lisse',c:'#bf8a86',delta:320},
+  {id:'rose-poudre',nom:'Rose Poudré',type:'daim',c:'#d8b3ad',delta:240},
+  {id:'brique',nom:'Brique',type:'graine',c:'#9c4530',delta:0},
+  {id:'terracotta',nom:'Terracotta',type:'daim',c:'#b05a3c',delta:240},
+  {id:'ebene-brun',nom:'Ébène Brun',type:'lisse',c:'#2e211a',delta:320},
+  {id:'chocolat',nom:'Chocolat',type:'graine',c:'#4e3324',delta:0},
+  {id:'moka',nom:'Moka',type:'lisse',c:'#3d2a1f',delta:320},
+  {id:'ecorce',nom:'Écorce',type:'daim',c:'#5a4030',delta:240},
+  {id:'havane',nom:'Havane',type:'daim',c:'#7d4a24',delta:240},
+  {id:'noisette',nom:'Noisette',type:'daim',c:'#6f4c31',delta:240},
+  {id:'cognac',nom:'Cognac',type:'graine',c:'#8f5424',delta:0},
+  {id:'tabac',nom:'Tabac',type:'graine',c:'#6b4526',delta:0},
+  {id:'alligator-cognac',nom:'Alligator Cognac',type:'exotique',c:'#8a5a2e',delta:3800},
+  {id:'caramel',nom:'Caramel',type:'graine',c:'#a86a30',delta:0},
+  {id:'whisky',nom:'Whisky',type:'lisse',c:'#96602c',delta:320},
+  {id:'fauve',nom:'Fauve',type:'graine',c:'#a8703a',delta:0},
+  {id:'camel',nom:'Camel',type:'graine',c:'#b8874a',delta:0},
+  {id:'camel-clair',nom:'Camel Clair',type:'graine',c:'#c9a06a',delta:0},
+  {id:'miel',nom:'Miel',type:'lisse',c:'#c08b3e',delta:320},
+  {id:'python-naturel',nom:'Python Naturel',type:'exotique',c:'#a89474',delta:2400},
+  {id:'craie',nom:'Craie',type:'lisse',c:'#efe9dd',delta:320},
+  {id:'ivoire',nom:'Ivoire',type:'lisse',c:'#e6dcc8',delta:320},
+  {id:'sable',nom:'Sable',type:'graine',c:'#d2c3a4',delta:0},
+  {id:'parchemin',nom:'Parchemin',type:'lisse',c:'#c2b394',delta:320},
+  {id:'lin',nom:'Lin',type:'daim',c:'#c9bda3',delta:240},
+  {id:'ecru',nom:'Écru',type:'daim',c:'#ddd2ba',delta:240},
+  {id:'olive',nom:'Olive',type:'graine',c:'#71703f',delta:0},
+  {id:'kaki',nom:'Kaki',type:'daim',c:'#5d6146',delta:240},
+  {id:'sauge',nom:'Sauge',type:'daim',c:'#93a087',delta:240},
+  {id:'sapin',nom:'Sapin',type:'graine',c:'#2b4a38',delta:0},
+  {id:'vert-empire',nom:'Vert Empire',type:'lisse',c:'#1e3a30',delta:320},
+  {id:'celadon-bleu',nom:'Céladon Bleu',type:'daim',c:'#7d9aa6',delta:240},
+  {id:'bleu-de-prusse',nom:'Bleu de Prusse',type:'daim',c:'#28455e',delta:240},
+  {id:'bleu-ardoise',nom:'Bleu Ardoise',type:'lisse',c:'#41607d',delta:320},
+  {id:'marine',nom:'Marine',type:'graine',c:'#243352',delta:0},
+  {id:'bleu-nuit',nom:'Bleu Nuit',type:'lisse',c:'#1c2438',delta:320},
+  {id:'amethyste',nom:'Améthyste',type:'lisse',c:'#6b4a72',delta:320},
+  {id:'aubergine',nom:'Aubergine',type:'daim',c:'#452a3c',delta:240},
+  {id:'prune',nom:'Prune',type:'lisse',c:'#5b3348',delta:320},
+  {id:'bordeaux',nom:'Bordeaux',type:'lisse',c:'#5e1f2c',delta:320},
+  {id:'grenat',nom:'Grenat',type:'daim',c:'#6d2530',delta:240},
+  {id:'rouge-cardinal',nom:'Rouge Cardinal',type:'lisse',c:'#a01f28',delta:320},
+  {id:'rouge-profond',nom:'Rouge Profond',type:'graine',c:'#7d1c22',delta:0}
 ];
-var TYPES=[{id:'tous',nom:'Toutes'},{id:'graine',nom:'Grainé'},{id:'lisse',nom:'Lisse'},
-           {id:'daim',nom:'Daim'},{id:'exotique',nom:'Exotique'}];
 
-var FERRURES=[
-  {id:'laiton',   nom:'Laiton naturel',  desc:'Patine avec le temps, se ravive au chiffon.', delta:0},
-  {id:'vieilli',  nom:'Laiton vieilli',  desc:'Patiné à la main, teinte chaude et mate.',    delta:120},
-  {id:'palladium',nom:'Argent palladié', desc:'Blanc froid, inaltérable.',                   delta:340},
-  {id:'or24',     nom:'Or jaune 24 carats',desc:'Dorure à l\'or fin, sur commande.',         delta:1800}
-];
-var DOUBLURES=[
-  {id:'agneau', nom:'Agneau naturel', desc:'La doublure de maison, souple et discrète.', delta:0},
-  {id:'chevreau',nom:'Chevreau glacé',desc:'Plus dense, un léger éclat à l\'ouverture.',  delta:160},
-  {id:'soie',   nom:'Soie sauvage',   desc:'Tissée à Lyon. Réservée aux pièces du soir.', delta:240}
-];
-var GRAVURES=[
-  {id:'aucune', nom:'Aucune gravure', desc:'La pièce reste anonyme.',                    delta:0},
-  {id:'initiales',nom:'Initiales à chaud',desc:'Trois lettres, à l\'intérieur du rabat.', delta:180},
-  {id:'artisan',nom:'Initiales + main de l\'artisan',desc:'Sa signature accompagne la vôtre.',delta:320}
+var FAMILLES=[{id:'tous',n:'Tous les cuirs'},{id:'graine',n:'Grainé'},
+  {id:'lisse',n:'Lisse'},{id:'daim',n:'Daim'},{id:'exotique',n:'Exotique'}];
+
+var MODELES=[
+  {id:'victoire',nom:'La Victoire',t:'Sac à main structuré',base:3200,teinte:'#6b4a32',sil:'scale(1,1.06)'},
+  {id:'colette', nom:'La Colette', t:'Sac à main souple',   base:2800,teinte:'#5e1f2c',sil:'scale(.94,.9)'},
+  {id:'jane',    nom:'La Jane',    t:'Tote',                base:2400,teinte:'#243352',sil:'scale(1.12,.98)'},
+  {id:'rafael',  nom:'Le Rafaël',  t:'Pochette',            base:1600,teinte:'#1e3a30',sil:'scale(1.04,.6)',plat:1}
 ];
 
-var ELEMENTS={
-  corps:   {nom:'Le corps',    kind:'matiere', titre:'La matière du corps'},
-  anse:    {nom:"L'anse",      kind:'matiere', titre:"La matière de l'anse"},
-  ferrures:{nom:'Les ferrures',kind:'option', opts:FERRURES, titre:'Les <em>ferrures</em>',
-            sub:'Le seul métal visible de la pièce.'},
-  doublure:{nom:'La doublure', kind:'option', opts:DOUBLURES,titre:'La <em>doublure</em>',
-            sub:'Ce que vous seul verrez.'},
-  gravure: {nom:'La gravure',  kind:'option', opts:GRAVURES, titre:'La <em>gravure</em>',
-            sub:'Une marque, ou rien.'}
-};
+var FERRURES=[{id:'laiton',n:'Laiton naturel',d:0},{id:'vieilli',n:'Laiton vieilli',d:120},
+  {id:'palladium',n:'Argent palladié',d:340},{id:'or24',n:'Or jaune 24 carats',d:1800}];
+var DOUBLURES=[{id:'agneau',n:'Agneau naturel',d:0,c:'#c9bda8'},
+  {id:'chevreau',n:'Chevreau glacé',d:160,c:'#ddd2bc'},
+  {id:'soie',n:'Soie sauvage',d:240,c:'#b9a68c'}];
+var MTL={laiton:'#bb9a5c',vieilli:'#8a6f42',palladium:'#a8adb2',or24:'#d4a92e'};
 
 /* ═══ État ═══ */
-var S={modele:null,choix:{},elCourant:null,ecran:'modele'};
+var S={mdl:null,ecran:1,cuirs:{},opts:{ferrures:'laiton',doublure:'agneau'},
+       anse:50,pieds:false,bijou:false,bi:false,grav:''};
 
-var $=function(id){return document.getElementById(id)};
-function euros(n){return n.toLocaleString('fr-FR').replace(/ | /g,' ')+' €'}
+function euros(n){return n.toLocaleString('fr-FR').replace(/\u202f|\u00a0/g,' ')+' €'}
 
-/* ═══ Calcul du prix — source unique ═══ */
+/* ═══ Motifs cuir — tuile unique, créée à la demande ═══ */
+var faits={};
+function motif(c,t){
+  var id='p-'+t+'-'+c.replace('#','');
+  if(!faits[id]){
+    var p=document.createElementNS(NS,'pattern');
+    p.setAttribute('id',id);p.setAttribute('width','150');p.setAttribute('height','150');
+    p.setAttribute('patternUnits','userSpaceOnUse');
+    var r=document.createElementNS(NS,'rect');
+    r.setAttribute('width','150');r.setAttribute('height','150');
+    r.setAttribute('fill',c);r.setAttribute('filter','url(#lth-'+t+')');
+    p.appendChild(r);$('pats').appendChild(p);faits[id]=1;
+  }
+  return 'url(#'+id+')';
+}
+function cuirPar(id){for(var i=0;i<MATIERES.length;i++)if(MATIERES[i].id===id)return MATIERES[i];return null}
+function assombrir(h,k){var n=parseInt(h.slice(1),16);
+  return '#'+((1<<24)+((Math.round(((n>>16)&255)*k))<<16)+((Math.round(((n>>8)&255)*k))<<8)+Math.round((n&255)*k)).toString(16).slice(1)}
+function clair(h){var n=parseInt(h.slice(1),16);
+  return (((n>>16)&255)*299+((n>>8)&255)*587+(n&255)*114)/1000>140}
+
+/* ═══ Ambiance — le fond prend la teinte du cuir ═══ */
+function ambiance(hex){
+  var d=document.documentElement;
+  if(!hex){d.style.setProperty('--amb','#f7f5f2');d.style.setProperty('--amb-txt','#0a0a0a');return}
+  var n=parseInt(hex.slice(1),16),r=(n>>16)&255,g=(n>>8)&255,b=n&255;
+  d.style.setProperty('--amb','rgb('+Math.round(247-(247-r)*.11)+','+
+    Math.round(245-(245-g)*.11)+','+Math.round(242-(242-b)*.11)+')');
+  d.style.setProperty('--amb-txt','#0a0a0a');
+}
+
+/* ═══ Prix — se compose chiffre par chiffre ═══ */
 function total(){
-  if(!S.modele) return 0;
-  var t=S.modele.base;
-  for(var k in S.choix){ if(S.choix[k]) t+=(S.choix[k].delta||0); }
+  if(!S.mdl)return 0;
+  var t=S.mdl.base;
+  ['ext','int','v'].forEach(function(k){var c=S.cuirs[k];if(c)t+=cuirPar(c).delta});
+  FERRURES.forEach(function(f){if(f.id===S.opts.ferrures)t+=f.d});
+  DOUBLURES.forEach(function(f){if(f.id===S.opts.doublure)t+=f.d});
+  if(S.anse!==50) t+=140;
+  if(S.pieds) t+=180;
+  if(S.bijou) t+=460;
+  if(S.bi)    t+=380;
+  if(S.grav)  t+=180;
   return t;
 }
+var dernier='';
 function majPrix(){
-  var p=$('barPrice');
-  p.classList.add('flash');
+  $('barL').textContent = S.mdl ? S.mdl.nom+' — sur mesure' : 'Aucune silhouette';
+  var txt = S.mdl ? euros(total()) : '—', el=$('barP');
+  if(txt===dernier) return;
+  el.innerHTML='';
+  txt.split('').forEach(function(ch,i){
+    var s=document.createElement('span');s.textContent=ch;
+    if(!RM && dernier && dernier[i]!==ch){s.classList.add('roll');s.style.animationDelay=(i*22)+'ms'}
+    el.appendChild(s);
+  });
+  dernier=txt;
+}
+
+/* ═══ Rendu de la pièce ═══ */
+function peindre(){
+  var ext=S.cuirs.ext?cuirPar(S.cuirs.ext):null;
+  var col=ext?ext.c:'#6b4a32', typ=ext?ext.type:'graine';
+  var q=function(i){return $(i)};
+  q('corps').setAttribute('fill',motif(col,typ));
+  q('soufflet').setAttribute('fill',motif(assombrir(col,.84),typ));
+  /* Le V : matière propre en bi-matière, sinon nuance du corps */
+  var v=S.bi&&S.cuirs.v?cuirPar(S.cuirs.v):null;
+  q('pV').setAttribute('fill', v?motif(v.c,v.type):motif(assombrir(col,.8),typ));
+  /* Anse */
+  var a=S.cuirs.anse?cuirPar(S.cuirs.anse):ext;
+  q('anse').setAttribute('stroke', a?motif(a.c,a.type):motif(col,typ));
+  /* Doublure */
+  var dd=DOUBLURES.filter(function(x){return x.id===S.opts.doublure})[0];
+  q('doublure').setAttribute('fill',motif(S.cuirs.int?cuirPar(S.cuirs.int).c:dd.c,'lisse'));
+  /* Ferrures */
+  var m=MTL[S.opts.ferrures]||'#bb9a5c';
+  ['grpFer','grpPieds','grpBijou'].forEach(function(g){
+    var n=q(g);if(!n)return;
+    n.querySelectorAll('[fill^="url(#mtl"],[stroke^="url(#mtl"]').forEach(function(){});
+  });
+  document.querySelectorAll('#svgPiece [fill="url(#mtl)"]').forEach(function(n){n.setAttribute('fill',m)});
+  document.querySelectorAll('#svgPiece [stroke="url(#mtl)"]').forEach(function(n){n.setAttribute('stroke',m)});
+  /* Anse : la longueur change la courbure */
+  var h=190-(S.anse-50)*1.5, d='M152 190 C152 '+(h-60)+' 308 '+(h-60)+' 308 190';
+  q('anse').setAttribute('d',d); q('anseOmbre').setAttribute('d',d);
+  /* Options visibles */
+  q('grpPieds').setAttribute('opacity',S.pieds?'1':'0');
+  q('grpBijou').setAttribute('opacity',S.bijou?'1':'0');
+  var g=q('grav'); g.textContent=S.grav; g.setAttribute('opacity',S.grav?'1':'0');
+  g.setAttribute('fill',clair(col)?'#000':'#fff');
+  ambiance(col);
+}
+function souligner(){
+  if(RM) return;
+  var p=$('piece'), s=$('sweep');
+  p.classList.add('shift'); s.classList.remove('go'); void s.offsetWidth; s.classList.add('go');
+  setTimeout(function(){p.classList.remove('shift')},420);
+}
+
+/* ═══ Vitrine ═══ */
+var SIL='<svg viewBox="0 0 460 560"><path d="M74 196 Q74 188 84 188 L376 188 Q386 188 386 196 L366 470 Q363 492 342 492 L118 492 Q97 492 94 470 Z" fill="currentColor"/><path d="M152 190 C152 78 308 78 308 190" fill="none" stroke="currentColor" stroke-width="15"/></svg>';
+MODELES.forEach(function(m,i){
+  var b=document.createElement('button');
+  b.className='mdl'; b.dataset.id=m.id;
+  var sil = m.plat ? SIL.replace(/<path d="M152 190[^/]*\/>/,'') : SIL;
+  b.innerHTML='<span class="mdl__glow" style="background:radial-gradient(ellipse at 50% 40%,'+
+    m.teinte+'22,transparent 68%)"></span>'+
+    '<span class="mdl__sil" style="--sil:'+(m.sil||'scale(1)')+'">'+sil+'</span>'+
+    '<span class="mdl__n">'+m.nom+'</span><span class="mdl__m">'+m.t+'</span>'+
+    '<span class="mdl__p">À partir de '+euros(m.base)+'</span>'+
+    '<span class="mdl__go"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg></span>';
+  b.addEventListener('click',function(){choisir(m)});
+  $('vitrine').appendChild(b);
+  setTimeout(function(){b.classList.add('in')}, RM?0:180+i*110);
+});
+
+function choisir(m){
+  S.mdl=m; S.cuirs={}; S.opts={ferrures:'laiton',doublure:'agneau'};
+  S.anse=50;S.pieds=false;S.bijou=false;S.bi=false;S.grav='';
+  $('next').disabled=false;
+  var c=$('curtain');
+  if(RM){ aller(2); peindre(); majPrix(); construireSide(); return; }
+  c.classList.add('down');
   setTimeout(function(){
-    p.textContent=S.modele?euros(total()):'—';
-    p.classList.remove('flash');
-  },130);
-  $('barPiece').textContent=S.modele?S.modele.nom+' — sur mesure':'Aucune silhouette retenue';
+    aller(2); peindre(); majPrix(); construireSide();
+    c.classList.remove('down'); c.classList.add('up');
+    setTimeout(function(){c.classList.remove('up')},900);
+  },860);
 }
 
-/* ═══ 1. Modèles ═══ */
-MODELES.forEach(function(m){
-  var b=document.createElement('button');
-  b.className='model'; b.dataset.id=m.id;
-  b.innerHTML='<span class="model__img"><img src="'+m.img+'" alt="'+m.nom+'"><span class="model__veil"></span></span>'+
-    '<span class="model__info"><span class="model__name">'+m.nom+'</span>'+
-    '<span class="model__meta">'+m.type+'</span>'+
-    '<span class="model__from">À partir de '+euros(m.base)+'</span></span>';
-  b.addEventListener('click',function(){
-    S.modele=m; S.choix={};
-    document.querySelectorAll('.model').forEach(function(x){x.classList.toggle('on',x.dataset.id===m.id)});
-    poserSilhouette(m);
-    document.querySelectorAll('.pin').forEach(function(p){
-      p.classList.remove('done'); p.querySelector('.pin__val').textContent='';
-    });
-    $('next').disabled=false;
-    majPrix(); rendreSac();
-  });
-  $('models').appendChild(b);
-});
-
-/* ═══ Navigation entre écrans ═══ */
-var ORDRE=['modele','hub','recap'];
-function aller(nom){
-  S.ecran=nom;
-  $('sc-modele').classList.toggle('on',nom==='modele');
-  $('sc-hub').classList.toggle('on',nom==='hub');
-  $('sc-recap').classList.toggle('on',nom==='recap');
-  var i=ORDRE.indexOf(nom);
-  document.querySelectorAll('.rail__tick').forEach(function(t,j){t.classList.toggle('on',j<=i)});
-  $('backLabel').textContent = nom==='modele' ? 'Retour' : 'Étape précédente';
-  $('next').textContent = nom==='recap' ? 'Demander cette pièce' : 'Continuer';
-  $('next').disabled = nom==='modele' && !S.modele;
-  if(nom==='recap') dessinerRecap();
-  window.scrollTo(0,0);
-}
-$('next').addEventListener('click',function(){
-  var i=ORDRE.indexOf(S.ecran);
-  if(S.ecran==='recap'){ demander(); return; }
-  aller(ORDRE[Math.min(ORDRE.length-1,i+1)]);
-});
-$('back').addEventListener('click',function(){
-  var i=ORDRE.indexOf(S.ecran);
-  if(i>0) aller(ORDRE[i-1]);
-});
-
-/* ═══ 2. Repères → ouverture de l'éditeur ═══ */
-document.querySelectorAll('.pin').forEach(function(pin){
-  pin.addEventListener('click',function(){
-    var el=pin.dataset.el; S.elCourant=el;
-    if(ELEMENTS[el].kind==='matiere') ouvrirMatiere(el);
-    else ouvrirPanneau(el);
-  });
-});
-function marquer(el,libelle){
-  var pin=document.querySelector('.pin[data-el="'+el+'"]');
-  if(!pin) return;
-  pin.classList.add('done');
-  pin.querySelector('.pin__val').textContent=libelle?'· '+libelle:'';
-}
-
-/* ═══ 3. Cover Flow matière ═══ */
-var flowIdx=0, filtre='tous', cartes=[];
-function listeMat(){
-  return filtre==='tous'?MATIERES:MATIERES.filter(function(m){return m.type===filtre});
-}
-function construireFlow(){
-  var f=$('flow'); f.innerHTML=''; cartes=[];
-  listeMat().forEach(function(m,i){
-    var c=document.createElement('div');
-    c.className='flow__card'; c.dataset.i=i;
-    c.innerHTML='<div class="flow__skin"><svg viewBox="0 0 560 560" preserveAspectRatio="none">'+
-      '<rect width="560" height="560" fill="'+motif(m.c,m.type)+'"/></svg></div>';
-    c.addEventListener('click',function(){ if(i!==flowIdx){ flowIdx=i; rendreFlow(); } });
-    f.appendChild(c); cartes.push(c);
-  });
-  if(flowIdx>=cartes.length) flowIdx=0;
-  rendreFlow();
-}
-function rendreFlow(){
-  var L=listeMat();
-  cartes.forEach(function(c,i){
-    var d=i-flowIdx, a=Math.abs(d), s=d<0?-1:1;
-    var tx,ry,sc,op,z;
-    if(d===0){ tx='-50%'; ry='0deg'; sc=1; op=1; z=100; }
-    else{
-      var gap=330+a*86;
-      tx='calc(-50% + '+(s*gap)+'px)'; ry=(-s*46)+'deg';
-      sc=Math.max(.46,1-a*.19); op=Math.max(0,1-a*.34); z=100-a*10;
+/* ═══ Panneau des ajustements ═══ */
+var AJUST=[
+  {k:'ext', t:'cuir', n:'Cuir extérieur',  d:'Le corps et le soufflet'},
+  {k:'v',   t:'bi',   n:'Bi-matière',      d:'Un second cuir sur le V'},
+  {k:'anse',t:'cuir', n:"Cuir de l'anse",  d:'Ou celui du corps'},
+  {k:'len', t:'range',n:"Longueur d'anse", d:'Épaule ou main'},
+  {k:'int', t:'cuir', n:'Cuir intérieur',  d:'Ce que vous seul verrez'},
+  {k:'doublure',t:'opt',n:'Doublure',      d:'',opts:DOUBLURES},
+  {k:'ferrures',t:'opt',n:'Ferrures',      d:'',opts:FERRURES},
+  {k:'pieds',t:'tgl',  n:'Pieds de protection', d:'Cinq clous sous le fond', p:180},
+  {k:'bijou',t:'tgl',  n:'Bijou de sac',   d:'Suspendu à l\'anse', p:460},
+  {k:'grav', t:'grav', n:'Gravure',        d:'Trois lettres, à l\'intérieur', p:180}
+];
+function construireSide(){
+  var s=$('side'); s.innerHTML='<p class="side__t">Les ajustements</p>';
+  AJUST.forEach(function(a,i){
+    var b=document.createElement('button'); b.className='adj'; b.dataset.k=a.k;
+    s.appendChild(b);
+    if(a.t==='range'){
+      b.style.display='block';
+      b.innerHTML='<span class="adj__n">'+a.n+'</span>'+
+        '<input class="rng" type="range" min="0" max="100" value="'+S.anse+'">'+
+        '<span class="adj__v" data-v>'+libAnse()+'</span>';
+      var r=b.querySelector('.rng');
+      r.addEventListener('input',function(){
+        S.anse=+r.value; b.querySelector('[data-v]').textContent=libAnse();
+        b.classList.toggle('set',S.anse!==50); peindre(); majPrix();
+      });
+      r.addEventListener('click',function(e){e.stopPropagation()});
+      return;
     }
-    c.style.transform='translateX('+tx+') translateY(-50%) rotateY('+ry+') scale('+sc+')';
-    c.style.opacity=op; c.style.zIndex=z;
-    c.classList.toggle('mid',d===0);
-    c.classList.toggle('vis',a<=3);
+    b.innerHTML='<span><span class="adj__n">'+a.n+'</span>'+
+      '<span class="adj__v" data-v>'+(a.d||'')+'</span></span>'+
+      (a.t==='tgl'
+        ? '<span class="tgl"><span class="adj__x">+ '+euros(a.p)+'</span><span class="tgl__b"></span></span>'
+        : '<span class="adj__x" data-x></span>');
+    b.addEventListener('click',function(){ouvrirAjust(a,b)});
+    setTimeout(function(){b.style.opacity='1'}, RM?0:i*40);
   });
-  var m=L[flowIdx];
-  $('matName').textContent=m?m.nom:'';
-  $('matDelta').textContent=m?(m.delta?'+ '+euros(m.delta):'Sans supplément'):'';
-  $('matPrev').disabled=flowIdx===0;
-  $('matNext').disabled=flowIdx>=L.length-1;
+  rafraichirSide();
 }
-TYPES.forEach(function(t){
-  var b=document.createElement('button');
-  b.className='mtype'+(t.id==='tous'?' on':''); b.textContent=t.nom; b.dataset.t=t.id;
-  b.addEventListener('click',function(){
-    filtre=t.id; flowIdx=0;
-    document.querySelectorAll('.mtype').forEach(function(x){x.classList.toggle('on',x.dataset.t===t.id)});
-    construireFlow();
+function libAnse(){
+  if(S.anse<34) return 'Portée main — anse courte';
+  if(S.anse>66) return 'Portée épaule — anse longue';
+  return 'Longueur d\'origine';
+}
+function rafraichirSide(){
+  document.querySelectorAll('.adj').forEach(function(b){
+    var k=b.dataset.k, a=AJUST.filter(function(x){return x.k===k})[0]; if(!a)return;
+    var v=b.querySelector('[data-v]'), x=b.querySelector('[data-x]');
+    if(a.t==='cuir'){
+      var c=S.cuirs[k]?cuirPar(S.cuirs[k]):null;
+      if(c){b.classList.add('set');v.textContent=c.nom;if(x)x.textContent=c.delta?'+ '+euros(c.delta):'inclus'}
+      else{b.classList.remove('set');v.textContent=a.d;if(x)x.textContent='choisir'}
+    }else if(a.t==='bi'){
+      if(S.bi&&S.cuirs.v){b.classList.add('set');v.textContent=cuirPar(S.cuirs.v).nom;
+        if(x)x.textContent='+ '+euros(380+cuirPar(S.cuirs.v).delta)}
+      else{b.classList.remove('set');v.textContent=a.d;if(x)x.textContent='+ '+euros(380)}
+    }else if(a.t==='opt'){
+      var o=a.opts.filter(function(y){return y.id===S.opts[k]})[0];
+      v.textContent=o.n; b.classList.toggle('set',o.d>0);
+      if(x)x.textContent=o.d?'+ '+euros(o.d):'inclus';
+    }else if(a.t==='tgl'){
+      b.classList.toggle('set',!!S[k]); v.textContent=a.d;
+    }else if(a.t==='grav'){
+      b.classList.toggle('set',!!S.grav);
+      v.textContent=S.grav||a.d; if(x)x.textContent=S.grav?'+ '+euros(180):'+ '+euros(180);
+    }
+    if(a.t==='range'){b.classList.toggle('set',S.anse!==50)}
   });
-  $('matTypes').appendChild(b);
-});
-function ouvrirMatiere(el){
-  $('matTitle').textContent=ELEMENTS[el].titre;
-  var d=S.choix[el];
-  if(d){ var i=listeMat().findIndex(function(m){return m.id===d.id}); if(i>=0) flowIdx=i; }
-  $('matiere').classList.add('on'); document.body.style.overflow='hidden';
-  construireFlow();
 }
-function fermerMatiere(){ $('matiere').classList.remove('on'); document.body.style.overflow=''; }
-$('matClose').addEventListener('click',fermerMatiere);
-$('matPrev').addEventListener('click',function(){ if(flowIdx>0){flowIdx--;rendreFlow();} });
-$('matNext').addEventListener('click',function(){ if(flowIdx<listeMat().length-1){flowIdx++;rendreFlow();} });
-$('matPick').addEventListener('click',function(){
-  var m=listeMat()[flowIdx]; if(!m) return;
-  S.choix[S.elCourant]={id:m.id,nom:m.nom,delta:m.delta};
-  marquer(S.elCourant,m.nom); majPrix(); rendreSac(); fermerMatiere();
-});
-/* Clavier, glisser, balayage */
-document.addEventListener('keydown',function(e){
-  if(!$('matiere').classList.contains('on')) return;
-  if(e.key==='Escape') fermerMatiere();
-  if(e.key==='ArrowLeft'&&flowIdx>0){flowIdx--;rendreFlow();}
-  if(e.key==='ArrowRight'&&flowIdx<listeMat().length-1){flowIdx++;rendreFlow();}
-});
-(function(){
-  var x0=null;
-  function fin(x){
-    if(x0===null) return;
-    var d=x-x0; x0=null;
-    if(Math.abs(d)<36) return;
-    if(d<0&&flowIdx<listeMat().length-1) flowIdx++;
-    else if(d>0&&flowIdx>0) flowIdx--;
-    rendreFlow();
+function ouvrirAjust(a,b){
+  if(a.t==='cuir'){ ouvrirCuir(a.k,a.n); return; }
+  if(a.t==='bi'){
+    if(S.bi&&S.cuirs.v){S.bi=false;delete S.cuirs.v;maj();return}
+    S.bi=true; ouvrirCuir('v','Le second cuir'); return;
   }
+  if(a.t==='opt'){
+    var l=a.opts, i=l.findIndex(function(y){return y.id===S.opts[a.k]});
+    S.opts[a.k]=l[(i+1)%l.length].id; maj(); return;
+  }
+  if(a.t==='tgl'){ S[a.k]=!S[a.k]; maj(); return; }
+  if(a.t==='grav'){
+    var v=prompt('Initiales — trois lettres',S.grav||'');
+    if(v!==null){S.grav=v.toUpperCase().slice(0,4);maj()}
+  }
+}
+function maj(){peindre();majPrix();rafraichirSide();souligner()}
+
+/* ═══ Cover Flow ═══ */
+var cible=null, filtre='tous', idx=0, cartes=[];
+function liste(){return filtre==='tous'?MATIERES:MATIERES.filter(function(m){return m.type===filtre})}
+FAMILLES.forEach(function(f){
+  var b=document.createElement('button');
+  b.className='ft'+(f.id==='tous'?' on':'');b.textContent=f.n;b.dataset.f=f.id;
+  b.addEventListener('click',function(){
+    filtre=f.id;idx=0;
+    document.querySelectorAll('.ft').forEach(function(x){x.classList.toggle('on',x.dataset.f===f.id)});
+    batir();
+  });
+  $('matF').appendChild(b);
+});
+function batir(){
+  var f=$('flow');f.innerHTML='';cartes=[];
+  liste().forEach(function(m,i){
+    var c=document.createElement('div');c.className='card';c.dataset.i=i;
+    c.innerHTML='<div class="card__s"></div>';
+    c.addEventListener('click',function(){if(i!==idx){idx=i;rendre()}});
+    f.appendChild(c);cartes.push(c);
+  });
+  if(idx>=cartes.length)idx=0;
+  rendre();
+}
+function rendre(){
+  var L=liste();
+  cartes.forEach(function(c,i){
+    var d=i-idx,a=Math.abs(d),s=d<0?-1:1,tx,ry,sc,op,z;
+    if(d===0){tx='-50%';ry='0deg';sc=1;op=1;z=100}
+    else{var g=310+a*82;tx='calc(-50% + '+(s*g)+'px)';ry=(-s*44)+'deg';
+      sc=Math.max(.45,1-a*.2);op=Math.max(0,1-a*.36);z=100-a*10}
+    c.style.transform='translateX('+tx+') translateY(-50%) rotateY('+ry+') scale('+sc+')';
+    c.style.opacity=op;c.style.zIndex=z;
+    c.classList.toggle('mid',d===0);c.classList.toggle('vis',a<=3);
+    /* Texture créée seulement à l'approche : 55 cuirs d'un coup figeraient tout */
+    if(a<=3 && !c.dataset.peint){
+      var m=L[i];
+      c.querySelector('.card__s').innerHTML=
+        '<svg viewBox="0 0 520 520" preserveAspectRatio="none"><rect width="520" height="520" fill="'+
+        motif(m.c,m.type)+'"/></svg>';
+      c.dataset.peint='1';
+    }
+  });
+  var m=L[idx];
+  $('matN').textContent=m?m.nom:'';
+  $('matD').textContent=m?(m.delta?'+ '+euros(m.delta):'Sans supplément'):'';
+  $('matC').textContent=m?((idx+1)+' / '+L.length):'';
+  if(m) $('mat').style.setProperty('--mat-bg',assombrir(m.c,.34));
+  $('matP').disabled=idx===0;$('matN2').disabled=idx>=L.length-1;
+}
+function ouvrirCuir(k,titre){
+  cible=k;$('matT').textContent=titre;
+  var d=S.cuirs[k];
+  if(d){var i=liste().findIndex(function(m){return m.id===d});if(i>=0)idx=i}
+  $('mat').classList.add('on');document.body.style.overflow='hidden';
+  cartes.forEach(function(c){delete c.dataset.peint});
+  batir();
+}
+function fermerCuir(){$('mat').classList.remove('on');document.body.style.overflow=''}
+$('matX').addEventListener('click',function(){ if(cible==='v'&&!S.cuirs.v){S.bi=false;rafraichirSide()} fermerCuir()});
+$('matP').addEventListener('click',function(){if(idx>0){idx--;rendre()}});
+$('matN2').addEventListener('click',function(){if(idx<liste().length-1){idx++;rendre()}});
+$('matK').addEventListener('click',function(){
+  var m=liste()[idx];if(!m)return;
+  S.cuirs[cible]=m.id; if(cible==='v')S.bi=true;
+  maj(); fermerCuir();
+});
+document.addEventListener('keydown',function(e){
+  if(!$('mat').classList.contains('on'))return;
+  if(e.key==='Escape')fermerCuir();
+  if(e.key==='ArrowLeft'&&idx>0){idx--;rendre()}
+  if(e.key==='ArrowRight'&&idx<liste().length-1){idx++;rendre()}
+});
+(function(){var x0=null;
+  function fin(x){if(x0===null)return;var d=x-x0;x0=null;if(Math.abs(d)<36)return;
+    if(d<0&&idx<liste().length-1)idx++;else if(d>0&&idx>0)idx--;rendre()}
   var f=$('flow');
   f.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
   f.addEventListener('touchend',function(e){fin(e.changedTouches[0].clientX)},{passive:true});
@@ -776,235 +877,87 @@ document.addEventListener('keydown',function(e){
   f.addEventListener('mouseleave',function(){x0=null});
 })();
 
-/* ═══ 4. Panneau d'option ═══ */
-var panSel=null;
-function ouvrirPanneau(el){
-  var E=ELEMENTS[el];
-  $('panTitle').innerHTML=E.titre; $('panSub').textContent=E.sub||'';
-  var box=$('panOpts'); box.innerHTML='';
-  panSel=S.choix[el]?S.choix[el].id:E.opts[0].id;
-  E.opts.forEach(function(o){
-    var b=document.createElement('button');
-    b.className='opt'+(o.id===panSel?' on':''); b.dataset.id=o.id;
-    b.innerHTML='<span class="opt__l"><span class="opt__dot"></span><span>'+
-      '<span class="opt__name">'+o.nom+'</span>'+
-      '<span class="opt__desc">'+o.desc+'</span></span></span>'+
-      '<span class="opt__price">'+(o.delta?'+ '+euros(o.delta):'Inclus')+'</span>';
-    b.addEventListener('click',function(){
-      panSel=o.id;
-      box.querySelectorAll('.opt').forEach(function(x){x.classList.toggle('on',x.dataset.id===o.id)});
-      $('panField').hidden = !(el==='gravure' && o.id!=='aucune');
+/* ═══ Navigation ═══ */
+function aller(n){
+  S.ecran=n;
+  [1,2,3].forEach(function(i){$('s'+i).classList.toggle('on',i===n)});
+  document.querySelectorAll('.rail i').forEach(function(t,j){t.classList.toggle('on',j<n)});
+  $('backL').textContent=n===1?'Retour':'Étape précédente';
+  $('next').textContent=n===3?'Envoyer à mon conseiller':'Continuer';
+  $('next').disabled=(n===1&&!S.mdl);
+  var m=$('mark'); m.classList.add('pulse'); setTimeout(function(){m.classList.remove('pulse')},700);
+  if(n===3)dessinerRecap();
+  window.scrollTo(0,0); animerMots();
+}
+$('next').addEventListener('click',function(){
+  if(S.ecran===3){envoyer();return}
+  aller(Math.min(3,S.ecran+1));
+});
+$('back').addEventListener('click',function(){if(S.ecran>1)aller(S.ecran-1)});
+
+/* ═══ Titres mot à mot ═══ */
+function animerMots(){
+  document.querySelectorAll('.scr.on [data-split]').forEach(function(el){
+    if(!el.dataset.done){
+      el.dataset.done='1';
+      var h=el.innerHTML.split(/(<em>.*?<\/em>)/g);
+      el.innerHTML=h.map(function(seg){
+        if(seg.startsWith('<em>'))return '<span class="wrd">'+seg+'</span>';
+        return seg.split(' ').filter(Boolean).map(function(w){
+          return '<span class="wrd">'+w+'</span>'}).join(' ');
+      }).join(' ');
+    }
+    el.querySelectorAll('.wrd').forEach(function(w,i){
+      w.classList.remove('in');
+      setTimeout(function(){w.classList.add('in')}, RM?0:90+i*52);
     });
-    box.appendChild(b);
   });
-  $('panField').hidden = !(el==='gravure' && panSel!=='aucune');
-  $('panInput').value = S.choix.gravure && S.choix.gravure.initiales || '';
-  $('panel').classList.add('on'); document.body.style.overflow='hidden';
 }
-$('panDone').addEventListener('click',function(){
-  var el=S.elCourant, E=ELEMENTS[el];
-  var o=E.opts.filter(function(x){return x.id===panSel})[0];
-  if(o){
-    var c={id:o.id,nom:o.nom,delta:o.delta};
-    if(el==='gravure'&&o.id!=='aucune'){
-      c.initiales=($('panInput').value||'').toUpperCase().slice(0,4);
-      if(c.initiales) c.nom=o.nom+' — '+c.initiales;
-    }
-    S.choix[el]=c; marquer(el,o.nom);
-  }
-  $('panel').classList.remove('on'); document.body.style.overflow='';
-  majPrix(); rendreSac();
-});
-$('panel').addEventListener('click',function(e){
-  if(e.target===$('panel')){ $('panel').classList.remove('on'); document.body.style.overflow=''; }
-});
 
-/* ═══ 5. Récapitulatif ═══ */
+/* ═══ Récapitulatif ═══ */
 function dessinerRecap(){
-  var r=$('recap'); r.innerHTML='';
-  if(!S.modele){ r.innerHTML='<p class="recap__note">Aucune silhouette retenue.</p>'; return; }
-  function ligne(k,v,sub,prix){
-    var d=document.createElement('div'); d.className='recap__row';
-    d.innerHTML='<span class="recap__k">'+k+'</span><span class="recap__v">'+v+
-      (sub?'<small>'+sub+'</small>':'')+'</span>';
+  var r=$('rec');r.innerHTML='';
+  if(!S.mdl){r.innerHTML='<p class="rec__n">Aucune silhouette retenue.</p>';return}
+  var lignes=[['Silhouette',S.mdl.nom,S.mdl.t+' · '+euros(S.mdl.base)]];
+  if(S.cuirs.ext){var c=cuirPar(S.cuirs.ext);lignes.push(['Cuir extérieur',c.nom,c.delta?'+ '+euros(c.delta):'sans supplément'])}
+  if(S.bi&&S.cuirs.v){var v=cuirPar(S.cuirs.v);lignes.push(['Bi-matière — le V',v.nom,'+ '+euros(380+v.delta)])}
+  if(S.cuirs.anse){var a=cuirPar(S.cuirs.anse);lignes.push(["Cuir de l'anse",a.nom,a.delta?'+ '+euros(a.delta):'sans supplément'])}
+  if(S.anse!==50)lignes.push(["Longueur d'anse",libAnse(),'+ '+euros(140)]);
+  if(S.cuirs.int){var i2=cuirPar(S.cuirs.int);lignes.push(['Cuir intérieur',i2.nom,i2.delta?'+ '+euros(i2.delta):'sans supplément'])}
+  var dd=DOUBLURES.filter(function(x){return x.id===S.opts.doublure})[0];
+  lignes.push(['Doublure',dd.n,dd.d?'+ '+euros(dd.d):'incluse']);
+  var ff=FERRURES.filter(function(x){return x.id===S.opts.ferrures})[0];
+  lignes.push(['Ferrures',ff.n,ff.d?'+ '+euros(ff.d):'incluses']);
+  if(S.pieds)lignes.push(['Pieds de protection','Cinq clous, laiton','+ '+euros(180)]);
+  if(S.bijou)lignes.push(['Bijou de sac',"Suspendu à l'anse",'+ '+euros(460)]);
+  if(S.grav) lignes.push(['Gravure',S.grav,'+ '+euros(180)]);
+
+  lignes.forEach(function(l,i){
+    var d=document.createElement('div');d.className='rec__r';
+    d.innerHTML='<span class="rec__k">'+l[0]+'</span><span class="rec__v">'+l[1]+
+      '<small>'+l[2]+'</small></span>';
     r.appendChild(d);
-  }
-  ligne('Silhouette',S.modele.nom,S.modele.type+' · '+euros(S.modele.base));
-  ['corps','anse','ferrures','doublure','gravure'].forEach(function(k){
-    var c=S.choix[k];
-    ligne(ELEMENTS[k].nom, c?c.nom:'Tel que dessiné',
-          c?(c.delta?'+ '+euros(c.delta):'Sans supplément'):'Choix de la maison');
+    setTimeout(function(){d.classList.add('in')}, RM?0:80+i*62);
   });
-  var t=document.createElement('div'); t.className='recap__total';
-  t.innerHTML='<span class="recap__total-k">Estimation</span>'+
-              '<span class="recap__total-v">'+euros(total())+'</span>';
+  var t=document.createElement('div');t.className='rec__tot';
+  t.innerHTML='<span class="rec__tk">Estimation</span><span class="rec__tv">'+euros(total())+'</span>';
   r.appendChild(t);
-  var n=document.createElement('p'); n.className='recap__note';
-  n.textContent='Ce montant est ferme pour la configuration ci-dessus. Un cuir exotique '+
-    'reste soumis à disponibilité en tannerie — votre conseiller le confirme avant tout engagement. '+
-    'Délai de façonnage estimé : 12 à 16 semaines.';
+  var n=document.createElement('p');n.className='rec__n';
+  n.textContent='Montant ferme pour cette configuration. Un cuir exotique reste soumis à '+
+    'disponibilité en tannerie — votre conseiller le confirme avant tout engagement. '+
+    'Façonnage : 12 à 16 semaines.';
   r.appendChild(n);
-  var c=document.createElement('button'); c.className='recap__cta';
-  c.textContent='Envoyer à mon conseiller'; c.addEventListener('click',demander);
-  r.appendChild(c);
+  var c2=document.createElement('button');c2.className='rec__c';
+  c2.textContent='Envoyer à mon conseiller';c2.addEventListener('click',envoyer);
+  r.appendChild(c2);
 }
-function demander(){
-  /* En production : POST vers le formulaire contact Shopify, puis Draft Order.
-     La spécification part telle quelle à l'atelier. */
-  var lignes=['Modèle : '+S.modele.nom+' ('+euros(S.modele.base)+')'];
-  ['corps','anse','ferrures','doublure','gravure'].forEach(function(k){
-    var c=S.choix[k];
-    lignes.push(ELEMENTS[k].nom+' : '+(c?c.nom+(c.delta?' (+'+euros(c.delta)+')':''):'tel que dessiné'));
-  });
-  lignes.push('Estimation : '+euros(total()));
-  alert('Spécification transmise\n\n'+lignes.join('\n')+
-        '\n\n— Démonstration : en production, cette spécification part au conseiller,\nqui établit le devis et le lien de paiement.');
+function envoyer(){
+  alert('Spécification transmise à votre conseiller.\n\n'+S.mdl.nom+' — '+euros(total())+
+    '\n\nDémonstration : en production, elle part au conseiller qui établit le devis '+
+    'et le lien de paiement.');
 }
 
-
-/* ═══════════════════════════════════════════════════════════
-   LE SAC EN VOLUME
-   Boîte 3D CSS dont chaque face porte un SVG rempli du cuir
-   retenu. Changer de matière repeint réellement la pièce.
-   ═══════════════════════════════════════════════════════════ */
-
-/* ═══ Motifs cuir — tuile unique, répétée ═══
-   feTurbulence coûte cher : appliqué à une surface plein écran il fige
-   le navigateur. On le calcule une fois sur une tuile de 140px, que
-   stitchTiles raccorde sans couture visible. */
-var NS='http://www.w3.org/2000/svg';
-var motifsFaits={};
-function motif(couleur,type){
-  var id='pat-'+type+'-'+couleur.replace('#','');
-  if(!motifsFaits[id]){
-    var defs=document.getElementById('pats');
-    var pat=document.createElementNS(NS,'pattern');
-    pat.setAttribute('id',id);
-    pat.setAttribute('width','140'); pat.setAttribute('height','140');
-    pat.setAttribute('patternUnits','userSpaceOnUse');
-    var r=document.createElementNS(NS,'rect');
-    r.setAttribute('width','140'); r.setAttribute('height','140');
-    r.setAttribute('fill',couleur); r.setAttribute('filter','url(#lth-'+type+')');
-    pat.appendChild(r); defs.appendChild(pat);
-    motifsFaits[id]=true;
-  }
-  return 'url(#'+id+')';
-}
-
-/* Chaque modèle a ses proportions : la boîte 3D et ses faces s'ajustent,
-   l'anse remonte ou s'efface selon la pièce (une pochette n'en a pas). */
-function poserSilhouette(m){
-  var box=document.getElementById('bagBox'); if(!box) return;
-  var w=m.w||300,h=m.h||320,d=m.d||92,dz=d/2;
-  box.style.width=w+'px'; box.style.height=h+'px';
-  var q=function(sel){return document.querySelector(sel)};
-  q('.bag__face--front').style.transform='translateZ('+dz+'px)';
-  q('.bag__face--back').style.transform='translateZ(-'+dz+'px) rotateY(180deg)';
-  var hw=w/2, hh=h/2;
-  ['l','r'].forEach(function(c){
-    var e=q('.bag__side--'+c);
-    e.style.width=d+'px'; e.style.height=h+'px';
-    /* demi-LARGEUR : c'est elle qui place le flanc au bord du volume */
-    e.style.transform='translateX(-50%) rotateY('+(c==='l'?'-':'')+'90deg) translateZ('+hw+'px)';
-  });
-  var base=q('.bag__base'), lin=q('.bag__lining');
-  base.style.width=w+'px'; base.style.height=d+'px';
-  base.style.transform='translateY(-50%) rotateX(-90deg) translateZ('+hh+'px)';
-  lin.style.width=w+'px'; lin.style.height=d+'px';
-  lin.style.transform='translateY(-50%) rotateX(90deg) translateZ('+hh+'px)';
-  [q('.bag__handle'),q('.bag__hw')].forEach(function(e,i){
-    e.style.width=w+'px';
-    e.style.transform='translateZ('+(i?dz+3:10)+'px)';
-  });
-  /* La pochette n'a pas d'anse */
-  var sansAnse = m.id==='rafael';
-  q('.bag__handle').style.display = sansAnse?'none':'';
-  var pinAnse=document.querySelector('.pin[data-el="anse"]');
-  if(pinAnse) pinAnse.style.display = sansAnse?'none':'';
-  if(sansAnse) delete S.choix.anse;
-}
-var METAUX={laiton:'metal',vieilli:'metal-vieilli',palladium:'metal-pall',or24:'metal-or24'};
-
-function peindre(part,couleur,type,assombrir){
-  document.querySelectorAll('[data-part="'+part+'"]').forEach(function(n){
-    var c=couleur;
-    if(assombrir){ /* les faces cachées prennent la même teinte, en retrait */
-      c=ombrer(couleur,.82);
-    }
-    if(n.tagName==='path'&&n.getAttribute('stroke')) n.setAttribute('stroke',c);
-    else n.setAttribute('fill',c);
-    n.setAttribute('filter','url(#lth-'+type+')');
-  });
-}
-function ombrer(hex,k){
-  var n=parseInt(hex.slice(1),16);
-  var r=Math.round(((n>>16)&255)*k),g=Math.round(((n>>8)&255)*k),b=Math.round((n&255)*k);
-  return '#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);
-}
-function rendreSac(){
-  /* Corps : face avant, dos, flancs, fond */
-  var m=S.choix.corps;
-  var mc=m?matiereById(m.id):null;
-  var col=mc?mc.c:'#6b4a32', typ=mc?mc.type:'graine';
-  document.querySelectorAll('[data-part="corps"]').forEach(function(n,i){
-    n.setAttribute('fill', motif(i===0?col:ombrer(col,.86), typ));
-    n.removeAttribute('filter');
-  });
-  /* Le V garde la même matière, une nuance en dessous */
-  var v=document.getElementById('pV');
-  if(v){ v.setAttribute('fill',motif(ombrer(col,.8),typ)); v.removeAttribute('filter'); }
-
-  /* Anse — matière propre si reprise, sinon celle du corps */
-  var a=S.choix.anse?matiereById(S.choix.anse.id):mc;
-  var an=document.getElementById('pAnse');
-  if(an){
-    an.setAttribute('stroke', motif(a?a.c:col, a?a.type:typ));
-    an.removeAttribute('filter');
-  }
-  /* Doublure */
-  var d=S.choix.doublure;
-  var dcol={agneau:'#c9bda8',chevreau:'#ddd2bc',soie:'#b9a68c'}[d?d.id:'agneau']||'#c9bda8';
-  document.querySelectorAll('[data-part="doublure"]').forEach(function(n){
-    n.setAttribute('fill',motif(dcol,'lisse')); n.removeAttribute('filter');
-  });
-  /* Ferrures */
-  var g='url(#'+(METAUX[S.choix.ferrures?S.choix.ferrures.id:'laiton']||'metal')+')';
-  ['hwL','hwR'].forEach(function(id){var n=document.getElementById(id);if(n)n.setAttribute('fill',g)});
-  var hv=document.getElementById('hwV'); if(hv) hv.setAttribute('stroke',g);
-  /* Gravure */
-  var gr=S.choix.gravure, e=document.getElementById('engrave');
-  if(e){
-    var txt=gr&&gr.id!=='aucune'&&gr.initiales?gr.initiales:'';
-    e.hidden=!txt; document.getElementById('engraveTxt').textContent=txt;
-  }
-}
-function matiereById(id){ return MATIERES.filter(function(m){return m.id===id})[0]||null; }
-
-/* ── Rotation ── */
-(function(){
-  var box=document.getElementById('bagBox'), zone=document.getElementById('bag');
-  if(!box||!zone) return;
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var ry=-22, x0=null, ry0=0, bouge=false;
-  function pose(){ box.style.transform='rotateX(-6deg) rotateY('+ry+'deg)'; }
-  function debut(x){ x0=x; ry0=ry; box.classList.remove('settle'); }
-  function pendant(x){
-    if(x0===null) return;
-    ry=Math.max(-62,Math.min(62, ry0+(x-x0)*0.42));
-    pose();
-    if(!bouge){ bouge=true; var h=document.getElementById('hint'); if(h) h.classList.add('off'); }
-  }
-  function fin(){ if(x0===null) return; x0=null; box.classList.add('settle'); }
-  zone.addEventListener('mousedown',function(e){e.preventDefault();debut(e.clientX)});
-  window.addEventListener('mousemove',function(e){pendant(e.clientX)});
-  window.addEventListener('mouseup',fin);
-  zone.addEventListener('touchstart',function(e){debut(e.touches[0].clientX)},{passive:true});
-  zone.addEventListener('touchmove',function(e){pendant(e.touches[0].clientX)},{passive:true});
-  zone.addEventListener('touchend',fin,{passive:true});
-  window.tiraPoseSac=pose;
-})();
-
-majPrix(); rendreSac();
+ambiance(null); majPrix(); animerMots();
 })();
 </script>
 </body>
