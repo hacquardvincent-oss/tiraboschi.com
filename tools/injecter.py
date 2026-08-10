@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Réinjecte les tuiles tools/cuirs/*.png dans le bloc TX du prototype."""
 import base64, re
-noms=['graine','caviar','lisse','daim','galuchat','python','alligator']
+noms=['graine','caviar','lisse','daim','galuchat','alligator']
 bloc="var TX={\n"+",\n".join(
   "  %s:'data:image/png;base64,%s'"%(n,base64.b64encode(open('tools/cuirs/%s.png'%n,'rb').read()).decode())
   for n in noms)+"\n};\n"

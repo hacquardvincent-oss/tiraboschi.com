@@ -161,60 +161,60 @@ v = flou(0.38 * v + 0.24 * fibres + 0.38 * nappe, 0.9)
 v = 0.5 + (v - 0.5) * 0.80
 sortir(v, 'daim', lo=.40, hi=.66, renorm=False)
 
-# ═══ GALUCHAT — perles denses, nacrées ═══
-pts = semis(42, 51, jitter=.7)
+# ═══ GALUCHAT — perles rondes serrées, quelques perles « œil » plus larges,
+#     dessus légèrement poli (référence : galuchat rouge et gris du client) ═══
+rng = random.Random(51)
+pts = semis(44, 51, jitter=.6)
+ray = [0.0128 * (0.84 + 0.32 * rng.random()) for _ in pts]
+for _ in range(12):                       # les perles « œil », deux fois plus larges
+    pts.append((rng.random(), rng.random()))
+    ray.append(0.021 * (0.9 + 0.2 * rng.random()))
 f1, f2, id1 = worley(pts)
-r = 0.0160
-perle = np.sqrt(np.clip(1 - (f1 / r) ** 2, 0, 1))
-taille = (0.70 + 0.30 * np.random.default_rng(52).random(len(pts)))[id1]
-h = perle * taille + 0.04 * fbm((N, N), 3, 32, 53)
+r_id = np.asarray(ray)[id1]
+dome = np.sqrt(np.clip(1 - (f1 / r_id) ** 2, 0, 1))
+dome = np.minimum(dome, 0.88) / 0.88      # dessus adouci : galuchat poncé
+h = dome + 0.03 * fbm((N, N), 3, 40, 53)
 h = flou(h, 0.55)
-v = eclairer(h, force=.030, kd=.80, ks=.65, brillance=20, ao=.62, r_ao=2.4)
-sortir(v, 'galuchat', lo=.22, hi=.90)
+v = eclairer(h, force=.030, kd=.72, ks=.75, brillance=24, ao=.70, r_ao=2.6)
+sortir(v, 'galuchat', lo=.18, hi=.94)
 
-# ═══ PYTHON — rangs d'écailles imbriquées, livrée sombre ═══
-rng = random.Random(61)
-pts = []
-RANGS, PAR = 22, 34
-for gy in range(RANGS):
-    off = rng.random()
-    for gx in range(PAR):
-        pts.append((((gx + off + rng.uniform(-.30, .30)) % PAR) / PAR,
-                    ((gy + rng.uniform(-.14, .14)) % RANGS) / RANGS))
-f1, f2, id1 = worley(pts, aniso=.72)     # écailles plus larges que hautes
-bord = sstep(0.0, 0.007, f2 - f1)
-dome = np.sqrt(np.clip(1 - (f1 / 0.030) ** 2, 0, 1))
-alea = (0.72 + 0.28 * np.random.default_rng(62).random(len(pts)))[id1]
-h = (0.55 * bord + 0.45 * dome) * alea
-livree = sstep(.38, .62, flou(fbm((N, N), 2, 5, 71), 3.0))
-h = h * (0.70 + 0.30 * livree) + 0.04 * fbm((N, N), 3, 48, 72)
-h = flou(h, 0.7)
-v = eclairer(h, force=.026, kd=.72, ks=.45, brillance=26, ao=.62, r_ao=2.4)
-v = norm(v) - 0.20 * (1 - livree)
-sortir(v, 'python', lo=.15, hi=.92, renorm=False)
-
-# ═══ ALLIGATOR — grandes écailles bombées, sillons profonds, glacé ═══
+# ═══ ALLIGATOR — ventre : grands rectangles arrondis en rangs réguliers,
+#     coutures fines et froncées, grain de cuir DANS chaque écaille
+#     (référence : alligator vert, cognac et Himalaya du client) ═══
+R = 5
 rng = random.Random(81)
-pts = []
-RANGS, PAR = 9, 10
-for gy in range(RANGS):
-    off = rng.random()
-    for gx in range(PAR):
-        pts.append((((gx + off + rng.uniform(-.26, .26)) % PAR) / PAR,
-                    ((gy + rng.uniform(-.18, .18)) % RANGS) / RANGS))
-f1, f2, id1 = worley(pts)
-bord = sstep(0.0, 0.018, f2 - f1)
-dome = np.sqrt(np.clip(1 - (f1 / 0.062) ** 2, 0, 1))
-alea = (0.78 + 0.22 * np.random.default_rng(82).random(len(pts)))[id1]
-h = (0.52 * bord + 0.48 * dome) * alea
-h = h + 0.05 * fbm((N, N), 4, 40, 91)    # grain fin DANS l'écaille
-h = flou(h, 0.9)
-v = eclairer(h, force=.030, kd=.74, ks=.55, brillance=34, ao=.68, r_ao=3.2)
-sortir(v, 'alligator', lo=.14, hi=.94)
+offs = [rng.random() for _ in range(R)]
+cols = [rng.choice([4, 5, 6]) for _ in range(R)]   # rangs inégaux, comme la bête
+ys, xs = np.mgrid[0:N, 0:N] / N
+# gauchir les coordonnées : les rangs réels ne sont jamais tirés au cordeau
+wx = fbm((N, N), 2, 3, 83); wy = fbm((N, N), 2, 3, 84)
+# demi-rang de décalage : sinon la frontière de rang (le sillon) tombe
+# exactement sur le bord de la tuile et le contrôle de raccord la mesure
+u = xs + 0.030 * (wx - .5); w = ys + 0.5 / R + 0.022 * (wy - .5)
+ri = np.floor((w % 1) * R).astype(int) % R
+ly = ((w % 1) * R) % 1
+off = np.asarray(offs)[ri]
+Cr = np.asarray(cols)[ri]
+lx = ((u + off + 0.5 / Cr) * Cr) % 1
+ci = np.floor(((u + off + 0.5 / Cr) * Cr)).astype(int) % Cr   # replié au bord
+# superellipse : un rectangle aux angles ronds, bombé, presque plat au centre
+d = ((np.abs(lx - .5) / .5) ** 5 + (np.abs(ly - .5) / .5) ** 5) ** (1 / 5.0)
+dome = np.clip(1 - d, 0, 1) ** 0.32
+alea = (0.86 + 0.14 * np.random.default_rng(85).random(4096))[(ri * 97 + ci * 31) % 4096]
+h = dome * alea
+# la couture : un froncé de petits plis serrés le long du bord, pas un fossé
+bord = sstep(0.80, 0.99, d)
+fronce = bord * (1 - bord) * 4 * (0.5 + 0.5 * fbm((N, N), 1, 96, 86))
+h = h + 0.22 * fronce - 0.30 * sstep(0.93, 1.0, d)
+# le grain du cuir DANS l'écaille — c'est lui qui fait « vrai »
+h = h + 0.045 * fbm((N, N), 4, 26, 91) + 0.02 * fbm((N, N), 2, 90, 92)
+h = flou(h, 0.8)
+v = eclairer(h, force=.020, kd=.80, ks=.45, brillance=30, ao=.55, r_ao=3.0)
+sortir(v, 'alligator', lo=.16, hi=.90)
 
 # ═══ Vérification : la tuile boucle-t-elle vraiment ? ═══
 print()
-for n in ['graine', 'caviar', 'lisse', 'daim', 'galuchat', 'python', 'alligator']:
+for n in ['graine', 'caviar', 'lisse', 'daim', 'galuchat', 'alligator']:
     a = np.asarray(Image.open('tools/cuirs/%s.png' % n), dtype=float)
     for axe, nom in ((1, 'vertical'), (0, 'horizontal')):
         d_int = np.abs(np.diff(a, axis=axe)).mean()

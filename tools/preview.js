@@ -4,7 +4,7 @@ const dir = path.resolve(__dirname, 'cuirs');
 const t = {}; for (const f of fs.readdirSync(dir)) if (f.endsWith('.png'))
   t[f.replace('.png','')] = 'data:image/png;base64,' + fs.readFileSync(path.join(dir,f)).toString('base64');
 const cas0=[];
-const types=['graine','caviar','lisse','daim','galuchat','python','alligator'];
+const types=['graine','caviar','lisse','daim','galuchat','alligator'];
 const cols=[['#161616','Noir'],['#8f5424','Cognac'],['#243352','Marine'],['#efe9dd','Craie']];
 for(const t of types)for(const [c,n] of cols)cas0.push([t,c,n]);
 const cas=cas0;
