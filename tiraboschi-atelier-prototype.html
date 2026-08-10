@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TIRABOSCHI — L'Atelier</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   TIRABOSCHI — L'Atelier
+   Trois principes :
+   1. Aucun scroll. Chaque moment tient dans l'écran, entier.
+   2. Aucune liste d'options. On agit SUR la pièce, en plein cadre.
+   3. Un choix = une plongée plein écran dans la matière.
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+  --noir:#0a0a0a;--blanc:#fff;--ecru:#efeae3;
+  --e:cubic-bezier(.16,1,.3,1);
+  --amb:#0a0a0a;--txt:#fff;
+}
+*{margin:0;padding:0;box-sizing:border-box;border-radius:0!important}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:'Playfair Display',Georgia,serif;background:var(--amb);color:var(--txt);
+  transition:background 1.3s var(--e);-webkit-font-smoothing:antialiased;
+}
+button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer}
+img{display:block;width:100%;height:100%;object-fit:cover}
+
+/* ═══ Scènes ═══ */
+.sc{position:fixed;inset:0;opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .9s var(--e),visibility .9s}
+.sc.on{opacity:1;visibility:visible;pointer-events:auto}
+
+/* ── Cadre commun ── */
+.hud{position:fixed;inset:0;z-index:60;pointer-events:none}
+.hud>*{pointer-events:auto}
+.hud__mark{position:absolute;top:30px;left:50%;transform:translateX(-50%);
+  font-size:11px;letter-spacing:.42em;text-transform:uppercase;opacity:.7;
+  transition:letter-spacing 1.1s var(--e),opacity .6s}
+.hud__mark.br{letter-spacing:.62em;opacity:.35}
+.hud__back{position:absolute;top:26px;left:clamp(18px,3vw,40px);
+  font-size:10px;letter-spacing:.2em;text-transform:uppercase;opacity:.5;
+  display:flex;align-items:center;gap:9px;transition:opacity .3s,gap .4s var(--e)}
+.hud__back:hover{opacity:1;gap:15px}
+.hud__back svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.4}
+.hud__idx{position:absolute;top:30px;right:clamp(18px,3vw,40px);
+  font-size:10px;letter-spacing:.24em;opacity:.4}
+
+/* ═══ 1 · LES SILHOUETTES — défilé cinématographique ═══ */
+.sil{position:absolute;inset:0}
+.sil__f{position:absolute;inset:0;opacity:0;transform:scale(1.08);
+  /* invisible ET intangible : sinon la dernière vue recouvre les autres
+     et intercepte les clics du bouton visible */
+  pointer-events:none;
+  transition:opacity 1.2s var(--e),transform 2.4s var(--e)}
+.sil__f.on{opacity:1;transform:scale(1);pointer-events:auto}
+.sil__f::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(10,10,10,.86) 0%,rgba(10,10,10,.35) 46%,rgba(10,10,10,.72) 100%)}
+.sil__txt{position:absolute;left:clamp(20px,7vw,110px);top:50%;transform:translateY(-50%);
+  z-index:5;max-width:min(560px,60vw)}
+.sil__n{font-size:clamp(46px,8.4vw,124px);line-height:.86;letter-spacing:-.035em;
+  margin-bottom:22px}
+.sil__n em{font-style:italic;display:block}
+.sil__t{font-size:10px;letter-spacing:.3em;text-transform:uppercase;opacity:.5;margin-bottom:26px}
+.sil__d{font-size:14px;line-height:1.8;opacity:.62;max-width:40ch;margin-bottom:34px}
+.sil__p{font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.45;margin-bottom:36px}
+.lig{display:inline-block;opacity:0;transform:translateY(24px);
+  transition:opacity .9s var(--e),transform 1.1s var(--e)}
+.lig.in{opacity:1;transform:none}
+.btn{display:inline-flex;align-items:center;gap:14px;
+  border:1px solid rgba(255,255,255,.45);padding:16px 34px;
+  font-size:10px;letter-spacing:.24em;text-transform:uppercase;
+  transition:background .35s,border-color .35s,gap .45s var(--e)}
+.btn:hover{background:rgba(255,255,255,.1);border-color:#fff;gap:22px}
+.btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.3}
+
+.sil__nav{position:absolute;bottom:clamp(24px,5vh,54px);left:50%;transform:translateX(-50%);
+  z-index:6;display:flex;gap:20px;align-items:center}
+.dot{width:32px;height:1px;background:#fff;opacity:.2;transition:opacity .5s,transform .5s var(--e)}
+.dot.on{opacity:.95;transform:scaleY(2.4)}
+.arw{position:absolute;top:50%;transform:translateY(-50%);z-index:7;
+  width:52px;height:52px;display:flex;align-items:center;justify-content:center;
+  opacity:.35;transition:opacity .3s,transform .4s var(--e)}
+.arw:hover{opacity:1}
+.arw--p{left:clamp(6px,1.6vw,22px)}.arw--p:hover{transform:translateY(-50%) translateX(-5px)}
+.arw--n{right:clamp(6px,1.6vw,22px)}.arw--n:hover{transform:translateY(-50%) translateX(5px)}
+.arw svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1}
+@media(max-width:760px){
+  .sil__txt{left:20px;right:20px;max-width:none;top:auto;bottom:120px;transform:none}
+  .sil__f::after{background:linear-gradient(0deg,rgba(10,10,10,.9) 0%,rgba(10,10,10,.3) 60%)}
+  .arw{display:none}
+}
+
+/* ═══ 2 · L'ATELIER — la pièce en plein cadre ═══ */
+.atl__ph{position:absolute;inset:0}
+.atl__ph img{transition:transform 5s var(--e),filter 1.1s var(--e)}
+.atl.zoom .atl__ph img{transform:scale(1.14)}
+.atl__ph::after{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 44%,transparent 22%,rgba(10,10,10,.62) 78%)}
+
+/* Repères posés sur la photo */
+.rep{position:absolute;z-index:8;display:flex;align-items:center;gap:0;
+  transform:translate(-50%,-50%)}
+.rep__o{width:26px;height:26px;border:1px solid rgba(255,255,255,.5);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:background .35s,border-color .35s,transform .45s var(--e)}
+.rep__o::after{content:'';width:4px;height:4px;background:#fff;opacity:.8}
+.rep:hover .rep__o{background:rgba(255,255,255,.16);border-color:#fff;transform:scale(1.18)}
+.rep.set .rep__o{background:#fff}
+.rep.set .rep__o::after{background:var(--noir);opacity:1}
+.rep__l{white-space:nowrap;overflow:hidden;max-width:0;opacity:0;
+  font-size:9px;letter-spacing:.2em;text-transform:uppercase;
+  transition:max-width .55s var(--e),opacity .4s,padding .55s var(--e)}
+.rep:hover .rep__l{max-width:210px;opacity:.95;padding-left:13px}
+.rep__pulse{position:absolute;left:13px;top:13px;width:26px;height:26px;
+  transform:translate(-50%,-50%);border:1px solid #fff;opacity:0;pointer-events:none}
+.rep:not(.set) .rep__pulse{animation:onde 3.4s var(--e) infinite}
+@keyframes onde{0%{opacity:.5;transform:translate(-50%,-50%) scale(1)}
+  70%{opacity:0;transform:translate(-50%,-50%) scale(2.5)}100%{opacity:0}}
+
+/* Le ruban : tous les ajustements sur UNE ligne, toujours visible */
+.rub{position:absolute;left:0;right:0;bottom:0;z-index:20;
+  background:linear-gradient(0deg,rgba(10,10,10,.92) 40%,transparent);
+  padding:44px clamp(14px,3vw,34px) clamp(16px,3vh,26px)}
+.rub__in{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;
+  scroll-snap-type:x mandatory}
+.rub__in::-webkit-scrollbar{display:none}
+.aj{flex:0 0 auto;scroll-snap-align:center;min-width:132px;
+  padding:13px 17px;text-align:left;border:1px solid rgba(255,255,255,.13);
+  transition:border-color .35s,background .35s,transform .4s var(--e)}
+.aj:hover{border-color:rgba(255,255,255,.55);background:rgba(255,255,255,.05);transform:translateY(-3px)}
+.aj.set{border-color:rgba(255,255,255,.45)}
+.aj__n{font-size:9px;letter-spacing:.18em;text-transform:uppercase;opacity:.45;display:block}
+.aj__v{font-size:12px;font-style:italic;margin-top:6px;display:block;opacity:.55;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}
+.aj.set .aj__v{opacity:1;font-style:normal}
+.aj__p{font-size:9px;letter-spacing:.14em;opacity:.3;margin-top:5px;display:block}
+
+.tot{position:absolute;right:clamp(18px,3vw,40px);top:50%;transform:translateY(-50%);
+  z-index:20;text-align:right}
+.tot__l{font-size:9px;letter-spacing:.24em;text-transform:uppercase;opacity:.4}
+.tot__v{font-size:clamp(26px,3vw,40px);margin-top:8px;display:flex;justify-content:flex-end}
+.tot__v span{display:inline-block;white-space:pre}
+.tot__v span.r{animation:chif .55s var(--e)}
+@keyframes chif{0%{transform:translateY(-80%);opacity:0}100%{transform:none;opacity:1}}
+.tot__go{margin-top:20px;font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+  opacity:.55;position:relative;padding-bottom:8px}
+.tot__go::after{content:'';position:absolute;left:0;bottom:0;width:100%;height:1px;
+  background:currentColor;opacity:.5;transform:scaleX(1);transform-origin:right;
+  transition:transform .45s var(--e)}
+.tot__go:hover{opacity:1}.tot__go:hover::after{transform:scaleX(0)}
+@media(max-width:900px){
+  .tot{top:auto;bottom:calc(100% - 100vh + 190px);right:auto;left:clamp(14px,3vw,34px);
+    transform:none;text-align:left}
+  .aj{min-width:118px}
+}
+
+/* ═══ 3 · LA PLONGÉE — la matière prend l'écran ═══ */
+.plg{position:fixed;inset:0;z-index:90;opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .7s var(--e),visibility .7s}
+.plg.on{opacity:1;visibility:visible;pointer-events:auto}
+.plg__bg{position:absolute;inset:0;transition:background 1.1s var(--e)}
+.plg__stage{position:absolute;inset:0;overflow:hidden}
+.plg__sw{position:absolute;top:50%;left:50%;width:min(78vw,1100px);height:min(66svh,700px);
+  transform:translate(-50%,-50%);opacity:0;
+  transition:transform .75s var(--e),opacity .6s var(--e)}
+.plg__sw svg{width:100%;height:100%;display:block}
+.plg__sw.mid{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.plg__sw.l{opacity:.18;transform:translate(-160%,-50%) scale(.7) rotateY(34deg)}
+.plg__sw.r{opacity:.18;transform:translate(60%,-50%) scale(.7) rotateY(-34deg)}
+.plg__hd{position:absolute;top:26px;left:0;right:0;z-index:5;
+  display:flex;justify-content:space-between;padding:0 clamp(18px,3vw,40px)}
+.plg__t{font-size:11px;letter-spacing:.28em;text-transform:uppercase;opacity:.6}
+.plg__x{font-size:10px;letter-spacing:.2em;text-transform:uppercase;opacity:.5}
+.plg__x:hover{opacity:1}
+.plg__fam{position:absolute;top:70px;left:0;right:0;z-index:5;
+  display:flex;gap:20px;justify-content:center;flex-wrap:wrap;padding:0 18px}
+.fm{font-size:9px;letter-spacing:.22em;text-transform:uppercase;opacity:.3;
+  padding-bottom:6px;position:relative;transition:opacity .3s}
+.fm::after{content:'';position:absolute;left:0;bottom:0;width:100%;height:1px;background:currentColor;
+  transform:scaleX(0);transform-origin:left;transition:transform .45s var(--e)}
+.fm.on{opacity:1}.fm.on::after{transform:scaleX(1)}
+.plg__cap{position:absolute;left:0;right:0;bottom:clamp(22px,5vh,48px);z-index:5;text-align:center}
+.plg__n{font-size:clamp(28px,4.4vw,58px);letter-spacing:-.02em;min-height:1.1em}
+.plg__d{font-size:10px;letter-spacing:.24em;text-transform:uppercase;opacity:.5;margin-top:12px}
+.plg__c{font-size:9px;letter-spacing:.26em;opacity:.28;margin-top:16px}
+.plg__ok{margin-top:22px;border:1px solid rgba(255,255,255,.5);padding:14px 40px;
+  font-size:10px;letter-spacing:.22em;text-transform:uppercase;
+  transition:background .3s,letter-spacing .45s var(--e)}
+.plg__ok:hover{background:rgba(255,255,255,.12);letter-spacing:.3em}
+.plg__a{position:absolute;top:50%;transform:translateY(-50%);z-index:6;
+  width:46px;height:46px;display:flex;align-items:center;justify-content:center;opacity:.4}
+.plg__a:hover{opacity:1}.plg__a:disabled{opacity:.1}
+.plg__a svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1}
+.plg__a--p{left:clamp(6px,1.6vw,24px)}.plg__a--n{right:clamp(6px,1.6vw,24px)}
+
+/* Plongée « choix simple » — mêmes codes, sans matière */
+.plg__opts{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  z-index:5;width:min(520px,88vw)}
+.op{display:flex;justify-content:space-between;align-items:center;gap:18px;width:100%;
+  padding:20px 0;border-bottom:1px solid rgba(255,255,255,.13);text-align:left;
+  transition:padding-left .4s var(--e),opacity .3s}
+.op:first-child{border-top:1px solid rgba(255,255,255,.13)}
+.op:hover{padding-left:12px}
+.op__n{font-size:17px}
+.op__d{font-size:11px;opacity:.42;margin-top:4px}
+.op__p{font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.4;white-space:nowrap}
+.op.on .op__n::before{content:'— ';opacity:.6}
+.op.on{opacity:1}
+.plg__champ{width:100%;background:none;border:none;
+  border-bottom:1px solid rgba(255,255,255,.3);color:#fff;
+  font-family:inherit;font-size:32px;letter-spacing:.34em;text-align:center;
+  padding:14px 0;outline:none;text-transform:uppercase}
+.plg__champ::placeholder{opacity:.2}
+.plg__rng{width:100%;-webkit-appearance:none;height:1px;background:rgba(255,255,255,.25);margin:34px 0 0}
+.plg__rng::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;background:#fff;cursor:grab}
+.plg__rng::-moz-range-thumb{width:15px;height:15px;border:none;background:#fff}
+
+/* ═══ 4 · LE CERTIFICAT — un seul écran ═══ */
+.cert{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  padding:clamp(70px,10vh,110px) clamp(18px,4vw,44px) clamp(24px,5vh,50px)}
+.cert__in{width:min(880px,100%);max-height:100%;display:flex;flex-direction:column}
+.cert__h{text-align:center;margin-bottom:clamp(18px,3vh,32px);flex-shrink:0}
+.cert__k{font-size:9px;letter-spacing:.34em;text-transform:uppercase;opacity:.4;margin-bottom:12px}
+.cert__t{font-size:clamp(26px,4vw,48px);letter-spacing:-.025em}
+.cert__t em{font-style:italic}
+.cert__g{display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(24px,4vw,54px);
+  border-top:1px solid rgba(255,255,255,.16);overflow-y:auto;scrollbar-width:none;flex:1;min-height:0}
+.cert__g::-webkit-scrollbar{display:none}
+.cl{display:flex;justify-content:space-between;gap:12px;padding:11px 0;
+  border-bottom:1px solid rgba(255,255,255,.09);opacity:0;transform:translateY(8px);
+  transition:opacity .6s var(--e),transform .7s var(--e)}
+.cl.in{opacity:1;transform:none}
+.cl__k{font-size:9px;letter-spacing:.16em;text-transform:uppercase;opacity:.4;flex-shrink:0}
+.cl__v{font-size:13px;text-align:right}
+.cl__v small{display:block;font-size:10px;opacity:.4;margin-top:2px;font-style:italic}
+.cert__f{flex-shrink:0;margin-top:clamp(14px,2.5vh,26px);
+  display:flex;justify-content:space-between;align-items:flex-end;gap:22px;flex-wrap:wrap}
+.cert__tot{font-size:clamp(28px,3.6vw,46px);letter-spacing:-.02em}
+.cert__tl{font-size:9px;letter-spacing:.26em;text-transform:uppercase;opacity:.4;margin-bottom:7px}
+.cert__note{font-size:10px;line-height:1.7;opacity:.35;max-width:38ch;margin-top:14px;flex-basis:100%}
+@media(max-width:760px){.cert__g{grid-template-columns:1fr}}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  .lig,.cl{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs id="pats">
+  <filter id="lth-graine" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" stitchTiles="stitch" baseFrequency="0.62" numOctaves="4" seed="7" result="n"/>
+    <feDiffuseLighting in="n" lighting-color="#fff" surfaceScale="1.5" diffuseConstant="1.15" result="d">
+      <feDistantLight azimuth="128" elevation="60"/></feDiffuseLighting>
+    <feComposite in="d" in2="SourceGraphic" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="t"/>
+    <feSpecularLighting in="n" lighting-color="#fff" surfaceScale="1.5"
+      specularConstant="0.16" specularExponent="12" result="s">
+      <feDistantLight azimuth="128" elevation="60"/></feSpecularLighting>
+    <feComposite in="s" in2="t" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="l"/>
+    <feComposite in="l" in2="SourceGraphic" operator="in"/>
+  </filter>
+  <filter id="lth-lisse" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" stitchTiles="stitch" baseFrequency="0.32" numOctaves="2" seed="3" result="n"/>
+    <feDiffuseLighting in="n" lighting-color="#fff" surfaceScale="0.1" diffuseConstant="1.02" result="d">
+      <feDistantLight azimuth="118" elevation="74"/></feDiffuseLighting>
+    <feComposite in="d" in2="SourceGraphic" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="t"/>
+    <feSpecularLighting in="n" lighting-color="#fff" surfaceScale="0.1"
+      specularConstant="0.34" specularExponent="55" result="s">
+      <feDistantLight azimuth="118" elevation="74"/></feSpecularLighting>
+    <feComposite in="s" in2="t" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="l"/>
+    <feComposite in="l" in2="SourceGraphic" operator="in"/>
+  </filter>
+  <filter id="lth-daim" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" stitchTiles="stitch" baseFrequency="1.7" numOctaves="5" seed="11" result="n"/>
+    <feDiffuseLighting in="n" lighting-color="#fff" surfaceScale="0.75" diffuseConstant="1.1" result="d">
+      <feDistantLight azimuth="140" elevation="48"/></feDiffuseLighting>
+    <feComposite in="d" in2="SourceGraphic" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="t"/>
+    <feSpecularLighting in="n" lighting-color="#fff" surfaceScale="0.75"
+      specularConstant="0.04" specularExponent="5" result="s">
+      <feDistantLight azimuth="140" elevation="48"/></feSpecularLighting>
+    <feComposite in="s" in2="t" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="l"/>
+    <feComposite in="l" in2="SourceGraphic" operator="in"/>
+  </filter>
+  <filter id="lth-exotique" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" stitchTiles="stitch" baseFrequency="0.10 0.30" numOctaves="3" seed="5" result="n"/>
+    <feDiffuseLighting in="n" lighting-color="#fff" surfaceScale="1.9" diffuseConstant="1.12" result="d">
+      <feDistantLight azimuth="120" elevation="54"/></feDiffuseLighting>
+    <feComposite in="d" in2="SourceGraphic" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="t"/>
+    <feSpecularLighting in="n" lighting-color="#fff" surfaceScale="1.9"
+      specularConstant="0.22" specularExponent="18" result="s">
+      <feDistantLight azimuth="120" elevation="54"/></feSpecularLighting>
+    <feComposite in="s" in2="t" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="l"/>
+    <feComposite in="l" in2="SourceGraphic" operator="in"/>
+  </filter>
+</defs></svg>
+
+<div class="hud">
+  <button class="hud__back" id="back" hidden>
+    <svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg><span id="backL">Retour</span>
+  </button>
+  <span class="hud__mark" id="mark">Tiraboschi</span>
+  <span class="hud__idx" id="idx"></span>
+</div>
+
+<!-- ═══ 1 · LES SILHOUETTES ═══ -->
+<section class="sc on" id="s1">
+  <div class="sil" id="sil"></div>
+  <button class="arw arw--p" id="silP" aria-label="Précédente"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg></button>
+  <button class="arw arw--n" id="silN" aria-label="Suivante"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></button>
+  <div class="sil__nav" id="silNav"></div>
+</section>
+
+<!-- ═══ 2 · L'ATELIER ═══ -->
+<section class="sc atl" id="s2">
+  <div class="atl__ph"><img id="atlPh" src="" alt=""></div>
+  <div id="reps"></div>
+  <div class="tot">
+    <p class="tot__l">Estimation</p>
+    <p class="tot__v" id="tot">—</p>
+    <button class="tot__go" id="toCert">Voir la pièce achevée</button>
+  </div>
+  <div class="rub"><div class="rub__in" id="rub"></div></div>
+</section>
+
+<!-- ═══ 3 · LE CERTIFICAT ═══ -->
+<section class="sc" id="s3">
+  <div class="cert"><div class="cert__in">
+    <div class="cert__h">
+      <p class="cert__k">Pièce unique · Atelier Tiraboschi</p>
+      <h1 class="cert__t" id="certT">Votre <em>Victoire</em></h1>
+    </div>
+    <div class="cert__g" id="certG"></div>
+    <div class="cert__f">
+      <div><p class="cert__tl">Estimation ferme</p><p class="cert__tot" id="certTot"></p></div>
+      <button class="btn" id="envoyer">Confier à mon conseiller
+        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg></button>
+      <p class="cert__note">Un cuir exotique reste soumis à disponibilité en tannerie.
+        Façonnage : 12 à 16 semaines. Rien n'est engagé à ce stade.</p>
+    </div>
+  </div></div>
+</section>
+
+<!-- ═══ LA PLONGÉE ═══ -->
+<div class="plg" id="plg" role="dialog" aria-modal="true">
+  <div class="plg__bg" id="plgBg"></div>
+  <div class="plg__stage" id="plgStage"></div>
+  <div class="plg__opts" id="plgOpts" hidden></div>
+  <div class="plg__hd">
+    <span class="plg__t" id="plgT"></span>
+    <button class="plg__x" id="plgX">Fermer</button>
+  </div>
+  <div class="plg__fam" id="plgFam"></div>
+  <button class="plg__a plg__a--p" id="plgP" aria-label="Précédent"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg></button>
+  <button class="plg__a plg__a--n" id="plgN" aria-label="Suivant"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></button>
+  <div class="plg__cap">
+    <p class="plg__n" id="plgNom"></p>
+    <p class="plg__d" id="plgD"></p>
+    <p class="plg__c" id="plgC"></p>
+    <button class="plg__ok" id="plgOk">Retenir</button>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+var RM=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var $=function(i){return document.getElementById(i)};
+var NS='http://www.w3.org/2000/svg';
+var CDN='https://cdn.shopify.com/s/files/1/0927/5890/1079/files/';
+
+var MATIERES=[
+  {id:'galuchat-perle',nom:'Galuchat Perle',type:'exotique',c:'#b9b7ae',delta:3100},
+  {id:'gris-tourterelle',nom:'Gris Tourterelle',type:'daim',c:'#b3b0a8',delta:240},
+  {id:'gris-perle',nom:'Gris Perle',type:'lisse',c:'#9a9da2',delta:320},
+  {id:'galuchat-ardoise',nom:'Galuchat Ardoise',type:'exotique',c:'#6e7276',delta:3100},
+  {id:'etain',nom:'Étain',type:'daim',c:'#6b6e73',delta:240},
+  {id:'graphite',nom:'Graphite',type:'lisse',c:'#4a4d52',delta:320},
+  {id:'ardoise',nom:'Ardoise',type:'daim',c:'#3a3d42',delta:240},
+  {id:'python-nuit',nom:'Python Nuit',type:'exotique',c:'#3a3a42',delta:2600},
+  {id:'anthracite',nom:'Anthracite',type:'graine',c:'#2b2b2e',delta:0},
+  {id:'alligator-noir',nom:'Alligator Noir',type:'exotique',c:'#1f1f22',delta:3800},
+  {id:'noir-graine',nom:'Noir Grainé',type:'graine',c:'#161616',delta:0},
+  {id:'noir-absolu',nom:'Noir Absolu',type:'lisse',c:'#0d0d0d',delta:320},
+  {id:'vieux-rose',nom:'Vieux Rose',type:'lisse',c:'#bf8a86',delta:320},
+  {id:'rose-poudre',nom:'Rose Poudré',type:'daim',c:'#d8b3ad',delta:240},
+  {id:'brique',nom:'Brique',type:'graine',c:'#9c4530',delta:0},
+  {id:'terracotta',nom:'Terracotta',type:'daim',c:'#b05a3c',delta:240},
+  {id:'ebene-brun',nom:'Ébène Brun',type:'lisse',c:'#2e211a',delta:320},
+  {id:'chocolat',nom:'Chocolat',type:'graine',c:'#4e3324',delta:0},
+  {id:'moka',nom:'Moka',type:'lisse',c:'#3d2a1f',delta:320},
+  {id:'ecorce',nom:'Écorce',type:'daim',c:'#5a4030',delta:240},
+  {id:'havane',nom:'Havane',type:'daim',c:'#7d4a24',delta:240},
+  {id:'noisette',nom:'Noisette',type:'daim',c:'#6f4c31',delta:240},
+  {id:'cognac',nom:'Cognac',type:'graine',c:'#8f5424',delta:0},
+  {id:'tabac',nom:'Tabac',type:'graine',c:'#6b4526',delta:0},
+  {id:'alligator-cognac',nom:'Alligator Cognac',type:'exotique',c:'#8a5a2e',delta:3800},
+  {id:'caramel',nom:'Caramel',type:'graine',c:'#a86a30',delta:0},
+  {id:'whisky',nom:'Whisky',type:'lisse',c:'#96602c',delta:320},
+  {id:'fauve',nom:'Fauve',type:'graine',c:'#a8703a',delta:0},
+  {id:'camel',nom:'Camel',type:'graine',c:'#b8874a',delta:0},
+  {id:'camel-clair',nom:'Camel Clair',type:'graine',c:'#c9a06a',delta:0},
+  {id:'miel',nom:'Miel',type:'lisse',c:'#c08b3e',delta:320},
+  {id:'python-naturel',nom:'Python Naturel',type:'exotique',c:'#a89474',delta:2400},
+  {id:'craie',nom:'Craie',type:'lisse',c:'#efe9dd',delta:320},
+  {id:'ivoire',nom:'Ivoire',type:'lisse',c:'#e6dcc8',delta:320},
+  {id:'sable',nom:'Sable',type:'graine',c:'#d2c3a4',delta:0},
+  {id:'parchemin',nom:'Parchemin',type:'lisse',c:'#c2b394',delta:320},
+  {id:'lin',nom:'Lin',type:'daim',c:'#c9bda3',delta:240},
+  {id:'ecru',nom:'Écru',type:'daim',c:'#ddd2ba',delta:240},
+  {id:'olive',nom:'Olive',type:'graine',c:'#71703f',delta:0},
+  {id:'kaki',nom:'Kaki',type:'daim',c:'#5d6146',delta:240},
+  {id:'sauge',nom:'Sauge',type:'daim',c:'#93a087',delta:240},
+  {id:'sapin',nom:'Sapin',type:'graine',c:'#2b4a38',delta:0},
+  {id:'vert-empire',nom:'Vert Empire',type:'lisse',c:'#1e3a30',delta:320},
+  {id:'celadon-bleu',nom:'Céladon Bleu',type:'daim',c:'#7d9aa6',delta:240},
+  {id:'bleu-de-prusse',nom:'Bleu de Prusse',type:'daim',c:'#28455e',delta:240},
+  {id:'bleu-ardoise',nom:'Bleu Ardoise',type:'lisse',c:'#41607d',delta:320},
+  {id:'marine',nom:'Marine',type:'graine',c:'#243352',delta:0},
+  {id:'bleu-nuit',nom:'Bleu Nuit',type:'lisse',c:'#1c2438',delta:320},
+  {id:'amethyste',nom:'Améthyste',type:'lisse',c:'#6b4a72',delta:320},
+  {id:'aubergine',nom:'Aubergine',type:'daim',c:'#452a3c',delta:240},
+  {id:'prune',nom:'Prune',type:'lisse',c:'#5b3348',delta:320},
+  {id:'bordeaux',nom:'Bordeaux',type:'lisse',c:'#5e1f2c',delta:320},
+  {id:'grenat',nom:'Grenat',type:'daim',c:'#6d2530',delta:240},
+  {id:'rouge-cardinal',nom:'Rouge Cardinal',type:'lisse',c:'#a01f28',delta:320},
+  {id:'rouge-profond',nom:'Rouge Profond',type:'graine',c:'#7d1c22',delta:0}
+];
+
+var FAM=[{id:'tous',n:'Tous'},{id:'graine',n:'Grainé'},{id:'lisse',n:'Lisse'},
+         {id:'daim',n:'Daim'},{id:'exotique',n:'Exotique'}];
+
+/* Photographies réelles de la maison. À remplacer par des packshots
+   détourés dès qu'ils existent — les repères se posent sur des zones
+   approximatives tant que le cadrage n'est pas maîtrisé. */
+var MODELES=[
+ {id:'victoire',nom:'La',nom2:'Victoire',t:'Sac à main structuré',base:3200,
+  ph:CDN+'28092025-DSCF1828.jpg',
+  d:"Née en 1908. Sa structure tient sans armature : c'est l'épaisseur du cuir, choisie au dixième de millimètre, qui lui donne sa tenue.",
+  reps:{ext:[62,44],anse:[50,17],ferrures:[41,52],int:[68,30],pieds:[52,78],bijou:[70,58]}},
+ {id:'colette',nom:'La',nom2:'Colette',t:'Sac à main souple',base:2800,
+  ph:CDN+'BOSCHI0919.jpg',
+  d:"Plus souple, plus quotidienne. Elle s'assouplit avec le temps sans jamais se déformer — le propre d'un tannage végétal.",
+  reps:{ext:[56,50],anse:[48,20],ferrures:[45,58],int:[63,34],pieds:[54,80],bijou:[66,62]}},
+ {id:'jane',nom:'La',nom2:'Jane',t:'Tote',base:2400,
+  ph:CDN+'Asset_atelier_1.png',
+  d:"Le format du quotidien. Deux anses, un volume franc, et cette rigueur de coupe qui l'empêche de s'affaisser.",
+  reps:{ext:[50,52],anse:[47,18],ferrures:[40,60],int:[60,32],pieds:[50,82],bijou:[64,64]}},
+ {id:'rafael',nom:'Le',nom2:'Rafaël',t:'Pochette',base:1600,
+  ph:CDN+'BOSCHI0154.jpg',
+  d:"La pièce la plus difficile de la collection. Une pochette n'a nulle part où cacher un défaut : chaque couture est vue.",
+  reps:{ext:[52,48],ferrures:[44,56],int:[62,36],bijou:[66,60]}}
+];
+
+var FERRURES=[{id:'laiton',n:'Laiton naturel',d2:'Patine avec le temps.',d:0},
+ {id:'vieilli',n:'Laiton vieilli',d2:'Patiné à la main, teinte chaude.',d:120},
+ {id:'palladium',n:'Argent palladié',d2:'Blanc froid, inaltérable.',d:340},
+ {id:'or24',n:'Or jaune 24 carats',d2:"Dorure à l'or fin, sur commande.",d:1800}];
+var DOUBLURES=[{id:'agneau',n:'Agneau naturel',d2:'La doublure de maison.',d:0},
+ {id:'chevreau',n:'Chevreau glacé',d2:"Un léger éclat à l'ouverture.",d:160},
+ {id:'soie',n:'Soie sauvage',d2:'Tissée à Lyon.',d:240}];
+var BIJOUX=[{id:'aucun',n:'Aucun',d2:'La pièce reste nue.',d:0},
+ {id:'v',n:'Pendentif V',d2:'La signature de la maison, en laiton.',d:460},
+ {id:'chaine',n:'Chaîne d\'épaule',d2:'Amovible, maillons plats.',d:890},
+ {id:'pompon',n:'Pompon de cuir',d2:'Dans le cuir de votre choix.',d:340}];
+var PIEDS=[{id:'non',n:'Sans pieds',d2:'Le fond touche le sol.',d:0},
+ {id:'oui',n:'Cinq clous de laiton',d2:'Le fond ne touche plus rien.',d:180}];
+
+var S={mdl:null,cuirs:{},ferrures:'laiton',doublure:'agneau',bijou:'aucun',
+       pieds:'non',anse:50,grav:'',ecran:1};
+
+function euros(n){return n.toLocaleString('fr-FR').replace(/ | /g,' ')+' €'}
+function cuirPar(id){for(var i=0;i<MATIERES.length;i++)if(MATIERES[i].id===id)return MATIERES[i];return null}
+function fonce(h,k){var n=parseInt(h.slice(1),16);
+  return '#'+((1<<24)+(Math.round(((n>>16)&255)*k)<<16)+(Math.round(((n>>8)&255)*k)<<8)+Math.round((n&255)*k)).toString(16).slice(1)}
+
+var faits={};
+function motif(c,t){
+  var id='p-'+t+'-'+c.replace('#','');
+  if(!faits[id]){
+    var p=document.createElementNS(NS,'pattern');
+    p.setAttribute('id',id);p.setAttribute('width','160');p.setAttribute('height','160');
+    p.setAttribute('patternUnits','userSpaceOnUse');
+    var r=document.createElementNS(NS,'rect');
+    r.setAttribute('width','160');r.setAttribute('height','160');
+    r.setAttribute('fill',c);r.setAttribute('filter','url(#lth-'+t+')');
+    p.appendChild(r);$('pats').appendChild(p);faits[id]=1;
+  }
+  return 'url(#'+id+')';
+}
+
+/* ═══ Prix ═══ */
+function total(){
+  if(!S.mdl)return 0;
+  var t=S.mdl.base;
+  ['ext','anse','int'].forEach(function(k){if(S.cuirs[k])t+=cuirPar(S.cuirs[k]).delta});
+  FERRURES.forEach(function(f){if(f.id===S.ferrures)t+=f.d});
+  DOUBLURES.forEach(function(f){if(f.id===S.doublure)t+=f.d});
+  BIJOUX.forEach(function(f){if(f.id===S.bijou)t+=f.d});
+  PIEDS.forEach(function(f){if(f.id===S.pieds)t+=f.d});
+  if(S.anse!==50)t+=140;
+  if(S.grav)t+=180;
+  return t;
+}
+var prec='';
+function majTotal(){
+  var txt=S.mdl?euros(total()):'—',el=$('tot');
+  if(txt===prec)return;
+  el.innerHTML='';
+  txt.split('').forEach(function(c,i){
+    var s=document.createElement('span');s.textContent=c;
+    if(!RM&&prec&&prec[i]!==c){s.classList.add('r');s.style.animationDelay=(i*24)+'ms'}
+    el.appendChild(s);
+  });
+  prec=txt;
+}
+
+/* ═══ 1 · Silhouettes ═══ */
+var si=0;
+MODELES.forEach(function(m,i){
+  var f=document.createElement('div');f.className='sil__f'+(i===0?' on':'');f.dataset.i=i;
+  f.innerHTML='<img src="'+m.ph+'" alt="'+m.nom+' '+m.nom2+'">'+
+   '<div class="sil__txt">'+
+   '<p class="sil__t lig">'+m.t+'</p>'+
+   '<h1 class="sil__n"><span class="lig">'+m.nom+'</span><em class="lig">'+m.nom2+'</em></h1>'+
+   '<p class="sil__d lig">'+m.d+'</p>'+
+   '<p class="sil__p lig">À partir de '+euros(m.base)+'</p>'+
+   '<button class="btn lig" data-go="'+i+'">Reprendre cette pièce'+
+   '<svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg></button></div>';
+  $('sil').appendChild(f);
+  var d=document.createElement('button');d.className='dot'+(i===0?' on':'');d.dataset.i=i;
+  d.addEventListener('click',function(){versSil(i)});
+  $('silNav').appendChild(d);
+});
+function versSil(i){
+  if(i<0||i>=MODELES.length)return;
+  si=i;
+  document.querySelectorAll('.sil__f').forEach(function(f,j){f.classList.toggle('on',j===i)});
+  document.querySelectorAll('.dot').forEach(function(d,j){d.classList.toggle('on',j===i)});
+  $('idx').textContent='0'+(i+1)+' / 0'+MODELES.length;
+  ligner();
+}
+function ligner(){
+  var f=document.querySelector('.sil__f.on');if(!f)return;
+  f.querySelectorAll('.lig').forEach(function(l,i){
+    l.classList.remove('in');setTimeout(function(){l.classList.add('in')},RM?0:120+i*90);
+  });
+}
+$('silP').addEventListener('click',function(){versSil(si-1)});
+$('silN').addEventListener('click',function(){versSil(si+1)});
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-go]');if(b)entrer(MODELES[+b.dataset.go]);
+});
+
+/* ═══ 2 · L'atelier ═══ */
+var AJ=[
+ {k:'ext',n:'Cuir extérieur',type:'cuir'},
+ {k:'anse',n:"Cuir de l'anse",type:'cuir'},
+ {k:'longueur',n:"Longueur d'anse",type:'range'},
+ {k:'int',n:'Cuir intérieur',type:'cuir'},
+ {k:'doublure',n:'Doublure',type:'liste',l:DOUBLURES},
+ {k:'ferrures',n:'Ferrures',type:'liste',l:FERRURES},
+ {k:'pieds',n:'Pieds',type:'liste',l:PIEDS},
+ {k:'bijou',n:'Bijouterie',type:'liste',l:BIJOUX},
+ {k:'grav',n:'Gravure',type:'texte'}
+];
+function entrer(m){
+  S.mdl=m;S.cuirs={};S.ferrures='laiton';S.doublure='agneau';
+  S.bijou='aucun';S.pieds='non';S.anse=50;S.grav='';
+  $('atlPh').src=m.ph;$('atlPh').alt=m.nom+' '+m.nom2;
+  batirReperes();batirRuban();majTotal();
+  aller(2);
+}
+function batirReperes(){
+  var c=$('reps');c.innerHTML='';
+  Object.keys(S.mdl.reps).forEach(function(k){
+    var a=AJ.filter(function(x){return x.k===k})[0];if(!a)return;
+    var p=S.mdl.reps[k];
+    var b=document.createElement('button');
+    b.className='rep';b.dataset.k=k;
+    b.style.left=p[0]+'%';b.style.top=p[1]+'%';
+    b.innerHTML='<span class="rep__o"></span><span class="rep__pulse"></span>'+
+                '<span class="rep__l">'+a.n+'</span>';
+    b.addEventListener('click',function(){plonger(a)});
+    c.appendChild(b);
+  });
+}
+function batirRuban(){
+  var r=$('rub');r.innerHTML='';
+  AJ.forEach(function(a){
+    var b=document.createElement('button');b.className='aj';b.dataset.k=a.k;
+    b.innerHTML='<span class="aj__n">'+a.n+'</span><span class="aj__v" data-v></span>'+
+                '<span class="aj__p" data-p></span>';
+    b.addEventListener('click',function(){plonger(a)});
+    r.appendChild(b);
+  });
+  rafraichir();
+}
+function valeur(a){
+  if(a.type==='cuir'){var c=S.cuirs[a.k];return c?[cuirPar(c).nom,cuirPar(c).delta]:['Au choix',null]}
+  if(a.type==='range')return [S.anse<34?'Portée main':S.anse>66?'Portée épaule':"D'origine",S.anse!==50?140:0];
+  if(a.type==='texte')return [S.grav||'Aucune',S.grav?180:0];
+  var o=a.l.filter(function(x){return x.id===S[a.k]})[0];return [o.n,o.d];
+}
+function rafraichir(){
+  document.querySelectorAll('.aj').forEach(function(b){
+    var a=AJ.filter(function(x){return x.k===b.dataset.k})[0];if(!a)return;
+    var v=valeur(a);
+    b.querySelector('[data-v]').textContent=v[0];
+    b.querySelector('[data-p]').textContent=v[1]===null?'à définir':(v[1]?'+ '+euros(v[1]):'inclus');
+    var pose=(a.type==='cuir'&&S.cuirs[a.k])||(a.type==='range'&&S.anse!==50)||
+             (a.type==='texte'&&S.grav)||(a.l&&v[1]>0);
+    b.classList.toggle('set',!!pose);
+    var rp=document.querySelector('.rep[data-k="'+b.dataset.k+'"]');
+    if(rp)rp.classList.toggle('set',!!pose);
+  });
+}
+
+/* ═══ 3 · La plongée ═══ */
+var pl=null,fam='tous',pi=0;
+function listeC(){return fam==='tous'?MATIERES:MATIERES.filter(function(m){return m.type===fam})}
+FAM.forEach(function(f){
+  var b=document.createElement('button');
+  b.className='fm'+(f.id==='tous'?' on':'');b.textContent=f.n;b.dataset.f=f.id;
+  b.addEventListener('click',function(){
+    fam=f.id;pi=0;
+    document.querySelectorAll('.fm').forEach(function(x){x.classList.toggle('on',x.dataset.f===f.id)});
+    rendreC();
+  });
+  $('plgFam').appendChild(b);
+});
+function rendreC(){
+  var L=listeC(),st=$('plgStage');st.innerHTML='';
+  [-1,0,1].forEach(function(o){
+    var i=pi+o;if(i<0||i>=L.length)return;
+    var m=L[i];
+    var d=document.createElement('div');
+    d.className='plg__sw '+(o===0?'mid':(o<0?'l':'r'));
+    d.innerHTML='<svg viewBox="0 0 900 620" preserveAspectRatio="none">'+
+      '<rect width="900" height="620" fill="'+motif(m.c,m.type)+'"/></svg>';
+    if(o!==0)d.addEventListener('click',function(){pi=i;rendreC()});
+    st.appendChild(d);
+  });
+  var m=L[pi];
+  $('plgNom').textContent=m?m.nom:'';
+  $('plgD').textContent=m?(m.delta?'+ '+euros(m.delta):'Sans supplément'):'';
+  $('plgC').textContent=m?((pi+1)+' sur '+L.length):'';
+  if(m)$('plgBg').style.background=fonce(m.c,.3);
+  $('plgP').disabled=pi===0;$('plgN').disabled=pi>=L.length-1;
+}
+function plonger(a){
+  pl=a;
+  $('plgT').textContent=a.n;
+  var estCuir=a.type==='cuir';
+  $('plgFam').hidden=!estCuir;$('plgStage').hidden=!estCuir;
+  $('plgP').hidden=!estCuir;$('plgN').hidden=!estCuir;
+  $('plgOpts').hidden=estCuir;
+  $('plgOk').textContent=estCuir?'Retenir ce cuir':'Valider';
+  if(estCuir){
+    var d=S.cuirs[a.k];
+    if(d){var i=listeC().findIndex(function(m){return m.id===d});if(i>=0)pi=i}
+    rendreC();
+    $('plgNom').style.display='';$('plgD').style.display='';$('plgC').style.display='';
+  }else{
+    $('plgBg').style.background='#0a0a0a';
+    $('plgNom').style.display='none';$('plgD').style.display='none';$('plgC').style.display='none';
+    var o=$('plgOpts');o.innerHTML='';
+    if(a.type==='liste'){
+      a.l.forEach(function(x){
+        var b=document.createElement('button');
+        b.className='op'+(S[a.k]===x.id?' on':'');b.dataset.id=x.id;
+        b.innerHTML='<span><span class="op__n">'+x.n+'</span><span class="op__d">'+x.d2+'</span></span>'+
+          '<span class="op__p">'+(x.d?'+ '+euros(x.d):'inclus')+'</span>';
+        b.addEventListener('click',function(){
+          S[a.k]=x.id;
+          o.querySelectorAll('.op').forEach(function(y){y.classList.toggle('on',y.dataset.id===x.id)});
+          majTotal();rafraichir();
+        });
+        o.appendChild(b);
+      });
+    }else if(a.type==='range'){
+      o.innerHTML='<p class="plg__n" id="rngL" style="text-align:center">'+valeur(a)[0]+'</p>'+
+        '<input class="plg__rng" type="range" min="0" max="100" value="'+S.anse+'">'+
+        '<p class="plg__d" style="text-align:center;margin-top:18px">Le réglage se fait au centimètre en atelier.</p>';
+      o.querySelector('.plg__rng').addEventListener('input',function(){
+        S.anse=+this.value;$('rngL').textContent=valeur(a)[0];majTotal();rafraichir();
+      });
+    }else{
+      o.innerHTML='<input class="plg__champ" id="gv" maxlength="4" placeholder="V.T." value="'+S.grav+'">'+
+        '<p class="plg__d" style="text-align:center;margin-top:22px">Gravée à chaud sous la couture de rabat.</p>';
+      o.querySelector('#gv').addEventListener('input',function(){
+        S.grav=this.value.toUpperCase().slice(0,4);majTotal();rafraichir();
+      });
+    }
+  }
+  $('plg').classList.add('on');
+  document.querySelector('.atl').classList.add('zoom');
+}
+function fermerP(){
+  $('plg').classList.remove('on');
+  document.querySelector('.atl').classList.remove('zoom');
+}
+$('plgX').addEventListener('click',fermerP);
+$('plgP').addEventListener('click',function(){if(pi>0){pi--;rendreC()}});
+$('plgN').addEventListener('click',function(){if(pi<listeC().length-1){pi++;rendreC()}});
+$('plgOk').addEventListener('click',function(){
+  if(pl&&pl.type==='cuir'){var m=listeC()[pi];if(m)S.cuirs[pl.k]=m.id}
+  majTotal();rafraichir();fermerP();
+});
+document.addEventListener('keydown',function(e){
+  if($('plg').classList.contains('on')){
+    if(e.key==='Escape')fermerP();
+    if(pl&&pl.type==='cuir'){
+      if(e.key==='ArrowLeft'&&pi>0){pi--;rendreC()}
+      if(e.key==='ArrowRight'&&pi<listeC().length-1){pi++;rendreC()}
+    }
+    return;
+  }
+  if(S.ecran===1){
+    if(e.key==='ArrowLeft')versSil(si-1);
+    if(e.key==='ArrowRight')versSil(si+1);
+  }
+});
+
+/* ═══ 4 · Le certificat ═══ */
+function certificat(){
+  $('certT').innerHTML='Votre <em>'+S.mdl.nom2+'</em>';
+  var g=$('certG');g.innerHTML='';
+  var L=[['Silhouette',S.mdl.nom+' '+S.mdl.nom2,S.mdl.t+' · '+euros(S.mdl.base)]];
+  AJ.forEach(function(a){
+    var v=valeur(a);
+    if(v[1]===null){L.push([a.n,'Choix de la maison','—']);return}
+    L.push([a.n,v[0],v[1]?'+ '+euros(v[1]):'inclus']);
+  });
+  L.forEach(function(l,i){
+    var d=document.createElement('div');d.className='cl';
+    d.innerHTML='<span class="cl__k">'+l[0]+'</span><span class="cl__v">'+l[1]+
+      '<small>'+l[2]+'</small></span>';
+    g.appendChild(d);
+    setTimeout(function(){d.classList.add('in')},RM?0:70+i*48);
+  });
+  $('certTot').textContent=euros(total());
+}
+$('toCert').addEventListener('click',function(){certificat();aller(3)});
+$('envoyer').addEventListener('click',function(){
+  alert('Spécification confiée à votre conseiller.\n\n'+S.mdl.nom+' '+S.mdl.nom2+
+    ' — '+euros(total())+'\n\nDémonstration : en production, elle part au conseiller '+
+    'qui établit le devis et le lien de paiement.');
+});
+
+/* ═══ Navigation ═══ */
+function aller(n){
+  S.ecran=n;
+  [1,2,3].forEach(function(i){$('s'+i).classList.toggle('on',i===n)});
+  $('back').hidden=n===1;
+  $('backL').textContent=n===3?"Revenir à l'atelier":'Changer de silhouette';
+  $('idx').textContent=n===1?('0'+(si+1)+' / 0'+MODELES.length):'';
+  document.documentElement.style.setProperty('--amb',n===3?'#0d0d0d':'#0a0a0a');
+  var m=$('mark');m.classList.add('br');setTimeout(function(){m.classList.remove('br')},760);
+  if(n===1)ligner();
+}
+$('back').addEventListener('click',function(){aller(S.ecran===3?2:1)});
+
+versSil(0);majTotal();
+})();
+</script>
+</body></html>
