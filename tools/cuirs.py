@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Tuiles de cuir photographiques, seamless, en niveaux de gris — v2.
+"""Tuiles GÉNÉRÉES : grainé et daim uniquement — en attendant les photos
+du client (les quatre autres matières viennent de tools/tuiles.py, qui
+découpe ses vraies peaux).
 
 Cible : la photo de veau grainé fournie par le client (grain FIN et irrégulier,
 sillons étroits et sombres, lumière douce et mate). La v1 produisait des
@@ -132,26 +134,6 @@ v = eclairer(h, force=.024, kd=.92, ks=.05, brillance=6, ao=.80, r_ao=1.8)
 v = norm(v) + 0.05 * (fbm((N, N), 2, 6, 9) - .5)   # respiration lente de la peau
 sortir(v, 'graine', lo=.27, hi=.74)
 
-# ═══ CAVIAR — grain rond, serré, calibré, semi-brillant ═══
-pts = semis(46, 21, jitter=.55)
-f1, f2, id1 = worley(pts)
-r = 0.0125
-dome = np.sqrt(np.clip(1 - (f1 / r) ** 2, 0, 1))
-alea = (0.90 + 0.10 * np.random.default_rng(22).random(len(pts)))[id1]
-h = dome * alea + 0.03 * fbm((N, N), 3, 40, 23)
-h = flou(h, 0.6)
-v = eclairer(h, force=.030, kd=.72, ks=.42, brillance=30, ao=.72, r_ao=2.6)
-sortir(v, 'caviar', lo=.22, hi=.86)
-
-# ═══ LISSE — box calf : presque plan, pores fins, éclat doux ═══
-h = 0.5 * flou(fbm((N, N), 2, 5, 31), 2.6) + 0.5 * flou(fbm((N, N), 3, 20, 32), 1.2)
-h = h - plis(33, 4, 0.975, 0.08, 1.1)
-h = flou(h, 1.6)
-v = norm(eclairer(h, force=.0018, kd=.40, ks=.90, brillance=64, ao=.15, r_ao=4))
-v = 0.5 + (v - 0.5) * 0.55                                      # sheen très doux
-v = np.clip(v + 0.040 * (fbm((N, N), 2, 128, 34) - .5), 0, 1)   # pores du veau
-sortir(v, 'lisse', lo=.38, hi=.66, renorm=False, niveaux=112)
-
 # ═══ DAIM — velours : poil fin, plages de sens, aucun éclat ═══
 h = flou(fbm((N, N), 2, 10, 41), 2.2)
 v = norm(eclairer(h, force=.0016, kd=.55, ks=.28, brillance=2.2, ao=.10))
@@ -161,60 +143,9 @@ v = flou(0.38 * v + 0.24 * fibres + 0.38 * nappe, 0.9)
 v = 0.5 + (v - 0.5) * 0.80
 sortir(v, 'daim', lo=.40, hi=.66, renorm=False)
 
-# ═══ GALUCHAT — perles rondes serrées, quelques perles « œil » plus larges,
-#     dessus légèrement poli (référence : galuchat rouge et gris du client) ═══
-rng = random.Random(51)
-pts = semis(44, 51, jitter=.6)
-ray = [0.0128 * (0.84 + 0.32 * rng.random()) for _ in pts]
-for _ in range(12):                       # les perles « œil », deux fois plus larges
-    pts.append((rng.random(), rng.random()))
-    ray.append(0.021 * (0.9 + 0.2 * rng.random()))
-f1, f2, id1 = worley(pts)
-r_id = np.asarray(ray)[id1]
-dome = np.sqrt(np.clip(1 - (f1 / r_id) ** 2, 0, 1))
-dome = np.minimum(dome, 0.88) / 0.88      # dessus adouci : galuchat poncé
-h = dome + 0.03 * fbm((N, N), 3, 40, 53)
-h = flou(h, 0.55)
-v = eclairer(h, force=.030, kd=.72, ks=.75, brillance=24, ao=.70, r_ao=2.6)
-sortir(v, 'galuchat', lo=.18, hi=.94)
-
-# ═══ ALLIGATOR — ventre : grands rectangles arrondis en rangs réguliers,
-#     coutures fines et froncées, grain de cuir DANS chaque écaille
-#     (référence : alligator vert, cognac et Himalaya du client) ═══
-R = 5
-rng = random.Random(81)
-offs = [rng.random() for _ in range(R)]
-cols = [rng.choice([4, 5, 6]) for _ in range(R)]   # rangs inégaux, comme la bête
-ys, xs = np.mgrid[0:N, 0:N] / N
-# gauchir les coordonnées : les rangs réels ne sont jamais tirés au cordeau
-wx = fbm((N, N), 2, 3, 83); wy = fbm((N, N), 2, 3, 84)
-# demi-rang de décalage : sinon la frontière de rang (le sillon) tombe
-# exactement sur le bord de la tuile et le contrôle de raccord la mesure
-u = xs + 0.030 * (wx - .5); w = ys + 0.5 / R + 0.022 * (wy - .5)
-ri = np.floor((w % 1) * R).astype(int) % R
-ly = ((w % 1) * R) % 1
-off = np.asarray(offs)[ri]
-Cr = np.asarray(cols)[ri]
-lx = ((u + off + 0.5 / Cr) * Cr) % 1
-ci = np.floor(((u + off + 0.5 / Cr) * Cr)).astype(int) % Cr   # replié au bord
-# superellipse : un rectangle aux angles ronds, bombé, presque plat au centre
-d = ((np.abs(lx - .5) / .5) ** 5 + (np.abs(ly - .5) / .5) ** 5) ** (1 / 5.0)
-dome = np.clip(1 - d, 0, 1) ** 0.32
-alea = (0.86 + 0.14 * np.random.default_rng(85).random(4096))[(ri * 97 + ci * 31) % 4096]
-h = dome * alea
-# la couture : un froncé de petits plis serrés le long du bord, pas un fossé
-bord = sstep(0.80, 0.99, d)
-fronce = bord * (1 - bord) * 4 * (0.5 + 0.5 * fbm((N, N), 1, 96, 86))
-h = h + 0.22 * fronce - 0.30 * sstep(0.93, 1.0, d)
-# le grain du cuir DANS l'écaille — c'est lui qui fait « vrai »
-h = h + 0.045 * fbm((N, N), 4, 26, 91) + 0.02 * fbm((N, N), 2, 90, 92)
-h = flou(h, 0.8)
-v = eclairer(h, force=.020, kd=.80, ks=.45, brillance=30, ao=.55, r_ao=3.0)
-sortir(v, 'alligator', lo=.16, hi=.90)
-
 # ═══ Vérification : la tuile boucle-t-elle vraiment ? ═══
 print()
-for n in ['graine', 'caviar', 'lisse', 'daim', 'galuchat', 'alligator']:
+for n in ['graine', 'daim']:
     a = np.asarray(Image.open('tools/cuirs/%s.png' % n), dtype=float)
     for axe, nom in ((1, 'vertical'), (0, 'horizontal')):
         d_int = np.abs(np.diff(a, axis=axe)).mean()
