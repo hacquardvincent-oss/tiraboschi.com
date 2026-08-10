@@ -1,82 +1,73 @@
 # -*- coding: utf-8 -*-
-"""Génère des textures de cuir photographiques, seamless, en niveaux de gris.
+"""Tuiles de cuir photographiques, seamless, en niveaux de gris — v2.
 
-Le rendu procédural SVG (feTurbulence) ne produisait pas du cuir : il produisait
-du bruit. Ici on construit une vraie carte de hauteur par matière, puis on
-l'éclaire (diffus + spéculaire + occlusion de cavité) comme un moteur de rendu.
+Cible : la photo de veau grainé fournie par le client (grain FIN et irrégulier,
+sillons étroits et sombres, lumière douce et mate). La v1 produisait des
+« galets » : cellules 4× trop grosses, éclairage plastique.
 
-Sortie : PNG gris centré sur 128. Le navigateur applique la couleur avec
-    background-color: <cuir>; background-blend-mode: hard-light;
-hard-light à 128 = identité, en dessous ça assombrit, au dessus ça éclaire —
-donc un seul PNG par matière colore les 55 nuances, y compris les noires.
+Recette par matière : champ de cellules Worley périodique (cKDTree sur points
+tuilés 3×3) → carte de hauteur → éclairage diffus + spéculaire + occlusion de
+cavité, le tout en dérivées np.roll donc rigoureusement seamless.
+
+Sortie : PNG gris centrés ~128. La couleur arrive dans le navigateur :
+    background-color:<nuance>; background-blend-mode:hard-light
 """
 import math, random
 import numpy as np
 from PIL import Image
+from scipy.spatial import cKDTree
 
-N = 256  # tuile
+N = 512  # tuile
 
-def wrapd(a, b, n=1.0):
-    """Distance signée la plus courte sur un tore."""
-    d = a - b
-    return d - np.round(d / n) * n
-
+# ── outils périodiques ────────────────────────────────────────────
 def fbm(shape, octaves, base_freq, seed, persistence=0.5):
-    """Bruit fractal seamless : on synthétise dans le domaine de Fourier."""
+    """Bruit fractal seamless : grille répétée 3×3 avant l'agrandissement."""
     rng = np.random.default_rng(seed)
-    out = np.zeros(shape)
-    amp = 1.0
-    tot = 0.0
+    out = np.zeros(shape); amp = 1.0; tot = 0.0
     for o in range(octaves):
         f = base_freq * (2 ** o)
         g = rng.random((f, f))
-        # La grille est répétée 3× avant l'agrandissement, puis on garde le centre :
-        # sans ça le rééchantillonnage ne boucle pas et la tuile montre ses coutures.
         g3 = np.tile(g, (3, 3))
         big = np.array(Image.fromarray((g3 * 255).astype(np.uint8))
                        .resize((shape[1] * 3, shape[0] * 3), Image.BICUBIC), dtype=float) / 255.0
-        img = big[shape[0]:2 * shape[0], shape[1]:2 * shape[1]]
-        out += img * amp
-        tot += amp
-        amp *= persistence
+        out += big[shape[0]:2 * shape[0], shape[1]:2 * shape[1]] * amp
+        tot += amp; amp *= persistence
     out /= tot
     return (out - out.min()) / (np.ptp(out) + 1e-9)
 
-def points_tore(n, seed, jitter=1.0, grid=None):
-    """Points de Worley répartis, périodiques."""
+def worley(pts, aniso=1.0):
+    """f1, f2, id du plus proche — périodique via points tuilés 3×3.
+       aniso > 1 étire les cellules horizontalement (peau, sens du dos)."""
+    pts = np.asarray(pts, dtype=float)
+    n = len(pts)
+    offs = [(dx, dy) for dx in (-1, 0, 1) for dy in (-1, 0, 1)]
+    tuil = np.concatenate([pts + np.array(o) for o in offs])
+    esc = np.array([1.0, aniso])
+    tree = cKDTree(tuil * esc)
+    ys, xs = np.mgrid[0:N, 0:N] / N
+    q = np.stack([xs.ravel(), ys.ravel()], axis=1) * esc
+    d, i = tree.query(q, k=2)
+    f1 = d[:, 0].reshape(N, N); f2 = d[:, 1].reshape(N, N)
+    id1 = (i[:, 0] % n).reshape(N, N)
+    return f1, f2, id1
+
+def semis(grid, seed, jitter=1.0, garde=1.0):
+    """Semis de points : grille jitterée, avec suppression aléatoire pour
+       créer des cellules doubles (le grain réel n'est pas calibré)."""
     rng = random.Random(seed)
     pts = []
-    if grid:
-        for gy in range(grid):
-            for gx in range(grid):
-                pts.append(((gx + rng.uniform(-.5, .5) * jitter) / grid,
-                            (gy + rng.uniform(-.5, .5) * jitter) / grid))
-    else:
-        for _ in range(n):
-            pts.append((rng.random(), rng.random()))
+    for gy in range(grid):
+        for gx in range(grid):
+            if rng.random() > garde: continue
+            pts.append((((gx + rng.uniform(-.5, .5) * jitter) % grid) / grid,
+                        ((gy + rng.uniform(-.5, .5) * jitter) % grid) / grid))
     return pts
-
-def worley(pts, shape=(N, N)):
-    """F1 et F2 sur un tore. Boucle sur les points : 400 passes de 256², rapide."""
-    ys, xs = np.mgrid[0:shape[0], 0:shape[1]]
-    xs = xs / shape[1]; ys = ys / shape[0]
-    f1 = np.full(shape, 9.0); f2 = np.full(shape, 9.0)
-    id1 = np.zeros(shape, dtype=np.int32)
-    for i, (px, py) in enumerate(pts):
-        dx = wrapd(xs, px); dy = wrapd(ys, py)
-        d = np.sqrt(dx * dx + dy * dy)
-        plus_proche = d < f1
-        f2 = np.where(plus_proche, f1, np.minimum(f2, d))
-        id1 = np.where(plus_proche, i, id1)
-        f1 = np.where(plus_proche, d, f1)
-    return f1, f2, id1
 
 def sstep(a, b, x):
     t = np.clip((x - a) / (b - a + 1e-9), 0, 1)
     return t * t * (3 - 2 * t)
 
 def flou(h, r):
-    """Flou gaussien séparable, wrap → reste seamless."""
     if r <= 0: return h
     k = int(r * 3) | 1
     ax = np.arange(k) - k // 2
@@ -87,8 +78,11 @@ def flou(h, r):
     for i, w in zip(ax, g): h2 += np.roll(out, int(i), axis=0) * w
     return h2
 
-def eclairer(h, force=1.0, kd=0.85, ks=0.35, brillance=28, ao=0.55, lum=(-.42, -.60, .68)):
-    """Height map → image éclairée. np.roll pour les dérivées : seamless."""
+def norm(v):
+    return (v - v.min()) / (np.ptp(v) + 1e-9)
+
+def eclairer(h, force=1.0, kd=0.85, ks=0.35, brillance=28, ao=0.55,
+             r_ao=3.0, lum=(-.40, -.62, .67)):
     h = h.astype(float)
     dx = (np.roll(h, -1, 1) - np.roll(h, 1, 1)) * 0.5 * force * N
     dy = (np.roll(h, -1, 0) - np.roll(h, 1, 0)) * 0.5 * force * N
@@ -100,114 +94,127 @@ def eclairer(h, force=1.0, kd=0.85, ks=0.35, brillance=28, ao=0.55, lum=(-.42, -
     V = np.array([0, 0, 1.0])
     H = (L + V); H /= np.linalg.norm(H)
     spec = np.clip(nx * H[0] + ny * H[1] + nz * H[2], 0, 1) ** brillance
-    cavite = np.clip(flou(h, 6) - h, 0, 1)
-    v = 0.30 + kd * diff + ks * spec - ao * cavite
-    return v
+    cavite = np.clip(flou(h, r_ao) - h, 0, 1)
+    return 0.30 + kd * diff + ks * spec - ao * cavite
 
-def norm(v):
-    return (v - v.min()) / (np.ptp(v) + 1e-9)
-
-def sortir(v, nom, lo=0.16, hi=0.90, gamma=1.0, niveaux=48, renorm=True):
-    # Les matières presque planes (box calf, daim) ont une amplitude minuscule :
-    # normaliser APRÈS avoir ajouté le grain fin l'écrasait et donnait du granit.
-    if renorm:
-        v = norm(v)
-    v = v ** gamma
+def sortir(v, nom, lo=0.16, hi=0.90, renorm=True, niveaux=72):
+    if renorm: v = norm(v)
     v = lo + v * (hi - lo)
     a = np.clip(v * 255, 0, 255)
-    # quantifier : le PNG compresse bien mieux, l'œil ne voit pas la différence
     a = np.round(a / (256 / niveaux)) * (256 / niveaux)
     im = Image.fromarray(np.clip(a, 0, 255).astype(np.uint8), 'L')
     im.save('tools/cuirs/%s.png' % nom, optimize=True)
-    print('%-12s %5d o' % (nom, len(open('tools/cuirs/%s.png' % nom, 'rb').read())))
+    print('%-12s %6d o' % (nom, len(open('tools/cuirs/%s.png' % nom, 'rb').read())))
+
+def plis(seed, freq, seuil, prof, large):
+    """Plis longs et peu profonds qui traversent le grain (bruit ridé)."""
+    w = fbm((N, N), 3, freq, seed)
+    ride = 1 - np.abs(2 * w - 1)
+    return flou(sstep(seuil, 1.0, ride), large) * prof
 
 import os
 os.makedirs('tools/cuirs', exist_ok=True)
 os.makedirs('tools/out', exist_ok=True)
 
-# ── GRAINÉ (togo / veau grainé) : plateaux cellulaires séparés de sillons
-pts = points_tore(0, 11, jitter=.92, grid=13)
-f1, f2, id1 = worley(pts)
+# ═══ GRAINÉ — veau grainé fin (la photo de référence) ═══
+# ~1000 cellules irrégulières : jitter fort + 12 % de cellules fusionnées.
+pts = semis(36, 11, jitter=1.25, garde=.88)
+f1, f2, id1 = worley(pts, aniso=1.12)
 rng = np.random.default_rng(3)
-hauteur_cel = rng.random(len(pts))[id1]           # chaque grain a sa hauteur
-bord = sstep(0.0, 0.030, f2 - f1)                 # sillon entre deux grains
-dome = 1 - sstep(0.0, 0.055, f1)                  # bombé du grain
-h = 0.74 * bord + 0.18 * dome + 0.08 * hauteur_cel
-h = h + 0.16 * fbm((N, N), 4, 16, 7)              # pores
-h = flou(h, 0.7)
-sortir(eclairer(h, force=.017, kd=.88, ks=.12, brillance=14, ao=.54), 'graine', lo=.21, hi=.85)
-
-# ── LISSE (box calf) : presque plan, pores fins, éclat franc
-h = 0.35 * fbm((N, N), 5, 32, 21) + 0.65 * fbm((N, N), 3, 5, 22)
-h = flou(h, 1.6)
-v = norm(eclairer(h, force=.0022, kd=.42, ks=.95, brillance=60, ao=.16))
-v = np.clip(v + 0.030 * (fbm((N, N), 2, 110, 23) - .5), 0, 1)   # pores du veau
-sortir(v, 'lisse', lo=.40, hi=.69, renorm=False, niveaux=96)
-
-# ── DAIM (velours) : fibres courtes, aucun éclat
-h = flou(fbm((N, N), 2, 12, 31), 2.2)             # ondulation large du nubuck
-v = norm(eclairer(h, force=.0016, kd=.55, ks=.30, brillance=2.2, ao=.10))
-fibres = norm(fbm((N, N), 1, 150, 33))            # le poil
-nappe  = norm(flou(fbm((N, N), 2, 22, 34), 1.6))  # sens du poil, plages claires
-v = flou(0.30 * v + 0.42 * fibres + 0.28 * nappe, 0.6)
-sortir(v, 'daim', lo=.33, hi=.74, renorm=False)
-
-# ── GALUCHAT (peau de raie) : perles serrées, très nacré
-pts = points_tore(0, 41, jitter=.98, grid=26)
-f1, f2, id1 = worley(pts)
-r = 0.021
-perle = np.sqrt(np.clip(1 - (f1 / r) ** 2, 0, 1))  # calottes sphériques
-taille = 0.72 + 0.28 * np.random.default_rng(5).random(len(pts))[id1]
-h = perle * taille
-h = h + 0.05 * fbm((N, N), 3, 32, 51)
+alea = (0.86 + 0.14 * rng.random(len(pts)))[id1]
+crease = sstep(0.0, 0.0034, f2 - f1)           # sillon hairline
+dome   = 1 - 0.24 * sstep(0.004, 0.024, f1)    # bombé discret du grain
+h = crease * dome * alea
+h = h - plis(7, 5, 0.94, 0.10, 1.6)            # plis longs, à peine visibles
+h = h + 0.05 * fbm((N, N), 4, 32, 8)           # micro-pores
 h = flou(h, 0.6)
-sortir(eclairer(h, force=.020, kd=.50, ks=1.25, brillance=34, ao=.55), 'galuchat', lo=.20, hi=.97)
+v = eclairer(h, force=.024, kd=.92, ks=.05, brillance=6, ao=.80, r_ao=1.8)
+v = norm(v) + 0.05 * (fbm((N, N), 2, 6, 9) - .5)   # respiration lente de la peau
+sortir(v, 'graine', lo=.27, hi=.74)
 
-# ── PYTHON : rangs d'écailles irrégulières + livrée sombre
+# ═══ CAVIAR — grain rond, serré, calibré, semi-brillant ═══
+pts = semis(46, 21, jitter=.55)
+f1, f2, id1 = worley(pts)
+r = 0.0125
+dome = np.sqrt(np.clip(1 - (f1 / r) ** 2, 0, 1))
+alea = (0.90 + 0.10 * np.random.default_rng(22).random(len(pts)))[id1]
+h = dome * alea + 0.03 * fbm((N, N), 3, 40, 23)
+h = flou(h, 0.6)
+v = eclairer(h, force=.030, kd=.72, ks=.42, brillance=30, ao=.72, r_ao=2.6)
+sortir(v, 'caviar', lo=.22, hi=.86)
+
+# ═══ LISSE — box calf : presque plan, pores fins, éclat doux ═══
+h = 0.5 * flou(fbm((N, N), 2, 5, 31), 2.6) + 0.5 * flou(fbm((N, N), 3, 20, 32), 1.2)
+h = h - plis(33, 4, 0.975, 0.08, 1.1)
+h = flou(h, 1.6)
+v = norm(eclairer(h, force=.0018, kd=.40, ks=.90, brillance=64, ao=.15, r_ao=4))
+v = 0.5 + (v - 0.5) * 0.55                                      # sheen très doux
+v = np.clip(v + 0.040 * (fbm((N, N), 2, 128, 34) - .5), 0, 1)   # pores du veau
+sortir(v, 'lisse', lo=.38, hi=.66, renorm=False, niveaux=112)
+
+# ═══ DAIM — velours : poil fin, plages de sens, aucun éclat ═══
+h = flou(fbm((N, N), 2, 10, 41), 2.2)
+v = norm(eclairer(h, force=.0016, kd=.55, ks=.28, brillance=2.2, ao=.10))
+fibres = norm(flou(fbm((N, N), 1, 200, 43), 0.7))
+nappe  = norm(flou(fbm((N, N), 2, 8, 44), 4.0))
+v = flou(0.38 * v + 0.24 * fibres + 0.38 * nappe, 0.9)
+v = 0.5 + (v - 0.5) * 0.80
+sortir(v, 'daim', lo=.40, hi=.66, renorm=False)
+
+# ═══ GALUCHAT — perles denses, nacrées ═══
+pts = semis(42, 51, jitter=.7)
+f1, f2, id1 = worley(pts)
+r = 0.0160
+perle = np.sqrt(np.clip(1 - (f1 / r) ** 2, 0, 1))
+taille = (0.70 + 0.30 * np.random.default_rng(52).random(len(pts)))[id1]
+h = perle * taille + 0.04 * fbm((N, N), 3, 32, 53)
+h = flou(h, 0.55)
+v = eclairer(h, force=.030, kd=.80, ks=.65, brillance=20, ao=.62, r_ao=2.4)
+sortir(v, 'galuchat', lo=.22, hi=.90)
+
+# ═══ PYTHON — rangs d'écailles imbriquées, livrée sombre ═══
 rng = random.Random(61)
 pts = []
-RANGS, PAR = 15, 26
-for gy in range(RANGS):
-    off = rng.random()
-    for gx in range(PAR):
-        pts.append((((gx + off + rng.uniform(-.34, .34)) % PAR) / PAR,
-                    (gy + rng.uniform(-.16, .16)) / RANGS))
-f1, f2, id1 = worley(pts)
-bord = sstep(0.0, 0.016, f2 - f1)
-dome = np.sqrt(np.clip(1 - (f1 / 0.036) ** 2, 0, 1))
-alea = (0.70 + 0.30 * np.random.default_rng(62).random(len(pts)))[id1]
-h = (0.60 * bord + 0.40 * dome) * alea
-livree = sstep(.36, .60, flou(fbm((N, N), 2, 5, 71), 2.0))   # taches de la peau
-h = h * (0.66 + 0.34 * livree) + 0.05 * fbm((N, N), 3, 40, 72)
-h = flou(h, 0.8)
-v = eclairer(h, force=.016, kd=.74, ks=.42, brillance=24, ao=.58)
-v = v - 0.16 * (1 - livree)                       # la livrée assombrit vraiment
-sortir(v, 'python', lo=.14, hi=.93)
-
-# ── ALLIGATOR : grandes écailles irrégulières, sillons profonds
-rng = random.Random(81)
-pts = []
-RANGS, PAR = 7, 8
+RANGS, PAR = 22, 34
 for gy in range(RANGS):
     off = rng.random()
     for gx in range(PAR):
         pts.append((((gx + off + rng.uniform(-.30, .30)) % PAR) / PAR,
-                    (gy + rng.uniform(-.20, .20)) / RANGS))
-f1, f2, id1 = worley(pts)
-bord = sstep(0.0, 0.030, f2 - f1)                 # sillon large et profond
-dome = np.sqrt(np.clip(1 - (f1 / 0.085) ** 2, 0, 1))
-alea = (0.76 + 0.24 * np.random.default_rng(82).random(len(pts)))[id1]
-h = (0.58 * bord + 0.42 * dome) * alea
-h = h + 0.06 * fbm((N, N), 4, 24, 91)             # grain dans l'écaille
-h = flou(h, 1.1)
-sortir(eclairer(h, force=.024, kd=.80, ks=.34, brillance=20, ao=.70), 'alligator', lo=.13, hi=.92)
+                    ((gy + rng.uniform(-.14, .14)) % RANGS) / RANGS))
+f1, f2, id1 = worley(pts, aniso=.72)     # écailles plus larges que hautes
+bord = sstep(0.0, 0.007, f2 - f1)
+dome = np.sqrt(np.clip(1 - (f1 / 0.030) ** 2, 0, 1))
+alea = (0.72 + 0.28 * np.random.default_rng(62).random(len(pts)))[id1]
+h = (0.55 * bord + 0.45 * dome) * alea
+livree = sstep(.38, .62, flou(fbm((N, N), 2, 5, 71), 3.0))
+h = h * (0.70 + 0.30 * livree) + 0.04 * fbm((N, N), 3, 48, 72)
+h = flou(h, 0.7)
+v = eclairer(h, force=.026, kd=.72, ks=.45, brillance=26, ao=.62, r_ao=2.4)
+v = norm(v) - 0.20 * (1 - livree)
+sortir(v, 'python', lo=.15, hi=.92, renorm=False)
 
+# ═══ ALLIGATOR — grandes écailles bombées, sillons profonds, glacé ═══
+rng = random.Random(81)
+pts = []
+RANGS, PAR = 9, 10
+for gy in range(RANGS):
+    off = rng.random()
+    for gx in range(PAR):
+        pts.append((((gx + off + rng.uniform(-.26, .26)) % PAR) / PAR,
+                    ((gy + rng.uniform(-.18, .18)) % RANGS) / RANGS))
+f1, f2, id1 = worley(pts)
+bord = sstep(0.0, 0.018, f2 - f1)
+dome = np.sqrt(np.clip(1 - (f1 / 0.062) ** 2, 0, 1))
+alea = (0.78 + 0.22 * np.random.default_rng(82).random(len(pts)))[id1]
+h = (0.52 * bord + 0.48 * dome) * alea
+h = h + 0.05 * fbm((N, N), 4, 40, 91)    # grain fin DANS l'écaille
+h = flou(h, 0.9)
+v = eclairer(h, force=.030, kd=.74, ks=.55, brillance=34, ao=.68, r_ao=3.2)
+sortir(v, 'alligator', lo=.14, hi=.94)
 
 # ═══ Vérification : la tuile boucle-t-elle vraiment ? ═══
-# On compare le saut au raccord au saut moyen à l'intérieur. Au-delà de 2×,
-# l'œil voit la couture — c'est le défaut qu'on vient de corriger.
 print()
-for n in ['graine', 'lisse', 'daim', 'galuchat', 'python', 'alligator']:
+for n in ['graine', 'caviar', 'lisse', 'daim', 'galuchat', 'python', 'alligator']:
     a = np.asarray(Image.open('tools/cuirs/%s.png' % n), dtype=float)
     for axe, nom in ((1, 'vertical'), (0, 'horizontal')):
         d_int = np.abs(np.diff(a, axis=axe)).mean()

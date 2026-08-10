@@ -25,8 +25,37 @@ const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m);
     const p = await ctx.newPage();
     const errs = []; p.on('pageerror', e => errs.push(e.message));
     await p.route('**cdn.shopify.com**', r => r.abort());   // on teste la mécanique, pas le réseau
-    await p.goto(F); await p.waitForTimeout(500);
+    await p.goto(F); await p.waitForTimeout(600);
+
+    // ── 0. Le mur de briques : le glissé change de silhouette
+    const dk = await p.locator('#dk').boundingBox();
+    const nomAv = await p.locator('#dkN').textContent();
+    await p.mouse.move(dk.x + dk.width * .6, dk.y + dk.height / 2);
+    await p.mouse.down();
+    for (let i = 1; i <= 10; i++) await p.mouse.move(dk.x + dk.width * (.6 - .035 * i), dk.y + dk.height / 2);
+    await p.mouse.up(); await p.waitForTimeout(800);
+    const nomAp = await p.locator('#dkN').textContent();
+    ok(nomAv !== nomAp, `le glissé des briques change de silhouette (${nomAv} → ${nomAp})`);
+    const pasAv = await p.evaluate(() =>
+      [...document.querySelectorAll('.pa')].filter(b => +b.dataset.s > 1 && b.disabled).length);
+    ok(pasAv === 2, 'les étapes 02 et 03 sont verrouillées tant qu\'aucune pièce n\'est choisie');
+    await p.evaluate(() => document.querySelector('.dot[data-i="0"]').click());
+    await p.waitForTimeout(600);
+
     await p.click('[data-go="0"]'); await p.waitForTimeout(800);
+
+    // ── 0b. Le fil d'étapes circule librement, sans perdre l'état
+    const fil = await p.evaluate(() => ({
+      actif: document.querySelector('.pa.on') ? +document.querySelector('.pa.on').dataset.s : 0,
+      verrous: [...document.querySelectorAll('.pa')].filter(b => b.disabled).length
+    }));
+    ok(fil.actif === 2 && fil.verrous === 0, 'le fil d\'étapes suit et se déverrouille (étape 2 active)');
+    await p.click('.pa[data-s="1"]'); await p.waitForTimeout(700);
+    const s1on = await p.evaluate(() => document.getElementById('s1').classList.contains('on'));
+    await p.click('.pa[data-s="2"]'); await p.waitForTimeout(700);
+    const s2on = await p.evaluate(() => document.getElementById('s2').classList.contains('on') &&
+      document.querySelectorAll('#fiche .aj').length > 0);
+    ok(s1on && s2on, 'aller-retour 2 → 1 → 2 par le fil, fiche intacte');
 
     // ── 1. TOUS les écrans d'option sont lisibles
     let pireOpt = 99; const fantomes = [], colles = [];
@@ -72,6 +101,19 @@ const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m);
     });
     ok(pireCuir.pire >= 4.5, `fond plongée × 55 cuirs — pire ${pireCuir.pire.toFixed(2)}:1 sur ${pireCuir.coupable}`);
 
+    // ── 2b. Changer de matière conserve la nuance visée
+    await p.evaluate(() => { for (let i = 0; i < 5; i++) document.getElementById('plgN').click(); });
+    await p.waitForTimeout(400);
+    const avTab = await p.evaluate(() => ({ i: window.__pi(), n: document.getElementById('plgNom').textContent }));
+    await p.click('.fm[data-f="alligator"]'); await p.waitForTimeout(500);
+    const apTab = await p.evaluate(() => ({ i: window.__pi(), n: document.getElementById('plgNom').textContent,
+      d: document.getElementById('plgD').textContent }));
+    ok(avTab.i === apTab.i && avTab.n === apTab.n, `la nuance survit au changement de matière (${apTab.n})`);
+    ok(/Alligator/.test(apTab.d), 'la légende affiche la matière et son supplément');
+    await p.click('.fm[data-f="graine"]'); await p.waitForTimeout(400);
+    await p.evaluate(() => { for (let i = 0; i < 5; i++) document.getElementById('plgP').click(); });
+    await p.waitForTimeout(400);
+
     // ── 3. Le cover flow GLISSE : la carte suit le doigt, elle ne saute pas
     const box = await p.locator('#plgStage').boundingBox();
     const cy = box.y + box.height / 2;
@@ -96,7 +138,7 @@ const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m);
 
     // ── 4. Les cartes sont persistantes → les transitions peuvent jouer
     const nb = await p.evaluate(() => document.querySelectorAll('.plg__sw').length);
-    ok(nb > 7, `cartes persistantes : ${nb} en scène (le rendu jetable en créait 7)`);
+    ok(nb === 52, `cartes persistantes : ${nb} nuances en scène`);
 
     // ── 5. Les matières sont des textures bitmap, plus des filtres SVG
     const tex = await p.evaluate(() => {
@@ -149,17 +191,20 @@ const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m);
     ok(rgb(fer.chip) && lum(rgb(fer.chip)) > .2, 'le ruban prend la teinte de la pièce retenue');
 
     // ── 8. Rien ne sort de l'écran, rien ne défile
-    // Le ruban défile horizontalement par construction : seul le vertical est un défaut.
+    // La fiche défile verticalement par construction : un élément au-delà du
+    // bord n'est un défaut que s'il n'est dans AUCUN conteneur défilable.
     const geo = await p.evaluate(() => {
-      const glisseur = e => { for (let n = e; n; n = n.parentElement)
-        if (n.scrollWidth > n.clientWidth + 2 && getComputedStyle(n).overflowX !== 'visible') return true;
+      const glisseur = e => { for (let n = e; n; n = n.parentElement){
+        const c = getComputedStyle(n);
+        if (n.scrollWidth > n.clientWidth + 2 && c.overflowX !== 'visible') return true;
+        if (n.scrollHeight > n.clientHeight + 2 && c.overflowY !== 'visible') return true;}
         return false; };
       return {
         scrollY: document.documentElement.scrollHeight - innerHeight,
         scrollX: document.documentElement.scrollWidth - innerWidth,
-        bas: [...document.querySelectorAll('.rep,.aj,.op,.plg__ok,.tot,.plg__cap,.plg__glisse')]
+        bas: [...document.querySelectorAll('.rep,.aj,.op,.plg__ok,.tot,.plg__cap,.plg__glisse,.bk,.dk__inf,.btn')]
           .filter(e => { const r = e.getBoundingClientRect();
-            return r.width && (r.bottom > innerHeight + 1 || r.top < -1); })
+            return r.width && !glisseur(e) && (r.bottom > innerHeight + 1 || r.top < -1); })
           .map(e => e.className + '|' + Math.round(e.getBoundingClientRect().bottom)),
         cote: [...document.querySelectorAll('.rep,.op,.plg__ok,.tot')]
           .filter(e => { const r = e.getBoundingClientRect();
@@ -182,6 +227,15 @@ const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m);
       }).map(r => r.dataset.k);
     });
     ok(masques.length === 0, 'tous les repères sont atteignables ' + JSON.stringify(masques));
+
+    // ── 10. La fiche n'offre que ce que la silhouette possède
+    const filtre = await p.evaluate(() => ({
+      v: !!document.querySelector('#fiche .aj[data-k="v"]'),
+      pochon: !!document.querySelector('#fiche .aj[data-k="pochon"]'),
+      numerote: !!document.querySelector('#fiche .aj .aj__i')
+    }));
+    ok(filtre.v && !filtre.pochon, 'la Colette propose le V, pas le pochon');
+    ok(filtre.numerote, 'les lignes de la fiche sont numérotées');
 
     ok(errs.length === 0, 'aucune erreur console ' + (errs[0] || ''));
     await ctx.close();
