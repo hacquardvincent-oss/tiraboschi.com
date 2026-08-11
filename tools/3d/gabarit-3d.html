@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="fr"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tiraboschi — L'Atelier en volume</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   SIMULATEUR 3D — un sac modélisé en volume, habillé des VRAIES
+   tuiles de cuir (photos client). Le relief vient d'une normal map
+   dérivée de chaque tuile ; la nuance teinte la matière en direct.
+   Faire glisser = tourner la pièce. Aucun scroll, plein écran.
+   ═══════════════════════════════════════════════════════════════ */
+:root{--noir:#0a0a0a;--ecru:#efeae3;--e:cubic-bezier(.16,1,.3,1)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Playfair Display',Georgia,serif;background:var(--ecru);color:var(--noir);
+  -webkit-font-smoothing:antialiased}
+button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer}
+#scene{position:fixed;inset:0;touch-action:none;cursor:grab}
+#scene.tire{cursor:grabbing}
+
+.hud{position:fixed;top:26px;left:0;right:0;text-align:center;pointer-events:none;z-index:5}
+.hud .marque{font-size:11px;letter-spacing:.42em;text-transform:uppercase;opacity:.6;
+  font-family:system-ui,sans-serif}
+.hud h1{font-size:clamp(20px,2.6vw,28px);letter-spacing:-.01em;margin-top:8px}
+.hud h1 em{font-style:italic}
+.hud .aide{font-size:9px;letter-spacing:.26em;text-transform:uppercase;opacity:.35;
+  font-family:system-ui,sans-serif;margin-top:10px}
+
+/* panneau de composition — bas, une ligne par registre */
+.compo{position:fixed;left:0;right:0;bottom:0;z-index:6;
+  padding:18px clamp(14px,4vw,50px) clamp(14px,3vh,24px);
+  background:linear-gradient(0deg,rgba(239,234,227,.96) 55%,transparent)}
+.reg{display:flex;align-items:center;gap:14px;margin-top:10px}
+.reg .l{font-size:9px;letter-spacing:.24em;text-transform:uppercase;opacity:.4;
+  font-family:system-ui,sans-serif;width:74px;flex-shrink:0}
+.reg .opts{display:flex;gap:6px;flex-wrap:wrap}
+.opt{border:1px solid rgba(10,10,10,.22);padding:8px 14px;font-size:12px;transition:.25s}
+.opt:hover{border-color:var(--noir)}
+.opt.on{background:var(--noir);color:#fff;border-color:var(--noir)}
+.opt small{font-size:9px;letter-spacing:.08em;opacity:.55;font-family:system-ui,sans-serif;
+  margin-left:7px}
+/* l'ascenseur de nuances, repris du configurateur */
+.rail{display:flex;gap:1px;flex:1;max-width:640px;height:16px;align-items:flex-end;
+  cursor:pointer;touch-action:none}
+.rail i{flex:1;height:8px;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 0 0 .5px rgba(10,10,10,.18);
+  transition:height .22s var(--e)}
+.rail:hover i{height:10px}
+.rail i.on{height:16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 0 0 1.5px var(--noir)}
+.etat{position:fixed;right:clamp(16px,3vw,44px);top:50%;transform:translateY(-50%);
+  text-align:right;z-index:5;pointer-events:none}
+.etat .n{font-size:clamp(22px,2.6vw,34px);font-style:italic}
+.etat .d{font-size:9px;letter-spacing:.22em;text-transform:uppercase;opacity:.45;
+  font-family:system-ui,sans-serif;margin-top:8px;line-height:2}
+#chargement{position:fixed;inset:0;background:var(--ecru);z-index:50;display:flex;
+  align-items:center;justify-content:center;font-size:10px;letter-spacing:.3em;
+  text-transform:uppercase;opacity:.5;font-family:system-ui,sans-serif;
+  transition:opacity .8s var(--e)}
+#chargement.fini{opacity:0;pointer-events:none}
+@media(max-width:760px){
+  .etat{display:none}
+  .reg .l{width:58px;font-size:8px}
+}
+</style></head>
+<body>
+
+<div id="scene"></div>
+<div id="chargement">La pièce prend forme…</div>
+
+<div class="hud">
+  <div class="marque">Tiraboschi</div>
+  <h1>L'Atelier <em>en volume</em></h1>
+  <div class="aide">Faites tourner la pièce</div>
+</div>
+
+<div class="etat">
+  <div class="n" id="etNom">—</div>
+  <div class="d" id="etDetail"></div>
+</div>
+
+<div class="compo">
+  <div class="reg"><span class="l">Matière</span><div class="opts" id="rMat"></div></div>
+  <div class="reg"><span class="l">Nuance</span><div class="rail" id="rNu"></div></div>
+  <div class="reg"><span class="l">Ferrures</span><div class="opts" id="rFer"></div>
+    <span class="l" style="width:auto;margin-left:18px">Pieds</span><div class="opts" id="rPieds"></div></div>
+</div>
+
+<script>/*__THREE__*/</script>
+<script>
+'use strict';
+/* ═══ Données : les vraies tuiles (photos client) + la carte des nuances ═══ */
+const TUILES = "__TUILES__";
+const NUANCES = "__NUANCES__";
+const MATIERES = [
+  { id:'graine', nom:'Grainé', rough:.82, bump:1.2, echelle:.85 },
+  { id:'caviar', nom:'Caviar', rough:.58, bump:1.6, echelle:1.0 },
+  { id:'lisse', nom:'Box lisse', rough:.34, bump:.4, echelle:.7 },
+  { id:'daim', nom:'Daim', rough:1.0, bump:.7, echelle:.8 },
+  { id:'galuchat', nom:'Galuchat', rough:.38, bump:1.8, echelle:1.1 },
+  { id:'alligator', nom:'Alligator', rough:.42, bump:1.8, echelle:.5 },
+];
+const FERRURES = [
+  { id:'laiton', nom:'Laiton', c:0xb08d57 },
+  { id:'palladium', nom:'Palladié', c:0xd6d9db },
+  { id:'or24', nom:'Or 24 ct', c:0xe6c063 },
+];
+const S = { matiere:'caviar', nuance:'cognac', ferrure:'laiton', pieds:true };
+
+/* ═══ Scène ═══ */
+const conteneur = document.getElementById('scene');
+const rendu = new THREE.WebGLRenderer({ antialias:true, alpha:true });
+rendu.setPixelRatio(Math.min(devicePixelRatio, 2));
+rendu.setSize(innerWidth, innerHeight);
+rendu.shadowMap.enabled = true;
+rendu.shadowMap.type = THREE.PCFSoftShadowMap;
+rendu.outputEncoding = THREE.sRGBEncoding;
+rendu.toneMapping = THREE.ACESFilmicToneMapping;
+rendu.toneMappingExposure = 1.05;
+conteneur.appendChild(rendu.domElement);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(30, innerWidth/innerHeight, .1, 100);
+camera.position.set(0, 1.1, 7.2);
+camera.lookAt(0, .4, 0);
+
+/* éclairage studio : une clef douce, un contre, un bain ambiant */
+scene.add(new THREE.HemisphereLight(0xfff6e8, 0xcfc4b4, .75));
+const clef = new THREE.DirectionalLight(0xffffff, .95);
+clef.position.set(3.4, 5.2, 4.2);
+clef.castShadow = true;
+clef.shadow.mapSize.set(2048, 2048);
+clef.shadow.camera.left = clef.shadow.camera.bottom = -4;
+clef.shadow.camera.right = clef.shadow.camera.top = 4;
+clef.shadow.radius = 6;
+scene.add(clef);
+const contre = new THREE.DirectionalLight(0xeef2ff, .3);
+contre.position.set(-4, 2.5, -3.5);
+scene.add(contre);
+
+/* sol : ombre seulement — le fond reste l'écru de la page */
+const sol = new THREE.Mesh(new THREE.PlaneGeometry(30, 30),
+  new THREE.ShadowMaterial({ opacity:.16 }));
+sol.rotation.x = -Math.PI/2; sol.position.y = -1.075; sol.receiveShadow = true;
+scene.add(sol);
+
+/* ═══ Textures : tuile photo → diffuse normalisée + normal map dérivée ═══ */
+const chargeur = new THREE.TextureLoader();
+const CACHE = {};
+function texturesDe(matId, cb) {
+  if (CACHE[matId]) return cb(CACHE[matId]);
+  const img = new Image();
+  img.onload = () => {
+    const N = img.width;
+    const cnv = document.createElement('canvas'); cnv.width = cnv.height = N;
+    const ctx = cnv.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    const src = ctx.getImageData(0, 0, N, N);
+    /* diffuse : la variation LENTE de la tuile (éclairage résiduel de la photo)
+       devient un damier quand la tuile se répète — on la divise par sa moyenne
+       locale (sous-échantillonnage 8×8 relissé), le relief vient des normales */
+    const petit = document.createElement('canvas'); petit.width = petit.height = 8;
+    const pctx = petit.getContext('2d');
+    pctx.drawImage(img, 0, 0, 8, 8);
+    const lent = document.createElement('canvas'); lent.width = lent.height = N;
+    const lctx = lent.getContext('2d');
+    lctx.imageSmoothingEnabled = true; lctx.imageSmoothingQuality = 'high';
+    lctx.drawImage(petit, 0, 0, N, N);
+    const bas = lctx.getImageData(0, 0, N, N);
+    const dif = ctx.createImageData(N, N);
+    for (let i = 0; i < src.data.length; i += 4) {
+      const v = Math.min(255, 158 * src.data[i] / Math.max(40, bas.data[i]));
+      dif.data[i] = dif.data[i+1] = dif.data[i+2] = v; dif.data[i+3] = 255;
+    }
+    const cD = document.createElement('canvas'); cD.width = cD.height = N;
+    cD.getContext('2d').putImageData(dif, 0, 0);
+    /* normal map : gradients de la tuile (le relief photographique devient volume) */
+    const nor = ctx.createImageData(N, N);
+    const g = (x, y) => src.data[(((y+N)%N)*N + ((x+N)%N))*4];
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+      const dx = (g(x+1,y) - g(x-1,y)) / 255, dy = (g(x,y+1) - g(x,y-1)) / 255;
+      const o = (y*N + x) * 4;
+      nor.data[o]   = 128 - dx * 220;
+      nor.data[o+1] = 128 - dy * 220;
+      nor.data[o+2] = 255; nor.data[o+3] = 255;
+    }
+    const cN = document.createElement('canvas'); cN.width = cN.height = N;
+    cN.getContext('2d').putImageData(nor, 0, 0);
+    const map = new THREE.CanvasTexture(cD), normale = new THREE.CanvasTexture(cN);
+    for (const t of [map, normale]) { t.wrapS = t.wrapT = THREE.RepeatWrapping; }
+    map.encoding = THREE.sRGBEncoding;
+    cb(CACHE[matId] = { map, normale });
+  };
+  img.src = TUILES[matId];
+}
+
+/* ═══ La pièce : silhouette Colette stylisée, construite en volume ═══ */
+const CUIR = new THREE.MeshStandardMaterial({ color:0x8f5424, metalness:0, roughness:.6 });
+const METAL = new THREE.MeshStandardMaterial({ color:0xb08d57, metalness:.78, roughness:.2 });
+const eclat = new THREE.PointLight(0xffffff, .5, 20);
+eclat.position.set(-1.5, 2.4, 4.5);
+scene.add(eclat);
+
+function contourArrondi(w, h, r) {
+  const s = new THREE.Shape();
+  s.moveTo(-w/2 + r, -h/2);
+  s.lineTo(w/2 - r, -h/2); s.quadraticCurveTo(w/2, -h/2, w/2, -h/2 + r);
+  s.lineTo(w/2, h/2 - r);  s.quadraticCurveTo(w/2, h/2, w/2 - r, h/2);
+  s.lineTo(-w/2 + r, h/2); s.quadraticCurveTo(-w/2, h/2, -w/2, h/2 - r);
+  s.lineTo(-w/2, -h/2 + r);s.quadraticCurveTo(-w/2, -h/2, -w/2 + r, -h/2);
+  return s;
+}
+const sac = new THREE.Group();
+
+/* corps */
+const corps = new THREE.Mesh(new THREE.ExtrudeGeometry(
+  contourArrondi(2.6, 2.0, .16), { depth:.6, bevelEnabled:true, bevelSize:.07, bevelThickness:.07, bevelSegments:5, curveSegments:24 }), CUIR);
+corps.position.z = -.30; corps.castShadow = true;
+sac.add(corps);
+
+/* rabat : descend sur la face avant, avec l'échancrure en V — la signature */
+(function(){
+  const w = 2.44, h = 1.28, r = .13, v = .42;
+  const s = new THREE.Shape();
+  s.moveTo(-w/2, h/2);
+  s.lineTo(w/2, h/2);
+  s.lineTo(w/2, -h/2 + r); s.quadraticCurveTo(w/2, -h/2, w/2 - r, -h/2);
+  s.lineTo(v/2 + .08, -h/2);
+  s.lineTo(0, -h/2 + v);            // le V remonte…
+  s.lineTo(-v/2 - .08, -h/2);       // …et redescend
+  s.lineTo(-w/2 + r, -h/2); s.quadraticCurveTo(-w/2, -h/2, -w/2, -h/2 + r);
+  s.closePath();
+  const rabat = new THREE.Mesh(new THREE.ExtrudeGeometry(s,
+    { depth:.09, bevelEnabled:true, bevelSize:.035, bevelThickness:.035, bevelSegments:4, curveSegments:18 }), CUIR);
+  rabat.position.set(0, .42, .41);
+  rabat.castShadow = true;
+  sac.add(rabat);
+})();
+
+/* anse : demi-tore posé sur le dessus */
+const anse = new THREE.Mesh(new THREE.TorusGeometry(.78, .085, 24, 60, Math.PI), CUIR);
+anse.position.y = 1.04; anse.castShadow = true;
+sac.add(anse);
+
+/* fermoir (métal) sous la pointe du V */
+const fermoir = new THREE.Group();
+const fBarre = new THREE.Mesh(new THREE.CylinderGeometry(.05, .05, .34, 24), METAL);
+fBarre.rotation.z = Math.PI/2;
+const fPointe = new THREE.Mesh(new THREE.SphereGeometry(.075, 24, 16), METAL);
+fPointe.position.y = -.1;
+fermoir.add(fBarre, fPointe);
+fermoir.position.set(0, -.28, .49); fermoir.castShadow = true;
+sac.add(fermoir);
+
+/* attaches d'anse (métal) */
+for (const sx of [-1, 1]) {
+  const att = new THREE.Mesh(new THREE.CylinderGeometry(.1, .1, .16, 20), METAL);
+  att.position.set(sx * .78, 1.06, 0); att.castShadow = true;
+  sac.add(att);
+}
+
+/* pieds (option) : cinq clous sous le fond */
+const pieds = new THREE.Group();
+for (const [px, pz] of [[-.9,-.16],[.9,-.16],[-.9,.16],[.9,.16],[0,0]]) {
+  const c = new THREE.Mesh(new THREE.SphereGeometry(.06, 20, 14), METAL);
+  c.position.set(px, -1.06, pz); c.castShadow = true;
+  pieds.add(c);
+}
+sac.add(pieds);
+sac.position.y = .18;
+scene.add(sac);
+
+/* ═══ Application des choix ═══ */
+function appliquer() {
+  const m = MATIERES.find(x => x.id === S.matiere);
+  const n = NUANCES.find(x => x.id === S.nuance);
+  const f = FERRURES.find(x => x.id === S.ferrure);
+  texturesDe(m.id, tx => {
+    CUIR.map = tx.map; CUIR.normalMap = tx.normale;
+    CUIR.map.repeat.set(m.echelle, m.echelle);
+    CUIR.normalMap.repeat.set(m.echelle, m.echelle);
+    CUIR.normalScale = new THREE.Vector2(m.bump, m.bump);
+    CUIR.roughness = m.rough;
+    CUIR.color = new THREE.Color(n.hex);
+    CUIR.needsUpdate = true;
+    document.getElementById('chargement').classList.add('fini');
+  });
+  METAL.color = new THREE.Color(f.c);
+  pieds.visible = S.pieds;
+  document.getElementById('etNom').textContent = n.nom;
+  document.getElementById('etDetail').innerHTML =
+    m.nom + '<br>ferrures ' + f.nom.toLowerCase() + '<br>' + (S.pieds ? 'cinq clous' : 'sans pieds');
+  rendreUI();
+}
+
+/* ═══ UI ═══ */
+function rendreUI() {
+  const rM = document.getElementById('rMat'); rM.innerHTML = '';
+  MATIERES.forEach(m => {
+    const b = document.createElement('button');
+    b.className = 'opt' + (S.matiere === m.id ? ' on' : '');
+    b.textContent = m.nom;
+    b.onclick = () => { S.matiere = m.id; appliquer(); };
+    rM.appendChild(b);
+  });
+  const rF = document.getElementById('rFer'); rF.innerHTML = '';
+  FERRURES.forEach(f => {
+    const b = document.createElement('button');
+    b.className = 'opt' + (S.ferrure === f.id ? ' on' : '');
+    b.textContent = f.nom;
+    b.onclick = () => { S.ferrure = f.id; appliquer(); };
+    rF.appendChild(b);
+  });
+  const rP = document.getElementById('rPieds'); rP.innerHTML = '';
+  [[true, 'Cinq clous'], [false, 'Sans']].forEach(([v, t]) => {
+    const b = document.createElement('button');
+    b.className = 'opt' + (S.pieds === v ? ' on' : '');
+    b.textContent = t;
+    b.onclick = () => { S.pieds = v; appliquer(); };
+    rP.appendChild(b);
+  });
+}
+(function(){
+  const rail = document.getElementById('rNu');
+  NUANCES.forEach(n => {
+    const i = document.createElement('i');
+    i.style.background = n.hex; i.title = n.nom; i.dataset.id = n.id;
+    i.className = S.nuance === n.id ? 'on' : '';
+    rail.appendChild(i);
+  });
+  let actif = null;
+  function vise(e) {
+    const r = rail.getBoundingClientRect();
+    const k = Math.max(0, Math.min(NUANCES.length - 1,
+      Math.floor((e.clientX - r.left) / r.width * NUANCES.length)));
+    if (NUANCES[k].id !== S.nuance) {
+      S.nuance = NUANCES[k].id;
+      rail.querySelectorAll('i').forEach(x => x.classList.toggle('on', x.dataset.id === S.nuance));
+      appliquer();
+    }
+  }
+  rail.addEventListener('pointerdown', e => { actif = e.pointerId; vise(e);
+    try { rail.setPointerCapture(actif) } catch(_){} });
+  rail.addEventListener('pointermove', e => { if (actif === e.pointerId) vise(e); });
+  rail.addEventListener('pointerup', () => actif = null);
+})();
+
+/* ═══ Rotation : glisser = tourner, avec élan ; lente dérive au repos ═══ */
+let rotY = -.5, rotX = .06, vel = 0, id = null, x0 = 0, y0 = 0, repos = 0;
+conteneur.addEventListener('pointerdown', e => {
+  id = e.pointerId; x0 = e.clientX; y0 = e.clientY; vel = 0;
+  conteneur.classList.add('tire');
+  try { conteneur.setPointerCapture(id) } catch(_){}
+});
+conteneur.addEventListener('pointermove', e => {
+  if (id !== e.pointerId) return;
+  const dx = e.clientX - x0, dy = e.clientY - y0; x0 = e.clientX; y0 = e.clientY;
+  rotY += dx * .008; vel = dx * .008;
+  rotX = Math.max(-.25, Math.min(.55, rotX + dy * .004));
+  repos = 0;
+});
+const fin = e => { if (id === e.pointerId) { id = null; conteneur.classList.remove('tire'); } };
+conteneur.addEventListener('pointerup', fin);
+conteneur.addEventListener('pointercancel', fin);
+
+function boucle() {
+  requestAnimationFrame(boucle);
+  if (id === null) {
+    rotY += vel; vel *= .95;                     // l'élan s'éteint
+    repos++;
+    if (repos > 300) rotY += .0022;              // puis la pièce dérive, lentement
+  }
+  sac.rotation.y = rotY;
+  sac.rotation.x = rotX * .4;
+  rendu.render(scene, camera);
+}
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  rendu.setSize(innerWidth, innerHeight);
+});
+
+appliquer();
+boucle();
+</script>
+</body></html>
