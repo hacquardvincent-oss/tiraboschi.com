@@ -70,7 +70,7 @@ button{font-family:inherit;color:inherit;background:none;border:none;cursor:poin
 
 <div class="hud">
   <div class="marque">Tiraboschi</div>
-  <h1>L'Atelier <em>en volume</em></h1>
+  <h1>Rafaël <em>en volume</em></h1>
   <div class="aide">Faites tourner la pièce</div>
 </div>
 
@@ -83,7 +83,8 @@ button{font-family:inherit;color:inherit;background:none;border:none;cursor:poin
   <div class="reg"><span class="l">Matière</span><div class="opts" id="rMat"></div></div>
   <div class="reg"><span class="l">Nuance</span><div class="rail" id="rNu"></div></div>
   <div class="reg"><span class="l">Ferrures</span><div class="opts" id="rFer"></div>
-    <span class="l" style="width:auto;margin-left:18px">Pieds</span><div class="opts" id="rPieds"></div></div>
+    <span class="l" style="width:auto;margin-left:18px">Passepoil</span><div class="opts" id="rPasse"></div>
+    <span class="l" style="width:auto;margin-left:18px">Bandoulière</span><div class="opts" id="rStrap"></div></div>
 </div>
 
 <script>/*__THREE__*/</script>
@@ -105,7 +106,14 @@ const FERRURES = [
   { id:'palladium', nom:'Palladié', c:0xd6d9db },
   { id:'or24', nom:'Or 24 ct', c:0xe6c063 },
 ];
-const S = { matiere:'caviar', nuance:'cognac', ferrure:'laiton', pieds:true };
+const PASSEPOILS = [
+  { id:'framboise', nom:'Framboise', c:0x9c2440 },
+  { id:'noir', nom:'Noir', c:0x141414 },
+  { id:'marine', nom:'Marine', c:0x243352 },
+  { id:'cognac', nom:'Cognac', c:0x8f5424 },
+  { id:'vert', nom:'Vert Empire', c:0x1e3a30 },
+];
+const S = { matiere:'caviar', nuance:'noir', ferrure:'or24', passepoil:'framboise', strap:true };
 
 /* ═══ Scène ═══ */
 const conteneur = document.getElementById('scene');
@@ -121,8 +129,8 @@ conteneur.appendChild(rendu.domElement);
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(30, innerWidth/innerHeight, .1, 100);
-camera.position.set(0, 1.1, 7.2);
-camera.lookAt(0, .4, 0);
+camera.position.set(0, 1.15, 7.6);
+camera.lookAt(0, .85, 0);
 
 /* éclairage studio : une clef douce, un contre, un bain ambiant */
 scene.add(new THREE.HemisphereLight(0xfff6e8, 0xcfc4b4, .75));
@@ -194,9 +202,12 @@ function texturesDe(matId, cb) {
   img.src = TUILES[matId];
 }
 
-/* ═══ La pièce : silhouette Colette stylisée, construite en volume ═══ */
-const CUIR = new THREE.MeshStandardMaterial({ color:0x8f5424, metalness:0, roughness:.6 });
-const METAL = new THREE.MeshStandardMaterial({ color:0xb08d57, metalness:.78, roughness:.2 });
+/* ═══ La pièce : la POCHETTE RAFAËL, d'après les photos de la maison ═══
+   Enveloppe à rabat en V inversé, anneau en D, passepoil contrasté le long
+   des diagonales, fine bandoulière d'épaule. Proportions ~30 × 19 × 4 cm. */
+const CUIR = new THREE.MeshStandardMaterial({ color:0x161616, metalness:0, roughness:.6 });
+const METAL = new THREE.MeshStandardMaterial({ color:0xe6c063, metalness:.78, roughness:.2 });
+const PASSE = new THREE.MeshStandardMaterial({ color:0x9c2440, metalness:0, roughness:.55 });
 const eclat = new THREE.PointLight(0xffffff, .5, 20);
 eclat.position.set(-1.5, 2.4, 4.5);
 scene.add(eclat);
@@ -212,64 +223,82 @@ function contourArrondi(w, h, r) {
 }
 const sac = new THREE.Group();
 
-/* corps */
+/* corps : enveloppe fine, angles à peine adoucis */
+const L = 3.0, H = 1.9, EP = .3;
 const corps = new THREE.Mesh(new THREE.ExtrudeGeometry(
-  contourArrondi(2.6, 2.0, .16), { depth:.6, bevelEnabled:true, bevelSize:.07, bevelThickness:.07, bevelSegments:5, curveSegments:24 }), CUIR);
-corps.position.z = -.30; corps.castShadow = true;
+  contourArrondi(L, H, .06),
+  { depth:EP, bevelEnabled:true, bevelSize:.045, bevelThickness:.045, bevelSegments:4, curveSegments:20 }), CUIR);
+corps.position.z = -EP/2; corps.castShadow = true;
 sac.add(corps);
+const zAvant = EP/2 + .045;
 
-/* rabat : descend sur la face avant, avec l'échancrure en V — la signature */
+/* rabat : bords quasi verticaux depuis le haut, puis les deux diagonales
+   qui descendent vers la pointe — l'enveloppe des photos */
+const yEpaule = .28, yPointe = -.36, xPointe = .0;
 (function(){
-  const w = 2.44, h = 1.28, r = .13, v = .42;
   const s = new THREE.Shape();
-  s.moveTo(-w/2, h/2);
-  s.lineTo(w/2, h/2);
-  s.lineTo(w/2, -h/2 + r); s.quadraticCurveTo(w/2, -h/2, w/2 - r, -h/2);
-  s.lineTo(v/2 + .08, -h/2);
-  s.lineTo(0, -h/2 + v);            // le V remonte…
-  s.lineTo(-v/2 - .08, -h/2);       // …et redescend
-  s.lineTo(-w/2 + r, -h/2); s.quadraticCurveTo(-w/2, -h/2, -w/2, -h/2 + r);
+  s.moveTo(-L/2, H/2);
+  s.lineTo(L/2, H/2);
+  s.lineTo(L/2, yEpaule);
+  s.lineTo(xPointe + .05, yPointe);
+  s.quadraticCurveTo(0, yPointe - .05, xPointe - .05, yPointe);
+  s.lineTo(-L/2, yEpaule);
   s.closePath();
   const rabat = new THREE.Mesh(new THREE.ExtrudeGeometry(s,
-    { depth:.09, bevelEnabled:true, bevelSize:.035, bevelThickness:.035, bevelSegments:4, curveSegments:18 }), CUIR);
-  rabat.position.set(0, .42, .41);
+    { depth:.05, bevelEnabled:true, bevelSize:.022, bevelThickness:.022, bevelSegments:3, curveSegments:14 }), CUIR);
+  rabat.position.z = zAvant;
   rabat.castShadow = true;
   sac.add(rabat);
 })();
 
-/* anse : demi-tore posé sur le dessus */
-const anse = new THREE.Mesh(new THREE.TorusGeometry(.78, .085, 24, 60, Math.PI), CUIR);
-anse.position.y = 1.04; anse.castShadow = true;
-sac.add(anse);
-
-/* fermoir (métal) sous la pointe du V */
-const fermoir = new THREE.Group();
-const fBarre = new THREE.Mesh(new THREE.CylinderGeometry(.05, .05, .34, 24), METAL);
-fBarre.rotation.z = Math.PI/2;
-const fPointe = new THREE.Mesh(new THREE.SphereGeometry(.075, 24, 16), METAL);
-fPointe.position.y = -.1;
-fermoir.add(fBarre, fPointe);
-fermoir.position.set(0, -.28, .49); fermoir.castShadow = true;
-sac.add(fermoir);
-
-/* attaches d'anse (métal) */
-for (const sx of [-1, 1]) {
-  const att = new THREE.Mesh(new THREE.CylinderGeometry(.1, .1, .16, 20), METAL);
-  att.position.set(sx * .78, 1.06, 0); att.castShadow = true;
-  sac.add(att);
+/* passepoil contrasté : un fin boudin le long de chaque diagonale du rabat */
+function boudin(x1, y1, x2, y2) {
+  const dx = x2 - x1, dy = y2 - y1, long = Math.hypot(dx, dy);
+  const b = new THREE.Mesh(new THREE.CylinderGeometry(.02, .02, long, 12), PASSE);
+  b.position.set((x1+x2)/2, (y1+y2)/2, zAvant + .05);
+  b.rotation.z = Math.atan2(dy, dx) + Math.PI/2;
+  b.castShadow = true;
+  return b;
 }
+sac.add(boudin(L/2, yEpaule, xPointe + .04, yPointe - .01));
+sac.add(boudin(-L/2, yEpaule, xPointe - .04, yPointe - .01));
 
-/* pieds (option) : cinq clous sous le fond */
-const pieds = new THREE.Group();
-for (const [px, pz] of [[-.9,-.16],[.9,-.16],[-.9,.16],[.9,.16],[0,0]]) {
-  const c = new THREE.Mesh(new THREE.SphereGeometry(.06, 20, 14), METAL);
-  c.position.set(px, -1.06, pz); c.castShadow = true;
-  pieds.add(c);
-}
-sac.add(pieds);
-sac.position.y = .18;
+/* l'anneau en D : un tore un peu écrasé + la patte de cuir qui le traverse */
+const anneau = new THREE.Group();
+const tore = new THREE.Mesh(new THREE.TorusGeometry(.24, .062, 22, 46), METAL);
+tore.scale.y = .9;
+anneau.add(tore);
+const patte = new THREE.Mesh(new THREE.BoxGeometry(.15, .42, .05), CUIR);
+patte.position.set(0, .17, -.015);
+anneau.add(patte);
+anneau.position.set(0, yPointe + .1, zAvant + .095);
+anneau.traverse(o => o.castShadow = true);
+sac.add(anneau);
+
+/* bandoulière : fine, part des coins hauts, monte en arche souple */
+const strap = new THREE.Group();
+(function(){
+  const chemin = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-L/2 + .12, H/2 - .04, 0),
+    new THREE.Vector3(-L/2 + .05, H/2 + 1.1, -.08),
+    new THREE.Vector3(0, H/2 + 1.95, -.12),
+    new THREE.Vector3(L/2 - .05, H/2 + 1.1, -.08),
+    new THREE.Vector3(L/2 - .12, H/2 - .04, 0),
+  ]);
+  const ruban = new THREE.Mesh(new THREE.TubeGeometry(chemin, 60, .028, 10), CUIR);
+  ruban.castShadow = true;
+  strap.add(ruban);
+  for (const sx of [-1, 1]) {
+    const att = new THREE.Mesh(new THREE.CylinderGeometry(.05, .05, .09, 16), METAL);
+    att.position.set(sx * (L/2 - .12), H/2 - .02, 0);
+    att.castShadow = true;
+    strap.add(att);
+  }
+})();
+sac.add(strap);
+sac.position.y = .55;
 scene.add(sac);
-
+sol.position.y = .55 - H/2 - .095;
 /* ═══ Application des choix ═══ */
 function appliquer() {
   const m = MATIERES.find(x => x.id === S.matiere);
@@ -286,10 +315,14 @@ function appliquer() {
     document.getElementById('chargement').classList.add('fini');
   });
   METAL.color = new THREE.Color(f.c);
-  pieds.visible = S.pieds;
+  const pp = PASSEPOILS.find(x => x.id === S.passepoil);
+  PASSE.color = new THREE.Color(pp.c);
+  strap.visible = S.strap;
   document.getElementById('etNom').textContent = n.nom;
   document.getElementById('etDetail').innerHTML =
-    m.nom + '<br>ferrures ' + f.nom.toLowerCase() + '<br>' + (S.pieds ? 'cinq clous' : 'sans pieds');
+    m.nom + '<br>ferrures ' + f.nom.toLowerCase() +
+    '<br>passepoil ' + pp.nom.toLowerCase() +
+    '<br>' + (S.strap ? 'bandoulière' : 'pochette nue');
   rendreUI();
 }
 
@@ -311,13 +344,21 @@ function rendreUI() {
     b.onclick = () => { S.ferrure = f.id; appliquer(); };
     rF.appendChild(b);
   });
-  const rP = document.getElementById('rPieds'); rP.innerHTML = '';
-  [[true, 'Cinq clous'], [false, 'Sans']].forEach(([v, t]) => {
+  const rPp = document.getElementById('rPasse'); rPp.innerHTML = '';
+  PASSEPOILS.forEach(x => {
     const b = document.createElement('button');
-    b.className = 'opt' + (S.pieds === v ? ' on' : '');
+    b.className = 'opt' + (S.passepoil === x.id ? ' on' : '');
+    b.textContent = x.nom;
+    b.onclick = () => { S.passepoil = x.id; appliquer(); };
+    rPp.appendChild(b);
+  });
+  const rS = document.getElementById('rStrap'); rS.innerHTML = '';
+  [[true, 'Avec'], [false, 'Sans']].forEach(([v, t]) => {
+    const b = document.createElement('button');
+    b.className = 'opt' + (S.strap === v ? ' on' : '');
     b.textContent = t;
-    b.onclick = () => { S.pieds = v; appliquer(); };
-    rP.appendChild(b);
+    b.onclick = () => { S.strap = v; appliquer(); };
+    rS.appendChild(b);
   });
 }
 (function(){
@@ -371,7 +412,7 @@ function boucle() {
     if (repos > 300) rotY += .0022;              // puis la pièce dérive, lentement
   }
   sac.rotation.y = rotY;
-  sac.rotation.x = rotX * .4;
+  sac.rotation.x = rotX * .35;
   rendu.render(scene, camera);
 }
 addEventListener('resize', () => {
