@@ -62,3 +62,34 @@ même interface — l'utilisateur ne voit pas la différence de technologie.
    maison — c'est elle qui donne au laiton ses reflets caractéristiques.
 4. **Les pièces de quincaillerie** modélisées d'après les vraies (l'anneau en D
    a un méplat et une gorge que je ne peux pas deviner des photos).
+
+---
+
+## Voie A en production : les rendus de l'Atelier
+
+`atelier_renders.py` produit les images utilisées par
+`tiraboschi-atelier-prototype.html` :
+
+```bash
+for m in graine caviar lisse daim galuchat alligator masque; do
+  python3 tools/3d-cycles/atelier_renders.py $m tools/rendus/rafael-$m.png 140 900
+done
+python3 tools/3d-cycles/vitrine.py caviar tools/rendus/rafael-vitrine.png 160 900
+# puis compresser en WebP (760 px, q 86–88) et réinjecter en base64
+```
+
+**Le principe qui rend la combinatoire tenable** : chaque matière est rendue
+une seule fois, en **base neutre** (albédo 0,42) sur **fond transparent**, plus
+**une passe de masque** où seul le cuir reste opaque (l'or et le passepoil sont
+en *holdout*). Le navigateur applique alors la nuance en
+`mix-blend-mode: multiply` **à travers ce masque** :
+
+- 6 matières + 1 masque + 1 vitrine = **8 images (592 Ko)** ;
+- elles couvrent **6 × 52 = 312 combinaisons** ;
+- l'or reste or, le passepoil reste framboise, le grain vient du rendu ;
+- une nuance sombre donne un noir dense (le multiply assombrit vraiment).
+
+Repères de la fiche placés d'après des mesures **sur l'image** : corps
+44–89 % de la hauteur, anneau d'or à 50,7 / 74 % (localisé par ses pixels
+dorés), bandoulière 6–44 %. Le cadre `.atl__ph.rendu` se cale sur l'image, donc
+les pourcentages tombent au pixel près quelle que soit la fenêtre.

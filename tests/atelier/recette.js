@@ -248,7 +248,43 @@ const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m);
     });
     ok(masques.length === 0, 'tous les repères sont atteignables ' + JSON.stringify(masques));
 
+    // ── 9bis. Le mode RENDU (Rafaël) : rendu Cycles + teinte masquée au cuir
+    await p.click('.pa[data-s="1"]'); await p.waitForTimeout(600);
+    await p.evaluate(() => document.querySelector('.dot[data-i="2"]').click());
+    await p.waitForTimeout(700);
+    await p.click('#dkGo'); await p.waitForTimeout(900);
+    const nu = await p.evaluate(() => window.__rendu());
+    ok(nu.mode, 'Rafaël bascule le cadre en mode rendu');
+    ok(nu.src.startsWith('data:image/webp'), 'la pièce affichée est un rendu embarqué');
+    ok(nu.melange === 'multiply', 'la nuance est appliquée en multiply');
+    ok(/^url\("data:image\/webp/.test(nu.masque), 'la teinte est masquée au cuir (l\'or reste or)');
+
+    await p.click('.aj[data-k="ext"]'); await p.waitForTimeout(700);
+    const srcAvant = (await p.evaluate(() => window.__rendu())).src;
+    await p.click('.fm[data-f="alligator"]'); await p.waitForTimeout(400);
+    await p.click('#plgOk'); await p.waitForTimeout(1200);
+    const apresR = await p.evaluate(() => window.__rendu());
+    ok(apresR.src !== srcAvant || apresR.teinte !== 'rgba(0, 0, 0, 0)',
+       'changer de matière change le rendu affiché');
+    ok(apresR.teinte !== 'rgba(0, 0, 0, 0)', `la nuance est posée (${apresR.teinte})`);
+
+    // le repère des ferrures tombe sur l'anneau d'or du rendu
+    const surOr = await p.evaluate(() => {
+      const r = document.querySelector('.rep[data-k="ferrures"]');
+      const img = document.getElementById('atlPh');
+      if (!r || !img) return null;
+      const b = r.getBoundingClientRect(), i = img.getBoundingClientRect();
+      return { x: (b.left + b.width / 2 - i.left) / i.width,
+               y: (b.top + b.height / 2 - i.top) / i.height };
+    });
+    ok(surOr && surOr.x > 0.42 && surOr.x < 0.60 && surOr.y > 0.66 && surOr.y < 0.82,
+       `le repère « ferrures » tombe sur l'anneau (${(surOr.x*100).toFixed(1)} / ${(surOr.y*100).toFixed(1)} %)`);
+
     // ── 10. La fiche n'offre que ce que la silhouette possède
+    await p.click('.pa[data-s="1"]'); await p.waitForTimeout(600);
+    await p.evaluate(() => document.querySelector('.dot[data-i="0"]').click());
+    await p.waitForTimeout(700);
+    await p.click('#dkGo'); await p.waitForTimeout(900);
     const filtre = await p.evaluate(() => ({
       v: !!document.querySelector('#fiche .aj[data-k="v"]'),
       pochon: !!document.querySelector('#fiche .aj[data-k="pochon"]'),
