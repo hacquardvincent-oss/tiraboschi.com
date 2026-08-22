@@ -178,6 +178,8 @@ const ok = (c, m) => { console.log((c ? '  ✓ ' : '  ✗ ') + m); if (!c) ko++;
     const t0 = await p.evaluate(() => window.__tour());
     ok(t0.angle === 0 && !t0.detourne, 'la pièce se présente de face');
     const boite = await p.locator('#ph').boundingBox();
+    ok(boite.width > 200 && boite.height > 200,
+       `la place de la pièce est réservée (${Math.round(boite.width)}×${Math.round(boite.height)})`);
     await p.mouse.move(boite.x + boite.width * .6, boite.y + boite.height * .5);
     await p.mouse.down();
     for (let k = 1; k <= 10; k++)
@@ -190,17 +192,25 @@ const ok = (c, m) => { console.log((c ? '  ✓ ' : '  ✗ ') + m); if (!c) ko++;
     ok(t1.masque.startsWith('url("data:image'), 'le masque suit la position');
 
     // au-delà de 180°, la position est obtenue en reflétant le rendu
-    await p.evaluate(() => { for (let k = 0; k < 40; k++)
-      document.getElementById('ph').dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })); });
-    await p.waitForTimeout(400);
-    const t2 = await p.evaluate(() => window.__tour());
-    ok(t2.angle > t2.pos / 2 ? t2.miroir : !t2.miroir,
-       `au-delà de 180° le rendu est reflété (position ${t2.angle}, miroir : ${t2.miroir})`);
+    const sym = await p.evaluate(async () => {
+      const lu = [];
+      for (const a of [0, 6, 12, 13, 18, 23]) {
+        window.__tourner(a);
+        const t = window.__tour();
+        lu.push({ a, miroir: t.miroir, src: t.src });
+      }
+      window.__tourner(0);
+      return lu;
+    });
+    const rendues = sym.filter(x => x.a <= 12), refletees = sym.filter(x => x.a > 12);
+    ok(rendues.every(x => !x.miroir) && refletees.every(x => x.miroir),
+       `0°–180° rendus, 195°–345° reflétés (${refletees.map(x => x.a * 15 + '°').join(', ')})`);
     await p.evaluate(() => document.getElementById('ph')
       .dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true })));
     await p.waitForTimeout(500);
     const t3 = await p.evaluate(() => window.__tour());
-    ok(t3.angle === 0 && !t3.detourne, 'on revient de face, les repères reviennent');
+    ok(t3.angle === 0 && !t3.detourne,
+       `on revient de face, les repères reviennent (angle ${t3.angle}, détourné ${t3.detourne})`);
 
     // ── 7. Le certificat, et l'absence de paiement
     await p.click('#voirCert'); await p.waitForTimeout(900);
