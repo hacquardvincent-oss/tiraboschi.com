@@ -174,6 +174,34 @@ const ok = (c, m) => { console.log((c ? '  ✓ ' : '  ✗ ') + m); if (!c) ko++;
     ok(habille.rendu.startsWith('data:image/webp'), 'la pièce affichée est un rendu Cycles');
     ok(habille.total === 1900 + 3800, `le prix suit (${habille.total} €)`);
 
+    // ── 6bis. La rotation 360° de la pièce
+    const t0 = await p.evaluate(() => window.__tour());
+    ok(t0.angle === 0 && !t0.detourne, 'la pièce se présente de face');
+    const boite = await p.locator('#ph').boundingBox();
+    await p.mouse.move(boite.x + boite.width * .6, boite.y + boite.height * .5);
+    await p.mouse.down();
+    for (let k = 1; k <= 10; k++)
+      await p.mouse.move(boite.x + boite.width * (.6 - .04 * k), boite.y + boite.height * .5);
+    await p.mouse.up(); await p.waitForTimeout(900);
+    const t1 = await p.evaluate(() => window.__tour());
+    ok(t1.angle !== 0, `le glissé fait tourner la pièce (position ${t1.angle}/${t1.pos})`);
+    ok(t1.detourne, 'les repères s\'effacent dès que la pièce quitte la face');
+    ok(t1.src.startsWith('data:image/webp'), 'chaque position est un rendu Cycles');
+    ok(t1.masque.startsWith('url("data:image'), 'le masque suit la position');
+
+    // au-delà de 180°, la position est obtenue en reflétant le rendu
+    await p.evaluate(() => { for (let k = 0; k < 40; k++)
+      document.getElementById('ph').dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })); });
+    await p.waitForTimeout(400);
+    const t2 = await p.evaluate(() => window.__tour());
+    ok(t2.angle > t2.pos / 2 ? t2.miroir : !t2.miroir,
+       `au-delà de 180° le rendu est reflété (position ${t2.angle}, miroir : ${t2.miroir})`);
+    await p.evaluate(() => document.getElementById('ph')
+      .dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true })));
+    await p.waitForTimeout(500);
+    const t3 = await p.evaluate(() => window.__tour());
+    ok(t3.angle === 0 && !t3.detourne, 'on revient de face, les repères reviennent');
+
     // ── 7. Le certificat, et l'absence de paiement
     await p.click('#voirCert'); await p.waitForTimeout(900);
     const cert = await p.evaluate(() => ({

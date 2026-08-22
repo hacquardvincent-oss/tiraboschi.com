@@ -10,9 +10,10 @@ def b64(p, mime='image/webp'):
 
 TUILES = {m: b64('tools/demo/%s.webp' % m)
           for m in ['graine', 'caviar', 'lisse', 'daim', 'galuchat', 'alligator']}
-RENDUS = {m: b64('tools/rendus/rafael-%s.webp' % m)
-          for m in ['graine', 'caviar', 'lisse', 'daim', 'galuchat', 'alligator',
-                    'masque', 'vitrine']}
+# position 0 en haute définition — même studio et même cadrage que la série 360°,
+# pour que la pièce au repos ne saute pas quand on la fait tourner
+RENDUS = {m: b64('tools/rot360/hd-%s.webp' % m)
+          for m in ['graine', 'caviar', 'lisse', 'daim', 'galuchat', 'alligator', 'masque']}
 
 N = lambda i, n, h: {'id': i, 'nom': n, 'hex': h}
 NUANCES = [
@@ -44,9 +45,15 @@ NUANCES = [
  N('vert-empire','Vert Empire','#1e3a30'), N('bouteille','Vert Bouteille','#24523c'),
 ]
 
+# ── la séquence 360° : 13 positions par matière (0°→180°), le reste en miroir
+ROT = {}
+for m in ['graine', 'caviar', 'lisse', 'daim', 'galuchat', 'alligator', 'masque']:
+    ROT[m] = [b64('tools/rot360/%s-%02d.webp' % (m, i)) for i in range(13)]
+
 s = open(GAB, encoding='utf-8').read()
 s = (s.replace('"__TUILES__"', json.dumps(TUILES))
       .replace('"__RENDUS__"', json.dumps(RENDUS))
+      .replace('"__ROT__"', json.dumps(ROT))
       .replace('"__NUANCES__"', json.dumps(NUANCES, ensure_ascii=False)))
 open('tiraboschi-maison-demo.html', 'w', encoding='utf-8').write(s)
 print('assemblé : %d Ko' % (len(s) // 1024))

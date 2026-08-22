@@ -370,10 +370,26 @@ img{display:block;max-width:100%}
   grid-template-columns:1fr clamp(330px,31vw,440px);background:var(--ecru);color:var(--noir)}
 .atl__sc{position:relative;display:flex;align-items:center;justify-content:center;
   padding:70px 10px 14px}
-.atl__ph{position:relative;max-width:100%;max-height:100%;isolation:isolate}
+.atl__ph{position:relative;max-width:100%;max-height:100%;isolation:isolate;
+  touch-action:none;cursor:grab}
+.atl__ph.tourne{cursor:grabbing}
 .atl__ph img{display:block;width:auto;height:auto;max-width:100%;
   max-height:calc(100svh - 96px);object-fit:contain;
   transition:opacity .6s var(--e)}
+/* La moitié 195°→345° est le MIROIR de 165°→15° : le studio est monté
+   symétrique, ce qui divise par deux le nombre de rendus. */
+.atl__ph.miroir img,.atl__ph.miroir .atl__t{transform:scaleX(-1)}
+/* Les repères ne valent que de face : ils s'effacent dès qu'on tourne. */
+.atl__reps{transition:opacity .35s var(--e)}
+.atl__ph.detourne .atl__reps{opacity:0;pointer-events:none}
+.tourner{position:absolute;left:0;right:0;bottom:4px;text-align:center;z-index:7;
+  font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.26em;
+  font-size:9px;opacity:.3;pointer-events:none;transition:opacity .5s}
+.atl__ph.tourne .tourner,.atl__ph.detourne .tourner{opacity:0}
+.deg{position:absolute;right:2px;top:2px;z-index:7;font-family:system-ui,sans-serif;
+  letter-spacing:.18em;font-size:9px;opacity:0;pointer-events:none;
+  transition:opacity .4s}
+.atl__ph.tourne .deg,.atl__ph.detourne .deg{opacity:.42}
 /* la nuance se multiplie À TRAVERS le masque du cuir : l'or reste or */
 .atl__t{position:absolute;inset:0;mix-blend-mode:multiply;opacity:0;pointer-events:none;
   -webkit-mask-size:100% 100%;mask-size:100% 100%;
@@ -748,6 +764,8 @@ img{display:block;max-width:100%}
           <img id="phImg" alt="Votre Rafaël">
           <div class="atl__t" id="phT"></div>
           <div class="atl__reps" id="reps"></div>
+          <p class="tourner" id="tourner">Faites tourner la pièce</p>
+          <p class="deg" id="deg"></p>
         </div>
       </div>
       <aside class="fiche">
@@ -811,6 +829,9 @@ const euros = n => n.toLocaleString('fr-FR').replace(/ | /g, ' ') + ' €';
 /* ═══ Les assets embarqués : tuiles de cuir et rendus Cycles ═══ */
 const TX = "__TUILES__";
 const RENDUS = "__RENDUS__";
+/* ROT[matiere] = 13 rendus de 0° à 180°, par pas de 15° ; les positions
+   195°→345° s'obtiennent en reflétant (le studio est symétrique). */
+const ROT = "__ROT__";
 const NUANCES = "__NUANCES__";
 
 /* ═══ Le Référentiel — visibilité = ce qui est réservé ═══
@@ -1285,13 +1306,12 @@ function rafraichir() {
   const cle = c ? c.m.id + ':' + c.n.id : '';
   if (cle !== cuirPose) {
     cuirPose = cle;
-    if (!c) { $('phT').style.opacity = '0'; $('phImg').src = RENDUS.graine; }
+    if (!c) $('phT').style.opacity = '0';
     else {
-      const r = RENDUS[c.m.id] || RENDUS.graine;
-      if ($('phImg').getAttribute('src') !== r) $('phImg').src = r;
       $('phT').style.backgroundColor = c.hex;
       $('phT').style.opacity = '1';
     }
+    tourner(angle, true);   /* la série suit la matière, à l'angle où l'on est */
   }
   majTotal();
 }
@@ -1301,6 +1321,77 @@ function majTotal() {
   if (txt === prec) return;
   el.textContent = txt; prec = txt;
 }
+
+/* ─── la rotation : 24 positions, 13 rendus, l'autre moitié en miroir ─── */
+const POS = 24;                     // positions sur 360°
+const DEMI = POS / 2;               // 12 → indices 0..12 rendus, 13..23 reflétés
+let angle = 0;                      // position courante, 0 = de face
+/* Une position → { i: rendu à charger, m: faut-il refléter ? } */
+function positionner(a) {
+  a = ((a % POS) + POS) % POS;
+  return a <= DEMI ? { i: a, m: false } : { i: POS - a, m: true };
+}
+function tourner(a, force) {
+  const av = angle;
+  angle = ((a % POS) + POS) % POS;
+  if (angle === av && !force) return;
+  const p = positionner(angle);
+  const c = cuirCourant();
+  const mat = c ? c.m.id : 'graine';
+  /* au repos, le rendu haute définition ; en rotation, la série — même
+     studio et même cadrage, la pièce ne saute donc pas d'une image à l'autre */
+  const src = angle === 0 ? (RENDUS[mat] || RENDUS.graine)
+                          : (ROT[mat] || ROT.graine)[p.i];
+  const msk = angle === 0 ? RENDUS.masque : ROT.masque[p.i];
+  if ($('phImg').getAttribute('src') !== src) $('phImg').src = src;
+  $('phT').style.webkitMaskImage = $('phT').style.maskImage = 'url(' + msk + ')';
+  $('ph').classList.toggle('miroir', p.m);
+  $('ph').classList.toggle('detourne', angle !== 0);
+  $('deg').textContent = Math.round(angle * 360 / POS) + '°';
+}
+
+(function () {
+  const ph = $('ph');
+  let id = null, x0 = 0, a0 = 0, dx = 0, t0 = 0, elan = 0, boucle = null;
+  const pas = () => Math.max(16, ph.clientWidth / POS * 1.6);   // px par position
+
+  ph.addEventListener('pointerdown', e => {
+    if (e.target.closest('.rep')) return;      // un repère reste cliquable
+    id = e.pointerId; x0 = e.clientX; a0 = angle; dx = 0; t0 = e.timeStamp;
+    elan = 0; if (boucle) cancelAnimationFrame(boucle);
+    ph.classList.add('tourne');
+    try { ph.setPointerCapture(id); } catch (_) {}
+  });
+  ph.addEventListener('pointermove', e => {
+    if (id === null || e.pointerId !== id) return;
+    dx = e.clientX - x0;
+    tourner(a0 - Math.round(dx / pas()));
+  });
+  function fin(e) {
+    if (id === null || e.pointerId !== id) return;
+    id = null; ph.classList.remove('tourne');
+    const dt = Math.max(1, e.timeStamp - t0);
+    if (Math.abs(dx) < 6) return;               // un simple appui ne lance rien
+    /* l'élan prolonge le geste, puis s'éteint */
+    elan = -(dx / dt) * 26 / pas();
+    let a = angle;
+    (function file() {
+      elan *= 0.93;
+      if (Math.abs(elan) < 0.02) return;
+      a += elan; tourner(Math.round(a));
+      boucle = requestAnimationFrame(file);
+    })();
+  }
+  ph.addEventListener('pointerup', fin);
+  ph.addEventListener('pointercancel', fin);
+  /* le clavier : une position à la fois, et le retour de face */
+  ph.tabIndex = 0;
+  ph.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') { tourner(angle - 1); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { tourner(angle + 1); e.preventDefault(); }
+    if (e.key === 'Home' || e.key === 'Escape') tourner(0);
+  });
+})();
 
 /* ─── la plongée : cover flow des nuances + onglets de matière ─── */
 let pl = null, typ = 'graine', pi = 0, cartes = [];
@@ -1519,6 +1610,11 @@ $('confier').onclick = () => {
 };
 
 /* crochets de recette */
+window.__tour = () => ({ angle, pos: POS,
+  miroir: $('ph').classList.contains('miroir'),
+  detourne: $('ph').classList.contains('detourne'),
+  src: ($('phImg').getAttribute('src') || '').slice(0, 22),
+  masque: getComputedStyle($('phT')).maskImage.slice(0, 22) });
 window.__demo = () => ({
   monde: $('prive').classList.contains('on') ? 'prive' : 'public',
   vue: (document.querySelector('.pv.on') || {}).dataset?.v,
@@ -1530,6 +1626,6 @@ window.__demo = () => ({
 });
 window.__ouvrir = entrer;
 
-batirFiche(); batirReperes(); rafraichir();
+batirFiche(); batirReperes(); tourner(0, true); rafraichir();
 </script>
 </body></html>
