@@ -38,90 +38,190 @@ img{display:block;max-width:100%}
 .monde.on{display:block}
 #prive.on{display:block}
 
-/* ═══════════ 1 · LA VITRINE ═══════════ */
+/* ═══════════ 1 · LA VITRINE ═══════════
+   Pas de menu d'ancres : le récit EST la navigation. Un rail de chapitres
+   discret à droite dit où l'on est. Reprend les mécaniques déjà validées
+   dans tiraboschi-ux-immersive-prototype.html — ouverture au tracé du V,
+   scrub épinglé, chapitrage à visuel collant. Toutes les photographies
+   viennent du CDN de la boutique.                                      */
 #public{background:var(--noir)}
 
-/* barre fine, toujours là, jamais un menu marchand */
-.bar{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;
-  justify-content:space-between;padding:22px clamp(18px,4vw,54px);
-  transition:background .6s var(--e),padding .6s var(--e)}
-.bar.pose{background:rgba(10,10,10,.82);backdrop-filter:blur(14px);padding-top:14px;padding-bottom:14px}
-.bar__m{font-size:12px;letter-spacing:.46em;text-transform:uppercase}
-.bar__l{display:flex;gap:clamp(14px,2.4vw,34px);align-items:center}
-.bar__l a{color:inherit;text-decoration:none;opacity:.55;transition:opacity .3s}
-.bar__l a:hover{opacity:1}
-.bar__cta{border:1px solid rgba(239,234,227,.4);padding:10px 20px;transition:.35s}
-.bar__cta:hover{background:var(--ecru);color:var(--noir);border-color:var(--ecru)}
-@media(max-width:820px){.bar__l a:not(.bar__cta){display:none}}
+/* ── ouverture : le V se trace ── */
+#splash{position:fixed;inset:0;z-index:200;background:var(--noir);display:flex;
+  flex-direction:column;align-items:center;justify-content:center;gap:30px;
+  transition:opacity .9s var(--e),visibility .9s}
+#splash.fini{opacity:0;visibility:hidden;pointer-events:none}
+#splash svg{width:86px;height:86px;overflow:visible}
+#splash path{fill:none;stroke:var(--ecru);stroke-width:1.25;stroke-linecap:square;
+  stroke-dasharray:300;stroke-dashoffset:300;animation:trace 1.5s var(--e) forwards}
+@keyframes trace{to{stroke-dashoffset:0}}
+#splash .mot{opacity:0;color:var(--ecru);animation:monteDoux .9s var(--e) .85s forwards}
+@keyframes monteDoux{from{opacity:0;transform:translateY(6px)}to{opacity:.55;transform:none}}
 
-/* le hero : un champ de cuir plein cadre, très lent */
-.hero{height:100svh;position:relative;display:flex;align-items:center;justify-content:center;
-  overflow:hidden;text-align:center}
-.hero__f{position:absolute;inset:-8%;background-size:520px 520px;background-color:#171310;
-  background-blend-mode:hard-light;filter:brightness(.5) contrast(1.05);
-  animation:respire 26s ease-in-out infinite alternate}
-@keyframes respire{from{transform:scale(1)}to{transform:scale(1.09) translate(1.5%,-1%)}}
-.hero::after{content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 50% 46%,transparent 8%,rgba(10,10,10,.82) 78%)}
+/* ── le cadre permanent : la marque, le rail, une seule porte ── */
+.marque{position:fixed;top:26px;left:clamp(18px,4vw,50px);z-index:70;
+  font-size:12px;letter-spacing:.46em;text-transform:uppercase;
+  mix-blend-mode:difference;color:#fff;pointer-events:none}
+.porte{position:fixed;bottom:26px;right:clamp(18px,4vw,50px);z-index:70;
+  border:1px solid rgba(239,234,227,.4);padding:13px 24px;background:rgba(10,10,10,.55);
+  backdrop-filter:blur(10px);transition:.4s var(--e)}
+.porte:hover{background:var(--ecru);color:var(--noir);border-color:var(--ecru)}
+.rail-ch{position:fixed;right:clamp(14px,2.4vw,32px);top:50%;transform:translateY(-50%);
+  z-index:70;display:flex;flex-direction:column;gap:16px;align-items:flex-end}
+.rc{display:flex;align-items:center;gap:10px;opacity:.3;transition:opacity .45s var(--e)}
+.rc.on{opacity:1}
+.rc:hover{opacity:.8}
+.rc__n{font-size:8px;letter-spacing:.2em;color:#fff;mix-blend-mode:difference;
+  max-width:0;overflow:hidden;white-space:nowrap;text-align:right;
+  transition:max-width .5s var(--e)}
+.rc.on .rc__n,.rc:hover .rc__n{max-width:120px}
+.rc__t{width:22px;height:1px;background:#fff;mix-blend-mode:difference;flex-shrink:0;
+  transition:width .45s var(--e)}
+.rc.on .rc__t{width:38px}
+@media(max-width:760px){
+  .rail-ch{display:none}
+  .porte{left:18px;right:18px;text-align:center;bottom:18px}
+}
+
+/* ── I · le hero : la vidéo du site ── */
+.hero{height:100svh;position:relative;overflow:hidden;display:flex;
+  align-items:center;justify-content:center;text-align:center;background:#100e0c}
+.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero__v{position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(10,10,10,.52) 0%,rgba(10,10,10,.2) 42%,rgba(10,10,10,.88) 100%)}
 .hero__in{position:relative;z-index:3;padding:0 20px}
-.hero__k{opacity:.55;margin-bottom:26px}
-.hero__t{font-size:clamp(46px,9vw,132px);line-height:.9;letter-spacing:-.035em}
+.hero__k{opacity:.6;margin-bottom:24px}
+.hero__t{font-size:clamp(44px,8.4vw,124px);line-height:.9;letter-spacing:-.035em}
 .hero__t em{font-style:italic;display:block}
-.hero__s{margin-top:30px;opacity:.5;letter-spacing:.34em}
-.hero__d{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);z-index:3;
+.hero__s{margin-top:28px;opacity:.5;letter-spacing:.34em}
+.hero__d{position:absolute;bottom:100px;left:50%;transform:translateX(-50%);z-index:3;
   opacity:.4;display:flex;flex-direction:column;align-items:center;gap:12px}
-.hero__d i{display:block;width:1px;height:46px;background:var(--ecru);
+.hero__d i{display:block;width:1px;height:44px;background:var(--ecru);
   animation:file 2.6s var(--e) infinite}
 @keyframes file{0%{transform:scaleY(0);transform-origin:top}
   45%{transform:scaleY(1);transform-origin:top}
   55%{transform:scaleY(1);transform-origin:bottom}
   100%{transform:scaleY(0);transform-origin:bottom}}
 
-/* sections éditoriales */
-.sec{padding:clamp(80px,14vh,180px) clamp(20px,6vw,110px);position:relative}
-.sec--clair{background:var(--ecru);color:var(--noir)}
-.sec__k{opacity:.42;margin-bottom:22px}
-.sec__t{font-size:clamp(30px,4.6vw,64px);line-height:1.06;letter-spacing:-.025em;
-  max-width:18ch}
-.sec__t em{font-style:italic}
-.duo{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,6vw,88px);align-items:center;
-  margin-top:clamp(34px,6vh,70px)}
-@media(max-width:900px){.duo{grid-template-columns:1fr}}
-.txt p{font-size:15px;line-height:2;opacity:.72;margin-bottom:20px;max-width:46ch}
-.sec--clair .txt p{opacity:.78}
-.txt p:first-letter{}
-.cite{font-size:clamp(20px,2.4vw,30px);font-style:italic;line-height:1.55;max-width:22ch}
-.cite__a{margin-top:20px;opacity:.45}
-.champ{aspect-ratio:4/5;background-size:400px 400px;background-blend-mode:hard-light}
+/* ── vue : une photographie qui s'efface au profit d'une autre ── */
+.vue{position:absolute;inset:0;opacity:0;transition:opacity .9s var(--e)}
+.vue.on{opacity:1}
+.vue img{width:100%;height:100%;object-fit:cover}
+.vue.vide{background:#141210}
+.vue.vide img{display:none}
 
-/* les faits — la mémoire de la maison */
-.faits{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(239,234,227,.14);
-  margin-top:clamp(40px,7vh,80px)}
-.sec--clair .faits{background:rgba(10,10,10,.14)}
-.fait{background:var(--noir);padding:clamp(24px,3.4vw,44px) clamp(16px,2vw,28px)}
-.sec--clair .fait{background:var(--ecru)}
-.fait b{display:block;font-size:clamp(30px,4vw,54px);font-weight:400;letter-spacing:-.02em}
-.fait span{display:block;margin-top:12px;opacity:.45;line-height:1.9}
-@media(max-width:820px){.faits{grid-template-columns:1fr 1fr}}
+/* ── II · le geste : scrub épinglé sur les photographies de l'atelier ── */
+.scrub{position:relative;height:420vh;background:var(--noir)}
+.scrub__st{position:sticky;top:0;height:100svh;overflow:hidden;display:flex;
+  align-items:center;justify-content:center}
+.scrub .vue img{opacity:.8}
+.scrub__v{position:absolute;inset:0;
+  background:linear-gradient(0deg,rgba(10,10,10,.88) 0%,rgba(10,10,10,.22) 52%,rgba(10,10,10,.52) 100%)}
+.scrub__c{position:relative;z-index:3;text-align:center;padding:0 6vw;max-width:820px}
+.scrub__k{opacity:.4;margin-bottom:24px}
+.scrub__l{font-size:clamp(26px,4.6vw,58px);line-height:1.1;letter-spacing:-.02em;
+  font-style:italic;min-height:2.4em}
+.scrub__l span{display:inline-block;opacity:0;transform:translateY(12px);
+  transition:opacity .55s var(--e),transform .55s var(--e)}
+.scrub__l span.on{opacity:1;transform:none}
+.scrub__b{position:absolute;bottom:9vh;left:50%;transform:translateX(-50%);
+  width:180px;height:1px;background:rgba(239,234,227,.16);z-index:3}
+.scrub__b i{display:block;height:100%;width:0;background:rgba(239,234,227,.85);
+  transition:width .1s linear}
+.scrub__n{position:absolute;bottom:calc(9vh + 20px);left:50%;transform:translateX(-50%);
+  z-index:3;opacity:.32;letter-spacing:.28em}
 
-/* les pièces — montrées, jamais vendues */
-.pieces{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:clamp(40px,7vh,80px)}
-@media(max-width:900px){.pieces{grid-template-columns:1fr}}
-.piece{position:relative;background:#15120f;padding:clamp(24px,3vw,44px);text-align:center;
-  overflow:hidden}
-.piece img{width:100%;height:clamp(220px,30vh,320px);object-fit:contain;
-  transition:transform 1.4s var(--e)}
-.piece:hover img{transform:scale(1.05)}
-.piece h3{font-size:22px;font-style:italic;margin-top:18px}
-.piece p{margin-top:10px;opacity:.4}
-.pieces__note{margin-top:34px;font-style:italic;opacity:.5;font-size:15px;line-height:2;
-  max-width:52ch}
+/* ── III · chapitrage : visuel collant à gauche, récit à droite ── */
+.chap{position:relative;height:460vh;background:var(--ecru);color:var(--noir)}
+.chap__st{position:sticky;top:0;height:100svh;display:grid;grid-template-columns:1fr 1fr}
+.chap__vis{position:relative;overflow:hidden;background:var(--noir)}
+.chap__vis .vue{transform:scale(1.05);transition:opacity 1s var(--e),transform 1.5s var(--e)}
+.chap__vis .vue.on{transform:scale(1)}
+.chap__txt{display:flex;flex-direction:column;justify-content:center;
+  padding:0 clamp(24px,5vw,80px);position:relative}
+.chap__ix{display:flex;gap:11px;margin-bottom:clamp(26px,5vh,50px)}
+.chap__ix i{width:28px;height:1px;background:var(--noir);opacity:.13;
+  transition:opacity .5s var(--e)}
+.chap__ix i.on{opacity:1}
+.ch{position:absolute;left:clamp(24px,5vw,80px);right:clamp(24px,5vw,80px);
+  opacity:0;pointer-events:none;transform:translateY(18px);
+  transition:opacity .65s var(--e),transform .65s var(--e)}
+.ch.on{opacity:1;transform:none;pointer-events:auto;position:relative}
+.ch__n{opacity:.32;margin-bottom:18px}
+.ch__t{font-size:clamp(26px,3.2vw,48px);line-height:1.04;letter-spacing:-.025em;
+  margin-bottom:20px}
+.ch__t em{font-style:italic}
+.ch__b{font-size:14px;line-height:1.95;opacity:.6;max-width:44ch}
+.ch__f{margin-top:clamp(20px,3.4vh,34px);padding-top:18px;
+  border-top:1px solid rgba(10,10,10,.14);opacity:.42;line-height:1.9}
+@media(max-width:900px){
+  .chap{height:540vh}
+  .chap__st{grid-template-columns:1fr;grid-template-rows:40svh 1fr}
+  .chap__txt{padding-top:clamp(18px,3.4vh,30px);justify-content:flex-start}
+  .ch__b{font-size:13px;line-height:1.8}
+}
 
+/* ── IV · les pièces : photographies réelles, aucun prix ── */
+.piecesW{background:var(--ecru);color:var(--noir);
+  padding:clamp(70px,12vh,150px) clamp(20px,6vw,110px) clamp(90px,15vh,180px)}
+.piecesW__k{opacity:.42;margin-bottom:20px}
+.piecesW__t{font-size:clamp(28px,4.2vw,58px);line-height:1.06;letter-spacing:-.025em;
+  max-width:20ch}
+.piecesW__t em{font-style:italic}
+.grille{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;
+  margin-top:clamp(38px,7vh,76px)}
+@media(max-width:900px){.grille{grid-template-columns:1fr}}
+.pc{cursor:pointer;background:#fff;text-align:center;padding-bottom:26px}
+.pc__m{position:relative;aspect-ratio:3/4;overflow:hidden;background:#fff}
+.pc__m img{width:100%;height:100%;object-fit:contain;transition:transform 1.2s var(--e)}
+.pc:hover .pc__m img{transform:scale(1.04)}
+.pc__m.vide{background:#f2efe9}
+.pc__m.vide img{display:none}
+.pc__m.vide::after{content:'Photographie de la Maison';position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:system-ui,sans-serif;font-size:9px;letter-spacing:.22em;
+  text-transform:uppercase;opacity:.35}
+.pc h3{font-size:20px;font-style:italic;margin-top:18px}
+.pc__t{margin-top:9px;opacity:.4}
+.pc__r{margin-top:12px;color:#8a6d3f;opacity:.9}
+.piecesW__note{margin-top:clamp(28px,5vh,48px);font-style:italic;opacity:.5;
+  font-size:15px;line-height:2;max-width:54ch}
+
+/* la fiche d'une pièce, en plein cadre */
+.fp{position:fixed;inset:0;z-index:85;background:var(--ecru);color:var(--noir);
+  display:none;grid-template-columns:1fr 1fr}
+.fp.on{display:grid}
+.fp__m{background:#fff;display:flex;align-items:center;justify-content:center;
+  padding:5vh 4vw;position:relative}
+.fp__m img{max-width:100%;max-height:78svh;object-fit:contain}
+.fp__m.vide{background:#f2efe9}
+.fp__m.vide img{display:none}
+.fp__x{display:flex;flex-direction:column;justify-content:center;
+  padding:clamp(40px,8vh,90px) clamp(24px,5vw,80px);overflow:auto}
+.fp__k{opacity:.4;margin-bottom:16px}
+.fp__n{font-size:clamp(30px,3.8vw,54px);font-style:italic;letter-spacing:-.02em}
+.fp__d{margin-top:24px;font-size:14px;line-height:2;opacity:.62;max-width:44ch}
+.fp__l{margin-top:30px;padding-top:20px;border-top:1px solid rgba(10,10,10,.14)}
+.fp__l div{display:flex;justify-content:space-between;gap:14px;padding:9px 0;
+  font-size:13px;border-bottom:1px solid rgba(10,10,10,.08)}
+.fp__l span:first-child{font-family:system-ui,sans-serif;text-transform:uppercase;
+  letter-spacing:.16em;font-size:9px;opacity:.45;padding-top:3px;flex-shrink:0}
+.fp__b{position:fixed;top:26px;left:clamp(20px,4vw,50px);z-index:3;opacity:.55;
+  transition:opacity .3s}
+.fp__b:hover{opacity:1}
+.fp__go{margin-top:32px;align-self:flex-start}
+@media(max-width:900px){
+  .fp.on{display:block;overflow:auto}
+  .fp__m{padding:70px 6vw 20px}
+  .fp__m img{max-height:52svh}
+  .fp__x{padding:20px 6vw 70px}
+}
 /* le seuil, en bas de la vitrine */
 .seuil{min-height:100svh;display:flex;align-items:center;justify-content:center;
   text-align:center;padding:clamp(70px,12vh,140px) 20px;position:relative;overflow:hidden}
-.seuil__f{position:absolute;inset:0;background-size:600px 600px;background-color:#12100e;
-  background-blend-mode:hard-light;filter:brightness(.34)}
+.seuil__f{position:absolute;inset:0;background:#12100e}
+.seuil__f img{width:100%;height:100%;object-fit:cover;opacity:.28}
+.seuil__f.vide img{display:none}
 .seuil::after{content:'';position:absolute;inset:0;
   background:radial-gradient(ellipse at 50% 50%,rgba(10,10,10,.4) 0%,rgba(10,10,10,.93) 72%)}
 .seuil__in{position:relative;z-index:3;max-width:620px;width:100%}
@@ -211,8 +311,9 @@ img{display:block;max-width:100%}
 /* accueil nommé */
 .acc{height:100svh;display:flex;flex-direction:column;align-items:center;
   justify-content:center;text-align:center;padding:0 20px;position:relative}
-.acc__f{position:absolute;inset:0;background-size:640px 640px;background-color:#141210;
-  background-blend-mode:hard-light;filter:brightness(.26)}
+.acc__f{position:absolute;inset:0;background:#141210}
+.acc__f img{width:100%;height:100%;object-fit:cover;opacity:.22}
+.acc__f.vide img{display:none}
 .acc::after{content:'';position:absolute;inset:0;
   background:radial-gradient(ellipse at 50% 46%,transparent 4%,rgba(20,18,16,.94) 74%)}
 .acc__in{position:relative;z-index:3}
@@ -237,9 +338,11 @@ img{display:block;max-width:100%}
 .pcarte{background:#191614;padding:clamp(22px,2.6vw,38px);text-align:center;
   transition:background .5s}
 .pcarte:hover{background:#1f1b18}
-.pcarte img{width:100%;height:clamp(200px,26vh,280px);object-fit:contain;
-  transition:transform 1.2s var(--e)}
-.pcarte:hover img{transform:scale(1.05)}
+.pcarte .m{position:relative;aspect-ratio:3/4;overflow:hidden;background:#fff}
+.pcarte .m.vide{background:#1f1b18}
+.pcarte .m.vide img{display:none}
+.pcarte img{width:100%;height:100%;object-fit:contain;transition:transform 1.2s var(--e)}
+.pcarte:hover .m img{transform:scale(1.05)}
 .pcarte h3{font-size:21px;font-style:italic;margin-top:16px}
 .pcarte .px{margin-top:9px;opacity:.5;font-family:system-ui,sans-serif;font-size:11px;
   letter-spacing:.16em}
@@ -258,7 +361,9 @@ img{display:block;max-width:100%}
 .getape__n{font-size:clamp(30px,4vw,54px);opacity:.22;letter-spacing:-.02em}
 .getape h3{font-size:clamp(20px,2.4vw,28px);font-style:italic;margin-bottom:14px}
 .getape p{font-size:14px;line-height:2;opacity:.62;max-width:44ch}
-.getape .mat{aspect-ratio:16/10;background-size:340px 340px;background-blend-mode:hard-light}
+.getape .mat{aspect-ratio:16/10;overflow:hidden;background:#0f0d0c}
+.getape .mat img{width:100%;height:100%;object-fit:cover;opacity:.88}
+.getape .mat.vide img{display:none}
 
 /* ═══════════ L'ATELIER — le configurateur ═══════════ */
 .atl{position:absolute;inset:0;display:grid;
@@ -460,19 +565,19 @@ img{display:block;max-width:100%}
 <!-- ══════════════ 1 · LA VITRINE PUBLIQUE ══════════════ -->
 <main class="monde on" id="public">
 
-  <nav class="bar" id="bar">
-    <span class="bar__m">Tiraboschi</span>
-    <div class="bar__l cap">
-      <a href="#maison">La Maison</a>
-      <a href="#creatrice">La Créatrice</a>
-      <a href="#geste">Le Geste</a>
-      <a href="#pieces">Les Pièces</a>
-      <a href="#seuil" class="bar__cta">Demander à être reçue</a>
-    </div>
-  </nav>
+  <div id="splash">
+    <svg viewBox="0 0 60 60" aria-hidden="true"><path d="M8 12 L30 48 L52 12"/></svg>
+    <span class="mot cap">Tiraboschi · depuis 1904</span>
+  </div>
 
-  <header class="hero">
-    <div class="hero__f" id="heroF"></div>
+  <span class="marque">Tiraboschi</span>
+  <button class="porte cap" id="porte">Demander à être reçue</button>
+  <nav class="rail-ch cap" id="railCh" aria-label="Chapitres"></nav>
+
+  <!-- I · la vidéo de la Maison -->
+  <header class="hero" id="ch-hero">
+    <video id="heroV" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
+    <div class="hero__v"></div>
     <div class="hero__in">
       <p class="hero__k cap">Maison de maroquinerie · Paris</p>
       <h1 class="hero__t">Depuis <em>1904</em></h1>
@@ -481,80 +586,55 @@ img{display:block;max-width:100%}
     <div class="hero__d cap"><i></i><span>Descendre</span></div>
   </header>
 
-  <section class="sec sec--clair" id="maison">
-    <p class="sec__k cap">La Maison</p>
-    <h2 class="sec__t">Quatre générations, <em>un seul atelier</em></h2>
-    <div class="duo">
-      <div class="txt">
-        <p>En 1904, un atelier ouvre à Paris. On y travaille le cuir à la main,
-          au point sellier, avec des outils que l'on se transmet. Cent vingt ans
-          plus tard, l'adresse a changé de rue mais rien d'autre n'a bougé :
-          une pièce, un artisan, du début à la fin.</p>
-        <p>La maison n'a jamais produit en série. Elle n'a jamais délocalisé une
-          seule opération. Ce n'est pas une position marketing — c'est simplement
-          la seule façon dont elle sait faire.</p>
-        <p>Aujourd'hui, l'atelier reçoit sur rendez-vous, au 96 avenue de Clichy.
-          On y vient pour voir une matière, poser une main sur une tranche,
-          et parler de la pièce que l'on n'a pas encore.</p>
+  <!-- II · le geste, en scrub épinglé -->
+  <section class="scrub" id="ch-geste">
+    <div class="scrub__st">
+      <div id="vues"></div>
+      <div class="scrub__v"></div>
+      <div class="scrub__c">
+        <p class="scrub__k cap">Le Geste</p>
+        <p class="scrub__l" id="scrubL"></p>
       </div>
-      <div class="champ" id="champ1"></div>
-    </div>
-    <div class="faits">
-      <div class="fait"><b>1904</b><span class="cap">Année de fondation</span></div>
-      <div class="fait"><b>1</b><span class="cap">Artisan par pièce,<br>de A à Z</span></div>
-      <div class="fait"><b>3 400</b><span class="cap">Points de couture<br>sellier</span></div>
-      <div class="fait"><b>48–72 h</b><span class="cap">De façonnage<br>à la main</span></div>
+      <p class="scrub__n cap" id="scrubN"></p>
+      <div class="scrub__b"><i id="scrubB"></i></div>
     </div>
   </section>
 
-  <section class="sec" id="creatrice">
-    <p class="sec__k cap">La Créatrice</p>
-    <h2 class="sec__t">Laurène <em>Mauro</em></h2>
-    <div class="duo">
-      <div class="champ" id="champ2"></div>
-      <div>
-        <p class="cite">« Je ne dessine pas un sac. Je cherche la seule forme
-          que cette peau-là accepte. »</p>
-        <p class="cite__a cap">Laurène Mauro · Directrice de la création</p>
-        <div class="txt" style="margin-top:38px">
-          <p>Laurène a repris la maison familiale après quinze ans passés dans les
-            ateliers des grandes maisons parisiennes. Elle dessine, coupe et suit
-            chaque pièce ; elle reçoit elle-même les clientes qui viennent
-            concevoir une pièce d'exception.</p>
-          <p>Sa règle, tenue depuis le premier jour : jamais plus de pièces qu'il
-            n'y a de mains pour les faire.</p>
-        </div>
+  <!-- III · le chapitrage éditorial -->
+  <section class="chap" id="ch-maison">
+    <div class="chap__st">
+      <div class="chap__vis" id="chapVis"></div>
+      <div class="chap__txt">
+        <div class="chap__ix" id="chapIx"></div>
+        <div id="chapTxt"></div>
       </div>
     </div>
   </section>
 
-  <section class="sec sec--clair" id="geste">
-    <p class="sec__k cap">Le Geste</p>
-    <h2 class="sec__t">Ce que l'on ne voit pas <em>tient la pièce</em></h2>
-    <div class="duo">
-      <div class="txt">
-        <p><b>La coupe.</b> Une peau n'est pas un tissu : elle a un sens, des zones
-          fermes et des zones molles, des cicatrices. Placer un patron dessus,
-          c'est décider où la pièce sera belle dans dix ans.</p>
-        <p><b>Le point sellier.</b> Deux aiguilles, un seul fil, huit points au
-          centimètre. Si un point cède, les autres tiennent — c'est ce qui distingue
-          une couture main d'une couture machine.</p>
-        <p><b>La tranche.</b> Poncée, teintée, brunie, reprise. Sept passages pour
-          une arête que personne ne regarde et que tout le monde sent.</p>
-      </div>
-      <div class="champ" id="champ3"></div>
-    </div>
-  </section>
-
-  <section class="sec" id="pieces">
-    <p class="sec__k cap">Les Pièces</p>
-    <h2 class="sec__t">Trois silhouettes, <em>et tout le reste sur mesure</em></h2>
-    <div class="pieces" id="grillePub"></div>
-    <p class="pieces__note">Aucune de ces pièces n'est vendue en ligne. Les matières,
+  <!-- IV · les pièces : photographies réelles, sans prix -->
+  <section class="piecesW" id="ch-pieces">
+    <p class="piecesW__k cap">Les Pièces</p>
+    <h2 class="piecesW__t">Trois silhouettes, <em>et tout le reste sur mesure</em></h2>
+    <div class="grille" id="grillePub"></div>
+    <p class="piecesW__note">Aucune de ces pièces n'est vendue en ligne. Les matières,
       les nuances et les finitions se choisissent en atelier — ou dans votre espace,
       si la Maison vous a reçue.</p>
   </section>
 
+  <!-- la fiche d'une pièce -->
+  <div class="fp" id="fp">
+    <button class="fp__b cap" id="fpX">← Revenir</button>
+    <div class="fp__m"><img id="fpImg" alt=""></div>
+    <div class="fp__x">
+      <p class="fp__k cap" id="fpT"></p>
+      <h2 class="fp__n" id="fpN"></h2>
+      <p class="fp__d" id="fpD"></p>
+      <div class="fp__l" id="fpL"></div>
+      <button class="btn btn--sombre fp__go" id="fpGo">Demander à être reçue
+        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
+      </button>
+    </div>
+  </div>
   <section class="seuil" id="seuil">
     <div class="seuil__f" id="seuilF"></div>
     <div class="seuil__in">
@@ -793,78 +873,246 @@ function cuirCourant() {
   return m && n ? { m, n, nom: n.nom + ' · ' + m.nom, delta: m.d, hex: n.hex } : null;
 }
 
-/* ═══════════ 1 · LA VITRINE ═══════════ */
-function champ(el, tuile, teinte, taille) {
-  el.style.backgroundImage = 'url(' + TX[tuile] + ')';
-  el.style.backgroundColor = teinte;
-  if (taille) el.style.backgroundSize = taille;
+/* ═══════════ 1 · LA VITRINE ═══════════
+   Les visuels sont ceux de la boutique. Si le CDN n'est pas joignable
+   (démonstration hors ligne), la vue bascule sur un champ neutre plutôt
+   que de montrer une image cassée. */
+const CDN = 'https://cdn.shopify.com/s/files/1/0927/5890/1079/files/';
+const IMG = {
+  heritage: CDN + '28092025-DSCF1828.jpg',
+  savoir:   CDN + 'BOSCHI0919.jpg',
+  atelier:  CDN + 'BOSCHI0154.jpg',
+  atelier1: CDN + 'Asset_atelier_1.png',
+  mains:    CDN + 'Asset_Mains_1.png',
+  atelier6: CDN + 'Asset_Atelier_6.png',
+  atelier5: CDN + 'Asset_atelier_5.png',
+  rafael:   CDN + 'BOSCHI0774_85f74e95-56cc-4478-aba9-5c523a543565.jpg?v=1769440532',
+  colette:  CDN + 'BOSCHI0633.jpg?v=1769462827',
+  olympe:   CDN + 'BOSCHI0757.jpg?v=1769441367',
+};
+const VIDEO = {
+  desktop: 'https://cdn.shopify.com/videos/c/vp/a34148cdb12a474b8ca71469bf389e47/' +
+           'a34148cdb12a474b8ca71469bf389e47.HD-720p-4.5Mbps-79621443.mp4',
+  mobile:  'https://cdn.shopify.com/videos/c/vp/1358774942114ba8966c625ffb4d90ab/' +
+           '1358774942114ba8966c625ffb4d90ab.HD-1080p-7.2Mbps-67848507.mp4',
+};
+
+/* une photographie posée dans un conteneur, avec repli si le CDN est muet */
+function poser(conteneur, src) {
+  const im = document.createElement('img');
+  im.alt = ''; im.decoding = 'async';
+  im.onerror = () => conteneur.classList.add('vide');
+  im.src = src;
+  conteneur.appendChild(im);
+  return im;
 }
-champ($('heroF'), 'caviar', '#241d17', '520px 520px');
-champ($('champ1'), 'graine', '#6b4526');
-champ($('champ2'), 'lisse', '#2e211a');
-champ($('champ3'), 'alligator', '#1e3a30');
-champ($('seuilF'), 'galuchat', '#1a1a1d', '600px 600px');
-champ($('accF'), 'alligator', '#14201b', '640px 640px');
+function vue(src, active) {
+  const d = document.createElement('div');
+  d.className = 'vue' + (active ? ' on' : '');
+  poser(d, src);
+  return d;
+}
 
-addEventListener('scroll', () => {
-  $('bar').classList.toggle('pose', scrollY > 40);
-}, { passive: true });
+/* ouverture : le V se trace, puis s'efface */
+setTimeout(() => $('splash').classList.add('fini'), RM ? 0 : 1900);
 
-/* révélation au défilement */
-const obs = new IntersectionObserver(es => es.forEach(e => {
-  if (e.isIntersecting) { e.target.style.opacity = 1; e.target.style.transform = 'none'; }
-}), { threshold: .12 });
-document.querySelectorAll('.sec, .seuil__in, .faits, .pieces').forEach(el => {
-  if (RM) return;
-  el.style.opacity = 0; el.style.transform = 'translateY(26px)';
-  el.style.transition = 'opacity 1.1s var(--e), transform 1.3s var(--e)';
-  obs.observe(el);
+/* le hero : la vidéo du site — 9:16 sur mobile, 16:9 au-delà */
+(function () {
+  const v = $('heroV');
+  v.src = matchMedia('(max-width: 768px)').matches ? VIDEO.mobile : VIDEO.desktop;
+  v.load();
+  v.addEventListener('error', () => { v.style.display = 'none'; });
+})();
+
+/* le rail de chapitres — il dit où l'on est ; ce n'est pas un menu */
+const CHAPITRES = [
+  { id: 'ch-hero',   n: 'Ouverture' },
+  { id: 'ch-geste',  n: 'Le Geste' },
+  { id: 'ch-maison', n: 'La Maison' },
+  { id: 'ch-pieces', n: 'Les Pièces' },
+  { id: 'seuil',     n: 'Le Seuil' },
+];
+CHAPITRES.forEach((c, i) => {
+  const b = document.createElement('button');
+  b.className = 'rc' + (i === 0 ? ' on' : ''); b.dataset.id = c.id;
+  b.innerHTML = '<span class="rc__n">' + c.n + '</span><span class="rc__t"></span>';
+  b.onclick = () => $(c.id).scrollIntoView({ behavior: 'smooth' });
+  $('railCh').appendChild(b);
 });
 
-/* les trois pièces — publiques : sans prix ; privées : avec */
-const PIECES = [
-  { nom:'Rafaël', t:'Pochette · bandoulière', px:1900, mat:'caviar', nu:'#161616', atl:true },
-  { nom:'Colette', t:'Sac à main · porté épaule', px:3200, mat:'graine', nu:'#8f5424' },
-  { nom:'Olympe', t:'Seau · pochon amovible', px:2900, mat:'lisse', nu:'#243352' },
+/* ── II · le geste : six vues de l'atelier, six phrases ── */
+const VUES = [IMG.atelier1, IMG.mains, IMG.savoir, IMG.atelier6, IMG.atelier, IMG.atelier5];
+const LIGNES = [
+  'On commence par refuser neuf peaux sur dix.',
+  'Le tranchet ne pardonne rien.',
+  'Deux aiguilles. Un seul fil.',
+  'Huit points au centimètre.',
+  'Quarante-huit heures de main.',
+  "Puis une initiale, à l'intérieur.",
 ];
-function vignette(p) {
-  /* faute de rendus pour Colette et Olympe, on montre la Rafaël dans
-     leur matière : la démonstration reste honnête sur ce point. */
-  const d = document.createElement('div');
-  const img = document.createElement('img');
-  img.src = RENDUS[p.mat]; img.alt = p.nom;
-  const t = document.createElement('div');
-  t.style.cssText = 'position:absolute;inset:0;mix-blend-mode:multiply;pointer-events:none;' +
-    '-webkit-mask-size:100% 100%;mask-size:100% 100%;' +
-    '-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat';
-  t.style.backgroundColor = p.nu;
-  t.style.webkitMaskImage = t.style.maskImage = 'url(' + RENDUS.masque + ')';
-  return { d, img, t };
+VUES.forEach((src, i) => $('vues').appendChild(vue(src, i === 0)));
+const vues = [...$('vues').children];
+let vueCourante = -1;
+function ecrire(el, texte) {
+  el.innerHTML = '';
+  texte.split(' ').forEach((m, i) => {
+    const sp = document.createElement('span');
+    /* espace INSÉCABLE : sur un inline-block, l'espace final est avalé
+       et les mots se collent les uns aux autres. */
+    sp.textContent = m + '\u00A0';
+    sp.style.transitionDelay = (i * 45) + 'ms';
+    el.appendChild(sp);
+    requestAnimationFrame(() => requestAnimationFrame(() => sp.classList.add('on')));
+  });
 }
-PIECES.forEach(p => {
-  const w = document.createElement('div'); w.className = 'piece';
-  const cadre = document.createElement('div');
-  cadre.style.cssText = 'position:relative;isolation:isolate';
-  const v = vignette(p);
-  cadre.appendChild(v.img); cadre.appendChild(v.t);
-  v.t.style.opacity = '1';
-  w.appendChild(cadre);
-  w.insertAdjacentHTML('beforeend',
-    '<h3>' + p.nom + '</h3><p class="cap">' + p.t + '</p>' +
-    '<p class="reserve">Sur rendez-vous</p>');
-  $('grillePub').appendChild(w);
+function poserVue(i) {
+  if (i === vueCourante) return;
+  vueCourante = i;
+  vues.forEach((v, j) => v.classList.toggle('on', j === i));
+  $('scrubN').textContent = ('0' + (i + 1)).slice(-2) + ' / ' + ('0' + vues.length).slice(-2);
+  ecrire($('scrubL'), LIGNES[i]);
+}
 
-  const c = document.createElement('div'); c.className = 'pcarte';
-  const cadre2 = cadre.cloneNode(true);
-  c.appendChild(cadre2);
+/* ── III · le chapitrage ── */
+const CHAPS = [
+  { n: 'Chapitre I', t: 'Quatre générations,<br><em>un seul atelier</em>',
+    b: "En 1904, un atelier ouvre à Paris. On y travaille le cuir à la main, au point sellier, avec des outils que l'on se transmet. Cent vingt ans plus tard, l'adresse a changé de rue mais rien d'autre n'a bougé : une pièce, un artisan, du début à la fin.",
+    f: 'Fondée en 1904 · 96 avenue de Clichy, Paris', v: IMG.heritage },
+  { n: 'Chapitre II', t: 'Laurène <em>Mauro</em>',
+    b: "Laurène a repris la maison familiale après quinze ans passés dans les ateliers des grandes maisons parisiennes. Elle dessine, coupe et suit chaque pièce ; elle reçoit elle-même les clientes qui viennent concevoir une pièce d'exception. Sa règle, tenue depuis le premier jour : jamais plus de pièces qu'il n'y a de mains pour les faire.",
+    f: 'Direction de la création', v: IMG.atelier1 },
+  { n: 'Chapitre III', t: "Ce que l'on ne voit pas<br><em>tient la pièce</em>",
+    b: "Une peau n'est pas un tissu : elle a un sens, des zones fermes, des cicatrices. Placer un patron dessus, c'est décider où la pièce sera belle dans dix ans. Puis vient le point sellier — deux aiguilles, un seul fil : si un point cède, les autres tiennent.",
+    f: '3 400 points sellier · 48 à 72 heures de main', v: IMG.mains },
+  { n: 'Chapitre IV', t: 'Fabriqué en France,<br><em>pas seulement conçu</em>',
+    b: "La nuance a son importance : beaucoup dessinent à Paris et assemblent ailleurs. Ici, la peau entre avenue de Clichy et en ressort finie — coupe, parage, couture, tranche, pose de la quincaillerie. Aucune opération ne quitte l'atelier.",
+    f: 'Made in France, Only', v: IMG.savoir },
+];
+CHAPS.forEach((c, i) => {
+  $('chapVis').appendChild(vue(c.v, i === 0));
+  const a = document.createElement('article');
+  a.className = 'ch' + (i === 0 ? ' on' : '');
+  a.innerHTML = '<p class="ch__n cap">' + c.n + '</p><h2 class="ch__t">' + c.t + '</h2>' +
+    '<p class="ch__b">' + c.b + '</p><p class="ch__f cap">' + c.f + '</p>';
+  $('chapTxt').appendChild(a);
+  const t = document.createElement('i'); if (i === 0) t.className = 'on';
+  $('chapIx').appendChild(t);
+});
+const chVis = [...$('chapVis').children], chTxt = [...$('chapTxt').children],
+      chIx = [...$('chapIx').children];
+let chCourant = -1;
+function poserChap(i) {
+  if (i === chCourant) return;
+  chCourant = i;
+  chVis.forEach((v, j) => v.classList.toggle('on', j === i));
+  chTxt.forEach((c, j) => c.classList.toggle('on', j === i));
+  chIx.forEach((t, j) => t.classList.toggle('on', j <= i));
+}
+
+/* ── IV · les pièces — photographies réelles ; aucun prix au-dehors ── */
+const PIECES = [
+  { id: 'rafael', nom: 'Rafaël', t: 'Pochette · bandoulière amovible', px: 1900, img: IMG.rafael,
+    d: "La pièce la plus difficile de la collection. Une pochette n'a nulle part où cacher un défaut : chaque couture est vue, chaque tranche est nue.",
+    l: [['Dimensions', 'H 19 × L 30 × P 4 cm'], ['Fermeture', 'Anneau en D, laiton'],
+        ['Intérieur', 'Une poche plate'], ['Façonnage', '12 à 16 semaines']], atl: true },
+  { id: 'colette', nom: 'Colette', t: 'Sac à main · porté épaule', px: 3200, img: IMG.colette,
+    d: "La signature de la maison : un V taillé dans la masse, qui ouvre le sac sans fermoir. Sa tenue ne doit rien à une armature — seulement à l'épaisseur du cuir.",
+    l: [['Dimensions', 'H 24 × L 32 × P 10 cm'], ['Contenance', 'Un A5, téléphone, clés'],
+        ['Anse', '55 cm'], ['Façonnage', '12 à 16 semaines']] },
+  { id: 'olympe', nom: 'Olympe', t: 'Seau · pochon amovible', px: 2900, img: IMG.olympe,
+    d: "Un seau strict, et à l'intérieur un pochon de soie qui se retire. Deux pièces en une : la rigueur dehors, la souplesse dedans.",
+    l: [['Dimensions', 'H 26 × L 24 × P 16 cm'], ['Pochon', 'Soie sauvage, amovible'],
+        ['Anse', 'Portée épaule'], ['Façonnage', '12 à 16 semaines']] },
+];
+PIECES.forEach(p => {
+  /* la vitrine : la pièce se montre, elle ne se vend pas */
+  const c = document.createElement('div');
+  c.className = 'pc'; c.dataset.p = p.id;
+  const m = document.createElement('div'); m.className = 'pc__m';
+  poser(m, p.img); c.appendChild(m);
   c.insertAdjacentHTML('beforeend',
+    '<h3>' + p.nom + '</h3><p class="pc__t cap">' + p.t + '</p>' +
+    '<p class="pc__r cap">Sur rendez-vous</p>');
+  c.onclick = () => ouvrirPiece(p);
+  $('grillePub').appendChild(c);
+
+  /* l'espace privé : la même pièce, avec son prix */
+  const v = document.createElement('div'); v.className = 'pcarte';
+  const m2 = document.createElement('div'); m2.className = 'm';
+  poser(m2, p.img); v.appendChild(m2);
+  v.insertAdjacentHTML('beforeend',
     '<h3>' + p.nom + '</h3><p class="px">À partir de ' + euros(p.px) + '</p>' +
     (p.atl ? '<button class="go" data-go="atl">Concevoir la vôtre</button>'
            : '<p class="reserve">Sur rendez-vous atelier</p>'));
-  $('grillePriv').appendChild(c);
+  $('grillePriv').appendChild(v);
 });
 
-/* le seuil : la demande, puis l'invitation */
+function ouvrirPiece(p) {
+  const montrer = () => {
+    const m = $('fpImg').closest('.fp__m');
+    m.classList.remove('vide');
+    $('fpImg').onerror = () => m.classList.add('vide');
+    $('fpImg').src = p.img; $('fpImg').alt = p.nom;
+    $('fpT').textContent = p.t;
+    $('fpN').textContent = p.nom;
+    $('fpD').textContent = p.d;
+    $('fpL').innerHTML = p.l.map(([k, v]) =>
+      '<div><span>' + k + '</span><span>' + v + '</span></div>').join('');
+    $('fp').classList.add('on');
+    document.body.style.overflow = 'hidden';
+  };
+  if (document.startViewTransition && !RM) document.startViewTransition(montrer);
+  else montrer();
+}
+function fermerPiece() {
+  const cacher = () => { $('fp').classList.remove('on'); document.body.style.overflow = ''; };
+  if (document.startViewTransition && !RM) document.startViewTransition(cacher);
+  else cacher();
+}
+$('fpX').onclick = fermerPiece;
+$('fpGo').onclick = () => { fermerPiece(); $('seuil').scrollIntoView({ behavior: 'smooth' }); };
+$('porte').onclick = () => $('seuil').scrollIntoView({ behavior: 'smooth' });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && $('fp').classList.contains('on')) fermerPiece();
+});
+
+/* les fonds photographiques du seuil et de l'accueil privé */
+poser($('seuilF'), IMG.savoir);
+poser($('accF'), IMG.atelier);
+
+/* ── une seule boucle de défilement, throttlée par rAF ── */
+function auDefilement() {
+  const rs = $('ch-geste').getBoundingClientRect();
+  const ts = rs.height - innerHeight;
+  if (ts > 0) {
+    const p = Math.max(0, Math.min(1, -rs.top / ts));
+    $('scrubB').style.width = (p * 100) + '%';
+    poserVue(Math.min(vues.length - 1, Math.floor(p * vues.length)));
+  }
+  const rc = $('ch-maison').getBoundingClientRect();
+  const tc = rc.height - innerHeight;
+  if (tc > 0) {
+    const p = Math.max(0, Math.min(.999, -rc.top / tc));
+    poserChap(Math.floor(p * chTxt.length));
+  }
+  let actif = 0;
+  CHAPITRES.forEach((c, i) => {
+    const el = $(c.id);
+    if (el && el.getBoundingClientRect().top <= innerHeight * .45) actif = i;
+  });
+  document.querySelectorAll('.rc').forEach((b, i) => b.classList.toggle('on', i === actif));
+}
+let attend = false;
+addEventListener('scroll', () => {
+  if (attend) return;
+  attend = true;
+  requestAnimationFrame(() => { auDefilement(); attend = false; });
+}, { passive: true });
+addEventListener('resize', auDefilement, { passive: true });
+poserVue(0); auDefilement();
+/* ═══════════ 2 · LE SEUIL ═══════════
+   La demande part à la Maison — et n'ouvre RIEN. C'est l'invitation
+   nominative, puis un code, qui ouvre. */
 $('formDemande').addEventListener('submit', e => {
   e.preventDefault();
   const nom = ($('fNom').value || 'Madame').trim();
@@ -896,13 +1144,13 @@ $('ouvrir').addEventListener('click', () => $('carton').classList.add('on'));
     if (saisi === 'TIRA') entrer();
     else $('codeErr').classList.add('on');
   }
-  $('codeIn').querySelectorAll('input')[2].focus();
 })();
 
 /* le passage : le rideau tombe, la lumière change */
 function entrer() {
   $('carton').classList.remove('on');
   $('rideau').classList.add('on');
+  document.body.style.overflow = 'hidden';
   setTimeout(() => {
     $('public').classList.remove('on');
     $('prive').classList.add('on');
@@ -928,14 +1176,14 @@ document.addEventListener('click', e => {
 });
 
 /* le geste, en privé */
-[['01', 'La coupe', "Une peau a un sens, des zones fermes, des cicatrices. Placer un patron dessus, c'est décider où la pièce sera belle dans dix ans.", 'graine', '#5a4030'],
- ['02', 'Le point sellier', 'Deux aiguilles, un seul fil, huit points au centimètre. Si un point cède, les autres tiennent.', 'caviar', '#2e211a'],
- ['03', 'La tranche', "Poncée, teintée, brunie, reprise : sept passages pour une arête que personne ne regarde et que tout le monde sent.", 'lisse', '#1c2438']]
-  .forEach(([n, t, p, tx, c]) => {
+[['01', 'La coupe', "Une peau a un sens, des zones fermes, des cicatrices. Placer un patron dessus, c'est décider où la pièce sera belle dans dix ans.", IMG.atelier1],
+ ['02', 'Le point sellier', 'Deux aiguilles, un seul fil, huit points au centimètre. Si un point cède, les autres tiennent.', IMG.mains],
+ ['03', 'La tranche', "Poncée, teintée, brunie, reprise : sept passages pour une arête que personne ne regarde et que tout le monde sent.", IMG.savoir]]
+  .forEach(([n, t, p, src]) => {
     const d = document.createElement('div'); d.className = 'getape';
     d.innerHTML = '<div class="getape__n">' + n + '</div>' +
       '<div><h3>' + t + '</h3><p>' + p + '</p></div><div class="mat"></div>';
-    champ(d.querySelector('.mat'), tx, c);
+    poser(d.querySelector('.mat'), src);
     $('geste').appendChild(d);
   });
 

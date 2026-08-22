@@ -19,7 +19,41 @@ const ok = (c, m) => { console.log((c ? '  ✓ ' : '  ✗ ') + m); if (!c) ko++;
       hasTouch: vp.w < 900, isMobile: vp.w < 900 });
     const p = await ctx.newPage();
     const errs = []; p.on('pageerror', e => errs.push(e.message));
-    await p.goto(F); await p.waitForTimeout(700);
+    await p.goto(F); await p.waitForTimeout(2400);   // le V se trace puis s'efface
+
+    // ── 0. L'immersion : pas de menu, un récit chapitré
+    const imm = await p.evaluate(() => ({
+      splash: document.getElementById('splash').classList.contains('fini'),
+      ancres: document.querySelectorAll('#public a[href^="#"]').length,
+      chapitres: document.querySelectorAll('.rc').length,
+      vues: document.querySelectorAll('.scrub .vue').length,
+      chaps: document.querySelectorAll('.ch').length,
+      video: (document.getElementById('heroV').getAttribute('src') || '').slice(0, 30),
+      hauteur: document.documentElement.scrollHeight / innerHeight,
+    }));
+    ok(imm.splash, 'l\'ouverture au tracé du V se retire d\'elle-même');
+    ok(imm.ancres === 0, 'aucun menu d\'ancres — le récit est la navigation');
+    ok(imm.chapitres === 5, `un rail de ${imm.chapitres} chapitres remplace le menu`);
+    ok(imm.vues === 6 && imm.chaps === 4,
+       `scrub épinglé (${imm.vues} vues) + chapitrage collant (${imm.chaps} chapitres)`);
+    ok(imm.video.startsWith('https://cdn.shopify.com'), 'le hero est la vidéo de la boutique');
+    ok(imm.hauteur > 8, `le récit se déroule sur ${imm.hauteur.toFixed(0)} écrans`);
+
+    // Les visuels du RÉCIT viennent tous du CDN de la boutique : plus aucun
+    // aplat de fausse matière. Seul le rendu du configurateur reste embarqué
+    // (il doit changer avec la matière), et la fiche n'a de source qu'ouverte.
+    const visuels = await p.evaluate(() => {
+      const recit = [...document.querySelectorAll('#public img, #prive img')]
+        .filter(i => !i.closest('#ph') && i.getAttribute('src'))
+        .map(i => i.getAttribute('src'));
+      return { total: recit.length,
+        cdn: recit.filter(s => s.startsWith('https://cdn.shopify.com')).length };
+    });
+    ok(visuels.total >= 15 && visuels.cdn === visuels.total,
+       `les ${visuels.total} visuels du récit viennent du CDN de la boutique`);
+    const rendu = await p.evaluate(() =>
+      (document.getElementById('phImg').getAttribute('src') || '').slice(0, 16));
+    ok(rendu.startsWith('data:image'), 'seul le rendu du configurateur reste embarqué');
 
     // ── 1. La vitrine ne vend rien
     const vitrine = await p.evaluate(() => {
@@ -35,6 +69,46 @@ const ok = (c, m) => { console.log((c ? '  ✓ ' : '  ✗ ') + m); if (!c) ko++;
     ok(!vitrine.connexion, 'aucun « se connecter » : on ne s\'inscrit pas');
     ok(vitrine.cta.some(t => /Demander à être reçue/.test(t)),
        'l\'unique conversion est le rendez-vous');
+
+    // ── 1bis. Le récit répond au défilement
+    await p.evaluate(() => document.getElementById('ch-geste').scrollIntoView());
+    await p.waitForTimeout(500);
+    const g0 = await p.evaluate(() => document.getElementById('scrubN').textContent);
+    await p.evaluate(() => scrollBy(0, innerHeight * 2.4));
+    await p.waitForTimeout(700);
+    const g1 = await p.evaluate(() => ({
+      n: document.getElementById('scrubN').textContent,
+      barre: document.getElementById('scrubB').style.width,
+      vue: [...document.querySelectorAll('.scrub .vue')].findIndex(v => v.classList.contains('on')),
+    }));
+    ok(g0 !== g1.n, `le scrub avance avec le défilement (${g0.trim()} → ${g1.n.trim()})`);
+    ok(g1.vue > 0, 'la photographie a changé');
+    await p.evaluate(() => document.getElementById('ch-maison').scrollIntoView());
+    await p.waitForTimeout(400);
+    const c0 = await p.evaluate(() =>
+      [...document.querySelectorAll('.ch')].findIndex(c => c.classList.contains('on')));
+    await p.evaluate(() => scrollBy(0, innerHeight * 2.6));
+    await p.waitForTimeout(700);
+    const c1 = await p.evaluate(() => ({
+      i: [...document.querySelectorAll('.ch')].findIndex(c => c.classList.contains('on')),
+      vis: [...document.querySelectorAll('.chap__vis .vue')].findIndex(v => v.classList.contains('on')),
+    }));
+    ok(c1.i > c0 && c1.vis === c1.i,
+       `le chapitrage suit et son visuel avec (chapitre ${c0 + 1} → ${c1.i + 1})`);
+
+    // ── 1ter. Une pièce s'ouvre en fiche, sans prix
+    await p.evaluate(() => document.getElementById('ch-pieces').scrollIntoView());
+    await p.waitForTimeout(500);
+    await p.click('.pc[data-p="colette"]');
+    await p.waitForTimeout(700);
+    const fiche = await p.evaluate(() => ({
+      ouverte: document.getElementById('fp').classList.contains('on'),
+      nom: document.getElementById('fpN').textContent,
+      txt: document.getElementById('fp').innerText,
+    }));
+    ok(fiche.ouverte && fiche.nom === 'Colette', 'une pièce s\'ouvre en fiche plein cadre');
+    ok(!/€/.test(fiche.txt), 'la fiche publique ne porte aucun prix');
+    await p.click('#fpX'); await p.waitForTimeout(500);
 
     // ── 2. Le seuil : la demande, puis l'invitation
     await p.evaluate(() => document.getElementById('seuil').scrollIntoView());
