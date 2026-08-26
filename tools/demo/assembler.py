@@ -4,6 +4,7 @@ Lancer depuis la racine du dépôt : python3 tools/demo/assembler.py"""
 import base64, json, sys, os
 
 GAB = sys.argv[1] if len(sys.argv) > 1 else 'tools/demo/gabarit-maison.html'
+SORTIE = sys.argv[2] if len(sys.argv) > 2 else 'tiraboschi-maison-demo.html'
 
 def b64(p, mime='image/webp'):
     return 'data:%s;base64,%s' % (mime, base64.b64encode(open(p, 'rb').read()).decode())
@@ -55,5 +56,5 @@ s = (s.replace('"__TUILES__"', json.dumps(TUILES))
       .replace('"__RENDUS__"', json.dumps(RENDUS))
       .replace('"__ROT__"', json.dumps(ROT))
       .replace('"__NUANCES__"', json.dumps(NUANCES, ensure_ascii=False)))
-open('tiraboschi-maison-demo.html', 'w', encoding='utf-8').write(s)
-print('assemblé : %d Ko' % (len(s) // 1024))
+open(SORTIE, 'w', encoding='utf-8').write(s)
+print('%s : %d Ko' % (SORTIE, len(s) // 1024))

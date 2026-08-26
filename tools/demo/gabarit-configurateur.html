@@ -1,0 +1,969 @@
+<!doctype html>
+<html lang="fr"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#141210">
+<title>TIRABOSCHI — L'Atelier</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   TIRABOSCHI — L'ATELIER, configurateur autonome.
+
+   Destiné à la tablette du point de vente : on présente les modèles,
+   on parcourt les cuirs, on compose une pièce devant la cliente et on
+   lit l'estimation. Rien n'est encaissé ici — la composition part au
+   devis, que le conseiller établit dans le POS.
+
+   Ce fichier est ENTIÈREMENT autonome : aucune requête réseau une fois
+   chargé (les rendus et les cuirs sont embarqués). Il fonctionne donc
+   en boutique même sans connexion.
+   ═══════════════════════════════════════════════════════════════════ */
+:root{
+  --noir:#0a0a0a; --encre:#141210; --ecru:#efeae3; --blanc:#fff;
+  --or:#b08d57; --e:cubic-bezier(.16,1,.3,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;border-radius:0!important}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Playfair Display',Georgia,serif;background:var(--encre);
+  color:var(--ecru);-webkit-font-smoothing:antialiased;
+  -webkit-tap-highlight-color:transparent}
+button,input{font-family:inherit;color:inherit;background:none;border:none;
+  outline:none;cursor:pointer}
+img{display:block;max-width:100%}
+.cap{font-family:system-ui,-apple-system,sans-serif;text-transform:uppercase;
+  letter-spacing:.24em;font-size:9px}
+
+/* ── la barre du point de vente ── */
+.pos{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;
+  gap:clamp(10px,2vw,26px);padding:12px clamp(12px,2.4vw,32px);
+  background:rgba(20,18,16,.94);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(239,234,227,.1)}
+.pos__m{font-size:11px;letter-spacing:.4em;text-transform:uppercase;opacity:.85;
+  flex-shrink:0}
+.pos__o{display:flex;gap:2px;margin-left:auto;flex-shrink:0}
+.pb{border:1px solid rgba(239,234,227,.22);padding:10px 15px;
+  font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.16em;
+  font-size:9px;transition:.3s;white-space:nowrap;min-height:40px}
+.pb:hover{border-color:var(--ecru)}
+.pb.on{background:var(--ecru);color:var(--noir);border-color:var(--ecru)}
+@media(max-width:640px){
+  .pos{gap:6px;padding:9px 12px}
+  .pos__m{font-size:9px;letter-spacing:.26em}
+  .pb{padding:9px 11px;font-size:8px;letter-spacing:.1em}
+}
+
+/* ── les vues ── */
+.vue-pos{position:fixed;inset:0;opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .55s var(--e),visibility .55s;overflow:auto}
+.vue-pos.on{opacity:1;visibility:visible;pointer-events:auto}
+
+/* ── I · les modèles ── */
+.mods{min-height:100%;background:var(--ecru);color:var(--noir);
+  padding:70px clamp(16px,3vw,50px) clamp(16px,3vh,40px);
+  display:flex;flex-direction:column}
+.mods__t{font-size:clamp(22px,3vw,38px);letter-spacing:-.02em;margin-bottom:6px}
+.mods__t em{font-style:italic}
+.mods__s{opacity:.45;margin-bottom:clamp(20px,4vh,40px)}
+.mgrille{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;flex:1;min-height:0}
+@media(max-width:900px){.mgrille{grid-template-columns:1fr;flex:none}}
+.mc{background:#fff;padding:clamp(14px,1.8vw,26px);display:flex;flex-direction:column}
+.mc__m{position:relative;height:clamp(160px,30svh,290px);overflow:hidden;background:#fff}
+.mc__m img{width:100%;height:100%;object-fit:contain;transition:transform 1.1s var(--e)}
+.mc:hover .mc__m img{transform:scale(1.03)}
+.mc__m.vide{background:#f4f1eb}
+.mc__m.vide img{display:none}
+.mc__m.vide::after{content:'Photographie · hors connexion';position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:system-ui,sans-serif;font-size:9px;letter-spacing:.2em;
+  text-transform:uppercase;opacity:.3;text-align:center;padding:16px}
+.mc h3{font-size:21px;font-style:italic;margin-top:14px}
+.mc__k{margin-top:7px;opacity:.42}
+.mc__l{margin-top:12px;padding-top:10px;border-top:1px solid rgba(10,10,10,.12);
+  font-family:system-ui,sans-serif;font-size:11px;line-height:1.85;opacity:.6}
+.mc__l b{font-weight:500;opacity:1}
+.mc__p{margin-top:auto;padding-top:14px;font-size:15px}
+.mc__go{margin-top:14px;border:1px solid rgba(10,10,10,.45);padding:12px 18px;
+  font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.2em;
+  font-size:9px;transition:.3s;min-height:44px}
+.mc__go:hover{background:var(--noir);color:var(--ecru)}
+.mc__go[disabled]{opacity:.28;cursor:default}
+.mc__go[disabled]:hover{background:none;color:inherit}
+
+/* ── II · l'atelier (décalé sous la barre) ── */
+.atl{top:0}
+.atl__sc{padding-top:76px}
+@media(max-width:900px){.atl__sc{padding-top:62px}}
+.fiche{padding-top:76px}
+@media(max-width:900px){.fiche{padding-top:10px}}
+
+/* ═══════════ L'ATELIER — le configurateur ═══════════ */
+.atl{position:absolute;inset:0;display:grid;
+  grid-template-columns:1fr clamp(330px,31vw,440px);background:var(--ecru);color:var(--noir)}
+.atl__sc{position:relative;display:flex;align-items:center;justify-content:center;
+  padding:70px 10px 14px}
+.atl__ph{position:relative;max-width:100%;max-height:100%;isolation:isolate;
+  touch-action:none;cursor:grab}
+.atl__ph.tourne{cursor:grabbing}
+.atl__ph img{display:block;object-fit:contain;
+  /* La place est RÉSERVÉE par le rapport de la vue : pendant l'échange
+     d'image (matière ou position), le conteneur ne se replie plus le temps
+     du décodage — plus de saut à l'écran, et la pièce reste saisissable. */
+  aspect-ratio:760/851;height:calc(100svh - 96px);width:auto;max-width:100%;
+  transition:opacity .6s var(--e)}
+/* La moitié 195°→345° est le MIROIR de 165°→15° : le studio est monté
+   symétrique, ce qui divise par deux le nombre de rendus. */
+.atl__ph.miroir img,.atl__ph.miroir .atl__t{transform:scaleX(-1)}
+/* Les repères ne valent que de face : ils s'effacent dès qu'on tourne. */
+.atl__reps{transition:opacity .35s var(--e)}
+.atl__ph.detourne .atl__reps{opacity:0;pointer-events:none}
+.tourner{position:absolute;left:0;right:0;bottom:4px;text-align:center;z-index:7;
+  font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.26em;
+  font-size:9px;opacity:.3;pointer-events:none;transition:opacity .5s}
+.atl__ph.tourne .tourner,.atl__ph.detourne .tourner{opacity:0}
+.deg{position:absolute;right:2px;top:2px;z-index:7;font-family:system-ui,sans-serif;
+  letter-spacing:.18em;font-size:9px;opacity:0;pointer-events:none;
+  transition:opacity .4s}
+.atl__ph.tourne .deg,.atl__ph.detourne .deg{opacity:.42}
+/* la nuance se multiplie À TRAVERS le masque du cuir : l'or reste or */
+.atl__t{position:absolute;inset:0;mix-blend-mode:multiply;opacity:0;pointer-events:none;
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  transition:opacity .9s var(--e),background-color .9s var(--e)}
+.atl__reps{position:absolute;inset:0;pointer-events:none;z-index:6}
+.rep{position:absolute;transform:translate(-12px,-50%);display:flex;align-items:center;
+  pointer-events:auto}
+/* dans la moitié droite du cadre, l'étiquette s'ouvre vers la gauche */
+.rep--g{flex-direction:row-reverse;transform:translate(calc(-100% + 12px),-50%)}
+.rep--g .rep__l{text-align:right}
+.rep--g:hover .rep__l,.rep--g.set .rep__l{margin-left:0;margin-right:10px}
+.rep__o{position:relative;width:24px;height:24px;border:1px solid rgba(10,10,10,.45);
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  transition:background .35s,border-color .35s,transform .45s var(--e)}
+.rep__o::after{content:'';width:3px;height:3px;background:var(--noir);opacity:.75;
+  transition:opacity .3s}
+.rep.set .rep__o::after{opacity:0}
+.rep__sw{position:absolute;inset:2px;opacity:0;transform:scale(.5);
+  background-size:110px 110px;background-blend-mode:hard-light;
+  transition:opacity .5s var(--e),transform .55s var(--e)}
+.rep.set .rep__sw{opacity:1;transform:none}
+.rep:hover .rep__o{border-color:var(--noir);transform:scale(1.16)}
+.rep__pu{position:absolute;left:12px;top:12px;width:24px;height:24px;
+  transform:translate(-50%,-50%);border:1px solid var(--noir);opacity:0;pointer-events:none}
+.rep:not(.set) .rep__pu{animation:onde 3.4s var(--e) infinite}
+@keyframes onde{0%{opacity:.42;transform:translate(-50%,-50%) scale(1)}
+  70%{opacity:0;transform:translate(-50%,-50%) scale(2.5)}100%{opacity:0}}
+.rep__l{white-space:nowrap;overflow:hidden;max-width:0;opacity:0;
+  background:rgba(255,255,255,.95);box-shadow:0 1px 12px rgba(10,10,10,.12);
+  font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.18em;font-size:8px;
+  transition:max-width .5s var(--e),opacity .4s,padding .5s var(--e),margin .5s var(--e)}
+.rep:hover .rep__l,.rep.set .rep__l{max-width:250px;opacity:1;padding:7px 11px;margin-left:10px}
+.rep__l em{font-style:italic;text-transform:none;letter-spacing:.02em;font-size:10px}
+
+/* la fiche */
+.fiche{border-left:1px solid rgba(10,10,10,.1);display:flex;flex-direction:column;
+  padding:64px clamp(16px,2.2vw,32px) clamp(14px,2.4svh,24px);font-family:system-ui,sans-serif}
+.fiche__k{opacity:.45;margin-bottom:10px;flex-shrink:0}
+.fiche__l{flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding-bottom:24px;
+  -webkit-mask-image:linear-gradient(180deg,#000 0,#000 calc(100% - 30px),transparent);
+  mask-image:linear-gradient(180deg,#000 0,#000 calc(100% - 30px),transparent)}
+.fiche__l::-webkit-scrollbar{display:none}
+.aj{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:11px 2px;
+  border-bottom:1px solid rgba(10,10,10,.11);transition:padding-left .4s var(--e),background .3s}
+.aj:hover{padding-left:9px;background:rgba(10,10,10,.03)}
+.aj__i{font-size:9px;letter-spacing:.1em;opacity:.3;width:18px;flex-shrink:0}
+.aj__x{flex:1;min-width:0}
+.aj__n{font-size:9px;letter-spacing:.18em;text-transform:uppercase;opacity:.5;display:block}
+.aj__v{font-size:13px;margin-top:4px;display:flex;align-items:center;gap:8px;opacity:.55;
+  font-family:'Playfair Display',serif;font-style:italic;white-space:nowrap;overflow:hidden}
+.aj.set .aj__v{opacity:1;font-style:normal}
+.aj__c{width:13px;height:13px;flex-shrink:0;background-size:100px 100px;
+  background-blend-mode:hard-light;opacity:0;transform:scale(.4);
+  transition:opacity .45s var(--e),transform .5s var(--e)}
+.aj.set .aj__c{opacity:1;transform:none}
+.aj__p{font-size:9px;letter-spacing:.12em;opacity:.35;flex-shrink:0;white-space:nowrap}
+.tot{flex-shrink:0;padding-top:clamp(10px,2svh,16px);border-top:1px solid rgba(10,10,10,.22);
+  display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.tot__l{opacity:.4}
+.tot__v{font-family:'Playfair Display',serif;font-size:clamp(24px,2.3vw,32px);margin-top:6px}
+.tot__go{font-size:9px;letter-spacing:.2em;text-transform:uppercase;opacity:.6;
+  position:relative;padding-bottom:6px;white-space:nowrap}
+.tot__go::after{content:'';position:absolute;left:0;bottom:0;width:100%;height:1px;
+  background:currentColor;opacity:.5;transform:scaleX(1);transform-origin:right;
+  transition:transform .45s var(--e)}
+.tot__go:hover{opacity:1}.tot__go:hover::after{transform:scaleX(0)}
+@media(max-width:900px){
+  .atl{grid-template-columns:1fr;grid-template-rows:minmax(0,46svh) minmax(0,1fr)}
+  .atl__sc{padding:56px 8px 6px}
+  .atl__ph img{height:calc(46svh - 62px)}
+  .fiche{border-left:none;border-top:1px solid rgba(10,10,10,.12);padding:10px 15px 12px}
+  .rep.set .rep__l{max-width:0;opacity:0;padding:0;margin:0}
+  .rep:hover .rep__l{max-width:200px;opacity:1;padding:7px 11px;margin-left:10px}
+  .rep--g:hover .rep__l{margin-left:0;margin-right:10px}
+}
+
+/* la plongée dans la matière */
+.plg{position:fixed;inset:0;z-index:80;opacity:0;visibility:hidden;pointer-events:none;
+  color:#fff;transition:opacity .7s var(--e),visibility .7s;--bas:clamp(214px,29svh,272px)}
+.plg.on{opacity:1;visibility:visible;pointer-events:auto}
+.plg__bg{position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 38%,#151311 0%,#0a0a0a 78%)}
+.plg__st{position:absolute;left:0;right:0;top:104px;bottom:var(--bas);overflow:hidden;
+  perspective:1500px;perspective-origin:50% 50%;touch-action:none;cursor:grab}
+.plg__st.tire{cursor:grabbing}
+.sw{position:absolute;top:50%;left:50%;width:min(46vw,600px);height:100%;
+  transform:translate(-50%,-50%);opacity:0;visibility:hidden;
+  background-repeat:repeat;background-blend-mode:hard-light;
+  box-shadow:0 30px 90px rgba(0,0,0,.55);
+  transition:transform .82s var(--e),opacity .6s var(--e)}
+.plg__st.tire .sw{transition:none}
+.sw::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(104deg,rgba(255,255,255,.15) 0,transparent 34%,
+    transparent 66%,rgba(0,0,0,.3) 100%)}
+.sw.mid{box-shadow:0 46px 120px rgba(0,0,0,.72)}
+.plg__hd{position:absolute;top:24px;left:0;right:0;z-index:5;display:flex;
+  justify-content:space-between;padding:0 clamp(18px,3vw,40px);
+  font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.24em;font-size:10px}
+.plg__hd button{opacity:.5;transition:opacity .3s;letter-spacing:.2em;font-size:10px}
+.plg__hd button:hover{opacity:1}
+.plg__fam{position:absolute;top:64px;left:0;right:0;z-index:5;display:flex;gap:20px;
+  justify-content:center;flex-wrap:wrap;padding:0 18px}
+.fm{font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.22em;
+  font-size:9px;opacity:.3;padding-bottom:6px;position:relative;transition:opacity .3s}
+.fm::after{content:'';position:absolute;left:0;bottom:0;width:100%;height:1px;
+  background:currentColor;transform:scaleX(0);transform-origin:left;
+  transition:transform .45s var(--e)}
+.fm.on{opacity:1}.fm.on::after{transform:scaleX(1)}
+.plg__cap{position:absolute;left:0;right:0;bottom:clamp(20px,4.4vh,44px);z-index:5;
+  text-align:center}
+.rail{display:flex;gap:1px;width:min(620px,86vw);margin:0 auto 16px;height:14px;
+  align-items:flex-end;cursor:pointer;touch-action:none}
+.rail i{flex:1;height:7px;box-shadow:inset 0 1px 0 rgba(255,255,255,.22);
+  transition:height .25s var(--e),box-shadow .25s}
+.rail:hover i{height:9px}
+.rail i.on{height:14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),
+  0 0 0 1px rgba(255,255,255,.85)}
+.plg__n{font-size:clamp(26px,4.2vw,54px);letter-spacing:-.02em;min-height:1.1em}
+.plg__d{font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.24em;
+  font-size:10px;opacity:.5;margin-top:11px}
+.plg__c{font-family:system-ui,sans-serif;letter-spacing:.26em;font-size:9px;opacity:.28;
+  margin-top:14px}
+.plg__ok{margin-top:20px;border:1px solid rgba(255,255,255,.5);padding:14px 38px;
+  font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.22em;font-size:10px;
+  transition:background .3s,letter-spacing .45s var(--e)}
+.plg__ok:hover{background:rgba(255,255,255,.13);letter-spacing:.3em}
+.plg__a{position:absolute;top:50%;transform:translateY(-50%);z-index:6;width:44px;height:44px;
+  display:flex;align-items:center;justify-content:center;opacity:.4;transition:opacity .3s}
+.plg__a:hover{opacity:1}.plg__a:disabled{opacity:.09}
+.plg__a svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1}
+.plg__a--p{left:clamp(6px,1.6vw,24px)}.plg__a--n{right:clamp(6px,1.6vw,24px)}
+.plg__opts{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:5;
+  width:min(520px,88vw)}
+.op{display:flex;align-items:center;gap:18px;width:100%;padding:16px 0;
+  border-bottom:1px solid rgba(255,255,255,.13);text-align:left;
+  transition:padding-left .4s var(--e)}
+.op:first-child{border-top:1px solid rgba(255,255,255,.13)}
+.op:hover{padding-left:12px}
+.op__m{width:52px;height:52px;flex:0 0 52px;background-size:cover;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);transition:transform .5s var(--e)}
+.op:hover .op__m{transform:scale(1.06)}
+.op__x{flex:1;min-width:0}
+.op__n{font-size:17px;display:block}
+.op__d{font-family:system-ui,sans-serif;font-size:11px;opacity:.42;margin-top:5px;display:block}
+.op__p{font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.16em;
+  font-size:10px;opacity:.4;white-space:nowrap}
+.op.on .op__n::before{content:'— ';opacity:.6}
+.plg__gl{position:absolute;left:0;right:0;bottom:12px;text-align:center;z-index:5;
+  font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.26em;font-size:9px;
+  opacity:.22;pointer-events:none;transition:opacity .5s}
+.plg.tire .plg__gl{opacity:0}
+
+/* le certificat */
+.cert{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  padding:clamp(64px,9vh,100px) clamp(18px,4vw,44px) clamp(22px,4svh,44px)}
+.cert__in{width:min(880px,100%);max-height:100%;display:flex;flex-direction:column}
+.cert__h{text-align:center;margin-bottom:clamp(16px,2.6vh,28px);flex-shrink:0}
+.cert__t{font-size:clamp(24px,3.6vw,44px);letter-spacing:-.025em}
+.cert__t em{font-style:italic}
+.cert__g{display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(22px,4vw,52px);
+  border-top:1px solid rgba(239,234,227,.16);overflow-y:auto;scrollbar-width:none;
+  flex:1;min-height:0}
+.cert__g::-webkit-scrollbar{display:none}
+@media(max-width:760px){.cert__g{grid-template-columns:1fr}}
+.cl{display:flex;justify-content:space-between;gap:12px;padding:10px 0;
+  border-bottom:1px solid rgba(239,234,227,.09);opacity:0;transform:translateY(8px);
+  transition:opacity .6s var(--e),transform .7s var(--e)}
+.cl.in{opacity:1;transform:none}
+.cl__k{font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.16em;
+  font-size:9px;opacity:.4;flex-shrink:0;padding-top:3px}
+.cl__v{font-size:13px;text-align:right}
+.cl__v small{display:block;font-family:system-ui,sans-serif;font-size:10px;opacity:.4;
+  margin-top:2px;font-style:italic}
+.cert__f{flex-shrink:0;margin-top:clamp(12px,2vh,22px);display:flex;justify-content:space-between;
+  align-items:flex-end;gap:20px;flex-wrap:wrap}
+.cert__tot{font-size:clamp(26px,3.4vw,42px);letter-spacing:-.02em}
+.cert__note{font-family:system-ui,sans-serif;font-size:10px;line-height:1.9;opacity:.35;
+  max-width:40ch;flex-basis:100%;margin-top:12px}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  .lig,.cl{opacity:1;transform:none}
+}
+[hidden]{display:none!important}
+
+/* ── le pied de page du devis, propre au point de vente ── */
+.envoi{margin-top:26px;padding-top:18px;border-top:1px solid rgba(239,234,227,.16);
+  font-family:system-ui,sans-serif;font-size:11px;line-height:1.9;opacity:.45;
+  max-width:52ch}
+</style></head>
+<body>
+
+<nav class="pos">
+  <span class="pos__m">Tiraboschi · L'Atelier</span>
+  <div class="pos__o">
+    <button class="pb on" data-v="mods">Les modèles</button>
+    <button class="pb" data-v="atl">Composer</button>
+    <button class="pb" data-v="cert" id="pbCert">La pièce achevée</button>
+    <button class="pb" id="posCuirs">Les cuirs</button>
+    <button class="pb" id="posRaz">Recommencer</button>
+  </div>
+</nav>
+
+<!-- I · les modèles -->
+<section class="vue-pos on" data-v="mods">
+  <div class="mods">
+    <h1 class="mods__t">Les <em>modèles</em></h1>
+    <p class="mods__s cap">Trois silhouettes · tout le reste se compose en atelier</p>
+    <div class="mgrille" id="mgrille"></div>
+  </div>
+</section>
+
+<!-- II · l'atelier -->
+<section class="vue-pos" data-v="atl">
+    <div class="atl">
+      <div class="atl__sc">
+        <div class="atl__ph" id="ph">
+          <img id="phImg" alt="Votre Rafaël">
+          <div class="atl__t" id="phT"></div>
+          <div class="atl__reps" id="reps"></div>
+          <p class="tourner" id="tourner">Faites tourner la pièce</p>
+          <p class="deg" id="deg"></p>
+        </div>
+      </div>
+      <aside class="fiche">
+        <p class="fiche__k cap">Votre pièce, ligne à ligne</p>
+        <div class="fiche__l" id="fiche"></div>
+        <div class="tot">
+          <div><p class="tot__l cap">Estimation</p><p class="tot__v" id="tot">—</p></div>
+          <button class="tot__go" id="voirCert">Voir la pièce achevée</button>
+        </div>
+      </aside>
+    </div>
+</section>
+
+<!-- III · la pièce achevée -->
+<section class="vue-pos" data-v="cert">
+    <div class="cert"><div class="cert__in">
+      <div class="cert__h">
+        <p class="pv__k cap">Pièce unique · Atelier Tiraboschi</p>
+        <h2 class="cert__t" id="certT">Votre <em>Rafaël</em></h2>
+      </div>
+      <div class="cert__g" id="certG"></div>
+      <div class="cert__f">
+        <div><p class="tot__l cap">Estimation ferme</p>
+          <p class="cert__tot" id="certTot"></p></div>
+        <button class="btn" id="confier">Confier à Laurène
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
+        </button>
+        <p class="cert__note">Laurène établit le devis et vous l'adresse. Aucun
+          paiement n'a lieu ici. Façonnage : 12 à 16 semaines. Un cuir exotique
+          reste soumis à disponibilité en tannerie.</p>
+      </div>
+</section>
+
+<!-- la plongée dans la matière -->
+<div class="plg" id="plg" role="dialog" aria-modal="true">
+  <div class="plg__bg"></div>
+  <div class="plg__st" id="plgSt"></div>
+  <p class="plg__gl" id="plgGl">Faites glisser</p>
+  <div class="plg__opts" id="plgOpts" hidden></div>
+  <div class="plg__hd"><span id="plgT"></span><button id="plgX">Fermer</button></div>
+  <div class="plg__fam" id="plgFam"></div>
+  <button class="plg__a plg__a--p" id="plgP" aria-label="Précédent"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg></button>
+  <button class="plg__a plg__a--n" id="plgN" aria-label="Suivant"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></button>
+  <div class="plg__cap">
+    <div class="rail" id="plgRail" aria-label="Aller à une nuance"></div>
+    <p class="plg__n" id="plgNom"></p>
+    <p class="plg__d" id="plgD"></p>
+    <p class="plg__c" id="plgC"></p>
+    <button class="plg__ok" id="plgOk">Retenir ce cuir</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+const $ = i => document.getElementById(i);
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const euros = n => n.toLocaleString('fr-FR').replace(/ | /g, ' ') + ' €';
+
+/* ═══ Les assets embarqués ═══ */
+const TX = "__TUILES__";
+const RENDUS = "__RENDUS__";
+const ROT = "__ROT__";
+const NUANCES = "__NUANCES__";
+
+/* ═══ Le Référentiel — en boutique, le conseiller montre TOUT ═══
+   (dans l'espace privé du site, la visibilité dépend du cercle de la
+   cliente ; ici la vendeuse présente l'ensemble de la carte.) */
+const MATIERES = [
+  { id:'graine', nom:'Grainé', d:0, vis:0 },
+  { id:'caviar', nom:'Caviar', d:180, vis:0 },
+  { id:'lisse', nom:'Box lisse', d:320, vis:0 },
+  { id:'daim', nom:'Daim', d:240, vis:0 },
+  { id:'alligator', nom:'Alligator', d:3800, vis:0 },
+  { id:'galuchat', nom:'Galuchat', d:3100, vis:0 },
+];
+const FERRURES = [
+  { id:'laiton', n:'Laiton naturel', d2:'Patine avec le temps.', d:0, f:'#b08d57' },
+  { id:'vieilli', n:'Laiton vieilli', d2:'Patiné à la main.', d:120, f:'#8a6a3a' },
+  { id:'palladium', n:'Argent palladié', d2:'Blanc froid, inaltérable.', d:340, f:'#cfd2d4' },
+  { id:'or24', n:'Or jaune 24 carats', d2:"Dorure à l'or fin, sur commande.", d:1800, f:'#d9b23c' },
+];
+const PASSEPOILS = [
+  { id:'framboise', n:'Framboise', d2:'La signature de la Rafaël.', d:0, f:'#9c2440' },
+  { id:'noir', n:'Ton sur ton', d2:'La pièce se tait.', d:0, f:'#141414' },
+  { id:'marine', n:'Marine', d2:'Un trait profond.', d:0, f:'#243352' },
+];
+const DOUBLURES = [
+  { id:'agneau', n:'Agneau naturel', d2:'La doublure de maison.', d:0, tx:'daim' },
+  { id:'chevreau', n:'Chevreau glacé', d2:"Un léger éclat à l'ouverture.", d:160, tx:'lisse' },
+  { id:'soie', n:'Soie sauvage', d2:'Tissée à Lyon.', d:240, f:'#c9b79c' },
+];
+const BANDOULIERE = [
+  { id:'avec', n:'Avec bandoulière', d2:'Portée épaule ou croisée.', d:0, f:'#3a332c' },
+  { id:'sans', n:'Pochette nue', d2:'La pièce, rien de plus.', d:-140, f:'#221e1a' },
+];
+
+const MODELE = { nom:'Rafaël', base:1900, t:'Pochette · bandoulière amovible',
+  reps:{ ext:[26,60], ferrures:[50.7,74], passepoil:[74,62], bandouliere:[50,11], doublure:[30,84] } };
+
+const AJ = [
+  { k:'ext', n:'Cuir extérieur', type:'cuir' },
+  { k:'ferrures', n:'Ferrures', type:'liste', l:FERRURES },
+  { k:'passepoil', n:'Passepoil', type:'liste', l:PASSEPOILS },
+  { k:'doublure', n:'Doublure', type:'liste', l:DOUBLURES },
+  { k:'bandouliere', n:'Bandoulière', type:'liste', l:BANDOULIERE },
+  { k:'grav', n:'Gravure', type:'texte' },
+];
+
+/* en boutique il n'y a pas de cercle : tout est montrable */
+const CLIENTE = { nom:'', statut:9 };
+const ETAT_NEUF = { cuir:'', ferrures:'laiton', passepoil:'framboise',
+                    doublure:'agneau', bandouliere:'avec', grav:'' };
+const S = Object.assign({}, ETAT_NEUF);
+
+const cuirVisible = m => CLIENTE.statut >= m.vis;
+const matPar = id => MATIERES.find(m => m.id === id) || null;
+const nuPar = id => NUANCES.find(n => n.id === id) || null;
+function cuirCourant() {
+  if (!S.cuir) return null;
+  const [mi, ni] = S.cuir.split(':');
+  const m = matPar(mi), n = nuPar(ni);
+  return m && n ? { m, n, nom: n.nom + ' · ' + m.nom, delta: m.d, hex: n.hex } : null;
+}
+
+/* ═══ I · les modèles — photographies de la boutique ═══ */
+const CDN = 'https://cdn.shopify.com/s/files/1/0927/5890/1079/files/';
+const MODELES = [
+  { id:'rafael', nom:'Rafaël', t:'Pochette · bandoulière amovible', px:1900,
+    img: CDN + 'BOSCHI0774_85f74e95-56cc-4478-aba9-5c523a543565.jpg?v=1769440532',
+    l:[['Dimensions','H 19 × L 30 × P 4 cm'],['Fermeture','Anneau en D'],
+       ['Intérieur','Une poche plate'],['Façonnage','12 à 16 semaines']], atl:true },
+  { id:'colette', nom:'Colette', t:'Sac à main · porté épaule', px:3200,
+    img: CDN + 'BOSCHI0633.jpg?v=1769462827',
+    l:[['Dimensions','H 24 × L 32 × P 10 cm'],['Contenance','Un A5, téléphone, clés'],
+       ['Anse','55 cm'],['Façonnage','12 à 16 semaines']] },
+  { id:'olympe', nom:'Olympe', t:'Seau · pochon amovible', px:2900,
+    img: CDN + 'BOSCHI0757.jpg?v=1769441367',
+    l:[['Dimensions','H 26 × L 24 × P 16 cm'],['Pochon','Soie sauvage, amovible'],
+       ['Anse','Portée épaule'],['Façonnage','12 à 16 semaines']] },
+];
+MODELES.forEach(m => {
+  const c = document.createElement('div'); c.className = 'mc';
+  const cadre = document.createElement('div'); cadre.className = 'mc__m';
+  const im = document.createElement('img');
+  im.alt = m.nom; im.decoding = 'async';
+  im.onerror = () => cadre.classList.add('vide');
+  im.src = m.img;
+  cadre.appendChild(im); c.appendChild(cadre);
+  c.insertAdjacentHTML('beforeend',
+    '<h3>' + m.nom + '</h3><p class="mc__k cap">' + m.t + '</p>' +
+    '<div class="mc__l">' + m.l.map(([k, v]) =>
+      '<div>' + k + ' · <b>' + v + '</b></div>').join('') + '</div>' +
+    '<p class="mc__p">À partir de ' + euros(m.px) + '</p>' +
+    '<button class="mc__go"' + (m.atl ? '' : ' disabled') + '>' +
+      (m.atl ? 'Composer cette pièce' : 'En volume prochainement') + '</button>');
+  if (m.atl) c.querySelector('.mc__go').onclick = () => versPos('atl');
+  $('mgrille').appendChild(c);
+});
+
+/* ═══ navigation du point de vente ═══ */
+function versPos(v) {
+  document.querySelectorAll('.vue-pos').forEach(s => s.classList.toggle('on', s.dataset.v === v));
+  document.querySelectorAll('.pb[data-v]').forEach(b => b.classList.toggle('on', b.dataset.v === v));
+}
+document.querySelectorAll('.pb[data-v]').forEach(b => b.onclick = () => {
+  if (b.dataset.v === 'cert') certificat();
+  versPos(b.dataset.v);
+});
+
+/* ═══════════ L'ATELIER — le configurateur ═══════════ */
+$('ph').style.setProperty('--masque', 'url(' + RENDUS.masque + ')');
+$('phT').style.webkitMaskImage = $('phT').style.maskImage = 'url(' + RENDUS.masque + ')';
+$('phImg').src = RENDUS.graine;
+
+function total() {
+  let t = MODELE.base;
+  const c = cuirCourant(); if (c) t += c.delta;
+  [[FERRURES, 'ferrures'], [PASSEPOILS, 'passepoil'], [DOUBLURES, 'doublure'],
+   [BANDOULIERE, 'bandouliere']].forEach(([L, k]) => {
+    const o = L.find(x => x.id === S[k]); if (o) t += o.d;
+  });
+  if (S.grav) t += 180;
+  return t;
+}
+function valeur(a) {
+  if (a.type === 'cuir') { const c = cuirCourant(); return c ? [c.nom, c.delta] : ['Au choix', null]; }
+  if (a.type === 'texte') return [S.grav || 'Aucune', S.grav ? 180 : 0];
+  const o = a.l.find(x => x.id === S[a.k]);
+  return o ? [o.n, o.d] : ['Au choix', null];
+}
+function peindre(el, o, taille) {
+  if (!el) return;
+  el.style.backgroundImage = ''; el.style.backgroundColor = ''; el.style.backgroundBlendMode = '';
+  if (!o) return;
+  if (o.tx) {
+    el.style.backgroundImage = 'url(' + TX[o.tx] + ')';
+    el.style.backgroundColor = o.f || '#8a8175';
+    el.style.backgroundBlendMode = 'hard-light';
+    if (taille) el.style.backgroundSize = taille + 'px ' + taille + 'px';
+  } else if (o.f) el.style.backgroundColor = o.f;
+}
+function habillerCuir(el, c, taille) {
+  if (!el || !c) return;
+  el.style.backgroundImage = 'url(' + TX[c.m.id] + ')';
+  el.style.backgroundColor = c.hex;
+  el.style.backgroundBlendMode = 'hard-light';
+  if (taille) el.style.backgroundSize = taille + 'px ' + taille + 'px';
+}
+
+function batirFiche() {
+  const r = $('fiche'); r.innerHTML = '';
+  AJ.forEach((a, i) => {
+    const b = document.createElement('button');
+    b.className = 'aj'; b.dataset.k = a.k;
+    b.innerHTML = '<span class="aj__i">' + ('0' + (i + 1)).slice(-2) + '</span>' +
+      '<span class="aj__x"><span class="aj__n">' + a.n + '</span>' +
+      '<span class="aj__v"><i class="aj__c" data-c></i><span data-v></span></span></span>' +
+      '<span class="aj__p" data-p></span>';
+    b.onclick = () => plonger(a);
+    r.appendChild(b);
+  });
+}
+function batirReperes() {
+  const c = $('reps'); c.innerHTML = '';
+  Object.keys(MODELE.reps).forEach(k => {
+    const a = AJ.find(x => x.k === k); if (!a) return;
+    const p = MODELE.reps[k];
+    const b = document.createElement('button');
+    b.className = 'rep' + (p[0] > 55 ? ' rep--g' : '');
+    b.dataset.k = k;
+    b.style.left = p[0] + '%'; b.style.top = p[1] + '%';
+    b.innerHTML = '<span class="rep__o"><i class="rep__sw"></i></span><span class="rep__pu"></span>' +
+      '<span class="rep__l">' + a.n + '<em data-rv></em></span>';
+    b.onclick = () => plonger(a);
+    c.appendChild(b);
+  });
+}
+let cuirPose = 'x';
+function rafraichir() {
+  document.querySelectorAll('.aj').forEach(b => {
+    const a = AJ.find(x => x.k === b.dataset.k); if (!a) return;
+    const v = valeur(a);
+    b.querySelector('[data-v]').textContent = v[0];
+    b.querySelector('[data-p]').textContent =
+      v[1] === null ? 'à définir' : (v[1] ? (v[1] > 0 ? '+ ' : '− ') + euros(Math.abs(v[1])) : 'inclus');
+    const pose = (a.type === 'cuir' && S.cuir) || (a.type === 'texte' && S.grav) ||
+      (a.l && a.l.find(x => x.id === S[a.k]) && v[1] !== 0);
+    b.classList.toggle('set', !!pose);
+    const c = cuirCourant();
+    const chip = b.querySelector('[data-c]');
+    if (a.type === 'cuir') { if (c) habillerCuir(chip, c, 100); }
+    else peindre(chip, a.l && a.l.find(x => x.id === S[a.k]), 100);
+    const rp = document.querySelector('.rep[data-k="' + b.dataset.k + '"]');
+    if (rp) {
+      rp.classList.toggle('set', !!pose);
+      const sw = rp.querySelector('.rep__sw');
+      if (a.type === 'cuir') { if (c) habillerCuir(sw, c, 110); }
+      else peindre(sw, a.l && a.l.find(x => x.id === S[a.k]), 110);
+      const rv = rp.querySelector('[data-rv]');
+      if (rv) rv.textContent = pose ? ' · ' + v[0] : '';
+    }
+  });
+  /* la pièce prend sa matière : on change de rendu, la nuance se multiplie */
+  const c = cuirCourant();
+  const cle = c ? c.m.id + ':' + c.n.id : '';
+  if (cle !== cuirPose) {
+    cuirPose = cle;
+    if (!c) $('phT').style.opacity = '0';
+    else {
+      $('phT').style.backgroundColor = c.hex;
+      $('phT').style.opacity = '1';
+    }
+    tourner(angle, true);   /* la série suit la matière, à l'angle où l'on est */
+  }
+  majTotal();
+}
+let prec = '';
+function majTotal() {
+  const txt = euros(total()), el = $('tot');
+  if (txt === prec) return;
+  el.textContent = txt; prec = txt;
+}
+
+/* ─── la rotation : 24 positions, 13 rendus, l'autre moitié en miroir ─── */
+const POS = 24;                     // positions sur 360°
+const DEMI = POS / 2;               // 12 → indices 0..12 rendus, 13..23 reflétés
+let angle = 0;                      // position courante, 0 = de face
+/* Une position → { i: rendu à charger, m: faut-il refléter ? } */
+function positionner(a) {
+  a = ((a % POS) + POS) % POS;
+  return a <= DEMI ? { i: a, m: false } : { i: POS - a, m: true };
+}
+function tourner(a, force) {
+  const av = angle;
+  angle = ((a % POS) + POS) % POS;
+  if (angle === av && !force) return;
+  const p = positionner(angle);
+  const c = cuirCourant();
+  const mat = c ? c.m.id : 'graine';
+  /* au repos, le rendu haute définition ; en rotation, la série — même
+     studio et même cadrage, la pièce ne saute donc pas d'une image à l'autre */
+  const src = angle === 0 ? (RENDUS[mat] || RENDUS.graine)
+                          : (ROT[mat] || ROT.graine)[p.i];
+  const msk = angle === 0 ? RENDUS.masque : ROT.masque[p.i];
+  if ($('phImg').getAttribute('src') !== src) $('phImg').src = src;
+  $('phT').style.webkitMaskImage = $('phT').style.maskImage = 'url(' + msk + ')';
+  $('ph').classList.toggle('miroir', p.m);
+  $('ph').classList.toggle('detourne', angle !== 0);
+  $('deg').textContent = Math.round(angle * 360 / POS) + '°';
+}
+
+let boucleRot = null;
+/* Repositionner coupe l'élan : sans ça, la course en cours reprendrait
+   la main juste après et écraserait la position demandée. */
+function poserAngle(a) { arreterElan(); tourner(a); }
+function arreterElan() {
+  if (boucleRot) cancelAnimationFrame(boucleRot);
+  boucleRot = null;
+}
+
+(function () {
+  const ph = $('ph');
+  let id = null, x0 = 0, a0 = 0, dx = 0, t0 = 0, elan = 0;
+  const pas = () => Math.max(16, ph.clientWidth / POS * 1.6);   // px par position
+
+  ph.addEventListener('pointerdown', e => {
+    if (e.target.closest('.rep')) return;      // un repère reste cliquable
+    id = e.pointerId; x0 = e.clientX; a0 = angle; dx = 0; t0 = e.timeStamp;
+    elan = 0; arreterElan();
+    ph.classList.add('tourne');
+    try { ph.setPointerCapture(id); } catch (_) {}
+  });
+  ph.addEventListener('pointermove', e => {
+    if (id === null || e.pointerId !== id) return;
+    dx = e.clientX - x0;
+    tourner(a0 - Math.round(dx / pas()));
+  });
+  function fin(e) {
+    if (id === null || e.pointerId !== id) return;
+    id = null; ph.classList.remove('tourne');
+    const dt = Math.max(1, e.timeStamp - t0);
+    if (Math.abs(dx) < 6) return;               // un simple appui ne lance rien
+    /* L'élan prolonge le geste puis s'éteint — borné à une position par
+       image, sinon un geste vif fait tourner la pièce pendant des secondes. */
+    elan = Math.max(-1, Math.min(1, -(dx / dt) * 26 / pas()));
+    let a = angle;
+    (function file() {
+      elan *= 0.9;
+      if (Math.abs(elan) < 0.03) { boucleRot = null; return; }
+      a += elan; tourner(Math.round(a));
+      boucleRot = requestAnimationFrame(file);
+    })();
+  }
+  ph.addEventListener('pointerup', fin);
+  ph.addEventListener('pointercancel', fin);
+  /* le clavier : une position à la fois, et le retour de face */
+  ph.tabIndex = 0;
+  ph.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') { poserAngle(angle - 1); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { poserAngle(angle + 1); e.preventDefault(); }
+    if (e.key === 'Home' || e.key === 'Escape') poserAngle(0);
+  });
+})();
+
+/* ─── la plongée : cover flow des nuances + onglets de matière ─── */
+let pl = null, typ = 'graine', pi = 0, cartes = [];
+const visibles = () => MATIERES.filter(cuirVisible);
+visibles().forEach(f => {
+  const b = document.createElement('button');
+  b.className = 'fm' + (f.id === typ ? ' on' : '');
+  b.textContent = f.nom; b.dataset.f = f.id;
+  b.onclick = () => {
+    typ = f.id;
+    document.querySelectorAll('.fm').forEach(x => x.classList.toggle('on', x.dataset.f === typ));
+    rhabiller(); legende(pi);
+  };
+  $('plgFam').appendChild(b);
+});
+function matiereDe(i) {
+  const c = NUANCES[i], t = matPar(typ);
+  return { id: typ + ':' + c.id, nom: c.nom, hex: c.hex, delta: t.d, tx: typ };
+}
+function batirCartes() {
+  const st = $('plgSt'); st.innerHTML = ''; cartes = [];
+  NUANCES.forEach((c, i) => {
+    const d = document.createElement('div');
+    d.className = 'sw'; d.dataset.i = i;
+    const m = matiereDe(i);
+    d.style.backgroundImage = 'url(' + TX[m.tx] + ')';
+    d.style.backgroundColor = m.hex;
+    d.style.backgroundSize = '384px 384px';
+    cartes.push(d); st.appendChild(d);
+  });
+  placer(0);
+}
+function rhabiller() {
+  cartes.forEach((d, i) => {
+    const m = matiereDe(i);
+    d.style.backgroundImage = 'url(' + TX[m.tx] + ')';
+    d.style.backgroundColor = m.hex;
+  });
+}
+function placer(off) {
+  const c = pi + off;
+  cartes.forEach((d, i) => {
+    const o = i - c, a = Math.abs(o);
+    if (a > 3.8) { d.style.visibility = 'hidden'; d.style.opacity = '0'; return; }
+    const sg = o < 0 ? -1 : 1, ac = Math.min(a, 4);
+    d.style.visibility = 'visible';
+    d.style.transform = 'translate(calc(-50% + ' + (sg * 36 * Math.pow(ac, .78)).toFixed(2) + '%),-50%) ' +
+      'rotateY(' + (-sg * 46 * Math.min(ac, 1)).toFixed(2) + 'deg) ' +
+      'scale(' + (1 - .16 * Math.min(ac, 3)).toFixed(3) + ')';
+    d.style.opacity = (a <= 1 ? (1 - .46 * a) : Math.max(.07, .54 - .15 * (a - 1))).toFixed(3);
+    d.style.zIndex = String(60 - Math.round(ac * 10));
+    d.classList.toggle('mid', a < .5);
+  });
+}
+const crans = [];
+NUANCES.forEach((n, i) => {
+  const t = document.createElement('i');
+  t.style.background = n.hex; t.title = n.nom; t.dataset.i = i;
+  crans.push(t); $('plgRail').appendChild(t);
+});
+function legende(idx) {
+  const m = matiereDe(idx), t = matPar(typ);
+  $('plgNom').textContent = m.nom;
+  $('plgD').textContent = t.nom + ' · ' + (t.d ? '+ ' + euros(t.d) : 'sans supplément');
+  $('plgC').textContent = (idx + 1) + ' sur ' + NUANCES.length;
+  crans.forEach((c, i) => c.classList.toggle('on', i === idx));
+  $('plgP').disabled = idx <= 0; $('plgN').disabled = idx >= NUANCES.length - 1;
+}
+function allerA(n) { pi = Math.max(0, Math.min(NUANCES.length - 1, n)); placer(0); legende(pi); }
+
+function plonger(a) {
+  pl = a;
+  $('plgT').textContent = a.n;
+  const estCuir = a.type === 'cuir';
+  $('plgFam').hidden = !estCuir; $('plgSt').hidden = !estCuir;
+  $('plgP').hidden = !estCuir; $('plgN').hidden = !estCuir;
+  $('plgRail').hidden = !estCuir; $('plgGl').hidden = !estCuir;
+  $('plgOpts').hidden = estCuir;
+  $('plgOk').textContent = estCuir ? 'Retenir ce cuir' : 'Valider';
+  ['plgNom', 'plgD', 'plgC'].forEach(i => $(i).style.display = estCuir ? '' : 'none');
+  if (estCuir) {
+    if (S.cuir) {
+      const [mi, ni] = S.cuir.split(':');
+      if (matPar(mi) && cuirVisible(matPar(mi))) typ = mi;
+      const i = NUANCES.findIndex(c => c.id === ni); if (i >= 0) pi = i;
+    }
+    document.querySelectorAll('.fm').forEach(x => x.classList.toggle('on', x.dataset.f === typ));
+    batirCartes(); legende(pi);
+  } else {
+    const o = $('plgOpts'); o.innerHTML = '';
+    if (a.type === 'liste') {
+      a.l.forEach(x => {
+        const b = document.createElement('button');
+        b.className = 'op' + (S[a.k] === x.id ? ' on' : ''); b.dataset.id = x.id;
+        b.innerHTML = '<i class="op__m"></i><span class="op__x">' +
+          '<span class="op__n">' + x.n + '</span><span class="op__d">' + x.d2 + '</span></span>' +
+          '<span class="op__p">' + (x.d ? (x.d > 0 ? '+ ' : '− ') + euros(Math.abs(x.d)) : 'inclus') + '</span>';
+        peindre(b.querySelector('.op__m'), x, 56);
+        b.onclick = () => {
+          S[a.k] = x.id;
+          o.querySelectorAll('.op').forEach(y => y.classList.toggle('on', y.dataset.id === x.id));
+          rafraichir();
+        };
+        o.appendChild(b);
+      });
+    } else {
+      o.innerHTML = '<input class="plg__n" id="gv" maxlength="4" placeholder="H.V." ' +
+        'style="width:100%;text-align:center;letter-spacing:.34em;text-transform:uppercase;' +
+        'border-bottom:1px solid rgba(255,255,255,.3);padding:12px 0" value="' + S.grav + '">' +
+        '<p class="plg__d" style="text-align:center;margin-top:20px">Gravée à chaud sous le rabat.</p>';
+      o.querySelector('#gv').addEventListener('input', function () {
+        S.grav = this.value.toUpperCase().slice(0, 4); rafraichir();
+      });
+    }
+  }
+  $('plg').classList.add('on');
+}
+function fermerP() { $('plg').classList.remove('on'); }
+$('plgX').onclick = fermerP;
+$('plgP').onclick = () => allerA(pi - 1);
+$('plgN').onclick = () => allerA(pi + 1);
+$('plgOk').onclick = () => {
+  if (pl && pl.type === 'cuir') S.cuir = typ + ':' + NUANCES[pi].id;
+  rafraichir(); fermerP();
+};
+document.addEventListener('keydown', e => {
+  if (!$('plg').classList.contains('on')) return;
+  if (e.key === 'Escape') fermerP();
+  if (pl && pl.type === 'cuir') {
+    if (e.key === 'ArrowLeft') allerA(pi - 1);
+    if (e.key === 'ArrowRight') allerA(pi + 1);
+  }
+});
+
+/* glissé du cover flow : suivi continu, élan au relâché */
+(function () {
+  const st = $('plgSt');
+  let id = null, x0 = 0, t0 = 0, dx = 0, pas = 1;
+  st.addEventListener('pointerdown', e => {
+    if (!pl || pl.type !== 'cuir') return;
+    id = e.pointerId; x0 = e.clientX; dx = 0; t0 = e.timeStamp;
+    pas = Math.max(70, st.clientWidth * .17);
+    st.classList.add('tire'); $('plg').classList.add('tire');
+    try { st.setPointerCapture(id); } catch (_) {}
+  });
+  st.addEventListener('pointermove', e => {
+    if (id === null || e.pointerId !== id) return;
+    dx = e.clientX - x0;
+    let off = -dx / pas;
+    const c = pi + off, n = NUANCES.length - 1;
+    if (c < 0) off = -pi + c * .34; else if (c > n) off = (n - pi) + (c - n) * .34;
+    placer(off);
+    legende(Math.max(0, Math.min(n, Math.round(pi + off))));
+  });
+  function fin(e) {
+    if (id === null || e.pointerId !== id) return;
+    id = null; st.classList.remove('tire'); $('plg').classList.remove('tire');
+    const dt = Math.max(1, e.timeStamp - t0);
+    if (Math.abs(dx) < 7) {
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      const sw = el && el.closest ? el.closest('.sw') : null;
+      if (sw) allerA(+sw.dataset.i); else placer(0);
+      return;
+    }
+    allerA(pi + Math.round(-dx / pas - (dx / dt) * 2.4 / pas * 100));
+  }
+  st.addEventListener('pointerup', fin);
+  st.addEventListener('pointercancel', fin);
+})();
+
+/* l'ascenseur de nuances */
+(function () {
+  const rail = $('plgRail');
+  let id = null;
+  function vise(e) {
+    const r = rail.getBoundingClientRect();
+    const i = Math.max(0, Math.min(NUANCES.length - 1,
+      Math.floor((e.clientX - r.left) / r.width * NUANCES.length)));
+    if (i !== pi) { pi = i; placer(0); legende(pi); }
+  }
+  rail.addEventListener('pointerdown', e => {
+    id = e.pointerId; $('plgSt').classList.add('tire'); vise(e);
+    try { rail.setPointerCapture(id); } catch (_) {}
+  });
+  rail.addEventListener('pointermove', e => { if (id === e.pointerId) vise(e); });
+  const fin = e => { if (id === e.pointerId) { id = null; $('plgSt').classList.remove('tire'); placer(0); } };
+  rail.addEventListener('pointerup', fin);
+  rail.addEventListener('pointercancel', fin);
+})();
+
+/* ─── le certificat ─── */
+function certificat() {
+  $('certT').innerHTML = 'Votre <em>' + MODELE.nom + '</em>';
+  const g = $('certG'); g.innerHTML = '';
+  const L = [['Silhouette', MODELE.nom, MODELE.t + ' · ' + euros(MODELE.base)]];
+  AJ.forEach(a => {
+    const v = valeur(a);
+    if (v[1] === null) { L.push([a.n, 'Choix de la Maison', '—']); return; }
+    L.push([a.n, v[0], v[1] ? (v[1] > 0 ? '+ ' : '− ') + euros(Math.abs(v[1])) : 'inclus']);
+  });
+  L.push(['Façonnage', 'Un seul artisan', '12 à 16 semaines']);
+  L.forEach((l, i) => {
+    const d = document.createElement('div'); d.className = 'cl';
+    d.innerHTML = '<span class="cl__k">' + l[0] + '</span><span class="cl__v">' + l[1] +
+      '<small>' + l[2] + '</small></span>';
+    g.appendChild(d);
+    setTimeout(() => d.classList.add('in'), RM ? 0 : 60 + i * 55);
+  });
+  $('certTot').textContent = euros(total());
+}
+$('voirCert').onclick = () => { $('pfCert').hidden = false; vers('cert'); };
+$('confier').onclick = () => {
+  alert('Votre spécification part chez Laurène.\n\n' + MODELE.nom + ' — ' + euros(total()) +
+    '\n\nDémonstration : dans la Plateforme, elle devient un devis versionné que ' +
+    'Laurène vous adresse, et aucun message ne part sans son geste.');
+};
+
+/* ═══ propres au point de vente ═══ */
+/* Le certificat devient une vue à part entière ; le geste final n'écrit
+   à personne — il rend la main au conseiller, qui établit le devis
+   dans le POS. Rien n'est encaissé ici. */
+$('voirCert').onclick = () => { certificat(); versPos('cert'); };
+$('confier').innerHTML = 'Reprendre au comptoir' +
+  '<svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/>' +
+  '<polyline points="12,5 19,12 12,19"/></svg>';
+$('confier').onclick = () => versPos('atl');
+document.querySelector('.cert__note').textContent =
+  "Composition à reprendre dans le POS pour établir le devis. " +
+  "Façonnage : 12 à 16 semaines. Un cuir exotique reste soumis à " +
+  "disponibilité en tannerie.";
+$('posCuirs').onclick = () => {
+  versPos('atl');
+  plonger(AJ.find(a => a.k === 'ext'));
+};
+$('posRaz').onclick = () => {
+  Object.assign(S, ETAT_NEUF);
+  typ = 'graine'; pi = 0;
+  poserAngle(0);
+  rafraichir();
+  versPos('mods');
+};
+
+/* crochets de recette */
+window.__pos = () => ({
+  vue: (document.querySelector('.vue-pos.on') || {}).dataset?.v,
+  modeles: document.querySelectorAll('.mc').length,
+  matieres: MATIERES.filter(cuirVisible).length,
+  cuir: S.cuir, total: total(), angle: (window.__tour ? window.__tour().angle : null),
+});
+window.__tourner = a => poserAngle(a);
+window.__tour = () => ({ angle, pos: POS,
+  miroir: $('ph').classList.contains('miroir'),
+  detourne: $('ph').classList.contains('detourne') });
+
+batirFiche(); batirReperes(); tourner(0, true); rafraichir();
+</script>
+</body></html>
