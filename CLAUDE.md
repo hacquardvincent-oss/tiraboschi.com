@@ -484,7 +484,7 @@ scheme-31f09ca3-1031-4740-a2fb-9e46aea899cb → blanc opaque (header/footer)
 |---|---|---|---|
 | Atelier (parcours briques → fiche → matière → certificat) | `tiraboschi-atelier-prototype.html` | — | `tests/atelier/recette.js` |
 | Maison (vitrine immersive → seuil → espace privé) | `tiraboschi-maison-demo.html` | `tools/demo/gabarit-maison.html` | `tests/maison/recette.js` |
-| Galerie & Boudoir (galerie d'art sans vente + salon privé) | `tiraboschi-galerie-demo.html` | `tools/demo/gabarit-galerie.html` | `tests/galerie/recette.js` |
+| Galerie · Atelier · Boudoir (galerie blanche sans vente + savoir-faire + salon 3D) | `tiraboschi-galerie-demo.html` | `tools/demo/gabarit-galerie.html` | `tests/galerie/recette.js` |
 | Configurateur POS (tablette boutique) | `tiraboschi-configurateur.html` | `tools/demo/gabarit-configurateur.html` | — |
 
 ```bash
@@ -493,10 +493,20 @@ python3 tools/demo/assembler.py tools/demo/gabarit-galerie.html tiraboschi-galer
 NODE_PATH=/opt/node22/lib/node_modules node tests/galerie/recette.js
 ```
 
-Règle de la Galerie : **aucun prix hors du boudoir.** La recette le vérifie
-sur le hall, les trois salles, le rendez-vous, la notice d'œuvre et le
-cabinet des matières. Toute évolution qui ferait apparaître un montant en
-galerie doit faire échouer ces cas.
+**Démo Galerie — les trois règles à ne pas casser**
+
+1. **Aucun prix hors du boudoir.** Vérifié sur la galerie, l'atelier, le
+   rendez-vous, le plan, la notice d'œuvre, le fil de visite et le cabinet
+   des matières.
+2. **Trois grammaires de déplacement, une par lieu** — la galerie se
+   parcourt à l'horizontale (cimaise, ligne d'accrochage, cartels),
+   l'atelier se descend (six gestes révélés au défilement), le boudoir ne
+   se parcourt pas : il est tout entier le module 3D.
+3. **On ne perd pas le visiteur** — fil d'Ariane cliquable, plan (le
+   « menu », redessiné en plan de galerie), rendez-vous toujours à portée,
+   et un fil de visite qui compte les œuvres regardées et conduit au
+   rendez-vous. L'Atelier et le Boudoir se rencontrent EN MARCHANT : deux
+   ouvertures sont posées dans le mur, pas seulement dans le menu.
 
 **Snippets Shopify prêts (`shopify-snippets/` → à migrer en Phase 3)**
 ```
@@ -1382,6 +1392,18 @@ Règles structurelles (à l'origine de bugs réels — recette 31/07/2026) :
   ne boucle pas le filtrage : coutures visibles. Utiliser la taille native.
 □ Un repère positionné en % de la section peut tomber sous une barre fixe :
   le cantonner à la bande réellement libre (top/bottom du conteneur).
+□ Un descendant qui REDÉCLARE `visibility:visible` redevient visible ET
+  cliquable même si son conteneur est masqué (`visibility:hidden`). Une
+  scène/sous-barre à l'intérieur d'un lieu masqué doit hériter :
+  `.x:not(.on){visibility:hidden}` + rien sur `.x.on`, ou `visibility:inherit`.
+  Deux bugs réels : un bouton fantôme interceptait les clics du lieu affiché.
+□ Un sélecteur à ID (`#lieu > *`) écrase la `position` d'une classe
+  (`.scene{position:absolute}`) : empiler avec `z-index` sur un sélecteur
+  qui ne touche PAS `position`.
+□ Un décor surdimensionné (arc, halo) crée du défilement latéral s'il n'est
+  pas borné à la plus petite dimension ET clippé par son conteneur.
+□ Un indicateur en surimpression (`position:absolute; bottom:0`) finit par
+  recouvrir un contenu long : le mettre dans le flux, en dernière rangée.
 ```
 
 ---
