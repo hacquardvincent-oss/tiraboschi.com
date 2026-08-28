@@ -478,6 +478,26 @@ scheme-31f09ca3-1031-4740-a2fb-9e46aea899cb → blanc opaque (header/footer)
 | 25 | International · Marchés | `tiraboschi-international-prototype.html` |
 | 26 | Drops & Précommandes | `tiraboschi-precommande-prototype.html` |
 
+**Démos d'expérience (assemblées, autonomes — ne pas éditer à la main)**
+
+| Démo | Fichier | Gabarit | Recette |
+|---|---|---|---|
+| Atelier (parcours briques → fiche → matière → certificat) | `tiraboschi-atelier-prototype.html` | — | `tests/atelier/recette.js` |
+| Maison (vitrine immersive → seuil → espace privé) | `tiraboschi-maison-demo.html` | `tools/demo/gabarit-maison.html` | `tests/maison/recette.js` |
+| Galerie & Boudoir (galerie d'art sans vente + salon privé) | `tiraboschi-galerie-demo.html` | `tools/demo/gabarit-galerie.html` | `tests/galerie/recette.js` |
+| Configurateur POS (tablette boutique) | `tiraboschi-configurateur.html` | `tools/demo/gabarit-configurateur.html` | — |
+
+```bash
+# on édite le GABARIT, jamais le fichier assemblé
+python3 tools/demo/assembler.py tools/demo/gabarit-galerie.html tiraboschi-galerie-demo.html
+NODE_PATH=/opt/node22/lib/node_modules node tests/galerie/recette.js
+```
+
+Règle de la Galerie : **aucun prix hors du boudoir.** La recette le vérifie
+sur le hall, les trois salles, le rendez-vous, la notice d'œuvre et le
+cabinet des matières. Toute évolution qui ferait apparaître un montant en
+galerie doit faire échouer ces cas.
+
 **Snippets Shopify prêts (`shopify-snippets/` → à migrer en Phase 3)**
 ```
 tira-geo-banner.liquid          → Bandeau géolocalisation (suggestion marché)

@@ -1,6 +1,15 @@
 # -*- coding: utf-8 -*-
-"""Assemble tiraboschi-maison-demo.html : gabarit + tuiles + rendus + nuances.
-Lancer depuis la racine du dépôt : python3 tools/demo/assembler.py"""
+"""Assemble une démo autonome : gabarit + tuiles + rendus + nuances embarqués.
+
+Lancer depuis la racine du dépôt :
+    python3 tools/demo/assembler.py [gabarit] [sortie]
+
+Sans argument : tools/demo/gabarit-maison.html -> tiraboschi-maison-demo.html
+Autres montages :
+    gabarit-galerie.html      -> tiraboschi-galerie-demo.html
+    gabarit-configurateur.html -> tiraboschi-configurateur.html
+
+On édite TOUJOURS le gabarit ; le fichier assemblé est un produit."""
 import base64, json, sys, os
 
 GAB = sys.argv[1] if len(sys.argv) > 1 else 'tools/demo/gabarit-maison.html'

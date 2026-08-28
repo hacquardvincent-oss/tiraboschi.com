@@ -1,0 +1,1708 @@
+<!doctype html>
+<html lang="fr"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0d0c0b">
+<title>TIRABOSCHI — La Galerie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   TIRABOSCHI — LA GALERIE & LE BOUDOIR
+
+   Deux lieux, une seule maison.
+
+   LA GALERIE est publique. On y marche le long des cimaises, on lit
+   des cartels, on regarde. Aucune pièce n'y est à vendre : il n'y a
+   ni prix, ni panier, ni bouton d'achat. La seule action possible
+   devant une œuvre est de demander à la voir.
+
+   LE BOUDOIR est privé. On y entre par une porte discrète et un code
+   nominatif. C'est un salon d'époque où la cliente est reçue : on y
+   personnalise un modèle ou l'on y conçoit une pièce d'exception,
+   avec le configurateur — matières, ferrures, rotation de la pièce.
+   Le prix n'apparaît QUE là, et rien n'y est encaissé : la
+   composition part chez Laurène, qui établit le devis.
+
+   Écart assumé à la charte : le boudoir emploie une palette d'époque
+   (ébène, laiton, soie) là où le site vit en noir et blanc. Tout le
+   reste de la charte tient — Playfair, 0 rayon, filets d'un pixel,
+   icônes au trait.
+   ═══════════════════════════════════════════════════════════════════ */
+
+:root{
+  --noir:#0a0a0a; --nuit:#0d0c0b; --ecru:#efeae3; --or:#b08d57;
+  --e:cubic-bezier(.16,1,.3,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;border-radius:0!important}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Playfair Display',Georgia,serif;background:var(--nuit);color:var(--ecru);
+  -webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+button,input,textarea,select{font-family:inherit;color:inherit;background:none;border:none;
+  outline:none;cursor:pointer}
+input,textarea{cursor:text}
+img{display:block;max-width:100%}
+.cap{font-family:system-ui,-apple-system,sans-serif;text-transform:uppercase;
+  letter-spacing:.24em;font-size:9px}
+[hidden]{display:none!important}
+
+/* un repli lisible quand le CDN de la boutique n'est pas joignable */
+.vide{background:linear-gradient(160deg,#26221d,#15120f)}
+.vide img{opacity:0}
+.vide::after{content:'Photographie · hors connexion';position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;font-family:system-ui,sans-serif;
+  font-size:9px;letter-spacing:.2em;text-transform:uppercase;opacity:.3;text-align:center;
+  padding:16px;color:#efeae3}
+
+/* ═══════════ LES LIEUX ═══════════
+   Un lieu occupe tout l'écran ; on passe de l'un à l'autre par un
+   fondu, jamais par une ancre. */
+.lieu{position:fixed;inset:0;opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .8s var(--e),visibility .8s,transform 1.1s var(--e);
+  transform:scale(1.014)}
+.lieu.on{opacity:1;visibility:visible;pointer-events:auto;transform:none}
+
+/* ── le seuil : le V se trace, la galerie s'ouvre ── */
+#seuil{background:var(--nuit);display:flex;align-items:center;justify-content:center;
+  z-index:90;flex-direction:column;text-align:center;padding:24px}
+#seuil svg{width:56px;height:56px;fill:none;stroke:var(--ecru);stroke-width:1.1;
+  margin-bottom:34px}
+#seuil polyline{stroke-dasharray:180;stroke-dashoffset:180;
+  animation:tracer 1.5s var(--e) .25s forwards}
+@keyframes tracer{to{stroke-dashoffset:0}}
+.sl{opacity:0;animation:monter 1.1s var(--e) forwards}
+.sl--1{animation-delay:1.15s}.sl--2{animation-delay:1.4s}.sl--3{animation-delay:1.75s}
+@keyframes monter{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+#seuil h1{font-size:clamp(30px,6vw,64px);letter-spacing:-.02em;line-height:1.06}
+#seuil h1 em{font-style:italic}
+#seuil .k{margin-bottom:20px;opacity:.42}
+#seuil .d{margin-top:22px;opacity:.4;font-family:system-ui,sans-serif;font-size:11px;
+  letter-spacing:.2em;text-transform:uppercase}
+.entrer{margin-top:44px;border:1px solid rgba(239,234,227,.42);padding:15px 44px;
+  font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.24em;font-size:10px;
+  transition:background .4s,letter-spacing .55s var(--e),border-color .4s;min-height:46px}
+.entrer:hover{background:rgba(239,234,227,.1);letter-spacing:.32em;border-color:var(--ecru)}
+
+/* ═══════════ LE HALL ═══════════ */
+#hall{background:var(--nuit);display:flex;flex-direction:column;overflow:auto}
+.hall__h{padding:clamp(34px,7vh,80px) clamp(20px,5vw,72px) clamp(18px,3vh,34px);flex-shrink:0}
+.hall__k{opacity:.4;margin-bottom:14px}
+.hall__t{font-size:clamp(28px,5.4vw,62px);letter-spacing:-.025em;line-height:1.04}
+.hall__t em{font-style:italic}
+.hall__s{margin-top:16px;opacity:.42;font-family:system-ui,sans-serif;font-size:12px;
+  line-height:1.9;max-width:54ch}
+.portes{flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:rgba(239,234,227,.11)}
+@media(max-width:820px){.portes{grid-template-columns:1fr;flex:none}}
+.pt{position:relative;overflow:hidden;background:var(--nuit);min-height:clamp(180px,26svh,340px);
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:clamp(18px,2.4vw,34px);text-align:left;color:var(--ecru)}
+.pt__f{position:absolute;inset:0;overflow:hidden}
+.pt__f img{width:100%;height:100%;object-fit:cover;opacity:.34;
+  transform:scale(1.04);transition:transform 1.5s var(--e),opacity .8s}
+.pt:hover .pt__f img{transform:scale(1.11);opacity:.52}
+.pt::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(0deg,rgba(13,12,11,.94) 12%,rgba(13,12,11,.3) 68%,rgba(13,12,11,.6))}
+.pt>*{position:relative;z-index:2}
+.pt__n{opacity:.5;margin-bottom:9px}
+.pt__t{font-size:clamp(21px,2.6vw,32px);font-style:italic}
+.pt__d{margin-top:9px;opacity:.45;font-family:system-ui,sans-serif;font-size:11px;line-height:1.8}
+.pt__go{margin-top:16px;font-family:system-ui,sans-serif;text-transform:uppercase;
+  letter-spacing:.22em;font-size:9px;opacity:.6;display:flex;align-items:center;gap:10px;
+  transition:gap .5s var(--e),opacity .3s}
+.pt:hover .pt__go{gap:18px;opacity:1}
+.pt__go i{display:block;width:24px;height:1px;background:currentColor}
+.hall__f{flex-shrink:0;display:flex;justify-content:space-between;align-items:center;
+  gap:18px;flex-wrap:wrap;padding:clamp(14px,2.4vh,26px) clamp(20px,5vw,72px);
+  border-top:1px solid rgba(239,234,227,.11)}
+.hall__f p{opacity:.3;font-family:system-ui,sans-serif;font-size:10px;letter-spacing:.16em}
+.lien{font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.22em;
+  font-size:9px;opacity:.45;position:relative;padding-bottom:5px;transition:opacity .35s}
+.lien::after{content:'';position:absolute;left:0;bottom:0;width:100%;height:1px;
+  background:currentColor;transform:scaleX(0);transform-origin:right;
+  transition:transform .5s var(--e)}
+.lien:hover{opacity:1}.lien:hover::after{transform:scaleX(1);transform-origin:left}
+
+/* ═══════════ UNE SALLE ═══════════
+   On marche le long de la cimaise : la salle défile à l'horizontale,
+   à la molette, au doigt ou aux flèches. */
+.salle{background:var(--mur);color:var(--enc);display:flex;flex-direction:column}
+.bar{flex-shrink:0;display:flex;align-items:center;gap:clamp(10px,2vw,26px);
+  padding:12px clamp(14px,3vw,40px);border-bottom:1px solid currentColor;
+  border-color:color-mix(in srgb,currentColor 16%,transparent);z-index:20}
+.bar__r{display:flex;align-items:center;gap:11px;font-family:system-ui,sans-serif;
+  text-transform:uppercase;letter-spacing:.2em;font-size:9px;opacity:.55;
+  transition:opacity .3s,gap .5s var(--e);flex-shrink:0}
+.bar__r:hover{opacity:1;gap:17px}
+.bar__r i{display:block;width:22px;height:1px;background:currentColor}
+.bar__t{font-size:15px;font-style:italic;flex-shrink:0}
+.bar__t span{font-style:normal;opacity:.4;font-family:system-ui,sans-serif;
+  text-transform:uppercase;letter-spacing:.2em;font-size:9px;margin-right:12px}
+.bar__x{margin-left:auto;display:flex;align-items:center;gap:clamp(10px,2vw,22px);flex-shrink:0}
+.bar__c{font-family:system-ui,sans-serif;letter-spacing:.2em;font-size:9px;opacity:.35;
+  white-space:nowrap}
+@media(max-width:700px){
+  .bar{gap:9px;padding:10px 13px}
+  .bar__t{font-size:12px}.bar__t span{display:none}
+  .bar__c{display:none}
+}
+
+/* la cimaise */
+.mur{flex:1;min-height:0;position:relative;overflow-x:auto;overflow-y:hidden;
+  display:flex;align-items:center;gap:clamp(26px,5vw,86px);
+  padding:0 clamp(20px,14vw,220px);scroll-snap-type:x proximity;
+  scrollbar-width:none;cursor:grab;
+  /* la lumière de la salle : elle vient du plafond, le sol reprend un peu */
+  background:
+    radial-gradient(120% 70% at 50% -8%,color-mix(in srgb,#fff 22%,transparent),transparent 62%),
+    linear-gradient(0deg,color-mix(in srgb,#000 13%,transparent) 0 11%,transparent 11%)}
+.mur::-webkit-scrollbar{display:none}
+.mur.tire{cursor:grabbing}
+.oe{flex:0 0 auto;scroll-snap-align:center;display:flex;flex-direction:column;
+  align-items:center;width:clamp(230px,32vw,430px);position:relative}
+.oe__m{position:relative;width:100%;height:clamp(200px,46svh,470px);overflow:hidden;
+  background:color-mix(in srgb,#fff 30%,transparent);
+  box-shadow:0 26px 60px -28px rgba(0,0,0,.6);
+  transition:transform 1s var(--e),box-shadow .8s}
+.oe:hover .oe__m{transform:translateY(-7px);box-shadow:0 40px 80px -30px rgba(0,0,0,.72)}
+.oe__m img{width:100%;height:100%;object-fit:cover;transition:transform 1.6s var(--e)}
+.oe:hover .oe__m img{transform:scale(1.045)}
+/* une pièce rendue en atelier : la nuance se multiplie à travers le
+   masque du cuir, exactement comme dans le configurateur */
+.oe__m.rendu{aspect-ratio:760/851;height:auto;max-height:clamp(200px,46svh,470px);
+  background:#fff;isolation:isolate}
+.oe__m.rendu img{object-fit:contain}
+.oe__t{position:absolute;inset:0;mix-blend-mode:multiply;pointer-events:none;
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+/* le cartel : la petite plaque sous l'œuvre */
+.oe__c{margin-top:18px;width:100%;border-top:1px solid color-mix(in srgb,currentColor 22%,transparent);
+  padding-top:12px}
+.oe__n{font-size:clamp(17px,1.9vw,23px);font-style:italic}
+.oe__k{margin-top:7px;opacity:.42;font-family:system-ui,sans-serif;font-size:10px;
+  letter-spacing:.16em;text-transform:uppercase}
+.oe__l{margin-top:10px;font-family:system-ui,sans-serif;font-size:11px;line-height:1.8;
+  opacity:.5}
+.oe__v{margin-top:13px;font-family:system-ui,sans-serif;text-transform:uppercase;
+  letter-spacing:.22em;font-size:9px;opacity:0;transform:translateY(5px);
+  transition:opacity .45s,transform .5s var(--e)}
+.oe:hover .oe__v,.oe:focus-visible .oe__v{opacity:.75;transform:none}
+/* la mention de fin de cimaise */
+.fin{flex:0 0 auto;width:clamp(210px,26vw,320px);text-align:center;opacity:.45}
+.fin h4{font-size:19px;font-style:italic;margin-bottom:12px}
+.fin p{font-family:system-ui,sans-serif;font-size:11px;line-height:1.9;margin-bottom:18px}
+.gliss{position:absolute;left:0;right:0;bottom:10px;text-align:center;pointer-events:none;
+  font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.26em;font-size:9px;
+  opacity:.22;transition:opacity .5s}
+.mur.tire~.gliss,.mur.vu~.gliss{opacity:0}
+@media(max-width:700px){
+  .mur{padding:0 22px;gap:26px}
+  .oe{width:min(78vw,330px)}
+  .oe__v{opacity:.6;transform:none}
+}
+
+/* ═══════════ LA NOTICE D'ŒUVRE ═══════════ */
+.not{position:fixed;top:0;right:0;bottom:0;width:min(520px,100%);z-index:70;
+  background:var(--nuit);color:var(--ecru);transform:translateX(100%);
+  transition:transform .8s var(--e);display:flex;flex-direction:column;
+  box-shadow:-30px 0 80px -40px rgba(0,0,0,.85)}
+.not.on{transform:none}
+.not__h{flex-shrink:0;display:flex;justify-content:space-between;align-items:center;
+  padding:16px clamp(18px,3vw,34px);border-bottom:1px solid rgba(239,234,227,.13)}
+.not__h span{opacity:.4}
+.not__x{font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.2em;
+  font-size:9px;opacity:.55;transition:opacity .3s}
+.not__x:hover{opacity:1}
+.not__b{flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;
+  padding:0 clamp(18px,3vw,34px) clamp(18px,3vh,30px)}
+.not__b::-webkit-scrollbar{display:none}
+.not__m{position:relative;width:100%;height:clamp(180px,32svh,300px);overflow:hidden;
+  margin:0 -0 22px;background:#17150f}
+.not__m img{width:100%;height:100%;object-fit:cover}
+.not__m.rendu{background:#fff;aspect-ratio:760/851;height:auto;isolation:isolate}
+.not__m.rendu img{object-fit:contain}
+.not__k{opacity:.4;margin-bottom:11px}
+.not__n{font-size:clamp(25px,3.4vw,38px);letter-spacing:-.02em;line-height:1.1}
+.not__n em{font-style:italic}
+.not__d{margin-top:18px;font-family:system-ui,sans-serif;font-size:13px;line-height:1.95;
+  opacity:.62}
+.not__q{margin-top:20px;padding-left:18px;border-left:1px solid rgba(176,141,87,.55);
+  font-size:16px;font-style:italic;line-height:1.6;opacity:.8}
+.not__q small{display:block;margin-top:9px;font-family:system-ui,sans-serif;font-style:normal;
+  font-size:10px;letter-spacing:.2em;text-transform:uppercase;opacity:.45}
+.not__l{margin-top:24px;border-top:1px solid rgba(239,234,227,.13)}
+.not__l>div{display:flex;justify-content:space-between;gap:16px;padding:11px 0;
+  border-bottom:1px solid rgba(239,234,227,.08);font-family:system-ui,sans-serif;font-size:11px}
+.not__l span:first-child{text-transform:uppercase;letter-spacing:.16em;opacity:.38;flex-shrink:0}
+.not__l span:last-child{text-align:right;opacity:.75}
+.not__f{flex-shrink:0;padding:16px clamp(18px,3vw,34px) clamp(16px,3vh,26px);
+  border-top:1px solid rgba(239,234,227,.16)}
+.not__p{font-family:system-ui,sans-serif;font-size:10px;line-height:1.85;opacity:.35;
+  margin-bottom:14px}
+.grand{display:block;width:100%;border:1px solid rgba(239,234,227,.45);padding:15px 20px;
+  font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.22em;font-size:10px;
+  transition:background .4s,letter-spacing .5s var(--e);min-height:48px}
+.grand:hover{background:rgba(239,234,227,.11);letter-spacing:.28em}
+.voile{position:fixed;inset:0;z-index:65;background:rgba(8,7,6,.62);opacity:0;
+  visibility:hidden;transition:opacity .7s,visibility .7s;backdrop-filter:blur(3px)}
+.voile.on{opacity:1;visibility:visible}
+
+/* ═══════════ LE RENDEZ-VOUS ═══════════ */
+#rdv{background:var(--nuit);display:grid;grid-template-columns:1fr 1fr;overflow:auto}
+@media(max-width:900px){#rdv{grid-template-columns:1fr;display:block}}
+.rdv__f{position:relative;overflow:hidden;min-height:240px}
+.rdv__f img{width:100%;height:100%;object-fit:cover;opacity:.5}
+.rdv__f::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent 40%,rgba(13,12,11,.9))}
+.rdv__x{display:flex;flex-direction:column;justify-content:center;
+  padding:clamp(28px,5vw,70px);gap:0}
+.rdv__t{font-size:clamp(26px,3.6vw,44px);letter-spacing:-.02em;line-height:1.1}
+.rdv__t em{font-style:italic}
+.rdv__s{margin-top:16px;opacity:.45;font-family:system-ui,sans-serif;font-size:12px;
+  line-height:1.95;max-width:46ch}
+.champs{margin-top:clamp(20px,3vh,34px);display:grid;grid-template-columns:1fr 1fr;gap:0 22px}
+@media(max-width:560px){.champs{grid-template-columns:1fr}}
+.cp{position:relative;padding-top:20px}
+.cp--l{grid-column:1/-1}
+.cp label{position:absolute;top:0;left:0;font-family:system-ui,sans-serif;
+  text-transform:uppercase;letter-spacing:.2em;font-size:9px;opacity:.38}
+.cp input,.cp textarea,.cp select{width:100%;padding:9px 0 11px;font-size:15px;
+  border-bottom:1px solid rgba(239,234,227,.22);transition:border-color .4s}
+.cp select{cursor:pointer;color:var(--ecru)}
+.cp select option{background:#17150f;color:var(--ecru)}
+.cp textarea{resize:none;height:64px;font-size:14px;line-height:1.7}
+.cp input:focus,.cp textarea:focus,.cp select:focus{border-color:var(--ecru)}
+.rdv__go{margin-top:clamp(22px,3.4vh,36px);align-self:flex-start;
+  border:1px solid rgba(239,234,227,.45);padding:15px 40px;
+  font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.22em;font-size:10px;
+  transition:background .4s,letter-spacing .5s var(--e);min-height:48px}
+.rdv__go:hover{background:rgba(239,234,227,.11);letter-spacing:.3em}
+.rdv__ok{margin-top:26px;padding:20px;border:1px solid rgba(176,141,87,.5)}
+.rdv__ok h4{font-size:20px;font-style:italic;margin-bottom:10px}
+.rdv__ok p{font-family:system-ui,sans-serif;font-size:11px;line-height:1.9;opacity:.55}
+.rdv__n{margin-top:22px;font-family:system-ui,sans-serif;font-size:10px;line-height:1.9;
+  opacity:.3;max-width:48ch}
+
+/* ═══════════ LA PORTE DU BOUDOIR ═══════════ */
+.porte{position:fixed;inset:0;z-index:95;display:flex;align-items:center;justify-content:center;
+  background:rgba(8,7,6,.94);backdrop-filter:blur(8px);opacity:0;visibility:hidden;
+  transition:opacity .7s var(--e),visibility .7s;padding:24px}
+.porte.on{opacity:1;visibility:visible}
+.porte__in{width:min(430px,100%);text-align:center}
+.porte__k{opacity:.4;margin-bottom:16px}
+.porte__t{font-size:clamp(26px,4vw,40px);letter-spacing:-.02em}
+.porte__t em{font-style:italic}
+.porte__d{margin-top:15px;opacity:.42;font-family:system-ui,sans-serif;font-size:11px;
+  line-height:1.95}
+#code{width:100%;margin-top:30px;text-align:center;font-size:26px;letter-spacing:.5em;
+  text-indent:.5em;padding:14px 0;border-bottom:1px solid rgba(239,234,227,.3);
+  text-transform:uppercase}
+#code:focus{border-color:var(--or)}
+.porte__e{margin-top:12px;font-family:system-ui,sans-serif;font-size:10px;letter-spacing:.16em;
+  text-transform:uppercase;color:#c98b7e;opacity:0;transition:opacity .3s}
+.porte__e.on{opacity:1}
+.porte__i{margin-top:26px;font-family:system-ui,sans-serif;font-size:10px;opacity:.26;
+  letter-spacing:.14em}
+.porte__x{margin-top:22px;font-family:system-ui,sans-serif;text-transform:uppercase;
+  letter-spacing:.2em;font-size:9px;opacity:.4;transition:opacity .3s}
+.porte__x:hover{opacity:1}
+
+/* ═══════════ LE BOUDOIR ═══════════
+   Un salon d'époque : boiseries, bougie, laiton. */
+#boudoir{--pan:#2a1d13;--soie:#e9dfd0;color:var(--soie);
+  background:
+    radial-gradient(58% 44% at 12% 2%,rgba(214,163,90,.2),transparent 66%),
+    radial-gradient(52% 40% at 88% 6%,rgba(214,163,90,.13),transparent 62%),
+    /* les boiseries : montants tous les 148 px, filet d'or au refend */
+    repeating-linear-gradient(90deg,
+      #241811 0 2px,#2c1f15 2px 16px,#33251a 16px 18px,#2a1d13 18px 146px,
+      #221610 146px 148px),
+    #241811}
+#boudoir::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:1;
+  /* la cimaise d'appui, à hauteur de main */
+  background:linear-gradient(0deg,rgba(0,0,0,.34) 0 20%,transparent 20.4% 20.9%,
+    rgba(255,255,255,.045) 21% 21.4%,transparent 22%)}
+/* on empile les scènes SANS toucher à leur `position` : un `position:relative`
+   posé ici sortirait la scène de son calage absolu et casserait l'atelier */
+#boudoir>.scene{z-index:2}
+.bd__h{flex-shrink:0;display:flex;align-items:flex-end;justify-content:space-between;
+  gap:20px;flex-wrap:wrap;padding:clamp(24px,5vh,58px) clamp(20px,5vw,66px) clamp(14px,2.4vh,26px)}
+.bd__k{opacity:.45;margin-bottom:12px;color:var(--or)}
+.bd__t{font-size:clamp(28px,4.6vw,54px);letter-spacing:-.025em;line-height:1.06}
+.bd__t em{font-style:italic}
+.bd__s{margin-top:14px;opacity:.5;font-family:system-ui,sans-serif;font-size:12px;
+  line-height:1.9;max-width:50ch}
+.bd__sortie{font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.2em;
+  font-size:9px;opacity:.45;padding-bottom:5px;border-bottom:1px solid currentColor;
+  transition:opacity .3s}
+.bd__sortie:hover{opacity:1}
+.bd__c{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);
+  gap:1px;background:rgba(233,223,208,.1);margin:0 clamp(20px,5vw,66px) clamp(20px,4vh,50px)}
+@media(max-width:960px){.bd__c{grid-template-columns:1fr;flex:none}}
+/* la console : ce que la cliente possède déjà */
+.cons{background:rgba(20,13,9,.62);padding:clamp(18px,2.4vw,32px);display:flex;
+  flex-direction:column;min-height:0}
+.cons__k{opacity:.4;margin-bottom:16px;flex-shrink:0}
+.cons__l{flex:1;min-height:0;overflow-y:auto;scrollbar-width:none}
+.cons__l::-webkit-scrollbar{display:none}
+.pos1{display:flex;gap:15px;align-items:center;padding:13px 0;
+  border-bottom:1px solid rgba(233,223,208,.1)}
+.pos1__m{width:62px;height:74px;flex-shrink:0;position:relative;overflow:hidden;background:#181009}
+.pos1__m img{width:100%;height:100%;object-fit:cover}
+.pos1__x{flex:1;min-width:0}
+.pos1__n{font-size:17px;font-style:italic}
+.pos1__d{margin-top:5px;font-family:system-ui,sans-serif;font-size:10px;line-height:1.75;
+  opacity:.42}
+.cons__f{flex-shrink:0;margin-top:16px;padding-top:14px;
+  border-top:1px solid rgba(233,223,208,.16);font-family:system-ui,sans-serif;font-size:10px;
+  line-height:1.95;opacity:.4}
+/* les deux portes du salon */
+.deux{display:grid;grid-template-rows:1fr 1fr;gap:1px;background:rgba(233,223,208,.1);
+  min-height:0}
+.pd{position:relative;overflow:hidden;background:rgba(20,13,9,.5);text-align:left;
+  padding:clamp(20px,2.8vw,40px);display:flex;flex-direction:column;justify-content:center;
+  color:var(--soie);min-height:clamp(150px,21svh,250px);transition:background .6s}
+.pd:hover{background:rgba(38,26,16,.82)}
+.pd::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:var(--or);transform:scaleY(0);transform-origin:bottom;
+  transition:transform .8s var(--e)}
+.pd:hover::before{transform:scaleY(1);transform-origin:top}
+.pd__k{opacity:.42;margin-bottom:11px;color:var(--or)}
+.pd__t{font-size:clamp(21px,2.7vw,34px);font-style:italic}
+.pd__d{margin-top:11px;opacity:.5;font-family:system-ui,sans-serif;font-size:11.5px;
+  line-height:1.85;max-width:44ch}
+.pd__go{margin-top:17px;font-family:system-ui,sans-serif;text-transform:uppercase;
+  letter-spacing:.22em;font-size:9px;display:flex;align-items:center;gap:11px;opacity:.55;
+  transition:gap .5s var(--e),opacity .3s}
+.pd:hover .pd__go{gap:19px;opacity:1}
+.pd__go i{display:block;width:26px;height:1px;background:currentColor}
+
+/* ═══════════ L'ATELIER — le configurateur ═══════════
+   Repris tel quel du point de vente : c'est le même outil, il vit
+   simplement dans le salon. */
+.atl{position:absolute;inset:0;display:grid;
+  grid-template-columns:1fr clamp(330px,31vw,440px);background:#efeae3;color:var(--noir)}
+.atl__sc{position:relative;display:flex;align-items:center;justify-content:center;
+  padding:70px 10px 14px}
+.atl__ph{position:relative;max-width:100%;max-height:100%;isolation:isolate;
+  touch-action:none;cursor:grab}
+.atl__ph.tourne{cursor:grabbing}
+.atl__ph img{display:block;object-fit:contain;
+  /* La place est RÉSERVÉE par le rapport de la vue : pendant l'échange
+     d'image (matière ou position), le conteneur ne se replie plus le temps
+     du décodage — plus de saut à l'écran, et la pièce reste saisissable. */
+  aspect-ratio:760/851;height:calc(100svh - 96px);width:auto;max-width:100%;
+  transition:opacity .6s var(--e)}
+/* La moitié 195°→345° est le MIROIR de 165°→15° : le studio est monté
+   symétrique, ce qui divise par deux le nombre de rendus. */
+.atl__ph.miroir img,.atl__ph.miroir .atl__t{transform:scaleX(-1)}
+/* Les repères ne valent que de face : ils s'effacent dès qu'on tourne. */
+.atl__reps{transition:opacity .35s var(--e)}
+.atl__ph.detourne .atl__reps{opacity:0;pointer-events:none}
+.tourner{position:absolute;left:0;right:0;bottom:4px;text-align:center;z-index:7;
+  font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.26em;
+  font-size:9px;opacity:.3;pointer-events:none;transition:opacity .5s}
+.atl__ph.tourne .tourner,.atl__ph.detourne .tourner{opacity:0}
+.deg{position:absolute;right:2px;top:2px;z-index:7;font-family:system-ui,sans-serif;
+  letter-spacing:.18em;font-size:9px;opacity:0;pointer-events:none;transition:opacity .4s}
+.atl__ph.tourne .deg,.atl__ph.detourne .deg{opacity:.42}
+/* la nuance se multiplie À TRAVERS le masque du cuir : l'or reste or */
+.atl__t{position:absolute;inset:0;mix-blend-mode:multiply;opacity:0;pointer-events:none;
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  transition:opacity .9s var(--e),background-color .9s var(--e)}
+.atl__reps{position:absolute;inset:0;pointer-events:none;z-index:6}
+.rep{position:absolute;transform:translate(-12px,-50%);display:flex;align-items:center;
+  pointer-events:auto}
+/* dans la moitié droite du cadre, l'étiquette s'ouvre vers la gauche */
+.rep--g{flex-direction:row-reverse;transform:translate(calc(-100% + 12px),-50%)}
+.rep--g .rep__l{text-align:right}
+.rep--g:hover .rep__l,.rep--g.set .rep__l{margin-left:0;margin-right:10px}
+.rep__o{position:relative;width:24px;height:24px;border:1px solid rgba(10,10,10,.45);
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  transition:background .35s,border-color .35s,transform .45s var(--e)}
+.rep__o::after{content:'';width:3px;height:3px;background:var(--noir);opacity:.75;
+  transition:opacity .3s}
+.rep.set .rep__o::after{opacity:0}
+.rep__sw{position:absolute;inset:2px;opacity:0;transform:scale(.5);
+  background-size:110px 110px;background-blend-mode:hard-light;
+  transition:opacity .5s var(--e),transform .55s var(--e)}
+.rep.set .rep__sw{opacity:1;transform:none}
+.rep:hover .rep__o{border-color:var(--noir);transform:scale(1.16)}
+.rep__pu{position:absolute;left:12px;top:12px;width:24px;height:24px;
+  transform:translate(-50%,-50%);border:1px solid var(--noir);opacity:0;pointer-events:none}
+.rep:not(.set) .rep__pu{animation:onde 3.4s var(--e) infinite}
+@keyframes onde{0%{opacity:.42;transform:translate(-50%,-50%) scale(1)}
+  70%{opacity:0;transform:translate(-50%,-50%) scale(2.5)}100%{opacity:0}}
+.rep__l{white-space:nowrap;overflow:hidden;max-width:0;opacity:0;
+  background:rgba(255,255,255,.95);box-shadow:0 1px 12px rgba(10,10,10,.12);
+  font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.18em;font-size:8px;
+  transition:max-width .5s var(--e),opacity .4s,padding .5s var(--e),margin .5s var(--e)}
+.rep:hover .rep__l,.rep.set .rep__l{max-width:250px;opacity:1;padding:7px 11px;margin-left:10px}
+.rep__l em{font-style:italic;text-transform:none;letter-spacing:.02em;font-size:10px}
+
+/* la fiche */
+.fiche{border-left:1px solid rgba(10,10,10,.1);display:flex;flex-direction:column;
+  padding:64px clamp(16px,2.2vw,32px) clamp(14px,2.4svh,24px);font-family:system-ui,sans-serif}
+.fiche__k{opacity:.45;margin-bottom:10px;flex-shrink:0}
+.fiche__l{flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding-bottom:24px;
+  -webkit-mask-image:linear-gradient(180deg,#000 0,#000 calc(100% - 30px),transparent);
+  mask-image:linear-gradient(180deg,#000 0,#000 calc(100% - 30px),transparent)}
+.fiche__l::-webkit-scrollbar{display:none}
+.aj{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:11px 2px;
+  border-bottom:1px solid rgba(10,10,10,.11);transition:padding-left .4s var(--e),background .3s}
+.aj:hover{padding-left:9px;background:rgba(10,10,10,.03)}
+.aj__i{font-size:9px;letter-spacing:.1em;opacity:.3;width:18px;flex-shrink:0}
+.aj__x{flex:1;min-width:0}
+.aj__n{font-size:9px;letter-spacing:.18em;text-transform:uppercase;opacity:.5;display:block}
+.aj__v{font-size:13px;margin-top:4px;display:flex;align-items:center;gap:8px;opacity:.55;
+  font-family:'Playfair Display',serif;font-style:italic;white-space:nowrap;overflow:hidden}
+.aj.set .aj__v{opacity:1;font-style:normal}
+.aj__c{width:13px;height:13px;flex-shrink:0;background-size:100px 100px;
+  background-blend-mode:hard-light;opacity:0;transform:scale(.4);
+  transition:opacity .45s var(--e),transform .5s var(--e)}
+.aj.set .aj__c{opacity:1;transform:none}
+.aj__p{font-size:9px;letter-spacing:.12em;opacity:.35;flex-shrink:0;white-space:nowrap}
+.tot{flex-shrink:0;padding-top:clamp(10px,2svh,16px);border-top:1px solid rgba(10,10,10,.22);
+  display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.tot__l{opacity:.4}
+.tot__v{font-family:'Playfair Display',serif;font-size:clamp(24px,2.3vw,32px);margin-top:6px}
+.tot__go{font-size:9px;letter-spacing:.2em;text-transform:uppercase;opacity:.6;
+  position:relative;padding-bottom:6px;white-space:nowrap}
+.tot__go::after{content:'';position:absolute;left:0;bottom:0;width:100%;height:1px;
+  background:currentColor;opacity:.5;transform:scaleX(1);transform-origin:right;
+  transition:transform .45s var(--e)}
+.tot__go:hover{opacity:1}.tot__go:hover::after{transform:scaleX(0)}
+@media(max-width:900px){
+  .atl{grid-template-columns:1fr;grid-template-rows:minmax(0,46svh) minmax(0,1fr)}
+  .atl__sc{padding:56px 8px 6px}
+  .atl__ph img{height:calc(46svh - 78px)}
+  .fiche{border-left:none;border-top:1px solid rgba(10,10,10,.12);padding:10px 15px 12px}
+  .rep.set .rep__l{max-width:0;opacity:0;padding:0;margin:0}
+  .rep:hover .rep__l{max-width:200px;opacity:1;padding:7px 11px;margin-left:10px}
+  .rep--g:hover .rep__l{margin-left:0;margin-right:10px}
+}
+/* la barre du salon, au-dessus de l'atelier */
+.sbar{position:absolute;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;
+  gap:clamp(10px,2vw,24px);padding:12px clamp(14px,2.6vw,34px);
+  background:rgba(20,13,9,.93);backdrop-filter:blur(12px);color:var(--soie);
+  border-bottom:1px solid rgba(233,223,208,.13)}
+.sbar__m{font-size:11px;letter-spacing:.34em;text-transform:uppercase;opacity:.8;
+  flex-shrink:0;font-family:system-ui,sans-serif}
+.sbar__o{display:flex;gap:2px;margin-left:auto;flex-shrink:0}
+.sb{border:1px solid rgba(233,223,208,.24);padding:10px 15px;font-family:system-ui,sans-serif;
+  text-transform:uppercase;letter-spacing:.16em;font-size:9px;transition:.3s;
+  white-space:nowrap;min-height:40px}
+.sb:hover{border-color:var(--or);color:var(--or)}
+.sb.on{background:var(--soie);color:#241811;border-color:var(--soie)}
+@media(max-width:640px){
+  .sbar{gap:6px;padding:9px 11px}
+  .sbar__m{font-size:8px;letter-spacing:.2em}
+  .sb{padding:9px 10px;font-size:8px;letter-spacing:.09em}
+}
+/* La scène active ne REDÉCLARE PAS `visibility:visible` : un descendant
+   qui l'affirme redevient visible et cliquable même lorsque le lieu qui
+   le contient est masqué. La scène courante hérite donc de son lieu. */
+.scene{position:absolute;inset:0;opacity:0;pointer-events:none;
+  transition:opacity .55s var(--e),visibility .55s;overflow:auto}
+.scene:not(.on){visibility:hidden}
+.scene.on{opacity:1;pointer-events:auto}
+.atl__sc{padding-top:76px}
+@media(max-width:900px){.atl__sc{padding-top:70px}}
+.fiche{padding-top:76px}
+@media(max-width:900px){.fiche{padding-top:10px}}
+
+/* la plongée dans la matière */
+.plg{position:fixed;inset:0;z-index:80;opacity:0;visibility:hidden;pointer-events:none;
+  color:#fff;transition:opacity .7s var(--e),visibility .7s;--bas:clamp(214px,29svh,272px)}
+.plg.on{opacity:1;visibility:visible;pointer-events:auto}
+.plg__bg{position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 38%,#151311 0%,#0a0a0a 78%)}
+.plg__st{position:absolute;left:0;right:0;top:104px;bottom:var(--bas);overflow:hidden;
+  perspective:1500px;perspective-origin:50% 50%;touch-action:none;cursor:grab}
+.plg__st.tire{cursor:grabbing}
+.sw{position:absolute;top:50%;left:50%;width:min(46vw,600px);height:100%;
+  transform:translate(-50%,-50%);opacity:0;visibility:hidden;
+  background-repeat:repeat;background-blend-mode:hard-light;
+  box-shadow:0 30px 90px rgba(0,0,0,.55);
+  transition:transform .82s var(--e),opacity .6s var(--e)}
+.plg__st.tire .sw{transition:none}
+.sw::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(104deg,rgba(255,255,255,.15) 0,transparent 34%,
+    transparent 66%,rgba(0,0,0,.3) 100%)}
+.sw.mid{box-shadow:0 46px 120px rgba(0,0,0,.72)}
+.plg__hd{position:absolute;top:24px;left:0;right:0;z-index:5;display:flex;
+  justify-content:space-between;padding:0 clamp(18px,3vw,40px);
+  font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.24em;font-size:10px}
+.plg__hd button{opacity:.5;transition:opacity .3s;letter-spacing:.2em;font-size:10px}
+.plg__hd button:hover{opacity:1}
+.plg__fam{position:absolute;top:64px;left:0;right:0;z-index:5;display:flex;gap:20px;
+  justify-content:center;flex-wrap:wrap;padding:0 18px}
+.fm{font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.22em;
+  font-size:9px;opacity:.3;padding-bottom:6px;position:relative;transition:opacity .3s}
+.fm::after{content:'';position:absolute;left:0;bottom:0;width:100%;height:1px;
+  background:currentColor;transform:scaleX(0);transform-origin:left;
+  transition:transform .45s var(--e)}
+.fm.on{opacity:1}.fm.on::after{transform:scaleX(1)}
+.plg__cap{position:absolute;left:0;right:0;bottom:clamp(20px,4.4vh,44px);z-index:5;
+  text-align:center}
+.rail{display:flex;gap:1px;width:min(620px,86vw);margin:0 auto 16px;height:14px;
+  align-items:flex-end;cursor:pointer;touch-action:none}
+.rail i{flex:1;height:7px;box-shadow:inset 0 1px 0 rgba(255,255,255,.22);
+  transition:height .25s var(--e),box-shadow .25s}
+.rail:hover i{height:9px}
+.rail i.on{height:14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),
+  0 0 0 1px rgba(255,255,255,.85)}
+.plg__n{font-size:clamp(26px,4.2vw,54px);letter-spacing:-.02em;min-height:1.1em}
+.plg__d{font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.24em;
+  font-size:10px;opacity:.5;margin-top:11px}
+.plg__c{font-family:system-ui,sans-serif;letter-spacing:.26em;font-size:9px;opacity:.28;
+  margin-top:14px}
+.plg__ok{margin-top:20px;border:1px solid rgba(255,255,255,.5);padding:14px 38px;
+  font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.22em;font-size:10px;
+  transition:background .3s,letter-spacing .45s var(--e)}
+.plg__ok:hover{background:rgba(255,255,255,.13);letter-spacing:.3em}
+.plg__a{position:absolute;top:50%;transform:translateY(-50%);z-index:6;width:44px;height:44px;
+  display:flex;align-items:center;justify-content:center;opacity:.4;transition:opacity .3s}
+.plg__a:hover{opacity:1}.plg__a:disabled{opacity:.09}
+.plg__a svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1}
+.plg__a--p{left:clamp(6px,1.6vw,24px)}.plg__a--n{right:clamp(6px,1.6vw,24px)}
+.plg__opts{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:5;
+  width:min(520px,88vw)}
+.op{display:flex;align-items:center;gap:18px;width:100%;padding:16px 0;
+  border-bottom:1px solid rgba(255,255,255,.13);text-align:left;
+  transition:padding-left .4s var(--e)}
+.op:first-child{border-top:1px solid rgba(255,255,255,.13)}
+.op:hover{padding-left:12px}
+.op__m{width:52px;height:52px;flex:0 0 52px;background-size:cover;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);transition:transform .5s var(--e)}
+.op:hover .op__m{transform:scale(1.06)}
+.op__x{flex:1;min-width:0}
+.op__n{font-size:17px;display:block}
+.op__d{font-family:system-ui,sans-serif;font-size:11px;opacity:.42;margin-top:5px;display:block}
+.op__p{font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.16em;
+  font-size:10px;opacity:.4;white-space:nowrap}
+.op.on .op__n::before{content:'— ';opacity:.6}
+.plg__gl{position:absolute;left:0;right:0;bottom:12px;text-align:center;z-index:5;
+  font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.26em;font-size:9px;
+  opacity:.22;pointer-events:none;transition:opacity .5s}
+.plg.tire .plg__gl{opacity:0}
+
+/* le certificat */
+.cert{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  padding:clamp(70px,10vh,110px) clamp(18px,4vw,44px) clamp(22px,4svh,44px);color:var(--soie)}
+.cert__in{width:min(880px,100%);max-height:100%;display:flex;flex-direction:column}
+.cert__h{text-align:center;margin-bottom:clamp(16px,2.6vh,28px);flex-shrink:0}
+.cert__t{font-size:clamp(24px,3.6vw,44px);letter-spacing:-.025em}
+.cert__t em{font-style:italic}
+.cert__g{display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(22px,4vw,52px);
+  border-top:1px solid rgba(233,223,208,.18);overflow-y:auto;scrollbar-width:none;
+  flex:1;min-height:0}
+.cert__g::-webkit-scrollbar{display:none}
+@media(max-width:760px){.cert__g{grid-template-columns:1fr}}
+.cl{display:flex;justify-content:space-between;gap:12px;padding:10px 0;
+  border-bottom:1px solid rgba(233,223,208,.1);opacity:0;transform:translateY(8px);
+  transition:opacity .6s var(--e),transform .7s var(--e)}
+.cl.in{opacity:1;transform:none}
+.cl__k{font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.16em;
+  font-size:9px;opacity:.4;flex-shrink:0;padding-top:3px}
+.cl__v{font-size:13px;text-align:right}
+.cl__v small{display:block;font-family:system-ui,sans-serif;font-size:10px;opacity:.4;
+  margin-top:2px;font-style:italic}
+.cert__f{flex-shrink:0;margin-top:clamp(12px,2vh,22px);display:flex;justify-content:space-between;
+  align-items:flex-end;gap:20px;flex-wrap:wrap}
+.cert__tot{font-size:clamp(26px,3.4vw,42px);letter-spacing:-.02em}
+.cert__note{font-family:system-ui,sans-serif;font-size:10px;line-height:1.9;opacity:.35;
+  max-width:44ch;flex-basis:100%;margin-top:12px}
+.btn{display:flex;align-items:center;gap:14px;border:1px solid rgba(233,223,208,.45);
+  padding:14px 28px;font-family:system-ui,sans-serif;text-transform:uppercase;
+  letter-spacing:.22em;font-size:10px;transition:background .4s,gap .5s var(--e);min-height:46px}
+.btn:hover{background:rgba(233,223,208,.12);gap:22px}
+.btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  .cl,.sl{opacity:1;transform:none}
+  #seuil polyline{stroke-dashoffset:0}
+}
+</style></head>
+<body>
+
+<!-- ══════════════ LE SEUIL ══════════════ -->
+<div class="lieu on" id="seuil">
+  <svg viewBox="0 0 60 60" aria-hidden="true"><polyline points="10,14 30,46 50,14"/></svg>
+  <p class="k cap sl sl--1">Tiraboschi · Paris · depuis 1904</p>
+  <h1 class="sl sl--2">La main et <em>la matière</em></h1>
+  <p class="d sl sl--2">Accrochage permanent · 96 avenue de Clichy</p>
+  <button class="entrer sl sl--3" id="entrer">Entrer dans la galerie</button>
+</div>
+
+<!-- ══════════════ LE HALL ══════════════ -->
+<div class="lieu" id="hall">
+  <header class="hall__h">
+    <p class="hall__k cap">La Galerie · trois salles</p>
+    <h2 class="hall__t">La main et <em>la matière</em></h2>
+    <p class="hall__s">Une maison de maroquinerie qui s'expose comme on expose une
+      collection : les pièces, le geste qui les fait, et les artistes rencontrés en
+      chemin. Rien ne s'achète ici. Ce qui se voit en galerie se décide au salon,
+      en présence de Laurène.</p>
+  </header>
+  <div class="portes" id="portes"></div>
+  <footer class="hall__f">
+    <p>Entrée libre · du mardi au samedi · sur rendez-vous</p>
+    <button class="lien" id="versRdv">Demander une visite</button>
+    <button class="lien" id="versPorte">Espace client</button>
+  </footer>
+</div>
+
+<!-- ══════════════ LES SALLES (bâties en JS) ══════════════ -->
+<div id="salles"></div>
+
+<!-- ══════════════ LE RENDEZ-VOUS ══════════════ -->
+<div class="lieu" id="rdv">
+  <div class="rdv__f" id="rdvF"></div>
+  <div class="rdv__x">
+    <button class="bar__r" id="rdvRetour" style="margin-bottom:26px"><i></i>Retour au hall</button>
+    <h2 class="rdv__t">Venir voir <em>la pièce</em></h2>
+    <p class="rdv__s">Nous recevons dans l'atelier, une visite à la fois. On y regarde
+      les peaux, on prend les mesures d'usage, on décide de ce qui se fera. La visite
+      dure une heure et n'engage à rien.</p>
+    <form class="champs" id="rdvForm">
+      <div class="cp"><label for="rNom">Nom</label><input id="rNom" required></div>
+      <div class="cp"><label for="rMail">Courriel</label><input id="rMail" type="email" required></div>
+      <div class="cp"><label for="rTel">Téléphone</label><input id="rTel" type="tel"></div>
+      <div class="cp"><label for="rObj">Ce qui vous amène</label>
+        <select id="rObj">
+          <option>Voir une pièce de la Salle I</option>
+          <option>Découvrir les matières</option>
+          <option>Concevoir une pièce sur mesure</option>
+          <option>Une collaboration</option>
+        </select></div>
+      <div class="cp cp--l"><label for="rMot">Un mot</label><textarea id="rMot"></textarea></div>
+      <button class="rdv__go" type="submit">Demander un rendez-vous</button>
+    </form>
+    <div class="rdv__ok" id="rdvOk" hidden>
+      <h4>C'est noté.</h4>
+      <p id="rdvOkT"></p>
+    </div>
+    <p class="rdv__n">Démonstration : rien n'est envoyé. Dans la Plateforme, cette
+      demande devient une fiche de contact, assignée à Laurène, avec un créneau
+      proposé sous 48 heures.</p>
+  </div>
+</div>
+
+<!-- ══════════════ LA NOTICE D'ŒUVRE ══════════════ -->
+<div class="voile" id="voile"></div>
+<aside class="not" id="not" role="dialog" aria-modal="true" aria-labelledby="notN">
+  <div class="not__h"><span class="cap" id="notS">Notice</span>
+    <button class="not__x" id="notX">Fermer</button></div>
+  <div class="not__b">
+    <div class="not__m" id="notM"><img id="notImg" alt=""><div class="oe__t" id="notT"></div></div>
+    <p class="not__k cap" id="notK"></p>
+    <h3 class="not__n" id="notN"></h3>
+    <p class="not__d" id="notD"></p>
+    <blockquote class="not__q" id="notQ" hidden></blockquote>
+    <div class="not__l" id="notL"></div>
+  </div>
+  <div class="not__f">
+    <p class="not__p" id="notP">Cette pièce ne se vend pas en ligne. Elle se regarde ici,
+      et se décide au salon.</p>
+    <button class="grand" id="notGo">Demander à voir cette pièce</button>
+  </div>
+</aside>
+
+<!-- ══════════════ LA PORTE DU BOUDOIR ══════════════ -->
+<div class="porte" id="porte">
+  <div class="porte__in">
+    <p class="porte__k cap">Espace client</p>
+    <h3 class="porte__t">Le <em>Boudoir</em></h3>
+    <p class="porte__d">Un salon privé, ouvert aux clientes de la maison. On y compose
+      sa pièce avec Laurène. L'accès se fait au code porté sur votre carton.</p>
+    <input id="code" maxlength="8" placeholder="· · · ·" aria-label="Code d'accès"
+      autocomplete="off">
+    <p class="porte__e" id="codeE">Ce code n'ouvre rien.</p>
+    <p class="porte__i">Démonstration — le code est 1904.</p>
+    <button class="porte__x" id="porteX">Revenir à la galerie</button>
+  </div>
+</div>
+
+<!-- ══════════════ LE BOUDOIR ══════════════ -->
+<div class="lieu" id="boudoir">
+  <div class="scene on" data-s="salon">
+    <div style="min-height:100%;display:flex;flex-direction:column">
+      <header class="bd__h">
+        <div>
+          <p class="bd__k cap">Le Boudoir · salon privé</p>
+          <h2 class="bd__t">Bonsoir <em id="bdNom">Hélène</em></h2>
+          <p class="bd__s">Laurène vous attend. Vous pouvez reprendre un modèle de la
+            maison et l'ajuster à votre main, ou partir d'une page blanche pour une
+            pièce qui n'existera qu'une fois.</p>
+        </div>
+        <button class="bd__sortie" id="bdSortie">Retour à la galerie</button>
+      </header>
+      <div class="bd__c">
+        <div class="cons">
+          <p class="cons__k cap">Votre carnet</p>
+          <div class="cons__l" id="carnet"></div>
+          <p class="cons__f">Vos pièces restent suivies par l'atelier : entretien,
+            réparation et regarnissage à vie, sans condition de date.</p>
+        </div>
+        <div class="deux">
+          <button class="pd" data-porte="modele">
+            <p class="pd__k cap">Première porte</p>
+            <p class="pd__t">Personnaliser un modèle</p>
+            <p class="pd__d">Vous partez d'une silhouette de la maison — Rafaël, Colette,
+              Olympe — et vous en choisissez la matière, les ferrures, la doublure,
+              le passepoil, l'initiale.</p>
+            <span class="pd__go"><i></i>Entrer à l'atelier</span>
+          </button>
+          <button class="pd" data-porte="exception">
+            <p class="pd__k cap">Seconde porte</p>
+            <p class="pd__t">Créer une pièce d'exception</p>
+            <p class="pd__d">Une forme dessinée pour vous, dans une peau réservée. Laurène
+              tient le crayon ; l'atelier ci-dessous sert à poser les premières
+              intentions avant le rendez-vous.</p>
+            <span class="pd__go"><i></i>Poser les intentions</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- l'atelier -->
+  <div class="scene" data-s="atl">
+    <nav class="sbar">
+      <span class="sbar__m" id="sbarM">Le Boudoir · atelier</span>
+      <div class="sbar__o">
+        <button class="sb" data-s="salon">Le salon</button>
+        <button class="sb on" data-s="atl">Composer</button>
+        <button class="sb" id="sbCuirs">Les cuirs</button>
+        <button class="sb" data-s="cert" id="sbCert">La pièce achevée</button>
+      </div>
+    </nav>
+    <div class="atl">
+      <div class="atl__sc">
+        <div class="atl__ph" id="ph">
+          <img id="phImg" alt="Votre Rafaël">
+          <div class="atl__t" id="phT"></div>
+          <div class="atl__reps" id="reps"></div>
+          <p class="tourner" id="tourner">Faites tourner la pièce</p>
+          <p class="deg" id="deg"></p>
+        </div>
+      </div>
+      <aside class="fiche">
+        <p class="fiche__k cap">Votre pièce, ligne à ligne</p>
+        <div class="fiche__l" id="fiche"></div>
+        <div class="tot">
+          <div><p class="tot__l cap">Estimation</p><p class="tot__v" id="tot">—</p></div>
+          <button class="tot__go" id="voirCert">Voir la pièce achevée</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- la pièce achevée -->
+  <div class="scene" data-s="cert">
+    <nav class="sbar">
+      <span class="sbar__m">Le Boudoir · la pièce achevée</span>
+      <div class="sbar__o">
+        <button class="sb" data-s="salon">Le salon</button>
+        <button class="sb" data-s="atl">Reprendre</button>
+      </div>
+    </nav>
+    <div class="cert"><div class="cert__in">
+      <div class="cert__h">
+        <p class="cap" style="opacity:.42">Pièce unique · Atelier Tiraboschi</p>
+        <h3 class="cert__t" id="certT">Votre <em>Rafaël</em></h3>
+      </div>
+      <div class="cert__g" id="certG"></div>
+      <div class="cert__f">
+        <div><p class="tot__l cap" style="opacity:.42">Estimation ferme</p>
+          <p class="cert__tot" id="certTot"></p></div>
+        <button class="btn" id="confier">Confier à Laurène
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
+        </button>
+        <p class="cert__note">Laurène établit le devis et vous l'adresse. Aucun paiement
+          n'a lieu ici. Façonnage : 12 à 16 semaines. Un cuir exotique reste soumis à
+          disponibilité en tannerie.</p>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<!-- ══════════════ LA PLONGÉE DANS LA MATIÈRE ══════════════ -->
+<div class="plg" id="plg" role="dialog" aria-modal="true">
+  <div class="plg__bg"></div>
+  <div class="plg__st" id="plgSt"></div>
+  <p class="plg__gl" id="plgGl">Faites glisser</p>
+  <div class="plg__opts" id="plgOpts" hidden></div>
+  <div class="plg__hd"><span id="plgT"></span><button id="plgX">Fermer</button></div>
+  <div class="plg__fam" id="plgFam"></div>
+  <button class="plg__a plg__a--p" id="plgP" aria-label="Précédent"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg></button>
+  <button class="plg__a plg__a--n" id="plgN" aria-label="Suivant"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></button>
+  <div class="plg__cap">
+    <div class="rail" id="plgRail" aria-label="Aller à une nuance"></div>
+    <p class="plg__n" id="plgNom"></p>
+    <p class="plg__d" id="plgD"></p>
+    <p class="plg__c" id="plgC"></p>
+    <button class="plg__ok" id="plgOk">Retenir ce cuir</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+const $ = i => document.getElementById(i);
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const euros = n => n.toLocaleString('fr-FR').replace(/ | /g, ' ') + ' €';
+
+/* ═══ Les assets embarqués : tuiles de cuir et rendus Cycles ═══ */
+const TX = "__TUILES__";
+const RENDUS = "__RENDUS__";
+const ROT = "__ROT__";
+const NUANCES = "__NUANCES__";
+
+/* ═══ Les photographies de la boutique ═══
+   Si le CDN n'est pas joignable (démonstration hors ligne), le cadre
+   bascule sur un champ neutre plutôt que de montrer une image cassée. */
+const CDN = 'https://cdn.shopify.com/s/files/1/0927/5890/1079/files/';
+const IMG = {
+  heritage: CDN + '28092025-DSCF1828.jpg',
+  savoir:   CDN + 'BOSCHI0919.jpg',
+  atelier:  CDN + 'BOSCHI0154.jpg',
+  atelier1: CDN + 'Asset_atelier_1.png',
+  mains:    CDN + 'Asset_Mains_1.png',
+  atelier6: CDN + 'Asset_Atelier_6.png',
+  atelier5: CDN + 'Asset_atelier_5.png',
+  rafael:   CDN + 'BOSCHI0774_85f74e95-56cc-4478-aba9-5c523a543565.jpg?v=1769440532',
+  colette:  CDN + 'BOSCHI0633.jpg?v=1769462827',
+  olympe:   CDN + 'BOSCHI0757.jpg?v=1769441367',
+};
+function poser(cadre, src) {
+  const im = document.createElement('img');
+  im.alt = ''; im.decoding = 'async';
+  im.onerror = () => cadre.classList.add('vide');
+  im.src = src; cadre.appendChild(im);
+  return im;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   L'ACCROCHAGE — trois salles, chacune sa lumière et son mur
+   ═══════════════════════════════════════════════════════════════ */
+const SALLES = [
+  {
+    id: 'pieces', n: 'Salle I', t: 'Les Pièces', mur: '#e6e1d8', enc: '#151310',
+    d: "Cinq pièces, dont deux d'exception. Chacune est façonnée par un seul artisan, du premier trait de tranchet au dernier point.",
+    f: IMG.rafael,
+    fin: { h: 'La suite se voit au salon',
+      p: "Les déclinaisons — cinquante-deux nuances, six matières — ne s'accrochent pas : elles se regardent à la lumière du jour, dans l'atelier.",
+      b: 'Demander un rendez-vous' },
+    oe: [
+      { t: 'Rafaël', k: '2019 · édition continue', img: IMG.rafael,
+        d: "La pièce la plus difficile de la collection. Une pochette n'a nulle part où cacher un défaut : chaque couture est vue, chaque tranche est nue. À l'atelier, on ne la confie qu'aux mains prêtes à la faire.",
+        l: [['Matières', 'Veau grainé · laiton naturel'], ['Dimensions', 'H 19 × L 30 × P 4 cm'],
+            ['Façonnage', '48 heures de main · un artisan'], ['Atelier', '96 av. de Clichy, Paris']] },
+      { t: 'Colette', k: '2016 · édition continue', img: IMG.colette,
+        d: "La signature de la maison : un V taillé dans la masse, qui ouvre le sac sans fermoir. Sa tenue ne doit rien à une armature — seulement à l'épaisseur du cuir et à la façon dont la peau a été placée.",
+        l: [['Matières', 'Veau pleine fleur · doublure agneau'], ['Dimensions', 'H 24 × L 32 × P 10 cm'],
+            ['Anse', '55 cm, cousue main'], ['Façonnage', '12 à 16 semaines']] },
+      { t: 'Olympe', k: '2022 · édition continue', img: IMG.olympe,
+        d: "Un seau strict, et à l'intérieur un pochon de soie sauvage qui se retire. Deux pièces en une : la rigueur dehors, la souplesse dedans. Le pochon se remplace, se change de couleur, se transmet.",
+        l: [['Matières', 'Veau grainé · pochon soie de Lyon'], ['Dimensions', 'H 26 × L 24 × P 16 cm'],
+            ['Particularité', 'Pochon amovible'], ['Façonnage', '12 à 16 semaines']] },
+      { t: 'Rafaël, alligator', k: "Pièce d'exception · 2026", rend: 'alligator', hex: '#1e3a30',
+        d: "Un alligator du Mississippi, tanné en Italie, teint Vert Empire. On ne coupe pas une telle peau sans l'avoir regardée plusieurs jours : les écailles doivent tomber juste sur le rabat, et le ventre, plus tendre, ne va jamais aux angles.",
+        l: [['Matière', 'Alligator · Vert Empire'], ['Écailles', 'Centrage manuel sur le rabat'],
+            ['Ferrures', 'Or jaune 24 carats, sur commande'], ['Édition', 'Pièce unique']] },
+      { t: 'Rafaël, galuchat', k: "Pièce d'exception · 2026", rend: 'galuchat', hex: '#1c2438',
+        d: "Le galuchat est une peau de raie, poncée jusqu'à faire apparaître la perle centrale. Elle ne se plie pas : elle se contraint. La monter sur une pochette suppose d'accepter que la matière décide d'une partie du dessin.",
+        l: [['Matière', 'Galuchat poncé · Bleu Nuit'], ['Perle', 'Centrée à la main'],
+            ['Ferrures', 'Argent palladié'], ['Édition', 'Pièce unique']] },
+    ],
+  },
+  {
+    id: 'geste', n: 'Salle II', t: 'Le Geste', mur: '#1b1917', enc: '#efeae3',
+    d: "Six vues d'atelier et un cabinet de matières. Ce qui tient une pièce ne se voit pas depuis l'extérieur.",
+    f: IMG.mains,
+    fin: { h: 'Le cabinet reste ouvert',
+      p: "Six matières, cinquante-deux nuances. En galerie, on les regarde ; le choix, lui, se fait au salon avec la lumière et la pièce sous la main.",
+      b: 'Ouvrir le cabinet des matières', cabinet: true },
+    oe: [
+      { t: 'On commence par refuser neuf peaux sur dix.', k: 'I · le choix de la peau', img: IMG.atelier1,
+        d: "Une peau a un sens, des zones fermes, des cicatrices de vie. Sur cent peaux reçues, une dizaine entre à l'atelier. Le reste repart : une piqûre d'insecte au mauvais endroit suffit à écarter une peau entière.",
+        l: [['Provenance', 'Tanneries françaises et italiennes'], ['Tri', 'À la main, à la lumière du jour']] },
+      { t: 'Le tranchet ne pardonne rien.', k: 'II · la coupe', img: IMG.mains,
+        d: "Placer un patron sur une peau, c'est décider où la pièce sera belle dans dix ans. La coupe se fait d'un seul geste, sans repentir : un tranchet qui hésite laisse une trace que la tranche gardera.",
+        l: [['Outil', 'Tranchet affûté chaque matin'], ['Perte', '30 à 40 % de la peau']] },
+      { t: 'Deux aiguilles. Un seul fil.', k: 'III · le point sellier', img: IMG.savoir,
+        d: "Le point sellier se fait à deux aiguilles sur un même fil, croisé dans chaque trou. Si un point cède, les autres tiennent — contrairement à une couture machine, qui se défile d'un bout à l'autre.",
+        l: [['Densité', '8 points au centimètre'], ['Fil', 'Lin câblé, poissé à la cire']] },
+      { t: 'Huit points au centimètre.', k: 'IV · la régularité', img: IMG.atelier6,
+        d: "La régularité n'est pas une coquetterie : un point trop lâche use le cuir autour de lui. On perce à l'alène, à l'angle, et l'on compte. Trois mille quatre cents points pour une pièce.",
+        l: [['Points', '3 400 par pièce'], ['Contrôle', "À l'œil, point par point"]] },
+      { t: 'Quarante-huit heures de main.', k: 'V · le temps', img: IMG.atelier,
+        d: "Une pièce demande deux à trois journées pleines de travail, réparties sur douze à seize semaines — le cuir doit reposer entre les opérations, sinon il travaille et la forme bouge.",
+        l: [['Main', '48 à 72 heures'], ['Délai', '12 à 16 semaines']] },
+      { t: "Puis une initiale, à l'intérieur.", k: 'VI · la marque', img: IMG.atelier5,
+        d: "La dernière opération est une gravure à chaud, sous le rabat : les initiales de celle qui portera la pièce, et l'année. C'est la seule inscription que la maison ajoute.",
+        l: [['Gravure', 'À chaud, fers à main'], ['Emplacement', 'Sous le rabat']] },
+    ],
+  },
+  {
+    id: 'rencontres', n: 'Salle III', t: 'Les Rencontres', mur: '#dcd1bf', enc: '#221b13',
+    d: "Trois artistes invités à toucher la pièce là où l'atelier s'arrête : le métal, la tranche, la couleur.",
+    f: IMG.atelier6,
+    ex: "Noms et pièces d'exemple — accrochage à valider avec la maison.",
+    fin: { h: 'La salle change deux fois par an',
+      p: "Chaque invitation donne une petite série, jamais rééditée. Les pièces exposées trouvent leur propriétaire au salon.",
+      b: 'Demander un rendez-vous' },
+    oe: [
+      { t: 'La ferrure taillée', k: 'Fanny Delaunay · orfèvre · 2025', img: IMG.atelier6,
+        d: "L'anneau en D de la Rafaël, habituellement fondu, a été taillé dans un lingot de laiton puis limé à la main. Chaque anneau porte les traces d'outil de son façonnage : deux pièces de la série ne se ressemblent pas.",
+        q: ["Une ferrure fondue est parfaite et muette. Une ferrure taillée raconte l'heure qu'on lui a donnée.", 'Fanny Delaunay'],
+        l: [['Discipline', 'Orfèvrerie'], ['Pièce', 'Rafaël, anneau taillé'],
+            ['Édition', '7 exemplaires'], ['Atelier', 'Paris · Belleville']] },
+      { t: 'La tranche laquée', k: 'Kenzo Arai · laqueur · 2025', img: IMG.atelier5,
+        d: "La tranche d'un sac est habituellement teinte et poncée. Ici elle reçoit sept couches d'urushi, la laque japonaise, séchées chacune une semaine en cave humide. Le résultat est un trait de couleur profond, dur comme du verre.",
+        q: ["Le cuir bouge, la laque ne bouge pas. Il a fallu trois essais pour qu'ils acceptent de vieillir ensemble.", 'Kenzo Arai'],
+        l: [['Discipline', 'Laque urushi'], ['Pièce', 'Colette, tranche laquée'],
+            ['Séchage', '7 couches · 7 semaines'], ['Édition', '5 exemplaires']] },
+      { t: 'Les sept bleus', k: 'Marguerite Oyon · coloriste · 2026', img: IMG.savoir,
+        d: "Une gamme de sept bleus obtenus par teinture à la main sur peau nue, du plus pâle au presque noir. Les bains ont été refaits onze fois avant d'obtenir une progression que l'œil lit comme continue.",
+        q: ['Un dégradé, ce n\'est pas sept couleurs : c\'est six écarts. Ce sont les écarts qu\'on travaille.', 'Marguerite Oyon'],
+        l: [['Discipline', 'Teinture à la main'], ['Pièce', 'Nuancier · sept bleus'],
+            ['Support', 'Veau pleine fleur nu'], ['Édition', 'Nuancier unique, non vendu']] },
+    ],
+  },
+];
+
+/* ═══════════ NAVIGATION ENTRE LES LIEUX ═══════════ */
+let lieuCourant = 'seuil';
+function versLieu(id) {
+  /* changer de lieu referme ce qui était ouvert par-dessus : une notice
+     laissée ouverte resterait au-dessus du lieu suivant */
+  if (typeof fermerNotice === 'function') fermerNotice();
+  document.querySelectorAll('.lieu').forEach(l => l.classList.toggle('on', l.id === id));
+  lieuCourant = id;
+  const l = $(id);
+  if (l) l.scrollTop = 0;
+}
+$('entrer').onclick = () => versLieu('hall');
+$('versRdv').onclick = () => versLieu('rdv');
+$('rdvRetour').onclick = () => versLieu('hall');
+
+/* ═══════════ LE HALL — les trois seuils ═══════════ */
+SALLES.forEach(s => {
+  const b = document.createElement('button');
+  b.className = 'pt'; b.dataset.salle = s.id;
+  const f = document.createElement('div'); f.className = 'pt__f';
+  poser(f, s.f); b.appendChild(f);
+  b.insertAdjacentHTML('beforeend',
+    '<p class="pt__n cap">' + s.n + ' · ' + s.oe.length + ' œuvres</p>' +
+    '<p class="pt__t">' + s.t + '</p><p class="pt__d">' + s.d + '</p>' +
+    '<span class="pt__go"><i></i>Entrer</span>');
+  b.onclick = () => versLieu('salle-' + s.id);
+  $('portes').appendChild(b);
+});
+
+/* ═══════════ LES SALLES — on marche le long de la cimaise ═══════════ */
+SALLES.forEach(s => {
+  const l = document.createElement('div');
+  l.className = 'lieu salle'; l.id = 'salle-' + s.id;
+  l.style.setProperty('--mur', s.mur);
+  l.style.setProperty('--enc', s.enc);
+  l.innerHTML =
+    '<nav class="bar"><button class="bar__r" data-hall><i></i>Le hall</button>' +
+    '<p class="bar__t"><span>' + s.n + '</span>' + s.t + '</p>' +
+    '<div class="bar__x"><p class="bar__c" data-pos></p>' +
+    '<button class="lien" data-rdv>Demander une visite</button></div></nav>' +
+    '<div class="mur" data-mur tabindex="0"></div>' +
+    '<p class="gliss">Faites glisser le long du mur</p>';
+  $('salles').appendChild(l);
+
+  const mur = l.querySelector('[data-mur]');
+  l.querySelector('[data-hall]').onclick = () => versLieu('hall');
+  l.querySelector('[data-rdv]').onclick = () => versLieu('rdv');
+
+  s.oe.forEach((o, i) => {
+    const a = document.createElement('button');
+    a.className = 'oe'; a.dataset.i = i;
+    const m = document.createElement('div');
+    m.className = 'oe__m' + (o.rend ? ' rendu' : '');
+    if (o.rend) {
+      const im = document.createElement('img');
+      im.alt = o.t; im.src = RENDUS[o.rend]; m.appendChild(im);
+      const t = document.createElement('div');
+      t.className = 'oe__t';
+      t.style.backgroundColor = o.hex;
+      t.style.webkitMaskImage = t.style.maskImage = 'url(' + RENDUS.masque + ')';
+      m.appendChild(t);
+    } else poser(m, o.img);
+    a.appendChild(m);
+    a.insertAdjacentHTML('beforeend',
+      '<div class="oe__c"><p class="oe__n">' + o.t + '</p>' +
+      '<p class="oe__k">' + o.k + '</p>' +
+      '<p class="oe__l">' + o.l.slice(0, 2).map(x => x[1]).join(' · ') + '</p>' +
+      '<p class="oe__v">Lire la notice</p></div>');
+    a.onclick = () => { if (!mur.dataset.glisse) ouvrirNotice(s, o); };
+    mur.appendChild(a);
+  });
+
+  /* le mot de fin de cimaise */
+  const f = document.createElement('div');
+  f.className = 'fin';
+  f.innerHTML = '<h4>' + s.fin.h + '</h4><p>' + s.fin.p + '</p>' +
+    (s.ex ? '<p style="opacity:.7">' + s.ex + '</p>' : '');
+  const fb = document.createElement('button');
+  fb.className = 'lien'; fb.textContent = s.fin.b;
+  fb.onclick = () => s.fin.cabinet ? cabinet() : versLieu('rdv');
+  f.appendChild(fb);
+  mur.appendChild(f);
+
+  marcher(mur, l.querySelector('[data-pos]'), s.oe.length);
+});
+
+/* On marche : molette, doigt, souris tirée, flèches. Jamais une ancre. */
+function marcher(mur, pos, n) {
+  const oeuvres = () => [...mur.querySelectorAll('.oe')];
+  /* la molette verticale devient un pas latéral */
+  mur.addEventListener('wheel', e => {
+    if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+    mur.scrollLeft += e.deltaY;
+    e.preventDefault();
+  }, { passive: false });
+
+  /* la souris tirée — le doigt est déjà géré nativement */
+  let id = null, x0 = 0, s0 = 0;
+  mur.addEventListener('pointerdown', e => {
+    if (e.pointerType === 'touch') return;
+    id = e.pointerId; x0 = e.clientX; s0 = mur.scrollLeft;
+    delete mur.dataset.glisse;
+    mur.classList.add('tire');
+  });
+  mur.addEventListener('pointermove', e => {
+    if (id === null || e.pointerId !== id) return;
+    const d = e.clientX - x0;
+    /* au-delà de 5 px on considère que l'on marche : le clic sur l'œuvre
+       ne doit pas partir au relâché */
+    if (Math.abs(d) > 5) mur.dataset.glisse = '1';
+    mur.scrollLeft = s0 - d;
+  });
+  function fin(e) {
+    if (id === null || e.pointerId !== id) return;
+    id = null; mur.classList.remove('tire');
+    setTimeout(() => { delete mur.dataset.glisse; }, 0);
+  }
+  mur.addEventListener('pointerup', fin);
+  mur.addEventListener('pointercancel', fin);
+  mur.addEventListener('pointerleave', fin);
+
+  /* les flèches : une œuvre à la fois */
+  mur.addEventListener('keydown', e => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    const o = oeuvres(), c = courante();
+    const v = o[Math.max(0, Math.min(o.length - 1, c + (e.key === 'ArrowRight' ? 1 : -1)))];
+    if (v) v.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', inline: 'center', block: 'nearest' });
+    e.preventDefault();
+  });
+
+  /* où sommes-nous sur le mur ? l'œuvre la plus proche du centre */
+  function courante() {
+    const r = mur.getBoundingClientRect(), cx = r.left + r.width / 2;
+    let best = 0, d = Infinity;
+    oeuvres().forEach((o, i) => {
+      const b = o.getBoundingClientRect();
+      const dd = Math.abs(b.left + b.width / 2 - cx);
+      if (dd < d) { d = dd; best = i; }
+    });
+    return best;
+  }
+  let attend = false;
+  function relever() {
+    pos.textContent = 'Œuvre ' + (courante() + 1) + ' sur ' + n;
+    if (mur.scrollLeft > 40) mur.classList.add('vu');
+  }
+  mur.addEventListener('scroll', () => {
+    if (attend) return;
+    attend = true;
+    requestAnimationFrame(() => { relever(); attend = false; });
+  }, { passive: true });
+  relever();
+}
+
+/* ═══════════ LA NOTICE ═══════════ */
+let oeCourante = null;
+function ouvrirNotice(s, o) {
+  oeCourante = o;
+  const m = $('notM');
+  m.classList.remove('vide', 'rendu');
+  $('notT').style.backgroundColor = '';
+  $('notT').style.webkitMaskImage = $('notT').style.maskImage = '';
+  if (o.rend) {
+    m.classList.add('rendu');
+    $('notImg').onerror = null;
+    $('notImg').src = RENDUS[o.rend];
+    $('notT').style.backgroundColor = o.hex;
+    $('notT').style.webkitMaskImage = $('notT').style.maskImage =
+      'url(' + RENDUS.masque + ')';
+  } else {
+    $('notImg').onerror = () => m.classList.add('vide');
+    $('notImg').src = o.img;
+  }
+  $('notImg').alt = o.t;
+  $('notS').textContent = s.n + ' · ' + s.t;
+  $('notK').textContent = o.k;
+  $('notN').textContent = o.t;
+  $('notD').textContent = o.d;
+  const q = $('notQ');
+  if (o.q) { q.hidden = false; q.innerHTML = '« ' + o.q[0] + ' »<small>' + o.q[1] + '</small>'; }
+  else q.hidden = true;
+  $('notL').innerHTML = o.l.map(([k, v]) =>
+    '<div><span>' + k + '</span><span>' + v + '</span></div>').join('');
+  $('not').classList.add('on'); $('voile').classList.add('on');
+}
+function fermerNotice() { $('not').classList.remove('on'); $('voile').classList.remove('on'); }
+$('notX').onclick = fermerNotice;
+$('voile').onclick = fermerNotice;
+$('notGo').onclick = () => {
+  if (oeCourante) $('rMot').value = 'À propos de : ' + oeCourante.t;
+  fermerNotice(); versLieu('rdv');
+};
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && $('not').classList.contains('on')) fermerNotice();
+});
+
+/* ═══════════ LE RENDEZ-VOUS ═══════════ */
+poser($('rdvF'), IMG.atelier);
+$('rdvForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const n = $('rNom').value.trim() || 'Madame';
+  $('rdvOkT').textContent = n + ', votre demande est enregistrée. Laurène vous propose '
+    + 'un créneau sous 48 heures — objet : « ' + $('rObj').value.toLowerCase() + ' ».';
+  $('rdvOk').hidden = false;
+  $('rdvOk').scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'nearest' });
+});
+
+/* ═══════════ LA PORTE DU BOUDOIR ═══════════ */
+const CODE = '1904';
+function ouvrirPorte() { $('porte').classList.add('on'); setTimeout(() => $('code').focus(), 350); }
+$('versPorte').onclick = ouvrirPorte;
+$('porteX').onclick = () => { $('porte').classList.remove('on'); $('codeE').classList.remove('on'); };
+$('code').addEventListener('input', function () {
+  $('codeE').classList.remove('on');
+  const v = this.value.trim();
+  if (v.length < CODE.length) return;
+  if (v === CODE) {
+    $('porte').classList.remove('on');
+    this.value = '';
+    versLieu('boudoir'); versScene('salon');
+  } else $('codeE').classList.add('on');
+});
+$('bdSortie').onclick = () => versLieu('hall');
+
+/* ═══════════ LE BOUDOIR ═══════════ */
+const CLIENTE = { nom: 'Hélène', cercle: 'Cercle II' };
+$('bdNom').textContent = CLIENTE.nom;
+/* ce que la cliente possède déjà — dans la Plateforme, ses commandes */
+const CARNET = [
+  { n: 'Colette', d: 'Veau grainé Bordeaux · 2023 · ferrures laiton', img: IMG.colette },
+  { n: 'Rafaël', d: 'Box lisse Noir Absolu · 2024 · initiale H.M.', img: IMG.rafael },
+];
+CARNET.forEach(p => {
+  const d = document.createElement('div'); d.className = 'pos1';
+  const m = document.createElement('div'); m.className = 'pos1__m';
+  poser(m, p.img); d.appendChild(m);
+  d.insertAdjacentHTML('beforeend', '<div class="pos1__x"><p class="pos1__n">' + p.n +
+    '</p><p class="pos1__d">' + p.d + '</p></div>');
+  $('carnet').appendChild(d);
+});
+
+function versScene(s) {
+  document.querySelectorAll('.scene').forEach(x => x.classList.toggle('on', x.dataset.s === s));
+  document.querySelectorAll('.sb[data-s]').forEach(b => b.classList.toggle('on', b.dataset.s === s));
+}
+document.querySelectorAll('.sb[data-s]').forEach(b => b.onclick = () => {
+  if (b.dataset.s === 'cert') certificat();
+  versScene(b.dataset.s);
+});
+document.querySelectorAll('.pd').forEach(p => p.onclick = () => {
+  const ex = p.dataset.porte === 'exception';
+  $('sbarM').textContent = ex ? 'Le Boudoir · pièce d\'exception' : 'Le Boudoir · atelier';
+  versScene('atl');
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   L'ATELIER — le configurateur, tel qu'il tourne déjà en boutique
+   ═══════════════════════════════════════════════════════════════ */
+const MATIERES = [
+  { id:'graine', nom:'Grainé', d:0 },
+  { id:'caviar', nom:'Caviar', d:180 },
+  { id:'lisse', nom:'Box lisse', d:320 },
+  { id:'daim', nom:'Daim', d:240 },
+  { id:'alligator', nom:'Alligator', d:3800 },
+  { id:'galuchat', nom:'Galuchat', d:3100 },
+];
+const FERRURES = [
+  { id:'laiton', n:'Laiton naturel', d2:'Patine avec le temps.', d:0, f:'#b08d57' },
+  { id:'vieilli', n:'Laiton vieilli', d2:'Patiné à la main.', d:120, f:'#8a6a3a' },
+  { id:'palladium', n:'Argent palladié', d2:'Blanc froid, inaltérable.', d:340, f:'#cfd2d4' },
+  { id:'or24', n:'Or jaune 24 carats', d2:"Dorure à l'or fin, sur commande.", d:1800, f:'#d9b23c' },
+];
+const PASSEPOILS = [
+  { id:'framboise', n:'Framboise', d2:'La signature de la Rafaël.', d:0, f:'#9c2440' },
+  { id:'noir', n:'Ton sur ton', d2:'La pièce se tait.', d:0, f:'#141414' },
+  { id:'marine', n:'Marine', d2:'Un trait profond.', d:0, f:'#243352' },
+];
+const DOUBLURES = [
+  { id:'agneau', n:'Agneau naturel', d2:'La doublure de maison.', d:0, tx:'daim' },
+  { id:'chevreau', n:'Chevreau glacé', d2:"Un léger éclat à l'ouverture.", d:160, tx:'lisse' },
+  { id:'soie', n:'Soie sauvage', d2:'Tissée à Lyon.', d:240, f:'#c9b79c' },
+];
+const BANDOULIERE = [
+  { id:'avec', n:'Avec bandoulière', d2:'Portée épaule ou croisée.', d:0, f:'#3a332c' },
+  { id:'sans', n:'Pochette nue', d2:'La pièce, rien de plus.', d:-140, f:'#221e1a' },
+];
+const MODELE = { nom:'Rafaël', base:1900, t:'Pochette · bandoulière amovible',
+  reps:{ ext:[26,60], ferrures:[50.7,74], passepoil:[74,62], bandouliere:[50,11], doublure:[30,84] } };
+const AJ = [
+  { k:'ext', n:'Cuir extérieur', type:'cuir' },
+  { k:'ferrures', n:'Ferrures', type:'liste', l:FERRURES },
+  { k:'passepoil', n:'Passepoil', type:'liste', l:PASSEPOILS },
+  { k:'doublure', n:'Doublure', type:'liste', l:DOUBLURES },
+  { k:'bandouliere', n:'Bandoulière', type:'liste', l:BANDOULIERE },
+  { k:'grav', n:'Gravure', type:'texte' },
+];
+const S = { cuir:'', ferrures:'laiton', passepoil:'framboise', doublure:'agneau',
+            bandouliere:'avec', grav:'' };
+
+const matPar = id => MATIERES.find(m => m.id === id) || null;
+const nuPar = id => NUANCES.find(n => n.id === id) || null;
+function cuirCourant() {
+  if (!S.cuir) return null;
+  const [mi, ni] = S.cuir.split(':');
+  const m = matPar(mi), n = nuPar(ni);
+  return m && n ? { m, n, nom: n.nom + ' · ' + m.nom, delta: m.d, hex: n.hex } : null;
+}
+
+$('phT').style.webkitMaskImage = $('phT').style.maskImage = 'url(' + RENDUS.masque + ')';
+$('phImg').src = RENDUS.graine;
+
+function total() {
+  let t = MODELE.base;
+  const c = cuirCourant(); if (c) t += c.delta;
+  [[FERRURES, 'ferrures'], [PASSEPOILS, 'passepoil'], [DOUBLURES, 'doublure'],
+   [BANDOULIERE, 'bandouliere']].forEach(([L, k]) => {
+    const o = L.find(x => x.id === S[k]); if (o) t += o.d;
+  });
+  if (S.grav) t += 180;
+  return t;
+}
+function valeur(a) {
+  if (a.type === 'cuir') { const c = cuirCourant(); return c ? [c.nom, c.delta] : ['Au choix', null]; }
+  if (a.type === 'texte') return [S.grav || 'Aucune', S.grav ? 180 : 0];
+  const o = a.l.find(x => x.id === S[a.k]);
+  return o ? [o.n, o.d] : ['Au choix', null];
+}
+function peindre(el, o, taille) {
+  if (!el) return;
+  el.style.backgroundImage = ''; el.style.backgroundColor = ''; el.style.backgroundBlendMode = '';
+  if (!o) return;
+  if (o.tx) {
+    el.style.backgroundImage = 'url(' + TX[o.tx] + ')';
+    el.style.backgroundColor = o.f || '#8a8175';
+    el.style.backgroundBlendMode = 'hard-light';
+    if (taille) el.style.backgroundSize = taille + 'px ' + taille + 'px';
+  } else if (o.f) el.style.backgroundColor = o.f;
+}
+function habillerCuir(el, c, taille) {
+  if (!el || !c) return;
+  el.style.backgroundImage = 'url(' + TX[c.m.id] + ')';
+  el.style.backgroundColor = c.hex;
+  el.style.backgroundBlendMode = 'hard-light';
+  if (taille) el.style.backgroundSize = taille + 'px ' + taille + 'px';
+}
+function batirFiche() {
+  const r = $('fiche'); r.innerHTML = '';
+  AJ.forEach((a, i) => {
+    const b = document.createElement('button');
+    b.className = 'aj'; b.dataset.k = a.k;
+    b.innerHTML = '<span class="aj__i">' + ('0' + (i + 1)).slice(-2) + '</span>' +
+      '<span class="aj__x"><span class="aj__n">' + a.n + '</span>' +
+      '<span class="aj__v"><i class="aj__c" data-c></i><span data-v></span></span></span>' +
+      '<span class="aj__p" data-p></span>';
+    b.onclick = () => plonger(a);
+    r.appendChild(b);
+  });
+}
+function batirReperes() {
+  const c = $('reps'); c.innerHTML = '';
+  Object.keys(MODELE.reps).forEach(k => {
+    const a = AJ.find(x => x.k === k); if (!a) return;
+    const p = MODELE.reps[k];
+    const b = document.createElement('button');
+    b.className = 'rep' + (p[0] > 55 ? ' rep--g' : '');
+    b.dataset.k = k;
+    b.style.left = p[0] + '%'; b.style.top = p[1] + '%';
+    b.innerHTML = '<span class="rep__o"><i class="rep__sw"></i></span><span class="rep__pu"></span>' +
+      '<span class="rep__l">' + a.n + '<em data-rv></em></span>';
+    b.onclick = () => plonger(a);
+    c.appendChild(b);
+  });
+}
+let cuirPose = 'x';
+function rafraichir() {
+  document.querySelectorAll('.aj').forEach(b => {
+    const a = AJ.find(x => x.k === b.dataset.k); if (!a) return;
+    const v = valeur(a);
+    b.querySelector('[data-v]').textContent = v[0];
+    b.querySelector('[data-p]').textContent =
+      v[1] === null ? 'à définir' : (v[1] ? (v[1] > 0 ? '+ ' : '− ') + euros(Math.abs(v[1])) : 'inclus');
+    const pose = (a.type === 'cuir' && S.cuir) || (a.type === 'texte' && S.grav) ||
+      (a.l && a.l.find(x => x.id === S[a.k]) && v[1] !== 0);
+    b.classList.toggle('set', !!pose);
+    const c = cuirCourant();
+    const chip = b.querySelector('[data-c]');
+    if (a.type === 'cuir') { if (c) habillerCuir(chip, c, 100); }
+    else peindre(chip, a.l && a.l.find(x => x.id === S[a.k]), 100);
+    const rp = document.querySelector('.rep[data-k="' + b.dataset.k + '"]');
+    if (rp) {
+      rp.classList.toggle('set', !!pose);
+      const sw = rp.querySelector('.rep__sw');
+      if (a.type === 'cuir') { if (c) habillerCuir(sw, c, 110); }
+      else peindre(sw, a.l && a.l.find(x => x.id === S[a.k]), 110);
+      const rv = rp.querySelector('[data-rv]');
+      if (rv) rv.textContent = pose ? ' · ' + v[0] : '';
+    }
+  });
+  const c = cuirCourant();
+  const cle = c ? c.m.id + ':' + c.n.id : '';
+  if (cle !== cuirPose) {
+    cuirPose = cle;
+    if (!c) $('phT').style.opacity = '0';
+    else { $('phT').style.backgroundColor = c.hex; $('phT').style.opacity = '1'; }
+    tourner(angle, true);
+  }
+  majTotal();
+}
+let prec = '';
+function majTotal() {
+  const txt = euros(total()), el = $('tot');
+  if (txt === prec) return;
+  el.textContent = txt; prec = txt;
+}
+
+/* ─── la rotation : 24 positions, 13 rendus, l'autre moitié en miroir ─── */
+const POS = 24;
+const DEMI = POS / 2;
+let angle = 0;
+function positionner(a) {
+  a = ((a % POS) + POS) % POS;
+  return a <= DEMI ? { i: a, m: false } : { i: POS - a, m: true };
+}
+function tourner(a, force) {
+  const av = angle;
+  angle = ((a % POS) + POS) % POS;
+  if (angle === av && !force) return;
+  const p = positionner(angle);
+  const c = cuirCourant();
+  const mat = c ? c.m.id : 'graine';
+  const src = angle === 0 ? (RENDUS[mat] || RENDUS.graine)
+                          : (ROT[mat] || ROT.graine)[p.i];
+  const msk = angle === 0 ? RENDUS.masque : ROT.masque[p.i];
+  if ($('phImg').getAttribute('src') !== src) $('phImg').src = src;
+  $('phT').style.webkitMaskImage = $('phT').style.maskImage = 'url(' + msk + ')';
+  $('ph').classList.toggle('miroir', p.m);
+  $('ph').classList.toggle('detourne', angle !== 0);
+  $('deg').textContent = Math.round(angle * 360 / POS) + '°';
+}
+let boucleRot = null;
+function poserAngle(a) { arreterElan(); tourner(a); }
+function arreterElan() { if (boucleRot) cancelAnimationFrame(boucleRot); boucleRot = null; }
+(function () {
+  const ph = $('ph');
+  let id = null, x0 = 0, a0 = 0, dx = 0, t0 = 0, elan = 0;
+  const pas = () => Math.max(16, ph.clientWidth / POS * 1.6);
+  ph.addEventListener('pointerdown', e => {
+    if (e.target.closest('.rep')) return;
+    id = e.pointerId; x0 = e.clientX; a0 = angle; dx = 0; t0 = e.timeStamp;
+    elan = 0; arreterElan();
+    ph.classList.add('tourne');
+    try { ph.setPointerCapture(id); } catch (_) {}
+  });
+  ph.addEventListener('pointermove', e => {
+    if (id === null || e.pointerId !== id) return;
+    dx = e.clientX - x0;
+    tourner(a0 - Math.round(dx / pas()));
+  });
+  function fin(e) {
+    if (id === null || e.pointerId !== id) return;
+    id = null; ph.classList.remove('tourne');
+    const dt = Math.max(1, e.timeStamp - t0);
+    if (Math.abs(dx) < 6) return;
+    /* l'élan prolonge le geste puis s'éteint — borné à une position par
+       image, sinon un geste vif fait tourner la pièce pendant des secondes */
+    elan = Math.max(-1, Math.min(1, -(dx / dt) * 26 / pas()));
+    let a = angle;
+    (function file() {
+      elan *= 0.9;
+      if (Math.abs(elan) < 0.03) { boucleRot = null; return; }
+      a += elan; tourner(Math.round(a));
+      boucleRot = requestAnimationFrame(file);
+    })();
+  }
+  ph.addEventListener('pointerup', fin);
+  ph.addEventListener('pointercancel', fin);
+  ph.tabIndex = 0;
+  ph.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') { poserAngle(angle - 1); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { poserAngle(angle + 1); e.preventDefault(); }
+    if (e.key === 'Home' || e.key === 'Escape') poserAngle(0);
+  });
+})();
+
+/* ─── la plongée : cover flow des nuances + onglets de matière ───
+   Elle sert deux fois : au salon pour CHOISIR, en galerie pour REGARDER.
+   En galerie, aucun prix n'est affiché et rien ne se retient. */
+let pl = null, typ = 'graine', pi = 0, cartes = [], enGalerie = false;
+MATIERES.forEach(f => {
+  const b = document.createElement('button');
+  b.className = 'fm' + (f.id === typ ? ' on' : '');
+  b.textContent = f.nom; b.dataset.f = f.id;
+  b.onclick = () => {
+    typ = f.id;
+    document.querySelectorAll('.fm').forEach(x => x.classList.toggle('on', x.dataset.f === typ));
+    rhabiller(); legende(pi);
+  };
+  $('plgFam').appendChild(b);
+});
+function matiereDe(i) {
+  const c = NUANCES[i], t = matPar(typ);
+  return { id: typ + ':' + c.id, nom: c.nom, hex: c.hex, delta: t.d, tx: typ };
+}
+function batirCartes() {
+  const st = $('plgSt'); st.innerHTML = ''; cartes = [];
+  NUANCES.forEach((c, i) => {
+    const d = document.createElement('div');
+    d.className = 'sw'; d.dataset.i = i;
+    const m = matiereDe(i);
+    d.style.backgroundImage = 'url(' + TX[m.tx] + ')';
+    d.style.backgroundColor = m.hex;
+    d.style.backgroundSize = '384px 384px';
+    cartes.push(d); st.appendChild(d);
+  });
+  placer(0);
+}
+function rhabiller() {
+  cartes.forEach((d, i) => {
+    const m = matiereDe(i);
+    d.style.backgroundImage = 'url(' + TX[m.tx] + ')';
+    d.style.backgroundColor = m.hex;
+  });
+}
+function placer(off) {
+  const c = pi + off;
+  cartes.forEach((d, i) => {
+    const o = i - c, a = Math.abs(o);
+    if (a > 3.8) { d.style.visibility = 'hidden'; d.style.opacity = '0'; return; }
+    const sg = o < 0 ? -1 : 1, ac = Math.min(a, 4);
+    d.style.visibility = 'visible';
+    d.style.transform = 'translate(calc(-50% + ' + (sg * 36 * Math.pow(ac, .78)).toFixed(2) + '%),-50%) ' +
+      'rotateY(' + (-sg * 46 * Math.min(ac, 1)).toFixed(2) + 'deg) ' +
+      'scale(' + (1 - .16 * Math.min(ac, 3)).toFixed(3) + ')';
+    d.style.opacity = (a <= 1 ? (1 - .46 * a) : Math.max(.07, .54 - .15 * (a - 1))).toFixed(3);
+    d.style.zIndex = String(60 - Math.round(ac * 10));
+    d.classList.toggle('mid', a < .5);
+  });
+}
+const crans = [];
+NUANCES.forEach((n, i) => {
+  const t = document.createElement('i');
+  t.style.background = n.hex; t.title = n.nom; t.dataset.i = i;
+  crans.push(t); $('plgRail').appendChild(t);
+});
+function legende(idx) {
+  const m = matiereDe(idx), t = matPar(typ);
+  $('plgNom').textContent = m.nom;
+  /* en galerie on nomme la matière ; on ne la tarife pas */
+  $('plgD').textContent = enGalerie ? t.nom
+    : t.nom + ' · ' + (t.d ? '+ ' + euros(t.d) : 'sans supplément');
+  $('plgC').textContent = (idx + 1) + ' sur ' + NUANCES.length;
+  crans.forEach((c, i) => c.classList.toggle('on', i === idx));
+  $('plgP').disabled = idx <= 0; $('plgN').disabled = idx >= NUANCES.length - 1;
+}
+function allerA(n) { pi = Math.max(0, Math.min(NUANCES.length - 1, n)); placer(0); legende(pi); }
+
+function plonger(a) {
+  pl = a;
+  $('plgT').textContent = a.n;
+  const estCuir = a.type === 'cuir';
+  $('plgFam').hidden = !estCuir; $('plgSt').hidden = !estCuir;
+  $('plgP').hidden = !estCuir; $('plgN').hidden = !estCuir;
+  $('plgRail').hidden = !estCuir; $('plgGl').hidden = !estCuir;
+  $('plgOpts').hidden = estCuir;
+  $('plgOk').textContent = enGalerie ? 'Fermer le cabinet'
+    : (estCuir ? 'Retenir ce cuir' : 'Valider');
+  ['plgNom', 'plgD', 'plgC'].forEach(i => $(i).style.display = estCuir ? '' : 'none');
+  if (estCuir) {
+    if (S.cuir && !enGalerie) {
+      const [mi, ni] = S.cuir.split(':');
+      if (matPar(mi)) typ = mi;
+      const i = NUANCES.findIndex(c => c.id === ni); if (i >= 0) pi = i;
+    }
+    document.querySelectorAll('.fm').forEach(x => x.classList.toggle('on', x.dataset.f === typ));
+    batirCartes(); legende(pi);
+  } else {
+    const o = $('plgOpts'); o.innerHTML = '';
+    if (a.type === 'liste') {
+      a.l.forEach(x => {
+        const b = document.createElement('button');
+        b.className = 'op' + (S[a.k] === x.id ? ' on' : ''); b.dataset.id = x.id;
+        b.innerHTML = '<i class="op__m"></i><span class="op__x">' +
+          '<span class="op__n">' + x.n + '</span><span class="op__d">' + x.d2 + '</span></span>' +
+          '<span class="op__p">' + (x.d ? (x.d > 0 ? '+ ' : '− ') + euros(Math.abs(x.d)) : 'inclus') + '</span>';
+        peindre(b.querySelector('.op__m'), x, 56);
+        b.onclick = () => {
+          S[a.k] = x.id;
+          o.querySelectorAll('.op').forEach(y => y.classList.toggle('on', y.dataset.id === x.id));
+          rafraichir();
+        };
+        o.appendChild(b);
+      });
+    } else {
+      o.innerHTML = '<input class="plg__n" id="gv" maxlength="4" placeholder="H.M." ' +
+        'style="width:100%;text-align:center;letter-spacing:.34em;text-transform:uppercase;' +
+        'border-bottom:1px solid rgba(255,255,255,.3);padding:12px 0" value="' + S.grav + '">' +
+        '<p class="plg__d" style="text-align:center;margin-top:20px">Gravée à chaud sous le rabat.</p>';
+      o.querySelector('#gv').addEventListener('input', function () {
+        S.grav = this.value.toUpperCase().slice(0, 4); rafraichir();
+      });
+    }
+  }
+  $('plg').classList.add('on');
+}
+function fermerP() { $('plg').classList.remove('on'); enGalerie = false; }
+$('plgX').onclick = fermerP;
+$('plgP').onclick = () => allerA(pi - 1);
+$('plgN').onclick = () => allerA(pi + 1);
+$('plgOk').onclick = () => {
+  if (!enGalerie && pl && pl.type === 'cuir') S.cuir = typ + ':' + NUANCES[pi].id;
+  if (!enGalerie) rafraichir();
+  fermerP();
+};
+document.addEventListener('keydown', e => {
+  if (!$('plg').classList.contains('on')) return;
+  if (e.key === 'Escape') fermerP();
+  if (pl && pl.type === 'cuir') {
+    if (e.key === 'ArrowLeft') allerA(pi - 1);
+    if (e.key === 'ArrowRight') allerA(pi + 1);
+  }
+});
+/* le cabinet de la Salle II : la même plongée, en lecture seule */
+function cabinet() {
+  enGalerie = true;
+  plonger({ n: 'Le cabinet des matières', type: 'cuir' });
+}
+$('sbCuirs').onclick = () => { enGalerie = false; versScene('atl'); plonger(AJ.find(a => a.k === 'ext')); };
+
+/* glissé du cover flow : suivi continu, élan au relâché */
+(function () {
+  const st = $('plgSt');
+  let id = null, x0 = 0, t0 = 0, dx = 0, pas = 1;
+  st.addEventListener('pointerdown', e => {
+    if (!pl || pl.type !== 'cuir') return;
+    id = e.pointerId; x0 = e.clientX; dx = 0; t0 = e.timeStamp;
+    pas = Math.max(70, st.clientWidth * .17);
+    st.classList.add('tire'); $('plg').classList.add('tire');
+    try { st.setPointerCapture(id); } catch (_) {}
+  });
+  st.addEventListener('pointermove', e => {
+    if (id === null || e.pointerId !== id) return;
+    dx = e.clientX - x0;
+    let off = -dx / pas;
+    const c = pi + off, n = NUANCES.length - 1;
+    if (c < 0) off = -pi + c * .34; else if (c > n) off = (n - pi) + (c - n) * .34;
+    placer(off);
+    legende(Math.max(0, Math.min(n, Math.round(pi + off))));
+  });
+  function fin(e) {
+    if (id === null || e.pointerId !== id) return;
+    id = null; st.classList.remove('tire'); $('plg').classList.remove('tire');
+    const dt = Math.max(1, e.timeStamp - t0);
+    if (Math.abs(dx) < 7) {
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      const sw = el && el.closest ? el.closest('.sw') : null;
+      if (sw) allerA(+sw.dataset.i); else placer(0);
+      return;
+    }
+    allerA(pi + Math.round(-dx / pas - (dx / dt) * 2.4 / pas * 100));
+  }
+  st.addEventListener('pointerup', fin);
+  st.addEventListener('pointercancel', fin);
+})();
+
+/* l'ascenseur de nuances */
+(function () {
+  const rail = $('plgRail');
+  let id = null;
+  function vise(e) {
+    const r = rail.getBoundingClientRect();
+    const i = Math.max(0, Math.min(NUANCES.length - 1,
+      Math.floor((e.clientX - r.left) / r.width * NUANCES.length)));
+    if (i !== pi) { pi = i; placer(0); legende(pi); }
+  }
+  rail.addEventListener('pointerdown', e => {
+    id = e.pointerId; $('plgSt').classList.add('tire'); vise(e);
+    try { rail.setPointerCapture(id); } catch (_) {}
+  });
+  rail.addEventListener('pointermove', e => { if (id === e.pointerId) vise(e); });
+  const fin = e => { if (id === e.pointerId) { id = null; $('plgSt').classList.remove('tire'); placer(0); } };
+  rail.addEventListener('pointerup', fin);
+  rail.addEventListener('pointercancel', fin);
+})();
+
+/* ─── le certificat ─── */
+function certificat() {
+  $('certT').innerHTML = 'Votre <em>' + MODELE.nom + '</em>';
+  const g = $('certG'); g.innerHTML = '';
+  const L = [['Silhouette', MODELE.nom, MODELE.t + ' · ' + euros(MODELE.base)]];
+  AJ.forEach(a => {
+    const v = valeur(a);
+    if (v[1] === null) { L.push([a.n, 'Choix de la Maison', '—']); return; }
+    L.push([a.n, v[0], v[1] ? (v[1] > 0 ? '+ ' : '− ') + euros(Math.abs(v[1])) : 'inclus']);
+  });
+  L.push(['Façonnage', 'Un seul artisan', '12 à 16 semaines']);
+  L.push(['Reçue par', 'Laurène Mauro', CLIENTE.nom + ' · ' + CLIENTE.cercle]);
+  L.forEach((l, i) => {
+    const d = document.createElement('div'); d.className = 'cl';
+    d.innerHTML = '<span class="cl__k">' + l[0] + '</span><span class="cl__v">' + l[1] +
+      '<small>' + l[2] + '</small></span>';
+    g.appendChild(d);
+    setTimeout(() => d.classList.add('in'), RM ? 0 : 60 + i * 55);
+  });
+  $('certTot').textContent = euros(total());
+}
+$('voirCert').onclick = () => { certificat(); versScene('cert'); };
+$('confier').onclick = () => {
+  alert('Votre spécification part chez Laurène.\n\n' + MODELE.nom + ' — ' + euros(total()) +
+    '\n\nDémonstration : dans la Plateforme, elle devient un devis versionné que ' +
+    'Laurène vous adresse, et aucun message ne part sans son geste.');
+};
+
+/* ═══ crochets de recette ═══ */
+window.__etat = () => ({
+  lieu: lieuCourant,
+  scene: (document.querySelector('.scene.on') || {}).dataset?.s,
+  salles: SALLES.length,
+  oeuvres: document.querySelectorAll('.oe').length,
+  notice: $('not').classList.contains('on'),
+  plongee: $('plg').classList.contains('on'),
+  galerie: enGalerie,
+  cuir: S.cuir, total: total(), angle,
+});
+window.__lieu = versLieu;
+window.__scene = versScene;
+window.__tourner = a => poserAngle(a);
+window.__cabinet = cabinet;
+window.__ouvrir = (s, i) => ouvrirNotice(SALLES[s], SALLES[s].oe[i]);
+
+batirFiche(); batirReperes(); tourner(0, true); rafraichir();
+</script>
+</body></html>
