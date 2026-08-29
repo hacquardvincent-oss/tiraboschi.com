@@ -20,6 +20,14 @@ def b64(p, mime='image/webp'):
 
 TUILES = {m: b64('tools/demo/%s.webp' % m)
           for m in ['graine', 'caviar', 'lisse', 'daim', 'galuchat', 'alligator']}
+
+# Les visuels de galerie : sculptures de la maison et vues d'accrochage.
+# Les originaux (jusqu'à 14 Mo) vivent sur la branche `main` ; ici on
+# embarque des webp de 1400 px, assez pour le plein écran.
+VISUELS = {}
+if os.path.isdir('tools/demo/visuels'):
+    VISUELS = {f[:-5]: b64('tools/demo/visuels/' + f)
+               for f in sorted(os.listdir('tools/demo/visuels')) if f.endswith('.webp')}
 # position 0 en haute définition — même studio et même cadrage que la série 360°,
 # pour que la pièce au repos ne saute pas quand on la fait tourner
 RENDUS = {m: b64('tools/rot360/hd-%s.webp' % m)
@@ -61,7 +69,8 @@ for m in ['graine', 'caviar', 'lisse', 'daim', 'galuchat', 'alligator', 'masque'
     ROT[m] = [b64('tools/rot360/%s-%02d.webp' % (m, i)) for i in range(13)]
 
 s = open(GAB, encoding='utf-8').read()
-s = (s.replace('"__TUILES__"', json.dumps(TUILES))
+s = (s.replace('"__VISUELS__"', json.dumps(VISUELS))
+      .replace('"__TUILES__"', json.dumps(TUILES))
       .replace('"__RENDUS__"', json.dumps(RENDUS))
       .replace('"__ROT__"', json.dumps(ROT))
       .replace('"__NUANCES__"', json.dumps(NUANCES, ensure_ascii=False)))

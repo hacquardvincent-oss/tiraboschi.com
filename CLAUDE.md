@@ -493,20 +493,31 @@ python3 tools/demo/assembler.py tools/demo/gabarit-galerie.html tiraboschi-galer
 NODE_PATH=/opt/node22/lib/node_modules node tests/galerie/recette.js
 ```
 
-**Démo Galerie — les trois règles à ne pas casser**
+**Démo Galerie — les quatre règles à ne pas casser**
 
 1. **Aucun prix hors du boudoir.** Vérifié sur la galerie, l'atelier, le
-   rendez-vous, le plan, la notice d'œuvre, le fil de visite et le cabinet
+   rendez-vous, le plan, le plein écran, le fil de visite et le cabinet
    des matières.
 2. **Trois grammaires de déplacement, une par lieu** — la galerie se
-   parcourt à l'horizontale (cimaise, ligne d'accrochage, cartels),
-   l'atelier se descend (six gestes révélés au défilement), le boudoir ne
-   se parcourt pas : il est tout entier le module 3D.
-3. **On ne perd pas le visiteur** — fil d'Ariane cliquable, plan (le
-   « menu », redessiné en plan de galerie), rendez-vous toujours à portée,
-   et un fil de visite qui compte les œuvres regardées et conduit au
-   rendez-vous. L'Atelier et le Boudoir se rencontrent EN MARCHANT : deux
-   ouvertures sont posées dans le mur, pas seulement dans le menu.
+   parcourt à l'horizontale (accrochage en patchwork sur une trame de
+   douze lignes), l'atelier se descend (six gestes révélés au
+   défilement), le boudoir ne se parcourt pas : il est tout entier le
+   module 3D.
+3. **Une œuvre s'ouvre en PLEIN ÉCRAN**, depuis sa propre tuile (FLIP :
+   le cadre grandit de la tuile jusqu'à l'écran), cartel à côté d'elle.
+   Jamais une fenêtre, jamais une pop-in.
+4. **On ne perd pas le visiteur** — fil d'Ariane cliquable, plan (le
+   « menu », redessiné en plan de galerie, quatre lignes de même
+   hauteur), rendez-vous toujours à portée, et un fil de visite qui
+   compte les œuvres regardées et conduit au rendez-vous. L'Atelier et le
+   Boudoir se rencontrent EN MARCHANT : deux ouvertures sont posées dans
+   le mur, pas seulement dans le menu.
+
+**Les visuels de la galerie** — `tools/demo/visuels/*.webp`, tirés des
+originaux déposés sur la branche `main` (les trois `M2A*.jpg` sont les
+pièces de la maison ; les `pexels-*` sont des vues d'accrochage de
+référence). On régénère par le script en tête de `tools/demo/assembler.py`
+si les sources changent.
 
 **Snippets Shopify prêts (`shopify-snippets/` → à migrer en Phase 3)**
 ```
@@ -1404,6 +1415,21 @@ Règles structurelles (à l'origine de bugs réels — recette 31/07/2026) :
   pas borné à la plus petite dimension ET clippé par son conteneur.
 □ Un indicateur en surimpression (`position:absolute; bottom:0`) finit par
   recouvrir un contenu long : le mettre dans le flux, en dernière rangée.
+□ `aspect-ratio` ne donne PAS sa hauteur à une ligne de grille `auto`
+  (Chromium) : la ligne se mesure sur le contenu, le contenu sur la ligne,
+  et tout se superpose. Sur une grille qui se replie, revenir au procédé
+  sûr — largeur en %, hauteur en `padding-top:%` — qui se résout toujours
+  contre une largeur définie.
+□ Un élément dont la largeur vient de son contenu et dont le contenu fait
+  `width:100%` (une image dans un cadre en `aspect-ratio`) se mesure à
+  ZÉRO. Dimensionner le cadre en pixels depuis le JS quand il sert de
+  cible d'animation.
+□ Mesurer un chevauchement avec `getBoundingClientRect` pendant une
+  animation de révélation donne de faux positifs : utiliser `offset*`,
+  qui décrit la mise en page et ignore les transformations.
+□ `display:flex` sur un titre transforme chaque enfant en élément de
+  flex : la gouttière s'insère après l'apostrophe (« L' Atelier »).
+  Garder le flux inline pour un texte.
 ```
 
 ---
