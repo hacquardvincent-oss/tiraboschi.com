@@ -484,7 +484,7 @@ scheme-31f09ca3-1031-4740-a2fb-9e46aea899cb → blanc opaque (header/footer)
 |---|---|---|---|
 | Atelier (parcours briques → fiche → matière → certificat) | `tiraboschi-atelier-prototype.html` | — | `tests/atelier/recette.js` |
 | Maison (vitrine immersive → seuil → espace privé) | `tiraboschi-maison-demo.html` | `tools/demo/gabarit-maison.html` | `tests/maison/recette.js` |
-| Galerie · Atelier · Boudoir (galerie blanche sans vente + savoir-faire + salon 3D) | `tiraboschi-galerie-demo.html` | `tools/demo/gabarit-galerie.html` | `tests/galerie/recette.js` |
+| Galerie · Atelier · Maison · Boudoir | `tiraboschi-galerie-demo.html` | `tools/demo/gabarit-galerie.html` | `tests/galerie/recette.js` |
 | Configurateur POS (tablette boutique) | `tiraboschi-configurateur.html` | `tools/demo/gabarit-configurateur.html` | — |
 
 ```bash
@@ -493,31 +493,37 @@ python3 tools/demo/assembler.py tools/demo/gabarit-galerie.html tiraboschi-galer
 NODE_PATH=/opt/node22/lib/node_modules node tests/galerie/recette.js
 ```
 
-**Démo Galerie — les quatre règles à ne pas casser**
+**Démo Galerie — les cinq règles à ne pas casser**
 
-1. **Aucun prix hors du boudoir.** Vérifié sur la galerie, l'atelier, le
-   rendez-vous, le plan, le plein écran, le fil de visite et le cabinet
-   des matières.
-2. **Trois grammaires de déplacement, une par lieu** — la galerie se
-   parcourt à l'horizontale (accrochage en patchwork sur une trame de
-   douze lignes), l'atelier se descend (six gestes révélés au
-   défilement), le boudoir ne se parcourt pas : il est tout entier le
-   module 3D.
-3. **Une œuvre s'ouvre en PLEIN ÉCRAN**, depuis sa propre tuile (FLIP :
+1. **Aucun prix hors du boudoir.** Vérifié sur la galerie, l'atelier, la
+   maison, le rendez-vous, le plan, le plein écran et le cabinet.
+2. **Quatre lieux, quatre façons de se déplacer** — la galerie se
+   parcourt à l'horizontale (silhouettes accrochées librement, nuancier
+   en grille stricte), l'atelier se traverse (six plans pleine page,
+   sombres, avec retard d'image), la maison se lit (chronique, années en
+   marge), le boudoir ne se parcourt pas : il est le module de mesure.
+3. **Une pièce s'ouvre en PLEIN ÉCRAN**, depuis sa propre tuile (FLIP :
    le cadre grandit de la tuile jusqu'à l'écran), cartel à côté d'elle.
    Jamais une fenêtre, jamais une pop-in.
-4. **On ne perd pas le visiteur** — fil d'Ariane cliquable, plan (le
-   « menu », redessiné en plan de galerie, quatre lignes de même
-   hauteur), rendez-vous toujours à portée, et un fil de visite qui
-   compte les œuvres regardées et conduit au rendez-vous. L'Atelier et le
-   Boudoir se rencontrent EN MARCHANT : deux ouvertures sont posées dans
-   le mur, pas seulement dans le menu.
+4. **Le boudoir s'ouvre sur une FIGURE**, pas un code : neuf points, on
+   trace un T — la barre puis le fût, en deux traits. Et la pièce s'y
+   tourne AU DOIGT, prise n'importe où dans la scène ; le rail n'est
+   qu'un second moyen.
+5. **On ne perd pas le visiteur** — fil d'Ariane cliquable, plan (cinq
+   lignes de même hauteur), rendez-vous toujours à portée, fil de visite
+   qui compte les pièces regardées. Les trois ouvertures se rencontrent
+   EN MARCHANT, pas seulement dans le menu.
 
-**Les visuels de la galerie** — `tools/demo/visuels/*.webp`, tirés des
-originaux déposés sur la branche `main` (les trois `M2A*.jpg` sont les
-pièces de la maison ; les `pexels-*` sont des vues d'accrochage de
-référence). On régénère par le script en tête de `tools/demo/assembler.py`
-si les sources changent.
+**Les visuels** — `tools/demo/visuels/*.webp` (1 400 px, ~1,5 Mo au
+total), tirés des originaux déposés sur `main` : `Photoshoot - December
+25 - BOSCHI/` (l'éditorial JANE/VICTOIRE/DUO), `2026-05-05-photo-
+download-1of1/Highlights/` (les 67 packshots) et les trois `M2A*.jpg`
+(les volumes d'étude). Le script de conversion est en tête de
+`tools/demo/assembler.py`.
+
+**Le volume 3D du boudoir ne correspond PAS au produit réel** : c'est le
+modèle Cycles rendu avant l'arrivée des photographies. À re-rendre
+d'après la Rafaël. Le fichier le dit en clair dans la fiche.
 
 **Snippets Shopify prêts (`shopify-snippets/` → à migrer en Phase 3)**
 ```
@@ -1430,6 +1436,15 @@ Règles structurelles (à l'origine de bugs réels — recette 31/07/2026) :
 □ `display:flex` sur un titre transforme chaque enfant en élément de
   flex : la gouttière s'insère après l'apostrophe (« L' Atelier »).
   Garder le flux inline pour un texte.
+□ `visibility` ne s'interpole PAS : en passant à `hidden`, elle reste
+  `visible` pendant toute la transition. Un calque refermé continue donc
+  d'intercepter les clics — ajouter `pointer-events:none` sur l'état
+  fermé, sinon le lieu que l'on vient d'ouvrir est sourd une seconde.
+□ Un rail « à demeure » posé en `position:absolute` dans un conteneur
+  qui défile part avec la page : le poser en `fixed` (le lieu parent est
+  déjà `position:fixed`).
+□ Une `<img>` sans `src` compte comme cassée : lui donner un pixel
+  transparent en amorce.
 ```
 
 ---

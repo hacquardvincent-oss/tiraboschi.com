@@ -7,39 +7,29 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════════════════════════
-   TIRABOSCHI — LA GALERIE · L'ATELIER · LE BOUDOIR
+   TIRABOSCHI — quatre lieux, quatre façons de se déplacer.
 
-   Trois lieux, trois façons de se déplacer — c'est ce qui fait qu'on
-   sent qu'on change d'endroit.
-
-     LA GALERIE  se parcourt à l'HORIZONTALE. Blanc pur. L'accrochage
-                 est un patchwork : des formats très inégaux calés sur
-                 une trame de douze lignes, comme un accrochage de
-                 salon. On clique une œuvre : elle S'OUVRE EN PLEIN
-                 ÉCRAN depuis sa propre place — jamais une fenêtre.
-     L'ATELIER   se DESCEND. Six gestes, un cabinet de matières.
-     LE BOUDOIR  ne se parcourt pas : on s'y assied. Salon blanc tenu
-                 par des noirs — filets, bloc d'estimation, arcs.
-                 L'intimité vient du contraste, pas de l'obscurité. Il
-                 est tout entier tourné vers le module 3D.
-
-   Les repères marchands sont là, discrets : fil d'Ariane, plan (le
-   « menu », redessiné), rendez-vous toujours à portée, fil de visite
-   qui compte ce qu'on a regardé et conduit à la prise de rendez-vous.
+     LA GALERIE  se parcourt à l'HORIZONTALE, en blanc. Les silhouettes
+                 sont accrochées librement ; le nuancier, lui, est une
+                 grille stricte — vingt-six peaux de la même pochette.
+                 Une œuvre s'ouvre EN PLEIN ÉCRAN depuis sa propre place.
+     L'ATELIER   se TRAVERSE. Six plans pleine page, sombres, qui
+                 défilent : on entre chez l'artisan, on n'en lit pas la
+                 fiche.
+     LA MAISON   se LIT. Une chronique sur papier, les années en marge,
+                 de 1904 à Laurène.
+     LE BOUDOIR  ne se parcourt pas : on s'y assied. Il s'ouvre en
+                 traçant un T sur neuf points, et il est tout entier le
+                 module de sur-mesure — la pièce se tourne AU DOIGT.
 
    Le prix n'existe QUE dans le boudoir.
    ═══════════════════════════════════════════════════════════════════ */
 
 :root{
-  --blanc:#ffffff;
-  --papier:#faf9f7;
-  --encre:#101010;
-  --gris:#767472;        /* 4.6:1 sur blanc */
-  --trait:#e6e4e0;
-  --or:#a08553;
-  --e:cubic-bezier(.16,1,.3,1);
-  --barre:56px;
-  --col:clamp(62px,5.4vw,96px);   /* le module de la trame d'accrochage */
+  --blanc:#ffffff; --papier:#faf9f7; --encre:#101010; --gris:#767472;
+  --trait:#e6e4e0; --or:#a08553; --nuit:#0c0c0d;
+  --e:cubic-bezier(.16,1,.3,1); --barre:56px;
+  --col:clamp(58px,5.2vw,92px);
 }
 *{margin:0;padding:0;box-sizing:border-box;border-radius:0!important}
 html,body{height:100%;overflow:hidden}
@@ -52,13 +42,11 @@ img{display:block;max-width:100%}
 .cap{font-family:system-ui,-apple-system,sans-serif;text-transform:uppercase;
   letter-spacing:.22em;font-size:9px}
 [hidden]{display:none!important}
+.plan:not(.on),.plein:not(.on),.serrure:not(.on),.plg:not(.on),.visite:not(.on){
+  pointer-events:none}
 :focus-visible{outline:1px solid var(--or);outline-offset:3px}
-
 .vide{background:var(--papier)}
 .vide img{opacity:0}
-.vide::after{content:'Photographie';position:absolute;inset:0;display:flex;
-  align-items:center;justify-content:center;font-family:system-ui,sans-serif;font-size:9px;
-  letter-spacing:.2em;text-transform:uppercase;color:#b8b4ad;text-align:center;padding:12px}
 
 /* ═══════════ LES LIEUX ═══════════ */
 .lieu{position:fixed;inset:0;opacity:0;visibility:hidden;pointer-events:none;
@@ -67,42 +55,46 @@ img{display:block;max-width:100%}
 .lieu.on{opacity:1;visibility:visible;pointer-events:auto;transform:none}
 
 /* ═══════════ LE SEUIL ═══════════ */
-#seuil{background:var(--blanc);display:flex;align-items:center;justify-content:center;
-  flex-direction:column;text-align:center;padding:24px;z-index:90;overflow:hidden}
+#seuil{background:var(--nuit);color:#f2efe9;display:flex;align-items:center;
+  justify-content:center;flex-direction:column;text-align:center;padding:24px;z-index:90;
+  overflow:hidden}
 #seuil .fond{position:absolute;inset:0;overflow:hidden}
-#seuil .fond img{width:100%;height:100%;object-fit:cover;opacity:.16;
-  animation:respirer 22s ease-in-out infinite alternate}
-@keyframes respirer{from{transform:scale(1)}to{transform:scale(1.09) translate(1%,-1.4%)}}
+#seuil .fond img{width:100%;height:100%;object-fit:cover;opacity:.5;
+  animation:respirer 24s ease-in-out infinite alternate}
+@keyframes respirer{from{transform:scale(1.03)}to{transform:scale(1.12) translate(1%,-1.5%)}}
+#seuil::after{content:'';position:absolute;inset:0;
+  background:radial-gradient(70% 60% at 50% 45%,rgba(12,12,13,.45),rgba(12,12,13,.88))}
 #seuil>*:not(.fond){position:relative;z-index:2}
-#seuil svg{width:44px;height:44px;fill:none;stroke:var(--encre);stroke-width:1;margin-bottom:30px}
+#seuil svg{width:44px;height:44px;fill:none;stroke:currentColor;stroke-width:1;
+  margin-bottom:30px}
 #seuil polyline{stroke-dasharray:180;stroke-dashoffset:180;
   animation:tracer 1.4s var(--e) .2s forwards}
 @keyframes tracer{to{stroke-dashoffset:0}}
 .sl{opacity:0;animation:monter 1s var(--e) forwards}
 .sl--1{animation-delay:1s}.sl--2{animation-delay:1.2s}.sl--3{animation-delay:1.55s}
 @keyframes monter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-#seuil h1{font-size:clamp(30px,6vw,62px);letter-spacing:-.025em;line-height:1.05}
+#seuil h1{font-size:clamp(30px,6vw,64px);letter-spacing:-.025em;line-height:1.05}
 #seuil h1 em{font-style:italic}
-#seuil .k{margin-bottom:18px;color:var(--gris)}
-#seuil .d{margin-top:20px;color:var(--gris);font-family:system-ui,sans-serif;font-size:11px;
+#seuil .k{margin-bottom:18px;opacity:.6}
+#seuil .d{margin-top:20px;opacity:.55;font-family:system-ui,sans-serif;font-size:11px;
   letter-spacing:.2em;text-transform:uppercase}
-.entrer{margin-top:40px;border:1px solid var(--encre);padding:15px 42px;
+.entrer{margin-top:40px;border:1px solid rgba(242,239,233,.5);padding:15px 42px;
   font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.22em;font-size:10px;
   transition:background .45s var(--e),color .45s,letter-spacing .55s var(--e);min-height:46px}
-.entrer:hover{background:var(--encre);color:var(--blanc);letter-spacing:.3em}
+.entrer:hover{background:#f2efe9;color:var(--nuit);letter-spacing:.3em}
 
 /* ═══════════ LA BARRE ═══════════ */
 .barre{position:fixed;top:0;left:0;right:0;height:var(--barre);z-index:60;display:flex;
   align-items:center;gap:14px;padding:0 clamp(14px,2.6vw,32px);
   background:rgba(255,255,255,.9);backdrop-filter:blur(14px) saturate(1.2);
-  border-bottom:1px solid var(--trait);
-  opacity:0;visibility:hidden;transition:opacity .6s var(--e),visibility .6s}
+  border-bottom:1px solid var(--trait);opacity:0;visibility:hidden;
+  transition:opacity .6s var(--e),visibility .6s,background .7s,border-color .7s,color .7s}
 .barre.on{opacity:1;visibility:visible}
+.barre.sombre{background:rgba(12,12,13,.86);border-color:rgba(242,239,233,.14);color:#f2efe9}
 .plan-b{width:26px;height:26px;flex-shrink:0;display:flex;flex-direction:column;
   justify-content:center;gap:5px}
 .plan-b i{display:block;height:1px;background:currentColor;transition:width .5s var(--e)}
-.plan-b i:nth-child(1){width:26px}
-.plan-b i:nth-child(2){width:16px}
+.plan-b i:nth-child(1){width:26px}.plan-b i:nth-child(2){width:16px}
 .plan-b i:nth-child(3){width:21px}
 .plan-b:hover i:nth-child(2),.plan-b:hover i:nth-child(3){width:26px}
 .fil{display:flex;align-items:center;gap:9px;min-width:0;font-family:system-ui,sans-serif;
@@ -123,34 +115,29 @@ img{display:block;max-width:100%}
   transition:transform .5s var(--e)}
 .lien:hover{opacity:1}.lien:hover::after{transform:scaleX(1);transform-origin:left}
 .lien.fort{opacity:1}.lien.fort::after{transform:scaleX(1)}
-@media(max-width:760px){
+@media(max-width:820px){
   :root{--barre:50px}
   .fil button:not(:last-of-type),.fil span:first-of-type{display:none}
-  #versAtelier,#versBoudoir{display:none}
+  .barre__d .lien:not(.lien--rdv){display:none}
 }
 
-/* ═══════════ LE PLAN (le menu) ═══════════
-   Quatre lignes de MÊME hauteur, tenues par une trame de trois
-   colonnes : le numéro, le nom, ce qu'on y trouve. Tout est centré
-   verticalement, la mention d'accès n'allonge plus sa ligne. */
+/* ═══════════ LE PLAN ═══════════ */
 .plan{position:fixed;inset:0;z-index:85;background:var(--blanc);opacity:0;visibility:hidden;
   transition:opacity .6s var(--e),visibility .6s;display:flex;flex-direction:column;
-  padding:var(--barre) clamp(20px,6vw,90px) clamp(20px,5vh,56px)}
+  padding:var(--barre) clamp(20px,6vw,90px) clamp(18px,4vh,50px)}
 .plan.on{opacity:1;visibility:visible}
-/* la barre interne HÉRITE de la visibilité du plan : si elle déclarait
-   `visible`, elle resterait cliquable plan fermé. */
 .plan .barre{opacity:1;visibility:inherit}
-.plan__k{color:var(--gris);margin:clamp(18px,4vh,44px) 0 clamp(10px,2vh,20px);flex-shrink:0}
+.plan__k{color:var(--gris);margin:clamp(14px,3.4vh,38px) 0 clamp(8px,1.6vh,16px);flex-shrink:0}
 .plan__l{flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;
   border-top:1px solid var(--trait)}
 .plan__l::-webkit-scrollbar{display:none}
-.pl{display:grid;grid-template-columns:30px minmax(0,1fr) minmax(0,clamp(190px,24vw,320px));
+.pl{display:grid;grid-template-columns:30px minmax(0,1fr) minmax(0,clamp(180px,22vw,300px));
   align-items:center;gap:clamp(12px,3vw,44px);width:100%;text-align:left;
-  min-height:clamp(74px,12.6vh,124px);padding:8px 0;
-  border-bottom:1px solid var(--trait);transition:padding-left .55s var(--e)}
+  min-height:clamp(64px,10.4vh,104px);padding:8px 0;border-bottom:1px solid var(--trait);
+  transition:padding-left .55s var(--e)}
 .pl:hover{padding-left:clamp(8px,1.4vw,20px)}
 .pl__i{font-family:system-ui,sans-serif;font-size:9px;letter-spacing:.2em;color:var(--gris)}
-.pl__n{font-size:clamp(24px,4.2vw,54px);letter-spacing:-.02em;line-height:1}
+.pl__n{font-size:clamp(22px,3.6vw,46px);letter-spacing:-.02em;line-height:1}
 .pl__n em{font-style:italic}
 .pl__t{display:inline-block;vertical-align:middle;margin:0 0 .35em 16px;
   font-family:system-ui,sans-serif;font-size:8px;letter-spacing:.2em;text-transform:uppercase;
@@ -158,15 +145,15 @@ img{display:block;max-width:100%}
 .pl__d{font-family:system-ui,sans-serif;font-size:11px;color:var(--gris);text-align:right;
   line-height:1.75}
 @media(max-width:860px){
-  .pl{grid-template-columns:26px minmax(0,1fr);row-gap:6px;padding:14px 0}
+  .pl{grid-template-columns:26px minmax(0,1fr);row-gap:6px;padding:12px 0}
   .pl__d{grid-column:2;text-align:left}
 }
 .pl[data-clos] .pl__n{opacity:.52}
-.plan__f{flex-shrink:0;padding-top:clamp(14px,3vh,26px);display:flex;
+.plan__f{flex-shrink:0;padding-top:clamp(12px,2.4vh,22px);display:flex;
   justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
 .plan__f p{font-family:system-ui,sans-serif;font-size:10px;color:var(--gris);letter-spacing:.12em}
 
-/* ═══════════ LA GALERIE — l'accrochage en patchwork ═══════════ */
+/* ═══════════ LA GALERIE ═══════════ */
 #galerie{background:var(--blanc);padding-top:var(--barre)}
 .salle{position:absolute;inset:var(--barre) 0 0;display:flex;flex-direction:column}
 .cimaise{position:relative;flex:1;min-height:0;display:flex}
@@ -179,7 +166,6 @@ img{display:block;max-width:100%}
 .mur.tire{cursor:grabbing}
 .mur>*{scroll-snap-align:center}
 
-/* une tuile : l'image remplit son cadre, le cartel pend dessous */
 .tuile{display:flex;flex-direction:column;text-align:left;min-width:0;min-height:0;
   opacity:0;transform:translateY(16px);
   transition:opacity .8s var(--e),transform .9s var(--e)}
@@ -187,27 +173,27 @@ img{display:block;max-width:100%}
 .tuile__m{position:relative;flex:1;min-height:0;overflow:hidden;background:var(--papier)}
 .tuile__m img{width:100%;height:100%;object-fit:cover;transition:transform 1.5s var(--e)}
 .tuile:hover .tuile__m img{transform:scale(1.045)}
-.tuile__m.rendu{background:var(--blanc)}
-.tuile__m.rendu img{object-fit:contain}
-.tuile__t{position:absolute;inset:0;mix-blend-mode:multiply;pointer-events:none;
-  -webkit-mask-size:contain;mask-size:contain;
-  -webkit-mask-position:center;mask-position:center;
-  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+/* le nuancier : la pièce entière, jamais recadrée — c'est une carte de couleurs */
+.tuile--nu .tuile__m{background:var(--blanc)}
+.tuile--nu .tuile__m img{object-fit:contain}
 .tuile__i{position:absolute;left:9px;top:8px;z-index:2;font-family:system-ui,sans-serif;
-  font-size:9px;letter-spacing:.18em;color:var(--blanc);mix-blend-mode:difference;
-  opacity:.85;pointer-events:none}
+  font-size:9px;letter-spacing:.18em;color:var(--gris);pointer-events:none}
 .tuile__c{flex-shrink:0;padding-top:8px;overflow:hidden}
 .tuile__n{font-size:clamp(12px,1.15vw,16px);font-style:italic;line-height:1.2;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tuile__k{margin-top:4px;color:var(--gris);font-family:system-ui,sans-serif;font-size:9px;
   letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;overflow:hidden;
   text-overflow:ellipsis}
-/* le trait qui se tire au survol : c'est lui qui dit « ça s'ouvre » */
 .tuile__r{display:block;height:1px;background:var(--encre);width:0;margin-top:7px;
   transition:width .6s var(--e)}
 .tuile:hover .tuile__r,.tuile:focus-visible .tuile__r{width:100%}
+/* dans le nuancier, le cartel se réduit à la nuance */
+.tuile--nu .tuile__c{padding-top:6px}
+.tuile--nu .tuile__n{font-size:clamp(11px,.95vw,13px);font-style:normal}
+.tuile--nu .tuile__k{font-size:8px}
 
-.pan{display:flex;flex-direction:column;justify-content:center;min-width:0}
+.pan{display:flex;flex-direction:column;justify-content:center;min-width:0;
+  background:var(--blanc)}
 .pan__k{color:var(--gris);margin-bottom:14px}
 .pan__t{font-size:clamp(26px,3.6vw,52px);letter-spacing:-.03em;line-height:1.04}
 .pan__t em{font-style:italic}
@@ -218,19 +204,21 @@ img{display:block;max-width:100%}
   transition:background .45s var(--e),color .45s,letter-spacing .5s var(--e);min-height:44px}
 .pan__go:hover{background:var(--encre);color:var(--blanc);letter-spacing:.26em}
 
-.sect{display:flex;flex-direction:column;justify-content:center;min-width:0}
+.sect{display:flex;flex-direction:column;justify-content:center;min-width:0;
+  background:var(--blanc)}
 .sect__n{font-size:clamp(17px,2vw,27px);font-style:italic;line-height:1.12}
 .sect__k{margin-top:9px;color:var(--gris)}
 .sect__r{margin-top:12px;width:34px;height:1px;background:var(--encre);opacity:.45}
+.sect__d{margin-top:12px;font-family:system-ui,sans-serif;font-size:10px;line-height:1.7;
+  color:var(--gris)}
 
-/* une OUVERTURE : on quitte la galerie par une porte posée dans le mur */
 .ouv{display:flex;flex-direction:column;text-align:left;min-width:0;min-height:0;
   opacity:0;transform:translateY(16px);
   transition:opacity .8s var(--e),transform .9s var(--e)}
 .ouv.vu{opacity:1;transform:none}
 .ouv__c{position:relative;flex:1;min-height:0;overflow:hidden;background:var(--papier)}
 .ouv__c img{width:100%;height:100%;object-fit:cover;
-  transition:transform 1.6s var(--e),filter .9s;filter:grayscale(.3)}
+  transition:transform 1.6s var(--e),filter .9s;filter:grayscale(.25)}
 .ouv:hover .ouv__c img{transform:scale(1.06);filter:none}
 .ouv__s{position:absolute;inset:clamp(12px,1.6vw,22px);border:1px solid rgba(255,255,255,.8);
   pointer-events:none;transition:inset .85s var(--e),border-color .6s}
@@ -246,8 +234,8 @@ img{display:block;max-width:100%}
   transition:gap .5s var(--e)}
 .ouv:hover .ouv__go{gap:17px}
 .ouv__go i{display:block;width:22px;height:1px;background:currentColor}
-.ouv--prive .ouv__c img{filter:grayscale(1) contrast(1.06) brightness(.94)}
-.ouv--prive:hover .ouv__c img{filter:grayscale(.5) brightness(.98)}
+.ouv--prive .ouv__c img{filter:grayscale(1) contrast(1.08) brightness(.9)}
+.ouv--prive:hover .ouv__c img{filter:grayscale(.55) brightness(.96)}
 
 .marche{flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:14px;
   padding:clamp(6px,1.2vh,11px) 20px clamp(9px,1.8vh,16px);pointer-events:none;
@@ -259,33 +247,27 @@ img{display:block;max-width:100%}
 .marche__g{transition:opacity .6s}
 .cimaise:has(.mur.vu)+.marche .marche__g{opacity:0}
 
-/* ── le patchwork se replie en deux colonnes sur petit écran ──
-   On quitte la grille : Chromium ne fait pas contribuer une hauteur
-   issue d'`aspect-ratio` à la taille d'une ligne `auto`, et toutes les
-   tuiles retombaient l'une sur l'autre. On revient donc au procédé
-   sûr — une largeur en pourcentage, une hauteur en padding — qui, lui,
-   se résout toujours contre une largeur définie. */
+/* ── le mur se replie en colonnes sur petit écran ──
+   On quitte la grille : une hauteur issue d'`aspect-ratio` ne nourrit
+   pas une ligne `auto`, et les tuiles se superposaient. Largeur en %,
+   hauteur en `padding-top:%` — qui se résout contre une largeur définie. */
 @media(max-width:860px){
   .mur{display:flex;flex-wrap:wrap;align-content:flex-start;gap:10px;
-    grid-template-rows:none;grid-auto-columns:auto;
-    overflow-x:hidden;overflow-y:auto;cursor:default;
-    padding:16px 16px 34px;scroll-snap-type:none}
+    grid-template-rows:none;grid-auto-columns:auto;overflow-x:hidden;overflow-y:auto;
+    cursor:default;padding:16px 16px 34px;scroll-snap-type:none}
   .mur>*{width:calc(50% - 5px)!important;grid-column:auto!important;grid-row:auto!important;
     scroll-snap-align:none;aspect-ratio:auto}
   .mur>[style*="--m: 2"]{width:100%!important}
   .mur>.pan,.mur>.sect{width:100%!important;padding:18px 0}
-  .tuile__m,.ouv__c{flex:none;height:0;padding-top:133.3%;position:relative;overflow:hidden}
+  .tuile__m,.ouv__c{flex:none;height:0;padding-top:118%;position:relative;overflow:hidden}
   .mur>[style*="--m: 2"] .tuile__m,.mur>[style*="--m: 2"] .ouv__c{padding-top:72%}
   .tuile__m>img,.ouv__c>img{position:absolute;inset:0;width:100%;height:100%}
   .marche{display:none}
 }
 
-/* ═══════════ LE PLEIN ÉCRAN ═══════════
-   L'œuvre s'ouvre depuis sa propre tuile : le cadre grandit jusqu'à
-   l'écran entier (FLIP), puis le cartel monte, décalé. */
-.plein{position:fixed;inset:0;z-index:88;opacity:0;visibility:hidden;
-  background:var(--blanc);transition:opacity .5s var(--e),visibility .5s;
-  display:flex;flex-direction:column}
+/* ═══════════ LE PLEIN ÉCRAN ═══════════ */
+.plein{position:fixed;inset:0;z-index:88;opacity:0;visibility:hidden;background:var(--blanc);
+  transition:opacity .5s var(--e),visibility .5s;display:flex;flex-direction:column}
 .plein.on{opacity:1;visibility:visible}
 .plein__t{flex-shrink:0;height:var(--barre);display:flex;align-items:center;
   justify-content:space-between;gap:14px;padding:0 clamp(14px,2.6vw,32px);
@@ -297,25 +279,20 @@ img{display:block;max-width:100%}
 .plein__x:hover{opacity:1}
 .plein__b{flex:1;min-height:0;display:grid;
   grid-template-columns:minmax(0,1.6fr) minmax(320px,.85fr)}
-.plein__s{position:relative;min-height:0;display:flex;align-items:center;
-  justify-content:center;padding:clamp(16px,3.4vh,44px) clamp(46px,5vw,80px)}
+.plein__s{position:relative;min-height:0;display:flex;align-items:center;justify-content:center;
+  padding:clamp(16px,3.4vh,44px) clamp(46px,5vw,80px)}
 .plein__ph{position:relative;overflow:hidden;background:var(--papier);
   will-change:transform;transform-origin:50% 50%}
 .plein__ph img{width:100%;height:100%;object-fit:cover;display:block}
 .plein__ph.contenir{background:var(--blanc)}
 .plein__ph.contenir img{object-fit:contain}
-.plein__tt{position:absolute;inset:0;mix-blend-mode:multiply;pointer-events:none;
-  -webkit-mask-size:contain;mask-size:contain;
-  -webkit-mask-position:center;mask-position:center;
-  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
 .plein__a{position:absolute;top:50%;transform:translateY(-50%);z-index:4;width:46px;height:46px;
   display:flex;align-items:center;justify-content:center;opacity:.35;transition:opacity .3s}
 .plein__a:hover{opacity:1}.plein__a:disabled{opacity:.08}
 .plein__a svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1}
 .plein__a--p{left:clamp(6px,1.4vw,26px)}.plein__a--n{right:clamp(6px,1.4vw,26px)}
-.plein__c{border-left:1px solid var(--trait);min-height:0;overflow-y:auto;
-  scrollbar-width:none;display:flex;flex-direction:column;justify-content:center;
-  gap:clamp(12px,2vh,20px);
+.plein__c{border-left:1px solid var(--trait);min-height:0;overflow-y:auto;scrollbar-width:none;
+  display:flex;flex-direction:column;justify-content:center;gap:clamp(12px,2vh,20px);
   padding:clamp(20px,3.4vh,40px) clamp(20px,2.6vw,42px)}
 .plein__c::-webkit-scrollbar{display:none}
 @media(max-width:1000px){
@@ -325,7 +302,6 @@ img{display:block;max-width:100%}
     max-height:42svh;padding:16px clamp(16px,4vw,30px) 20px;gap:10px}
   .plein__l{display:none}
 }
-/* chaque bloc du cartel monte avec un léger décalage */
 .mt{opacity:0;transform:translateY(12px);
   transition:opacity .7s var(--e),transform .8s var(--e)}
 .plein.dit .mt{opacity:1;transform:none}
@@ -336,10 +312,6 @@ img{display:block;max-width:100%}
 .plein__n em{font-style:italic}
 .plein__d{font-family:system-ui,sans-serif;font-size:12px;line-height:1.95;color:#3d3b39;
   max-width:56ch}
-.plein__q{margin-top:12px;padding-left:16px;border-left:1px solid var(--or);
-  font-size:15px;font-style:italic;line-height:1.5}
-.plein__q small{display:block;margin-top:7px;font-family:system-ui,sans-serif;font-style:normal;
-  font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--gris)}
 .plein__l{font-family:system-ui,sans-serif;font-size:11px;line-height:1.5;margin-top:10px}
 .plein__l>div{display:flex;justify-content:space-between;gap:14px;padding:6px 0;
   border-bottom:1px solid var(--trait)}
@@ -348,7 +320,7 @@ img{display:block;max-width:100%}
 .plein__go{width:100%;border:1px solid var(--encre);padding:14px 20px;
   font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.18em;font-size:10px;
   min-height:48px;transition:background .45s var(--e),color .45s,letter-spacing .5s var(--e)}
-.plein__go:hover{background:var(--encre);color:var(--blanc);letter-spacing:.26em}
+.plein__go:hover{background:var(--encre);color:var(--blanc);letter-spacing:.24em}
 .plein__p{font-family:system-ui,sans-serif;font-size:10px;line-height:1.75;color:var(--gris)}
 
 /* ═══════════ LE FIL DE VISITE ═══════════ */
@@ -372,49 +344,96 @@ img{display:block;max-width:100%}
   .visite__c{display:none}
 }
 
-/* ═══════════ L'ATELIER — on descend ═══════════ */
-#atelier{background:var(--papier);overflow-y:auto;overflow-x:hidden;padding-top:var(--barre)}
-.at__h{padding:clamp(40px,10vh,110px) clamp(20px,7vw,110px) clamp(24px,5vh,60px);
-  max-width:1500px;margin:0 auto}
-.at__k{color:var(--gris);margin-bottom:16px}
-.at__t{font-size:clamp(32px,6.4vw,86px);letter-spacing:-.035em;line-height:1}
-.at__t em{font-style:italic}
-.at__s{margin-top:22px;font-family:system-ui,sans-serif;font-size:13px;line-height:2;
-  color:var(--gris);max-width:52ch}
-.geste{max-width:1500px;margin:0 auto;padding:clamp(26px,7vh,80px) clamp(20px,7vw,110px);
-  display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(20px,4vw,70px);
-  align-items:center;border-top:1px solid var(--trait)}
-.geste:nth-child(even) .geste__m{order:2}
-@media(max-width:860px){.geste{grid-template-columns:1fr}.geste:nth-child(even) .geste__m{order:0}}
-.geste__m{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--trait)}
-.geste__m img{width:100%;height:100%;object-fit:cover;transform:scale(1.03);
-  transition:transform 1.6s var(--e)}
-.geste:hover .geste__m img{transform:scale(1.09)}
-.geste__i{font-family:system-ui,sans-serif;font-size:9px;letter-spacing:.24em;color:var(--gris);
-  margin-bottom:14px}
-.geste__t{font-size:clamp(22px,3.2vw,42px);letter-spacing:-.02em;line-height:1.15;
+/* ═══════════ L'ATELIER — on le traverse ═══════════
+   Six plans pleine page, sombres. L'image bouge un peu moins vite que
+   la page : c'est ce léger retard qui donne la sensation d'entrer. */
+#atelier{background:var(--nuit);color:#f2efe9;overflow-y:auto;overflow-x:hidden;
+  scroll-snap-type:y proximity;scrollbar-width:none}
+#atelier::-webkit-scrollbar{display:none}
+.plan6{position:relative;height:100svh;overflow:hidden;scroll-snap-align:start;
+  display:flex;align-items:flex-end}
+.plan6__m{position:absolute;inset:-12% 0;will-change:transform}
+.plan6__m img{width:100%;height:100%;object-fit:cover}
+.plan6::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(160deg,rgba(12,12,13,.62) 0%,rgba(12,12,13,.15) 42%,
+    rgba(12,12,13,.9) 100%)}
+.plan6__x{position:relative;z-index:2;width:min(640px,86vw);
+  padding:0 clamp(20px,6vw,96px) clamp(48px,12vh,140px);
+  opacity:0;transform:translateY(26px);
+  transition:opacity 1s var(--e),transform 1.1s var(--e)}
+.plan6.ici .plan6__x{opacity:1;transform:none}
+.plan6__i{font-family:system-ui,sans-serif;font-size:9px;letter-spacing:.3em;
+  text-transform:uppercase;opacity:.55;margin-bottom:18px}
+.plan6__t{font-size:clamp(28px,4.6vw,62px);letter-spacing:-.03em;line-height:1.06;
   font-style:italic}
-.geste__d{margin-top:16px;font-family:system-ui,sans-serif;font-size:12.5px;line-height:2;
+.plan6__d{margin-top:20px;font-family:system-ui,sans-serif;font-size:13px;line-height:2;
+  opacity:.68;max-width:48ch}
+.plan6__f{margin-top:22px;display:flex;gap:clamp(18px,3vw,44px);flex-wrap:wrap}
+.plan6__f div{font-family:system-ui,sans-serif;font-size:11.5px;line-height:1.6}
+.plan6__f span{display:block;font-size:9px;letter-spacing:.2em;text-transform:uppercase;
+  opacity:.45;margin-bottom:4px}
+/* le rail des six gestes, à demeure */
+/* le rail reste à demeure : posé en `absolute`, il défilait avec la
+   page et quittait l'écran dès le premier plan traversé */
+.at__rail{position:fixed;left:clamp(14px,2.6vw,34px);top:50%;transform:translateY(-50%);
+  z-index:30;display:flex;flex-direction:column;gap:14px;pointer-events:auto}
+.at__rail button{display:flex;align-items:center;gap:10px;font-family:system-ui,sans-serif;
+  font-size:9px;letter-spacing:.2em;color:#f2efe9;opacity:.3;transition:opacity .4s}
+.at__rail button i{display:block;width:16px;height:1px;background:currentColor;
+  transition:width .5s var(--e)}
+.at__rail button:hover{opacity:.75}
+.at__rail button.ici{opacity:1}
+.at__rail button.ici i{width:34px}
+@media(max-width:820px){.at__rail{display:none}.plan6__x{padding-bottom:clamp(40px,9vh,90px)}}
+.at__fin{position:relative;min-height:70svh;display:flex;align-items:center;
+  justify-content:center;padding:clamp(40px,9vh,110px) clamp(20px,6vw,96px);
+  border-top:1px solid rgba(242,239,233,.14)}
+.at__fin div{width:min(720px,100%);text-align:center}
+.at__fin h3{font-size:clamp(24px,3.6vw,46px);letter-spacing:-.025em}
+.at__fin h3 em{font-style:italic}
+.at__fin p{margin-top:16px;font-family:system-ui,sans-serif;font-size:12.5px;line-height:2;
+  opacity:.6;max-width:52ch;margin-left:auto;margin-right:auto}
+.at__fin .rangee{margin-top:26px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.bouton-clair{border:1px solid rgba(242,239,233,.45);padding:14px 28px;
+  font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.2em;font-size:9px;
+  min-height:46px;transition:background .45s var(--e),color .45s,letter-spacing .5s var(--e)}
+.bouton-clair:hover{background:#f2efe9;color:var(--nuit);letter-spacing:.26em}
+
+/* ═══════════ LA MAISON — on la lit ═══════════ */
+#maison{background:var(--papier);overflow-y:auto;overflow-x:hidden;padding-top:var(--barre);
+  scrollbar-width:none}
+#maison::-webkit-scrollbar{display:none}
+.ma__h{max-width:1400px;margin:0 auto;
+  padding:clamp(40px,10vh,120px) clamp(20px,7vw,110px) clamp(20px,4vh,44px)}
+.ma__k{color:var(--gris);margin-bottom:16px}
+.ma__t{font-size:clamp(32px,6vw,80px);letter-spacing:-.035em;line-height:1}
+.ma__t em{font-style:italic}
+.ma__s{margin-top:22px;font-family:system-ui,sans-serif;font-size:13px;line-height:2;
+  color:var(--gris);max-width:54ch}
+.chap{max-width:1400px;margin:0 auto;padding:clamp(26px,6vh,70px) clamp(20px,7vw,110px);
+  display:grid;grid-template-columns:clamp(110px,13vw,190px) minmax(0,1fr) minmax(0,.85fr);
+  gap:clamp(18px,3.4vw,56px);align-items:start;border-top:1px solid var(--trait)}
+@media(max-width:900px){
+  .chap{grid-template-columns:1fr;gap:16px}
+  .chap__m{order:-1}
+}
+.chap__an{font-size:clamp(26px,3.4vw,46px);letter-spacing:-.03em;line-height:1;
+  position:sticky;top:calc(var(--barre) + 24px)}
+.chap__t{font-size:clamp(20px,2.6vw,34px);font-style:italic;line-height:1.2}
+.chap__d{margin-top:14px;font-family:system-ui,sans-serif;font-size:12.5px;line-height:2;
   color:var(--gris);max-width:46ch}
-.geste__f{margin-top:18px;display:flex;gap:clamp(16px,3vw,40px);flex-wrap:wrap}
-.geste__f div{font-family:system-ui,sans-serif;font-size:11px;line-height:1.6}
-.geste__f span{display:block;font-size:9px;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--gris);margin-bottom:4px}
-[data-rev]{opacity:0;transform:translateY(22px);
-  transition:opacity .9s var(--e),transform 1s var(--e)}
-[data-rev].vu{opacity:1;transform:none}
-.at__f{max-width:1500px;margin:0 auto;
-  padding:clamp(34px,8vh,90px) clamp(20px,7vw,110px) clamp(40px,10vh,120px);
-  border-top:1px solid var(--trait);display:grid;grid-template-columns:1fr 1fr;
-  gap:clamp(20px,4vw,70px);align-items:center}
-@media(max-width:860px){.at__f{grid-template-columns:1fr;gap:26px}}
-.at__f h3{font-size:clamp(24px,3.4vw,44px);letter-spacing:-.02em}
-.at__f h3 em{font-style:italic}
-.at__f p{margin-top:14px;font-family:system-ui,sans-serif;font-size:12.5px;line-height:2;
-  color:var(--gris);max-width:44ch}
-.at__f .rangee{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
-.at__v{position:relative;aspect-ratio:3/2;overflow:hidden;background:var(--trait)}
-.at__v img{width:100%;height:100%;object-fit:cover}
+.chap__q{margin-top:16px;padding-left:18px;border-left:1px solid var(--or);font-size:16px;
+  font-style:italic;line-height:1.55}
+.chap__q small{display:block;margin-top:8px;font-family:system-ui,sans-serif;font-style:normal;
+  font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--gris)}
+.chap__m{position:relative;aspect-ratio:3/4;overflow:hidden;background:var(--trait)}
+.chap__m img{width:100%;height:100%;object-fit:cover}
+.ma__f{max-width:1400px;margin:0 auto;
+  padding:clamp(30px,7vh,80px) clamp(20px,7vw,110px) clamp(40px,10vh,120px);
+  border-top:1px solid var(--trait)}
+.ma__f p{font-family:system-ui,sans-serif;font-size:11px;line-height:2;color:var(--gris);
+  max-width:58ch}
+.ma__f .rangee{margin-top:24px;display:flex;gap:12px;flex-wrap:wrap}
 
 /* ═══════════ LE RENDEZ-VOUS ═══════════ */
 #rdv{background:var(--blanc);padding-top:var(--barre);overflow-y:auto}
@@ -450,53 +469,59 @@ img{display:block;max-width:100%}
 .rdv__n{margin-top:22px;font-family:system-ui,sans-serif;font-size:10px;line-height:1.9;
   color:#9d9a95;max-width:48ch}
 
-/* ═══════════ LA PORTE DU BOUDOIR ═══════════ */
-.porte{position:fixed;inset:0;z-index:95;display:flex;align-items:center;justify-content:center;
-  background:var(--blanc);opacity:0;visibility:hidden;
+/* ═══════════ LA SERRURE — neuf points, un T ═══════════ */
+.serrure{position:fixed;inset:0;z-index:95;display:flex;align-items:center;justify-content:center;
+  background:var(--nuit);color:#f2efe9;opacity:0;visibility:hidden;
   transition:opacity .8s var(--e),visibility .8s;padding:24px}
-.porte.on{opacity:1;visibility:visible}
-.porte__in{width:min(420px,100%);text-align:center;position:relative;
-  border:1px solid var(--encre);padding:clamp(28px,5vh,52px) clamp(20px,4vw,44px)}
-.porte__k{color:var(--gris);margin-bottom:16px}
-.porte__t{font-size:clamp(26px,4vw,42px);letter-spacing:-.025em}
-.porte__t em{font-style:italic}
-.porte__d{margin-top:15px;font-family:system-ui,sans-serif;font-size:11.5px;line-height:1.95;
-  color:var(--gris)}
-#code{width:100%;margin-top:30px;text-align:center;font-size:28px;letter-spacing:.5em;
-  text-indent:.5em;padding:14px 0;border-bottom:1px solid var(--trait)}
-#code:focus{border-color:var(--encre)}
-.porte__e{margin-top:12px;font-family:system-ui,sans-serif;font-size:10px;letter-spacing:.16em;
-  text-transform:uppercase;color:#a4332a;opacity:0;transition:opacity .3s}
-.porte__e.on{opacity:1}
-.porte__i{margin-top:24px;font-family:system-ui,sans-serif;font-size:10px;color:#a8a5a0;
-  letter-spacing:.14em}
-.porte__x{margin-top:20px;font-family:system-ui,sans-serif;text-transform:uppercase;
-  letter-spacing:.2em;font-size:9px;color:var(--gris);transition:color .3s}
-.porte__x:hover{color:var(--encre)}
+.serrure.on{opacity:1;visibility:visible}
+.serrure::before{content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(48% 42% at 50% 46%,rgba(160,133,83,.18),transparent 72%)}
+.se__in{position:relative;width:min(400px,100%);text-align:center}
+.se__k{color:var(--or);margin-bottom:14px;opacity:.9}
+.se__t{font-size:clamp(26px,4vw,42px);letter-spacing:-.025em}
+.se__t em{font-style:italic}
+.se__d{margin-top:14px;font-family:system-ui,sans-serif;font-size:11.5px;line-height:1.95;
+  opacity:.5}
+.se__g{width:min(268px,72vw);aspect-ratio:1;margin:clamp(24px,5vh,44px) auto 0;
+  touch-action:none;cursor:pointer;position:relative}
+.se__g svg{width:100%;height:100%;overflow:visible}
+.se__g circle{fill:none;stroke:rgba(242,239,233,.3);stroke-width:1.2;transition:.35s}
+.se__g circle.pris{fill:var(--or);stroke:var(--or)}
+.se__g path{fill:none;stroke:var(--or);stroke-width:1.6;stroke-linecap:square;
+  stroke-linejoin:miter}
+.se__g .indice{stroke:rgba(242,239,233,.22);stroke-width:1.2;stroke-dasharray:3 5;
+  opacity:0;transition:opacity .5s}
+.se__g.montre .indice{opacity:1}
+.serrure.faux .se__g{animation:refus .5s}
+@keyframes refus{20%{transform:translateX(-7px)}45%{transform:translateX(6px)}
+  70%{transform:translateX(-3px)}100%{transform:none}}
+.se__e{margin-top:16px;font-family:system-ui,sans-serif;font-size:10px;letter-spacing:.16em;
+  text-transform:uppercase;color:#d09a8e;opacity:0;transition:opacity .3s;min-height:1.2em}
+.se__e.on{opacity:1}
+.se__o{margin-top:6px;display:flex;gap:22px;justify-content:center}
+.se__o button{font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.2em;
+  font-size:9px;opacity:.4;transition:opacity .3s}
+.se__o button:hover{opacity:1}
 
-/* ═══════════ LE BOUDOIR — blanc, tenu par des noirs ═══════════ */
+/* ═══════════ LE BOUDOIR ═══════════ */
 #boudoir{background:var(--blanc);color:var(--encre);padding-top:var(--barre);overflow:hidden}
 .bd__lum{position:absolute;inset:0;pointer-events:none;z-index:0;
-  background:
-    radial-gradient(58% 48% at 24% 12%,rgba(16,16,16,.05),transparent 70%),
+  background:radial-gradient(58% 48% at 24% 12%,rgba(16,16,16,.05),transparent 70%),
     radial-gradient(52% 44% at 82% 88%,rgba(160,133,83,.08),transparent 68%)}
 .bd__arc{position:absolute;left:50%;top:50%;transform:translate(-50%,-46%);
   width:min(96vh,96vw,1100px);height:min(96vh,96vw,1100px);pointer-events:none;z-index:0;
-  opacity:.5;transition:opacity 1s var(--e)}
+  opacity:.5}
 .bd__arc circle{fill:none;stroke:var(--accent,#101010);stroke-width:.24;
   transition:stroke 1.1s var(--e)}
-/* ouverts : un cercle plein ferait cible, un arc fait lumière */
 .bd__arc circle:nth-child(1){stroke-dasharray:118 171;stroke-dashoffset:44}
 .bd__arc circle:nth-child(2){stroke-dasharray:62 145;stroke-dashoffset:-30}
 .scene{position:absolute;inset:var(--barre) 0 0;opacity:0;pointer-events:none;
   transition:opacity .6s var(--e),visibility .6s;overflow:auto;z-index:2}
 .scene:not(.on){visibility:hidden}
 .scene.on{opacity:1;pointer-events:auto}
-
 .sbar{position:absolute;top:0;left:0;right:0;z-index:12;display:flex;align-items:center;
   gap:clamp(8px,1.6vw,18px);padding:11px clamp(14px,2.6vw,34px);
-  border-bottom:1px solid var(--trait);background:rgba(255,255,255,.9);
-  backdrop-filter:blur(10px)}
+  border-bottom:1px solid var(--trait);background:rgba(255,255,255,.9);backdrop-filter:blur(10px)}
 .sbar__m{font-family:system-ui,sans-serif;font-size:9px;letter-spacing:.24em;
   text-transform:uppercase;color:var(--gris);flex-shrink:0}
 .sbar__o{display:flex;margin-left:auto;min-width:0;overflow-x:auto;scrollbar-width:none}
@@ -509,69 +534,49 @@ img{display:block;max-width:100%}
 .sb:hover{opacity:.8}
 .sb.on{opacity:1}.sb.on::after{transform:scaleX(1)}
 @media(max-width:640px){
-  .sbar{padding:9px 12px}
-  .sb{padding:9px 10px;font-size:8px;letter-spacing:.1em}
+  .sbar{padding:9px 12px}.sb{padding:9px 10px;font-size:8px;letter-spacing:.1em}
   .sbar__m{display:none}
 }
 
-/* ═══ LE MODULE 3D ═══ */
+/* ═══ LE MODULE — la pièce se tourne AU DOIGT ═══ */
 .atl{position:absolute;inset:0;display:grid;
   grid-template-columns:minmax(0,1fr) clamp(300px,27vw,400px)}
+/* toute la scène est saisissable, pas seulement l'image : on attrape
+   la pièce où qu'on la prenne */
 .atl__sc{position:relative;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;padding:68px clamp(10px,2vw,30px) 0;min-width:0}
-.atl__ph{position:relative;isolation:isolate;touch-action:none;cursor:grab;
-  max-width:100%;flex:0 1 auto}
-.atl__ph.tourne{cursor:grabbing}
+  justify-content:center;padding:68px clamp(10px,2vw,30px) 0;min-width:0;
+  touch-action:none;cursor:grab}
+.atl__sc.tourne{cursor:grabbing}
+.atl__ph{position:relative;isolation:isolate;max-width:100%;flex:0 1 auto}
 .atl__ph img{display:block;object-fit:contain;
   /* la place est RÉSERVÉE par le rapport de la vue : pendant l'échange
      d'image, le conteneur ne se replie plus le temps du décodage */
   aspect-ratio:760/851;height:min(calc(100svh - 250px),620px);width:auto;max-width:100%;
   transition:opacity .6s var(--e)}
-/* la moitié 195°→345° est le MIROIR de 165°→15° */
 .atl__ph.miroir img,.atl__ph.miroir .atl__t{transform:scaleX(-1)}
 .atl__reps{position:absolute;inset:0;pointer-events:none;z-index:6;
   transition:opacity .35s var(--e)}
 .atl__ph.detourne .atl__reps{opacity:0;pointer-events:none}
-/* la nuance se multiplie À TRAVERS le masque du cuir : l'or reste or */
 .atl__t{position:absolute;inset:0;mix-blend-mode:multiply;opacity:0;pointer-events:none;
   -webkit-mask-size:100% 100%;mask-size:100% 100%;
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
   transition:opacity .9s var(--e),background-color .9s var(--e)}
-.atl__socle{position:absolute;left:50%;bottom:-4px;transform:translateX(-50%);
-  width:74%;height:20px;pointer-events:none;
+.atl__socle{position:absolute;left:50%;bottom:-4px;transform:translateX(-50%);width:74%;
+  height:20px;pointer-events:none;
   background:radial-gradient(60% 100% at 50% 0,rgba(16,16,16,.14),transparent 72%)}
-
-.rep{position:absolute;transform:translate(-11px,-50%);display:flex;align-items:center;
-  pointer-events:auto}
-.rep--g{flex-direction:row-reverse;transform:translate(calc(-100% + 11px),-50%)}
-.rep--g .rep__l{text-align:right}
-.rep--g:hover .rep__l,.rep--g.set .rep__l{margin-left:0;margin-right:9px}
-.rep__o{position:relative;width:22px;height:22px;border:1px solid rgba(16,16,16,.45);
-  flex-shrink:0;display:flex;align-items:center;justify-content:center;
-  transition:border-color .35s,transform .45s var(--e)}
-.rep__o::after{content:'';width:3px;height:3px;background:var(--encre);opacity:.8;
-  transition:opacity .3s}
-.rep.set .rep__o::after{opacity:0}
-.rep__sw{position:absolute;inset:2px;opacity:0;transform:scale(.5);
-  background-size:100px 100px;background-blend-mode:hard-light;
-  transition:opacity .5s var(--e),transform .55s var(--e)}
-.rep.set .rep__sw{opacity:1;transform:none}
-.rep:hover .rep__o{border-color:var(--encre);transform:scale(1.18)}
-.rep__pu{position:absolute;left:11px;top:11px;width:22px;height:22px;
-  transform:translate(-50%,-50%);border:1px solid var(--encre);opacity:0;pointer-events:none}
-.rep:not(.set) .rep__pu{animation:onde 3.4s var(--e) infinite}
-@keyframes onde{0%{opacity:.4;transform:translate(-50%,-50%) scale(1)}
-  70%{opacity:0;transform:translate(-50%,-50%) scale(2.5)}100%{opacity:0}}
-.rep__l{white-space:nowrap;overflow:hidden;max-width:0;opacity:0;background:var(--encre);
-  color:var(--blanc);font-family:system-ui,sans-serif;text-transform:uppercase;
-  letter-spacing:.16em;font-size:8px;
-  transition:max-width .5s var(--e),opacity .4s,padding .5s var(--e),margin .5s var(--e)}
-.rep:hover .rep__l,.rep.set .rep__l{max-width:240px;opacity:1;padding:7px 11px;margin-left:9px}
-.rep__l em{font-style:italic;text-transform:none;letter-spacing:.02em;font-size:10px}
-
-/* la commande de rotation : c'est ELLE qui dit « module 3D » */
-.rot{flex-shrink:0;width:min(560px,90%);margin-top:clamp(12px,2.4vh,26px);
-  padding-bottom:clamp(12px,2.4vh,24px);display:flex;align-items:center;gap:16px}
+/* l'invitation : elle dit le geste, et s'efface dès qu'on l'a fait */
+.saisir{position:absolute;left:0;right:0;bottom:clamp(8px,2vh,20px);z-index:7;
+  display:flex;align-items:center;justify-content:center;gap:12px;pointer-events:none;
+  font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.24em;font-size:9px;
+  color:var(--gris);transition:opacity .6s var(--e)}
+.saisir svg{width:26px;height:14px;fill:none;stroke:currentColor;stroke-width:1}
+.saisir svg path{stroke-dasharray:34;stroke-dashoffset:34;
+  animation:filer 2.8s var(--e) infinite}
+@keyframes filer{0%{stroke-dashoffset:34}45%{stroke-dashoffset:0}
+  70%{stroke-dashoffset:0;opacity:1}90%{opacity:0}100%{stroke-dashoffset:0;opacity:0}}
+.atl__sc.tourne .saisir,.atl__sc.deja .saisir{opacity:0}
+.rot{flex-shrink:0;width:min(560px,90%);margin-top:clamp(10px,2vh,22px);
+  padding-bottom:clamp(24px,4vh,42px);display:flex;align-items:center;gap:16px}
 .rot__l{font-family:system-ui,sans-serif;font-size:9px;letter-spacing:.2em;
   text-transform:uppercase;color:var(--gris);white-space:nowrap}
 .rot__p{flex:1;min-width:0;height:26px;position:relative;cursor:pointer;touch-action:none;
@@ -589,10 +594,35 @@ img{display:block;max-width:100%}
   padding-bottom:3px;border-bottom:1px solid currentColor}
 .rot__z:hover{color:var(--encre)}
 
-/* la composition, à droite */
-.fiche{border-left:1px solid var(--trait);display:flex;flex-direction:column;
-  padding:68px 0 0;font-family:system-ui,sans-serif;min-width:0;
-  background:var(--blanc)}
+.rep{position:absolute;transform:translate(-11px,-50%);display:flex;align-items:center;
+  pointer-events:auto}
+.rep--g{flex-direction:row-reverse;transform:translate(calc(-100% + 11px),-50%)}
+.rep--g .rep__l{text-align:right}
+.rep--g:hover .rep__l,.rep--g.set .rep__l{margin-left:0;margin-right:9px}
+.rep__o{position:relative;width:22px;height:22px;border:1px solid rgba(16,16,16,.45);
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  transition:border-color .35s,transform .45s var(--e)}
+.rep__o::after{content:'';width:3px;height:3px;background:var(--encre);opacity:.8;
+  transition:opacity .3s}
+.rep.set .rep__o::after{opacity:0}
+.rep__sw{position:absolute;inset:2px;opacity:0;transform:scale(.5);background-size:100px 100px;
+  background-blend-mode:hard-light;transition:opacity .5s var(--e),transform .55s var(--e)}
+.rep.set .rep__sw{opacity:1;transform:none}
+.rep:hover .rep__o{border-color:var(--encre);transform:scale(1.18)}
+.rep__pu{position:absolute;left:11px;top:11px;width:22px;height:22px;
+  transform:translate(-50%,-50%);border:1px solid var(--encre);opacity:0;pointer-events:none}
+.rep:not(.set) .rep__pu{animation:onde 3.4s var(--e) infinite}
+@keyframes onde{0%{opacity:.4;transform:translate(-50%,-50%) scale(1)}
+  70%{opacity:0;transform:translate(-50%,-50%) scale(2.5)}100%{opacity:0}}
+.rep__l{white-space:nowrap;overflow:hidden;max-width:0;opacity:0;background:var(--encre);
+  color:var(--blanc);font-family:system-ui,sans-serif;text-transform:uppercase;
+  letter-spacing:.16em;font-size:8px;
+  transition:max-width .5s var(--e),opacity .4s,padding .5s var(--e),margin .5s var(--e)}
+.rep:hover .rep__l,.rep.set .rep__l{max-width:240px;opacity:1;padding:7px 11px;margin-left:9px}
+.rep__l em{font-style:italic;text-transform:none;letter-spacing:.02em;font-size:10px}
+
+.fiche{border-left:1px solid var(--trait);display:flex;flex-direction:column;padding:68px 0 0;
+  font-family:system-ui,sans-serif;min-width:0;background:var(--blanc)}
 .fiche__k{color:var(--gris);margin-bottom:8px;flex-shrink:0;padding:0 clamp(14px,1.8vw,26px)}
 .fiche__l{flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;
   padding:0 clamp(14px,1.8vw,26px) 18px;
@@ -616,7 +646,6 @@ img{display:block;max-width:100%}
 .fiche__n{flex-shrink:0;font-size:10.5px;line-height:1.85;color:var(--gris);
   padding:0 clamp(14px,1.8vw,26px) clamp(10px,2svh,16px)}
 @media(max-width:900px){.fiche__n{display:none}}
-/* le bloc noir : le seul aplat sombre du salon, et c'est le prix */
 .tot{flex-shrink:0;background:var(--encre);color:var(--blanc);
   padding:clamp(13px,2.2svh,20px) clamp(14px,1.8vw,26px);
   display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
@@ -628,10 +657,10 @@ img{display:block;max-width:100%}
   background:currentColor;opacity:.6}
 .tot__go:hover{opacity:1}
 @media(max-width:900px){
-  .atl{grid-template-columns:1fr;grid-template-rows:minmax(0,52svh) minmax(0,1fr)}
-  .atl__sc{padding:50px 8px 0}
-  .atl__ph img{height:calc(52svh - 122px)}
-  .rot{margin-top:8px;padding-bottom:8px;width:94%}
+  .atl{grid-template-columns:1fr;grid-template-rows:minmax(0,54svh) minmax(0,1fr)}
+  .atl__sc{padding:56px 8px 0}
+  .atl__ph img{height:calc(54svh - 136px)}
+  .rot{margin-top:6px;padding-bottom:26px;width:94%}
   .rot__l{display:none}
   .fiche{border-left:none;border-top:1px solid var(--trait);padding-top:12px}
   .rep.set .rep__l{max-width:0;opacity:0;padding:0;margin:0}
@@ -639,7 +668,6 @@ img{display:block;max-width:100%}
   .rep--g:hover .rep__l{margin-left:0;margin-right:9px}
 }
 
-/* ═══ LE CARNET ═══ */
 .carn{position:relative;min-height:100%;
   padding:clamp(58px,9vh,96px) clamp(20px,6vw,80px) clamp(24px,5vh,60px);
   max-width:1200px;margin:0 auto}
@@ -661,7 +689,6 @@ img{display:block;max-width:100%}
 .carn__f{margin-top:clamp(22px,4vh,40px);padding-top:18px;border-top:1px solid var(--trait);
   font-family:system-ui,sans-serif;font-size:11px;line-height:2;color:var(--gris);max-width:56ch}
 
-/* ═══ LA PIÈCE ACHEVÉE ═══ */
 .cert{position:relative;min-height:100%;display:flex;align-items:center;justify-content:center;
   padding:clamp(64px,9vh,100px) clamp(18px,4vw,44px) clamp(22px,4svh,44px)}
 .cert__in{width:min(860px,100%);display:flex;flex-direction:column}
@@ -686,12 +713,12 @@ img{display:block;max-width:100%}
 .cert__note{font-family:system-ui,sans-serif;font-size:10px;line-height:1.9;color:var(--gris);
   max-width:44ch;flex-basis:100%;margin-top:12px}
 .btn{display:flex;align-items:center;gap:14px;background:var(--encre);color:var(--blanc);
-  padding:15px 28px;font-family:system-ui,sans-serif;text-transform:uppercase;
-  letter-spacing:.2em;font-size:10px;min-height:46px;transition:gap .5s var(--e),opacity .3s}
+  padding:15px 28px;font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.2em;
+  font-size:10px;min-height:46px;transition:gap .5s var(--e),opacity .3s}
 .btn:hover{gap:20px;opacity:.86}
 .btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1}
 
-/* ═══════════ LA PLONGÉE — claire partout ═══════════ */
+/* ═══════════ LA PLONGÉE ═══════════ */
 .plg{position:fixed;inset:0;z-index:92;opacity:0;visibility:hidden;pointer-events:none;
   color:var(--encre);transition:opacity .7s var(--e),visibility .7s;
   --bas:clamp(200px,28svh,264px)}
@@ -723,8 +750,7 @@ img{display:block;max-width:100%}
   background:currentColor;transform:scaleX(0);transform-origin:left;
   transition:transform .45s var(--e)}
 .fm.on{opacity:1;color:var(--encre)}.fm.on::after{transform:scaleX(1)}
-.plg__cap{position:absolute;left:0;right:0;bottom:clamp(18px,4vh,42px);z-index:5;
-  text-align:center}
+.plg__cap{position:absolute;left:0;right:0;bottom:clamp(18px,4vh,42px);z-index:5;text-align:center}
 .rail{display:flex;gap:1px;width:min(600px,86vw);margin:0 auto 15px;height:14px;
   align-items:flex-end;cursor:pointer;touch-action:none}
 .rail i{flex:1;height:7px;box-shadow:inset 0 1px 0 rgba(255,255,255,.25);
@@ -769,7 +795,7 @@ img{display:block;max-width:100%}
 @media(prefers-reduced-motion:reduce){
   *{animation-duration:.01ms!important;transition-duration:.01ms!important}
   .cl,.sl,.mt{opacity:1;transform:none}
-  [data-rev],.tuile,.ouv{opacity:1;transform:none}
+  .tuile,.ouv,.plan6__x{opacity:1;transform:none}
   #seuil polyline{stroke-dashoffset:0}
 }
 </style></head>
@@ -787,19 +813,20 @@ img{display:block;max-width:100%}
 
 <!-- ══════════════ LA BARRE ══════════════ -->
 <nav class="barre" id="barre">
-  <button class="plan-b" id="planB" aria-label="Le plan de la galerie"><i></i><i></i><i></i></button>
+  <button class="plan-b" id="planB" aria-label="Le plan"><i></i><i></i><i></i></button>
   <div class="fil" id="fil"></div>
   <div class="barre__d">
     <button class="lien" id="versAtelier">L'Atelier</button>
+    <button class="lien" id="versMaison">La Maison</button>
     <button class="lien" id="versBoudoir">Le Boudoir</button>
     <button class="lien fort lien--rdv" id="versRdv">Prendre rendez-vous</button>
   </div>
 </nav>
 
 <!-- ══════════════ LE PLAN ══════════════ -->
-<div class="plan" id="plan" role="dialog" aria-modal="true" aria-label="Plan de la galerie">
+<div class="plan" id="plan" role="dialog" aria-modal="true" aria-label="Plan">
   <nav class="barre" style="position:absolute;top:0;left:0;right:0">
-    <button class="plan-b" id="planX" aria-label="Fermer le plan"><i></i><i></i><i></i></button>
+    <button class="plan-b" id="planX" aria-label="Fermer"><i></i><i></i><i></i></button>
     <div class="fil"><b>Le plan</b></div>
     <div class="barre__d"><button class="lien" id="planXt">Fermer</button></div>
   </nav>
@@ -832,14 +859,14 @@ img{display:block;max-width:100%}
   <div class="plein__b">
     <div class="plein__s">
       <button class="plein__a plein__a--p" id="pleinP" aria-label="Œuvre précédente"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg></button>
-      <div class="plein__ph" id="pleinPh"><img id="pleinImg" alt=""><div class="plein__tt" id="pleinT"></div></div>
+      <div class="plein__ph" id="pleinPh"><img id="pleinImg" alt=""
+      src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="></div>
       <button class="plein__a plein__a--n" id="pleinN" aria-label="Œuvre suivante"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></button>
     </div>
     <aside class="plein__c">
       <div class="mt">
         <p class="plein__k cap" id="pleinK"></p>
         <h2 class="plein__n" id="pleinN2"></h2>
-        <blockquote class="plein__q" id="pleinQ" hidden></blockquote>
       </div>
       <div class="mt">
         <p class="plein__d" id="pleinD"></p>
@@ -856,25 +883,37 @@ img{display:block;max-width:100%}
 
 <!-- ══════════════ L'ATELIER ══════════════ -->
 <div class="lieu" id="atelier">
-  <header class="at__h">
-    <p class="at__k cap">Le savoir-faire</p>
-    <h2 class="at__t">Six gestes,<br><em>et rien d'autre</em></h2>
-    <p class="at__s">Ce qui tient une pièce ne se voit pas depuis l'extérieur. On descend
-      ici dans l'ordre du travail : le choix de la peau, la coupe, le point, la
-      régularité, le temps, la marque.</p>
-  </header>
-  <div id="gestes"></div>
-  <div class="at__f">
+  <div class="at__rail" id="atRail"></div>
+  <div id="plans6"></div>
+  <div class="at__fin">
     <div>
       <h3>Le <em>cabinet</em> des matières</h3>
       <p>Six cuirs, cinquante-deux nuances. On les regarde ici ; on les choisit au
         boudoir, la pièce sous la main.</p>
       <div class="rangee">
-        <button class="pan__go" id="ouvrirCabinet">Ouvrir le cabinet</button>
-        <button class="pan__go" id="atVersRdv">Prendre rendez-vous</button>
+        <button class="bouton-clair" id="ouvrirCabinet">Ouvrir le cabinet</button>
+        <button class="bouton-clair" id="atVersRdv">Prendre rendez-vous</button>
       </div>
     </div>
-    <div class="at__v" id="atV"></div>
+  </div>
+</div>
+
+<!-- ══════════════ LA MAISON ══════════════ -->
+<div class="lieu" id="maison">
+  <header class="ma__h">
+    <p class="ma__k cap">La Maison · depuis 1904</p>
+    <h2 class="ma__t">Quatre générations,<br><em>un seul atelier</em></h2>
+    <p class="ma__s">L'adresse a changé de rue, jamais de quartier. Ce qui s'est
+      transmis n'est pas une entreprise : c'est une façon de tenir un tranchet, et
+      la règle de ne jamais faire plus de pièces qu'il n'y a de mains pour les faire.</p>
+  </header>
+  <div id="chapitres"></div>
+  <div class="ma__f">
+    <p id="maNote"></p>
+    <div class="rangee">
+      <button class="pan__go" id="maVersAtelier">Voir l'atelier</button>
+      <button class="pan__go" id="maVersRdv">Rencontrer Laurène</button>
+    </div>
   </div>
 </div>
 
@@ -895,9 +934,9 @@ img{display:block;max-width:100%}
         <div class="cp"><label for="rObj">Ce qui vous amène</label>
           <select id="rObj">
             <option>Voir une pièce de la galerie</option>
-            <option>Découvrir les matières</option>
+            <option>Découvrir les peausseries</option>
             <option>Concevoir une pièce sur mesure</option>
-            <option>Une collaboration</option>
+            <option>Visiter l'atelier</option>
           </select></div>
         <div class="cp cp--l"><label for="rMot">Un mot</label><textarea id="rMot"></textarea></div>
         <button class="rdv__go" type="submit">Demander un rendez-vous</button>
@@ -917,30 +956,38 @@ img{display:block;max-width:100%}
   <button class="visite__c" id="visiteX" aria-label="Masquer">✕</button>
 </div>
 
-<!-- ══════════════ LA PORTE DU BOUDOIR ══════════════ -->
-<div class="porte" id="porte">
-  <div class="porte__in">
-    <p class="porte__k cap">Espace privé</p>
-    <h3 class="porte__t">Le <em>Boudoir</em></h3>
-    <p class="porte__d">Le salon du sur-mesure. On y compose sa pièce en volume, avec
-      Laurène. L'accès se fait au code porté sur votre carton.</p>
-    <input id="code" maxlength="8" placeholder="· · · ·" aria-label="Code d'accès" autocomplete="off">
-    <p class="porte__e" id="codeE">Ce code n'ouvre rien.</p>
-    <p class="porte__i">Démonstration — le code est 1904.</p>
-    <button class="porte__x" id="porteX">Revenir à la galerie</button>
+<!-- ══════════════ LA SERRURE ══════════════ -->
+<div class="serrure" id="serrure" role="dialog" aria-modal="true" aria-label="Accès au boudoir">
+  <div class="se__in">
+    <p class="se__k cap">Espace privé</p>
+    <h3 class="se__t">Le <em>Boudoir</em></h3>
+    <p class="se__d">Le salon du sur-mesure. Reliez les points de façon à tracer
+      la lettre qui ouvre — celle de la maison.</p>
+    <div class="se__g" id="seG">
+      <svg viewBox="0 0 100 100" id="seSvg" aria-hidden="true">
+        <path class="indice" id="seIndice" d="M10 12 H90 M50 12 V90"/>
+        <path id="seTrace" d=""></path>
+        <g id="sePoints"></g>
+      </svg>
+    </div>
+    <p class="se__e" id="seE"></p>
+    <div class="se__o">
+      <button id="seAide">Montrer la figure</button>
+      <button id="seX">Revenir à la galerie</button>
+    </div>
   </div>
 </div>
 
 <!-- ══════════════ LE BOUDOIR ══════════════ -->
 <div class="lieu" id="boudoir">
   <div class="bd__lum"></div>
-  <svg class="bd__arc" id="bdArc" viewBox="0 0 100 100" aria-hidden="true">
+  <svg class="bd__arc" viewBox="0 0 100 100" aria-hidden="true">
     <circle cx="50" cy="50" r="46"/><circle cx="50" cy="50" r="33"/>
   </svg>
 
   <div class="scene on" data-s="atl">
     <nav class="sbar">
-      <span class="sbar__m" id="sbarM">Sur mesure · module 3D</span>
+      <span class="sbar__m">Sur mesure · le volume</span>
       <div class="sbar__o">
         <button class="sb on" data-s="atl">Composer</button>
         <button class="sb" data-s="cert" id="sbCert">La pièce achevée</button>
@@ -948,13 +995,17 @@ img{display:block;max-width:100%}
       </div>
     </nav>
     <div class="atl">
-      <div class="atl__sc">
+      <div class="atl__sc" id="sc">
         <div class="atl__ph" id="ph">
           <img id="phImg" alt="Votre Rafaël">
           <div class="atl__t" id="phT"></div>
           <div class="atl__reps" id="reps"></div>
           <div class="atl__socle"></div>
         </div>
+        <p class="saisir" id="saisir">
+          <svg viewBox="0 0 30 16" aria-hidden="true"><path d="M4 8 H26 M21 3 L26 8 L21 13"/></svg>
+          Prenez la pièce et faites-la tourner
+        </p>
         <div class="rot">
           <span class="rot__l">Rotation</span>
           <div class="rot__p" id="rotP" role="slider" aria-label="Faire tourner la pièce"
@@ -968,8 +1019,8 @@ img{display:block;max-width:100%}
       <aside class="fiche">
         <p class="fiche__k cap">Votre pièce, ligne à ligne</p>
         <div class="fiche__l" id="fiche"></div>
-        <p class="fiche__n">Estimation indicative. Laurène l'arrête après vous avoir reçue
-          — un exotique reste soumis à disponibilité en tannerie.</p>
+        <p class="fiche__n">Volume de démonstration — à re-rendre d'après la Rafaël
+          réelle. Estimation indicative, arrêtée après le rendez-vous.</p>
         <div class="tot">
           <div><p class="tot__l cap">Estimation</p><p class="tot__v" id="tot">—</p></div>
           <button class="tot__go" id="voirCert">Voir la pièce achevée</button>
@@ -999,8 +1050,8 @@ img{display:block;max-width:100%}
           <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
         </button>
         <p class="cert__note">Laurène établit le devis et vous l'adresse. Aucun paiement
-          n'a lieu ici. Façonnage : 12 à 16 semaines. Un cuir exotique reste soumis à
-          disponibilité en tannerie.</p>
+          n'a lieu ici. Façonnage : 12 à 16 semaines. Une peausserie exotique reste
+          soumise à disponibilité en tannerie.</p>
       </div>
     </div></div>
   </div>
@@ -1020,7 +1071,7 @@ img{display:block;max-width:100%}
         entretien, réparation et regarnissage à vie, sans condition de date.</p>
       <div class="carn__l" id="carnet"></div>
       <p class="carn__f">Pour reprendre une pièce existante — changer une doublure, poser
-        une autre bandoulière — dites-le à Laurène : la fiche d'origine est conservée.</p>
+        une autre chaîne — dites-le à Laurène : la fiche d'origine est conservée.</p>
     </div>
   </div>
 </div>
@@ -1053,154 +1104,159 @@ const doux = { behavior: RM ? 'auto' : 'smooth' };
 const petit = () => matchMedia('(max-width: 860px)').matches;
 
 /* ═══ Les assets embarqués ═══ */
-const VIS = "__VISUELS__";      /* sculptures et vues de galerie */
+const VIS = "__VISUELS__";      /* les photographies de la maison */
 const TX = "__TUILES__";        /* tuiles de cuir */
 const RENDUS = "__RENDUS__";    /* rendus Cycles, position 0 */
 const ROT = "__ROT__";          /* la série 360° */
 const NUANCES = "__NUANCES__";
 
-/* les photographies produit de la boutique — repli si le CDN est muet */
-const CDN = 'https://cdn.shopify.com/s/files/1/0927/5890/1079/files/';
-const IMG = {
-  savoir:   CDN + 'BOSCHI0919.jpg',
-  atelier:  CDN + 'BOSCHI0154.jpg',
-  atelier1: CDN + 'Asset_atelier_1.png',
-  mains:    CDN + 'Asset_Mains_1.png',
-  atelier6: CDN + 'Asset_Atelier_6.png',
-  atelier5: CDN + 'Asset_atelier_5.png',
-  rafael:   CDN + 'BOSCHI0774_85f74e95-56cc-4478-aba9-5c523a543565.jpg?v=1769440532',
-  colette:  CDN + 'BOSCHI0633.jpg?v=1769462827',
-  olympe:   CDN + 'BOSCHI0757.jpg?v=1769441367',
-};
-function poser(cadre, src, ajuste) {
-  const im = document.createElement('img');
-  im.alt = ''; im.decoding = 'async';
-  im.onerror = () => cadre.classList.add('vide');
-  im.src = src; cadre.appendChild(im);
-  if (ajuste) im.style.objectFit = ajuste;
-  return im;
-}
-
 /* ═══════════════════════════════════════════════════════════════
    L'ACCROCHAGE
-   Chaque œuvre porte sa place dans la trame — g:[colonne, largeur,
-   ligne, hauteur] sur douze lignes. Les formats sont volontairement
-   très inégaux : c'est ce qui fait le patchwork. `m` donne la largeur
-   sur petit écran, où le mur se replie en deux colonnes.
+   Les silhouettes sont accrochées librement — g:[colonne, largeur,
+   ligne, hauteur] sur douze lignes. Le nuancier, lui, est une grille
+   stricte : vingt-six fois la même pochette, une peau chacune.
    ═══════════════════════════════════════════════════════════════ */
-const OEUVRES = [
-  { id:'rafael', s:'Les Pièces', t:'Rafaël', k:'2019 · édition continue', img:IMG.rafael,
-    g:[13,7,1,9], m:2, ar:[4,5],
-    d:"La pièce la plus difficile de la collection. Une pochette n'a nulle part où cacher un défaut : chaque couture est vue, chaque tranche est nue. À l'atelier, on ne la confie qu'aux mains prêtes à la faire.",
-    l:[['Matières','Veau grainé · laiton naturel'],['Dimensions','H 19 × L 30 × P 4 cm'],
-       ['Façonnage','48 heures de main · un artisan'],['Atelier','96 av. de Clichy, Paris']] },
-  { id:'colette', s:'Les Pièces', t:'Colette', k:'2016 · édition continue', img:IMG.colette,
-    g:[20,5,6,6], m:1, ar:[4,5],
-    d:"La signature de la maison : un V taillé dans la masse, qui ouvre le sac sans fermoir. Sa tenue ne doit rien à une armature — seulement à l'épaisseur du cuir et à la façon dont la peau a été placée.",
-    l:[['Matières','Veau pleine fleur · doublure agneau'],['Dimensions','H 24 × L 32 × P 10 cm'],
-       ['Anse','55 cm, cousue main'],['Façonnage','12 à 16 semaines']] },
-  { id:'olympe', s:'Les Pièces', t:'Olympe', k:'2022 · édition continue', img:IMG.olympe,
-    g:[25,6,2,7], m:1, ar:[4,5],
-    d:"Un seau strict, et à l'intérieur un pochon de soie sauvage qui se retire. Deux pièces en une : la rigueur dehors, la souplesse dedans. Le pochon se remplace, se change de couleur, se transmet.",
-    l:[['Matières','Veau grainé · pochon soie de Lyon'],['Dimensions','H 26 × L 24 × P 16 cm'],
-       ['Particularité','Pochon amovible'],['Façonnage','12 à 16 semaines']] },
-  { id:'alligator', s:'Les Pièces', t:'Rafaël, alligator', k:"Pièce d'exception · 2026",
-    rend:'alligator', hex:'#1e3a30', g:[31,4,7,5], m:1, ar:[760,851],
-    d:"Un alligator du Mississippi, tanné en Italie, teint Vert Empire. On ne coupe pas une telle peau sans l'avoir regardée plusieurs jours : les écailles doivent tomber juste sur le rabat, et le ventre, plus tendre, ne va jamais aux angles.",
-    l:[['Matière','Alligator · Vert Empire'],['Écailles','Centrage manuel sur le rabat'],
-       ['Ferrures','Or jaune 24 carats, sur commande'],['Édition','Pièce unique']] },
-  { id:'galuchat', s:'Les Pièces', t:'Rafaël, galuchat', k:"Pièce d'exception · 2026",
-    rend:'galuchat', hex:'#1c2438', g:[35,6,1,7], m:1, ar:[760,851],
-    d:"Le galuchat est une peau de raie, poncée jusqu'à faire apparaître la perle centrale. Elle ne se plie pas : elle se contraint. La monter sur une pochette suppose d'accepter que la matière décide d'une partie du dessin.",
-    l:[['Matière','Galuchat poncé · Bleu Nuit'],['Perle','Centrée à la main'],
-       ['Ferrures','Argent palladié'],['Édition','Pièce unique']] },
-
-  { id:'anneau', s:'Les Volumes', t:'Anneau', k:'Volume · 2025', vis:'volume-anneau',
-    g:[53,6,1,11], m:2, ar:[933,1400],
-    d:"Un tore couvert de milliers d'éclats, monté au mur d'un atelier resté brut. C'est une étude de densité : comment une surface peut être entièrement travaillée sans qu'aucun point n'attire l'œil plus qu'un autre. La même question se pose sur un cuir grainé.",
-    l:[['Matière','Plâtre et éclats'],['Accrochage','Mur brut, atelier'],
-       ['Dimension','Ø 96 cm'],['Statut','Étude — non éditée']] },
-  { id:'socle', s:'Les Volumes', t:'Pli sur socle noir', k:'Volume · 2025', vis:'volume-socle',
-    g:[59,4,7,5], m:1, ar:[933,1400],
-    d:"Le même volume, posé sur un socle d'acier noir dans une pièce que l'on n'a pas repeinte. Le pli du haut est celui du rabat de la Rafaël, agrandi jusqu'à ce qu'on puisse en faire le tour.",
-    l:[['Matière','Plâtre'],['Socle','Acier laqué noir'],
-       ['Provenance','Atelier, Paris'],['Statut','Étude — non éditée']] },
-  { id:'pli', s:'Les Volumes', t:'Pli sur socle clair', k:'Volume · 2025', vis:'volume-pli',
-    g:[63,5,2,6], m:1, ar:[933,1400],
-    d:"Le même pli, éclairé à plat sur un socle de bois clair. Sans ombre portée, la forme perd son poids et ne tient plus que par sa ligne — c'est l'exercice que l'on fait avant de couper une peau.",
-    l:[['Matière','Plâtre'],['Socle','Bois massif clair'],
-       ['Éclairage','Lumière rasante'],['Statut','Étude — non éditée']] },
-
-  { id:'ferrure', s:'Les Rencontres', t:'La ferrure taillée',
-    k:'Fanny Delaunay · orfèvre · 2025', vis:'rayures', g:[72,5,1,6], m:1, ar:[3,2],
-    d:"L'anneau en D de la Rafaël, habituellement fondu, a été taillé dans un lingot de laiton puis limé à la main. Chaque anneau porte les traces d'outil de son façonnage : deux pièces de la série ne se ressemblent pas.",
-    q:["Une ferrure fondue est parfaite et muette. Une ferrure taillée raconte l'heure qu'on lui a donnée.",'Fanny Delaunay'],
-    l:[['Discipline','Orfèvrerie'],['Pièce','Rafaël, anneau taillé'],
-       ['Édition','7 exemplaires'],['Atelier','Paris · Belleville']] },
-  { id:'laque', s:'Les Rencontres', t:'La tranche laquée',
-    k:'Kenzo Arai · laqueur · 2025', vis:'constellation', g:[77,4,8,4], m:1, ar:[16,9],
-    d:"La tranche d'un sac est habituellement teinte et poncée. Ici elle reçoit sept couches d'urushi, la laque japonaise, séchées chacune une semaine en cave humide. Le résultat est un trait de couleur profond, dur comme du verre.",
-    q:["Le cuir bouge, la laque ne bouge pas. Il a fallu trois essais pour qu'ils acceptent de vieillir ensemble.",'Kenzo Arai'],
-    l:[['Discipline','Laque urushi'],['Pièce','Colette, tranche laquée'],
-       ['Séchage','7 couches · 7 semaines'],['Édition','5 exemplaires']] },
-  { id:'bleus', s:'Les Rencontres', t:'Les sept bleus',
-    k:'Marguerite Oyon · coloriste · 2026', vis:'bleus', g:[81,6,3,7], m:2, ar:[3,2],
-    d:"Une gamme de sept bleus obtenus par teinture à la main sur peau nue, du plus pâle au presque noir. Les bains ont été refaits onze fois avant d'obtenir une progression que l'œil lit comme continue.",
-    q:["Un dégradé, ce n'est pas sept couleurs : ce sont six écarts. Ce sont les écarts qu'on travaille.",'Marguerite Oyon'],
-    l:[['Discipline','Teinture à la main'],['Pièce','Nuancier · sept bleus'],
-       ['Support','Veau pleine fleur nu'],['Édition','Nuancier unique, non vendu']] },
+const VICTOIRE = [
+  { v:'victoire-a', t:'Rouge Carmin', m:'Veau box',
+    d:"Le V est taillé dans la masse : il ouvre le sac sans fermoir, et c'est lui qui tient la forme. Dans un box lisse aussi rouge, la moindre hésitation du tranchet se verrait — il n'y en a pas.",
+    l:[['Modèle','Victoire · porté épaule'],['Matière','Veau box lisse'],
+       ['Dimensions','H 30 × L 26 × P 11 cm'],['Façonnage','12 à 16 semaines']] },
+  { v:'victoire-b', t:'Noir et Grenat', m:'Veau box bicolore',
+    d:"Deux peaux d'un même veau, coupées dans le même bain de teinture puis assemblées bord à bord. La ligne de partage tombe exactement sur la pointe du V : elle ne se rattrape pas au montage, elle se décide à la coupe.",
+    l:[['Modèle','Victoire · bicolore'],['Matière','Veau box, deux teintes'],
+       ['Assemblage','Bord à bord, sans recouvrement'],['Façonnage','12 à 16 semaines']] },
+  { v:'victoire-c', t:'Havane', m:'Veau et daim',
+    d:"Le corps en veau, le V en daim : deux matières qui prennent la lumière à l'inverse l'une de l'autre. C'est le seul contraste de la pièce, et il suffit.",
+    l:[['Modèle','Victoire · deux matières'],['Matières','Veau pleine fleur, daim'],
+       ['Doublure','Agneau naturel'],['Façonnage','12 à 16 semaines']] },
+  { v:'victoire-d', t:'Abricot', m:'Veau box',
+    d:"Une teinte qui ne pardonne rien : sur un cuir clair, chaque trace d'outil reste. La peau est choisie sans marque, et le montage se fait gants aux mains.",
+    l:[['Modèle','Victoire · porté épaule'],['Matière','Veau box lisse'],
+       ['Particularité','Peau choisie sans marque'],['Façonnage','12 à 16 semaines']] },
+  { v:'victoire-e', t:'Rouge Profond', m:'Veau et daim',
+    d:"Le même rouge sur deux matières : le veau le renvoie, le daim l'absorbe. Vu de face, la pièce paraît d'une seule couleur ; de trois quarts, elle en a deux.",
+    l:[['Modèle','Victoire · deux matières'],['Matières','Veau box, daim, même bain'],
+       ['Doublure','Agneau naturel'],['Façonnage','12 à 16 semaines']] },
+  { v:'victoire-f', t:'Chocolat', m:'Veau et daim',
+    d:"La version la plus sobre de la silhouette. Rien n'y attire l'œil qu'un profil : un trapèze, une anse, et le V qui l'ouvre.",
+    l:[['Modèle','Victoire · deux matières'],['Matières','Veau pleine fleur, daim'],
+       ['Anse','Portée épaule, 32 cm'],['Façonnage','12 à 16 semaines']] },
 ];
+/* la place des silhouettes dans la trame */
+const PLACES_V = [[13,6,1,8],[19,4,6,6],[23,5,2,6],[28,4,7,5],[32,5,1,6],[37,4,6,6]];
+
+/* le nuancier : la Rafaël, vingt-six peaux */
+const RAFAEL = [
+  ['nu-01','Gris Tourterelle','Alligator'], ['nu-02','Étain','Alligator'],
+  ['nu-03','Craie','Veau lisse'],           ['nu-04','Camel Clair','Alligator'],
+  ['nu-05','Noisette','Alligator'],         ['nu-06','Ardoise','Autruche'],
+  ['nu-07','Anthracite','Autruche'],        ['nu-08','Rose Dragée','Alligator'],
+  ['nu-09','Rose Poudré','Alligator'],      ['nu-10','Fuchsia','Alligator'],
+  ['nu-11','Magenta','Alligator'],          ['nu-12','Noir Absolu','Alligator'],
+  ['nu-13','Corail','Alligator'],           ['nu-14','Vermillon','Alligator'],
+  ['nu-15','Graphite','Autruche'],          ['nu-16','Nude','Alligator'],
+  ['nu-17','Grège','Lézard'],               ['nu-18','Céladon','Alligator'],
+  ['nu-19','Amande','Lézard'],              ['nu-20','Rouge Cardinal','Alligator'],
+  ['nu-21','Coquille','Lézard'],            ['nu-22','Prune','Alligator'],
+  ['nu-23','Bordeaux','Alligator'],         ['nu-24','Safran','Veau lisse'],
+  ['nu-25','Bleu Roi','Alligator'],         ['nu-26','Bleu Ardoise','Alligator'],
+];
+const ROMAINS = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII',
+  'XIV','XV','XVI','XVII','XVIII','XIX','XX','XXI','XXII','XXIII','XXIV','XXV','XXVI'];
+
+const OEUVRES = [];
+VICTOIRE.forEach((o, i) => OEUVRES.push({
+  id:'v'+i, s:'Les Silhouettes', t:'Victoire, ' + o.t, k:o.m, vis:o.v,
+  g:PLACES_V[i], m:i === 0 ? 2 : 1, d:o.d, l:o.l }));
+RAFAEL.forEach(([v, nu, peau], i) => {
+  /* la grille du nuancier : neuf colonnes, trois bandes de quatre lignes */
+  const c = 54 + (i % 9) * 3, r = 1 + Math.floor(i / 9) * 4;
+  OEUVRES.push({ id:'n'+i, s:'Le Nuancier', t:nu, k:peau, vis:v, nu:true,
+    g:[c, 3, r, 4], m:1,
+    d:"La Rafaël en " + nu.toLowerCase() + ". Une pochette d'un seul tenant, fermée par " +
+      "un anneau en D, portée à la chaîne. La peau décide de tout : sur une écaille " +
+      "large la pièce paraît plus longue, sur une écaille serrée elle paraît plus haute — " +
+      "et l'on ne coupe jamais deux pièces au même endroit d'une peau.",
+    l:[['Modèle','Rafaël · pochette à chaîne'],['Peausserie', peau],['Nuance', nu],
+       ['Pièce', ROMAINS[i] + ' sur ' + RAFAEL.length]] });
+});
 
 const PARCOURS = [
   { type:'pan', g:[1,8,2,10], k:'Accrochage permanent', t:'La main et<br><em>la matière</em>',
-    d:"Onze œuvres, deux ouvertures. Rien ne s'achète ici : ce qui se voit en galerie se décide en rendez-vous. Marchez le long du mur — molette, doigt, ou flèches. Une œuvre s'ouvre en plein écran.",
+    d:"Six silhouettes, vingt-six peaux, trois ouvertures. Rien ne s'achète ici : ce qui se voit en galerie se décide en rendez-vous. Marchez le long du mur — molette, doigt, ou flèches. Une pièce s'ouvre en plein écran.",
     go:'Prendre rendez-vous', va:'rdv' },
-  { type:'sect', g:[10,3,5,4], n:'Les Pièces', k:'Cinq œuvres' },
-  { type:'oe', id:'rafael' }, { type:'oe', id:'colette' }, { type:'oe', id:'olympe' },
-  { type:'oe', id:'alligator' }, { type:'oe', id:'galuchat' },
+  { type:'sect', g:[10,3,5,4], n:'Les Silhouettes', k:'Six pièces · Victoire' },
+  { type:'oe', i:0 }, { type:'oe', i:1 }, { type:'oe', i:2 },
+  { type:'oe', i:3 }, { type:'oe', i:4 }, { type:'oe', i:5 },
   { type:'ouv', g:[42,7,3,9], va:'atelier', k:'Ouverture · à gauche', n:"L'<em>Atelier</em>",
-    vis:'passage', m:2, d:"Le savoir-faire, en six gestes." },
-  { type:'sect', g:[50,3,6,4], n:'Les Volumes', k:'Trois études' },
-  { type:'oe', id:'anneau' }, { type:'oe', id:'socle' }, { type:'oe', id:'pli' },
-  { type:'sect', g:[69,3,6,4], n:'Les Rencontres', k:'Trois artistes invités' },
-  { type:'oe', id:'ferrure' }, { type:'oe', id:'laque' }, { type:'oe', id:'bleus' },
-  { type:'ouv', g:[88,7,2,9], va:'porte', prive:true, k:'Ouverture · au fond',
-    n:'Le <em>Boudoir</em>', vis:'cabinet', m:2, d:"Le salon du sur-mesure, sur code." },
-  { type:'pan', g:[96,8,2,10], k:'Fin du mur', t:'La suite se voit<br><em>en atelier</em>',
-    d:"Les déclinaisons — six matières, cinquante-deux nuances — ne s'accrochent pas : elles se regardent à la lumière du jour. Les Volumes et les noms de la salle des Rencontres sont des textes d'exemple, à valider avec la maison.",
+    vis:'ed-grain', m:2, d:"Six plans, du choix de la peau à la marque." },
+  { type:'sect', g:[50,3,5,6], n:'Le Nuancier', k:'Vingt-six peaux · Rafaël',
+    d:"Nuances et peausseries proposées, à valider avec la maison." },
+  ...RAFAEL.map((_, i) => ({ type:'oe', i: 6 + i })),
+  { type:'ouv', g:[82,7,2,9], va:'serrure', prive:true, k:'Ouverture · au fond',
+    n:'Le <em>Boudoir</em>', vis:'ed-interieur', m:2,
+    d:"Le sur-mesure, en volume. Sur figure." },
+  { type:'ouv', g:[90,7,5,8], va:'maison', k:'Ouverture · à droite', n:'La <em>Maison</em>',
+    vis:'volume-socle', m:2, d:"1904 à aujourd'hui, quatre générations." },
+  { type:'pan', g:[98,8,2,10], k:'Fin du mur', t:'La suite se voit<br><em>en atelier</em>',
+    d:"Une peausserie ne se juge pas sur un écran : elle se regarde à la lumière du jour, la pièce sous la main. Les noms de nuances et les peausseries portés ici sont des propositions, à arrêter avec la maison.",
     go:'Prendre rendez-vous', va:'rdv' },
 ];
 
-const GESTES = [
-  { t:'On commence par refuser neuf peaux sur dix.', k:'I · le choix de la peau', img:IMG.atelier1,
+/* ── l'atelier : six plans ── */
+const PLANS = [
+  { n:'I', c:'Le choix de la peau', v:'ed-grain',
+    t:'On commence par refuser<br>neuf peaux sur dix.',
     d:"Une peau a un sens, des zones fermes, des cicatrices de vie. Sur cent peaux reçues, une dizaine entre à l'atelier. Le reste repart : une piqûre d'insecte au mauvais endroit suffit à écarter une peau entière.",
     f:[['Provenance','Tanneries françaises et italiennes'],['Tri','À la main, à la lumière du jour']] },
-  { t:'Le tranchet ne pardonne rien.', k:'II · la coupe', img:IMG.mains,
+  { n:'II', c:'La coupe', v:'ed-v',
+    t:'Le tranchet<br>ne pardonne rien.',
     d:"Placer un patron sur une peau, c'est décider où la pièce sera belle dans dix ans. La coupe se fait d'un seul geste, sans repentir : un tranchet qui hésite laisse une trace que la tranche gardera.",
     f:[['Outil','Tranchet affûté chaque matin'],['Perte','30 à 40 % de la peau']] },
-  { t:'Deux aiguilles. Un seul fil.', k:'III · le point sellier', img:IMG.savoir,
+  { n:'III', c:'Le point sellier', v:'ed-tranche',
+    t:'Deux aiguilles.<br>Un seul fil.',
     d:"Le point sellier se fait à deux aiguilles sur un même fil, croisé dans chaque trou. Si un point cède, les autres tiennent — contrairement à une couture machine, qui se défile d'un bout à l'autre.",
     f:[['Densité','8 points au centimètre'],['Fil','Lin câblé, poissé à la cire']] },
-  { t:'Huit points au centimètre.', k:'IV · la régularité', img:IMG.atelier6,
-    d:"La régularité n'est pas une coquetterie : un point trop lâche use le cuir autour de lui. On perce à l'alène, à l'angle, et l'on compte. Trois mille quatre cents points pour une pièce.",
-    f:[['Points','3 400 par pièce'],['Contrôle',"À l'œil, point par point"]] },
-  { t:'Quarante-huit heures de main.', k:'V · le temps', img:IMG.atelier,
+  { n:'IV', c:'La ferrure', v:'ed-anneau',
+    t:'Un anneau<br>que rien ne rattrape.',
+    d:"L'anneau est posé en dernier, quand la pièce est déjà montée : il ne se recentre plus. On perce à l'alène, on présente, on ferme. Une ferrure de travers oblige à refaire le devant.",
+    f:[['Matière','Laiton massif doré'],['Pose','Après montage, sans reprise']] },
+  { n:'V', c:'Le temps', v:'ed-contre-jour',
+    t:'Quarante-huit heures<br>de main.',
     d:"Une pièce demande deux à trois journées pleines de travail, réparties sur douze à seize semaines — le cuir doit reposer entre les opérations, sinon il travaille et la forme bouge.",
     f:[['Main','48 à 72 heures'],['Délai','12 à 16 semaines']] },
-  { t:"Puis une initiale, à l'intérieur.", k:'VI · la marque', img:IMG.atelier5,
+  { n:'VI', c:'La marque', v:'ed-interieur',
+    t:"Puis une initiale,<br>à l'intérieur.",
     d:"La dernière opération est une gravure à chaud, sous le rabat : les initiales de celle qui portera la pièce, et l'année. C'est la seule inscription que la maison ajoute.",
     f:[['Gravure','À chaud, fers à main'],['Emplacement','Sous le rabat']] },
 ];
 
+/* ── la maison : la chronique ── */
+const CHAPITRES = [
+  { an:'1904', t:'Un atelier ouvre<br>avenue de Clichy', v:'ed-silhouette',
+    d:"Un atelier de maroquinerie s'installe dans le dix-septième. On y travaille le cuir à la main, au point sellier, avec des outils que l'on se transmet. La maison ne fera jamais autre chose." },
+  { an:'1946', t:"La deuxième main", v:'ed-duo',
+    d:"L'atelier rouvre après-guerre avec la génération suivante. Les commandes changent — moins de malles, plus de sacs — mais la façon de coudre, elle, ne bouge pas.",
+    todo:true },
+  { an:'1978', t:'La troisième<br>génération', v:'ed-portee',
+    d:"L'atelier travaille pour d'autres maisons autant que pour lui-même. C'est la période où l'on apprend à faire les pièces les plus difficiles sans jamais y mettre son nom.",
+    todo:true },
+  { an:'2019', t:'Laurène<br><em>reprend la maison</em>', v:'ed-main',
+    d:"Laurène reprend la maison familiale après quinze ans passés dans les ateliers des grandes maisons parisiennes. Elle dessine, coupe et suit chaque pièce ; elle reçoit elle-même les clientes qui viennent concevoir une pièce d'exception.",
+    q:["On ne peut pas faire plus de pièces qu'il n'y a de mains pour les faire. Ce n'est pas une posture : c'est une contrainte de métier.", 'Laurène'] },
+  { an:'Aujourd’hui', t:'Des volumes<br>avant les pièces', v:'volume-anneau',
+    d:"Avant de couper une peau, l'atelier travaille la forme en plâtre : des volumes d'étude, agrandis jusqu'à ce qu'on puisse en faire le tour. C'est là que se décide le pli du rabat." },
+];
+
 const oePar = id => OEUVRES.find(o => o.id === id);
-/* la source d'une œuvre : un visuel embarqué, un rendu Cycles, ou le CDN */
-const srcDe = o => o.vis ? VIS[o.vis] : (o.rend ? RENDUS[o.rend] : o.img);
+const srcDe = o => VIS[o.vis];
 
 /* ═══════════ NAVIGATION ═══════════ */
 const LIEUX = {
   seuil:   { n:'Seuil' },
   galerie: { n:'La Galerie' },
   atelier: { n:"L'Atelier", parent:'galerie' },
+  maison:  { n:'La Maison', parent:'galerie' },
   rdv:     { n:'Rendez-vous', parent:'galerie' },
   boudoir: { n:'Le Boudoir', parent:'galerie' },
 };
@@ -1213,9 +1269,12 @@ function versLieu(id) {
   const l = $(id);
   if (l && id !== 'galerie') l.scrollTop = 0;
   $('barre').classList.toggle('on', id !== 'seuil');
+  $('barre').classList.toggle('sombre', id === 'atelier');
+  document.querySelector('meta[name=theme-color]')
+    .setAttribute('content', id === 'atelier' || id === 'seuil' ? '#0c0c0d' : '#ffffff');
   ariane(); majVisite();
-  if (id === 'atelier') reveler();
   if (id === 'galerie') revelerMur();
+  if (id === 'atelier') auFil();
 }
 
 function ariane() {
@@ -1239,11 +1298,12 @@ function ariane() {
 }
 
 const PLAN = [
-  { i:'01', n:'La <em>Galerie</em>', d:"Onze œuvres accrochées, deux ouvertures.", va:'galerie' },
-  { i:'02', n:"L'<em>Atelier</em>", d:'Six gestes et le cabinet des matières.', va:'atelier' },
-  { i:'03', n:'Le <em>Boudoir</em>', d:'Le sur-mesure, en volume.', va:'porte',
-    clos:'Accès réservé' },
-  { i:'04', n:'Le <em>Rendez-vous</em>', d:"Une visite d'une heure. Elle n'engage à rien.",
+  { i:'01', n:'La <em>Galerie</em>', d:'Six silhouettes, vingt-six peaux.', va:'galerie' },
+  { i:'02', n:"L'<em>Atelier</em>", d:'Six plans, du tri de la peau à la marque.', va:'atelier' },
+  { i:'03', n:'La <em>Maison</em>', d:'1904 à aujourd’hui, quatre générations.', va:'maison' },
+  { i:'04', n:'Le <em>Boudoir</em>', d:'Le sur-mesure, en volume.', va:'serrure',
+    clos:'Sur figure' },
+  { i:'05', n:'Le <em>Rendez-vous</em>', d:"Une visite d'une heure. Elle n'engage à rien.",
     va:'rdv' },
 ];
 PLAN.forEach(p => {
@@ -1253,7 +1313,7 @@ PLAN.forEach(p => {
     '<span class="pl__n">' + p.n +
       (p.clos ? '<span class="pl__t">' + p.clos + '</span>' : '') + '</span>' +
     '<span class="pl__d">' + p.d + '</span>';
-  b.onclick = () => { fermerPlan(); p.va === 'porte' ? ouvrirPorte() : versLieu(p.va); };
+  b.onclick = () => { fermerPlan(); p.va === 'serrure' ? ouvrirSerrure() : versLieu(p.va); };
   $('planL').appendChild(b);
 });
 function ouvrirPlan() { $('plan').classList.add('on'); }
@@ -1265,10 +1325,22 @@ $('planRdv').onclick = () => { fermerPlan(); versLieu('rdv'); };
 $('entrer').onclick = () => versLieu('galerie');
 $('versRdv').onclick = () => versLieu('rdv');
 $('versAtelier').onclick = () => versLieu('atelier');
-$('versBoudoir').onclick = () => ouvrirPorte();
+$('versMaison').onclick = () => versLieu('maison');
+$('versBoudoir').onclick = () => ouvrirSerrure();
 $('atVersRdv').onclick = () => versLieu('rdv');
+$('maVersRdv').onclick = () => versLieu('rdv');
+$('maVersAtelier').onclick = () => versLieu('atelier');
 
-/* ═══════════ LE MUR EN PATCHWORK ═══════════ */
+function poser(cadre, src, ajuste) {
+  const im = document.createElement('img');
+  im.alt = ''; im.decoding = 'async';
+  im.onerror = () => cadre.classList.add('vide');
+  im.src = src; cadre.appendChild(im);
+  if (ajuste) im.style.objectFit = ajuste;
+  return im;
+}
+
+/* ═══════════ LE MUR ═══════════ */
 const mur = $('mur');
 const caler = (el, g, m) => {
   el.style.gridColumn = g[0] + ' / span ' + g[1];
@@ -1292,7 +1364,8 @@ PARCOURS.forEach(item => {
     d.className = 'sect'; d.dataset.sect = item.n;
     caler(d, item.g, 2);
     d.innerHTML = '<p class="sect__n">' + item.n + '</p>' +
-      '<p class="sect__k cap">' + item.k + '</p><span class="sect__r"></span>';
+      '<p class="sect__k cap">' + item.k + '</p><span class="sect__r"></span>' +
+      (item.d ? '<p class="sect__d">' + item.d + '</p>' : '');
     mur.appendChild(d);
     return;
   }
@@ -1308,27 +1381,21 @@ PARCOURS.forEach(item => {
     b.insertAdjacentHTML('beforeend',
       '<div class="ouv__x"><p class="ouv__k cap">' + item.k + '</p>' +
       '<p class="ouv__n">' + item.n + '</p><p class="ouv__d">' + item.d + '</p>' +
-      '<span class="ouv__go"><i></i>' + (item.prive ? 'Entrer sur code' : 'Entrer') +
+      '<span class="ouv__go"><i></i>' + (item.prive ? 'Entrer sur figure' : 'Entrer') +
       '</span></div>');
     b.onclick = () => { if (mur.dataset.glisse) return;
-      item.va === 'porte' ? ouvrirPorte() : versLieu(item.va); };
+      item.va === 'serrure' ? ouvrirSerrure() : versLieu(item.va); };
     mur.appendChild(b);
     return;
   }
-  const o = oePar(item.id);
+  const o = OEUVRES[item.i];
   const a = document.createElement('button');
-  a.className = 'tuile'; a.dataset.oe = o.id; a.dataset.sect = o.s;
+  a.className = 'tuile' + (o.nu ? ' tuile--nu' : '');
+  a.dataset.oe = o.id; a.dataset.sect = o.s;
   caler(a, o.g, o.m);
   const m = document.createElement('div');
-  m.className = 'tuile__m' + (o.rend ? ' rendu' : '');
-  const im = poser(m, srcDe(o), o.rend ? 'contain' : null);
-  im.alt = o.t;
-  if (o.rend) {
-    const t = document.createElement('div'); t.className = 'tuile__t';
-    t.style.backgroundColor = o.hex;
-    t.style.webkitMaskImage = t.style.maskImage = 'url(' + RENDUS.masque + ')';
-    m.appendChild(t);
-  }
+  m.className = 'tuile__m';
+  const im = poser(m, srcDe(o)); im.alt = o.t;
   a.appendChild(m);
   a.insertAdjacentHTML('beforeend',
     '<div class="tuile__c"><p class="tuile__n">' + o.t + '</p>' +
@@ -1336,12 +1403,10 @@ PARCOURS.forEach(item => {
   a.onclick = () => { if (!mur.dataset.glisse) ouvrirPlein(o.id, m); };
   mur.appendChild(a);
 });
-/* la numérotation d'accrochage, dans le coin de chaque image */
 [...mur.querySelectorAll('.tuile')].forEach((a, i) =>
   a.querySelector('.tuile__m').insertAdjacentHTML('afterbegin',
     '<span class="tuile__i">' + ('0' + (i + 1)).slice(-2) + '</span>'));
 
-/* les tuiles se lèvent à mesure qu'on avance : le mur se découvre */
 const oeilMur = new IntersectionObserver(es => es.forEach(e => {
   if (e.isIntersecting) { e.target.classList.add('vu'); oeilMur.unobserve(e.target); }
 }), { root: mur, threshold: .06 });
@@ -1349,7 +1414,6 @@ function revelerMur() {
   mur.querySelectorAll('.tuile:not(.vu),.ouv:not(.vu)').forEach(t => oeilMur.observe(t));
 }
 
-/* ── on marche : molette, doigt, souris tirée, flèches ── */
 (function () {
   const items = () => [...mur.children];
   mur.addEventListener('wheel', e => {
@@ -1411,7 +1475,7 @@ function revelerMur() {
     const s = it && it.dataset.sect ? it.dataset.sect : sectCourante;
     const tuiles = [...mur.querySelectorAll('.tuile')];
     const i = tuiles.indexOf(it);
-    $('marcheN').textContent = i >= 0 ? 'Œuvre ' + (i + 1) + ' sur ' + tuiles.length
+    $('marcheN').textContent = i >= 0 ? 'Pièce ' + (i + 1) + ' sur ' + tuiles.length
       : (it && it.dataset.ouv ? 'Une ouverture' : '');
     if (s !== sectCourante) { sectCourante = s; ariane(); }
   }
@@ -1420,28 +1484,21 @@ function revelerMur() {
     attend = true;
     requestAnimationFrame(() => { relever(); attend = false; });
   }, { passive: true });
-  window.__relever = relever;
   relever();
 })();
 
-/* ═══════════════════════════════════════════════════════════════
-   LE PLEIN ÉCRAN
-   L'œuvre grandit depuis sa propre tuile jusqu'à l'écran entier : on
-   mesure le cadre d'arrivée, on l'expédie à la place de la tuile, puis
-   on le laisse revenir (FLIP). Le cartel monte ensuite, décalé.
-   ═══════════════════════════════════════════════════════════════ */
+/* ═══════════ LE PLEIN ÉCRAN ═══════════ */
 let idxPlein = -1, tuileSource = null, animPlein = null;
 const vues = new Set();
 
-/* La place du cadre est calculée : la bande dispo, le rapport de
-   l'œuvre, et l'on prend la plus grande boîte qui y tient. */
 function dimensionner(o) {
   const s = document.querySelector('.plein__s'), ph = $('pleinPh');
   const cs = getComputedStyle(s);
   const W = s.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
   const H = s.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
   if (W <= 0 || H <= 0) return;
-  const r = o && o.ar ? o.ar[0] / o.ar[1] : .8;
+  const im = $('pleinImg');
+  const r = im.naturalWidth ? im.naturalWidth / im.naturalHeight : (o && o.nu ? 1.5 : .75);
   let w = W, h = w / r;
   if (h > H) { h = H; w = h * r; }
   ph.style.width = Math.round(w) + 'px';
@@ -1452,32 +1509,22 @@ addEventListener('resize', () => {
 }, { passive: true });
 
 function habiller(o) {
-  const ph = $('pleinPh'), im = $('pleinImg'), t = $('pleinT');
-  ph.classList.toggle('contenir', !!o.rend);
+  const ph = $('pleinPh'), im = $('pleinImg');
+  ph.classList.toggle('contenir', !!o.nu);
   ph.classList.remove('vide');
-  im.onerror = o.rend ? null : (() => ph.classList.add('vide'));
+  im.onerror = () => ph.classList.add('vide');
   im.src = srcDe(o); im.alt = o.t;
-  if (o.rend) {
-    t.style.backgroundColor = o.hex;
-    t.style.webkitMaskImage = t.style.maskImage = 'url(' + RENDUS.masque + ')';
-  } else {
-    t.style.backgroundColor = 'transparent';
-    t.style.webkitMaskImage = t.style.maskImage = 'none';
-  }
-  $('pleinI').textContent = o.s + ' · œuvre ' + (idxPlein + 1) + ' sur ' + OEUVRES.length;
+  $('pleinI').textContent = o.s + ' · pièce ' + (idxPlein + 1) + ' sur ' + OEUVRES.length;
   $('pleinK').textContent = o.k;
   $('pleinN2').textContent = o.t;
   $('pleinD').textContent = o.d;
-  const q = $('pleinQ');
-  if (o.q) { q.hidden = false; q.innerHTML = '« ' + o.q[0] + ' »<small>' + o.q[1] + '</small>'; }
-  else q.hidden = true;
   $('pleinL').innerHTML = o.l.map(([k, v]) =>
     '<div><span>' + k + '</span><span>' + v + '</span></div>').join('');
   $('pleinP').disabled = idxPlein <= 0;
   $('pleinN').disabled = idxPlein >= OEUVRES.length - 1;
-  /* en dernier : la bande disponible dépend de la hauteur du cartel,
-     qui vient d'être posé */
+  /* la bande dispo dépend de la hauteur du cartel, qui vient d'être posé */
   dimensionner(o);
+  if (!im.complete) im.addEventListener('load', () => dimensionner(o), { once: true });
   vues.add(o.id);
 }
 
@@ -1495,15 +1542,14 @@ function ouvrirPlein(id, cadre) {
   if (cadre && !RM && F.width > 0) {
     const I = cadre.getBoundingClientRect();
     const s = I.width / F.width;
-    const dx = (I.left + I.width / 2) - (F.left + F.width / 2);
-    const dy = (I.top + I.height / 2) - (F.top + F.height / 2);
-    ph.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(' + s + ')';
+    ph.style.transform = 'translate(' + ((I.left + I.width / 2) - (F.left + F.width / 2)) +
+      'px,' + ((I.top + I.height / 2) - (F.top + F.height / 2)) + 'px) scale(' + s + ')';
     tuileSource = cadre; cadre.style.visibility = 'hidden';
     requestAnimationFrame(() => requestAnimationFrame(() => {
       ph.style.transition = 'transform .8s var(--e)';
       ph.style.transform = 'none';
     }));
-  } else tuileSource = null;
+  }
   clearTimeout(animPlein);
   animPlein = setTimeout(() => $('plein').classList.add('dit'), RM ? 0 : 240);
   majVisite();
@@ -1517,8 +1563,8 @@ function fermerPlein(sec) {
   const rendre = () => {
     pl.classList.remove('on'); pl.style.transition = '';
     tuileSource = null;
-    /* aucune tuile ne doit rester masquée : on balaie, la navigation
-       d'une œuvre à l'autre a pu en laisser une derrière */
+    /* aucune tuile ne doit rester masquée : la navigation d'une pièce à
+       l'autre a pu en laisser une derrière */
     mur.querySelectorAll('.tuile__m').forEach(m => { m.style.visibility = ''; });
     const ph = $('pleinPh');
     ph.style.transition = 'none'; ph.style.transform = 'none'; ph.style.opacity = '1';
@@ -1527,13 +1573,11 @@ function fermerPlein(sec) {
   if (sec || RM || !tuileSource) { rendre(); return; }
   const ph = $('pleinPh');
   const F = ph.getBoundingClientRect(), I = tuileSource.getBoundingClientRect();
-  /* la tuile peut avoir quitté l'écran entre-temps : on se contente
-     alors d'un fondu, sans envoyer le cadre dans le décor */
   if (I.width < 4 || I.bottom < 0 || I.top > innerHeight) { rendre(); return; }
-  const s = I.width / F.width;
   ph.style.transition = 'transform .62s var(--e)';
   ph.style.transform = 'translate(' + ((I.left + I.width / 2) - (F.left + F.width / 2)) +
-    'px,' + ((I.top + I.height / 2) - (F.top + F.height / 2)) + 'px) scale(' + s + ')';
+    'px,' + ((I.top + I.height / 2) - (F.top + F.height / 2)) + 'px) scale(' +
+    (I.width / F.width) + ')';
   pl.style.transition = 'opacity .5s var(--e) .12s,visibility .62s';
   pl.classList.remove('on');
   animPlein = setTimeout(rendre, 640);
@@ -1558,7 +1602,6 @@ function pleinVoisin(d) {
       ph.style.transform = 'none'; ph.style.opacity = '1';
       $('plein').classList.add('dit');
     }));
-    /* la tuile correspondante devient la cible du retour */
     const t = mur.querySelector('.tuile[data-oe="' + OEUVRES[idxPlein].id + '"] .tuile__m');
     if (t) { t.style.visibility = 'hidden'; tuileSource = t; }
     majVisite();
@@ -1574,12 +1617,12 @@ $('pleinGo').onclick = () => {
 };
 document.addEventListener('keydown', e => {
   if ($('plan').classList.contains('on') && e.key === 'Escape') { fermerPlan(); return; }
+  if ($('serrure').classList.contains('on') && e.key === 'Escape') { fermerSerrure(); return; }
   if (!$('plein').classList.contains('on')) return;
   if (e.key === 'Escape') fermerPlein();
   if (e.key === 'ArrowLeft') pleinVoisin(-1);
   if (e.key === 'ArrowRight') pleinVoisin(1);
 });
-/* au doigt, en plein écran : on passe d'une œuvre à l'autre */
 (function () {
   const s = $('plein');
   let x0 = null;
@@ -1596,7 +1639,7 @@ let filClos = false;
 function majVisite() {
   const n = vues.size;
   const montrer = !filClos && n >= 2 &&
-    (lieuCourant === 'galerie' || lieuCourant === 'atelier') &&
+    (lieuCourant === 'galerie' || lieuCourant === 'maison') &&
     !$('plein').classList.contains('on');
   $('visite').classList.toggle('on', montrer);
   $('visiteT').textContent = n + (n > 1 ? ' pièces regardées' : ' pièce regardée') +
@@ -1605,32 +1648,72 @@ function majVisite() {
 $('visiteGo').onclick = () => versLieu('rdv');
 $('visiteX').onclick = () => { filClos = true; $('visite').classList.remove('on'); };
 
-/* ═══════════ L'ATELIER ═══════════ */
-GESTES.forEach(g => {
+/* ═══════════ L'ATELIER — six plans que l'on traverse ═══════════ */
+PLANS.forEach((p, i) => {
   const s = document.createElement('section');
-  s.className = 'geste';
-  const m = document.createElement('div');
-  m.className = 'geste__m'; m.setAttribute('data-rev', '');
-  poser(m, g.img);
-  s.appendChild(m);
-  const x = document.createElement('div');
-  x.setAttribute('data-rev', '');
-  x.innerHTML = '<p class="geste__i">' + g.k + '</p>' +
-    '<h3 class="geste__t">' + g.t + '</h3><p class="geste__d">' + g.d + '</p>' +
-    '<div class="geste__f">' + g.f.map(([k, v]) =>
-      '<div><span>' + k + '</span>' + v + '</div>').join('') + '</div>';
-  s.appendChild(x);
-  $('gestes').appendChild(s);
+  s.className = 'plan6'; s.dataset.i = i;
+  const m = document.createElement('div'); m.className = 'plan6__m';
+  poser(m, VIS[p.v]); s.appendChild(m);
+  s.insertAdjacentHTML('beforeend',
+    '<div class="plan6__x"><p class="plan6__i">' + p.n + ' · ' + p.c + '</p>' +
+    '<h3 class="plan6__t">' + p.t + '</h3><p class="plan6__d">' + p.d + '</p>' +
+    '<div class="plan6__f">' + p.f.map(([k, v]) =>
+      '<div><span>' + k + '</span>' + v + '</div>').join('') + '</div></div>');
+  $('plans6').appendChild(s);
+  const b = document.createElement('button');
+  b.innerHTML = '<i></i>' + p.n;
+  b.onclick = () => s.scrollIntoView(doux);
+  $('atRail').appendChild(b);
 });
-const oeil = new IntersectionObserver(es => es.forEach(e => {
-  if (e.isIntersecting) { e.target.classList.add('vu'); oeil.unobserve(e.target); }
-}), { threshold: .16 });
-function reveler() { document.querySelectorAll('[data-rev]:not(.vu)').forEach(e => oeil.observe(e)); }
+/* une seule boucle : le retard de l'image, et le plan où l'on se trouve */
+let attendAt = false;
+function auFil() {
+  const at = $('atelier');
+  const plans = [...document.querySelectorAll('.plan6')];
+  const rails = [...$('atRail').children];
+  let actif = 0;
+  plans.forEach((s, i) => {
+    const r = s.getBoundingClientRect();
+    if (r.top <= innerHeight * .5 && r.bottom > innerHeight * .5) actif = i;
+    if (r.bottom < -200 || r.top > innerHeight + 200) return;
+    /* l'image glisse plus lentement que la page : c'est ce retard qui
+       donne la sensation d'avancer dans la pièce */
+    const p = Math.max(-1, Math.min(1, (r.top + r.height / 2 - innerHeight / 2) / innerHeight));
+    const m = s.querySelector('.plan6__m');
+    if (m) m.style.transform = 'translateY(' + (p * 7).toFixed(2) + '%)';
+    s.classList.toggle('ici', r.top < innerHeight * .72 && r.bottom > innerHeight * .28);
+  });
+  rails.forEach((b, i) => b.classList.toggle('ici', i === actif));
+  if (at.scrollTop < 4) plans[0] && plans[0].classList.add('ici');
+}
+$('atelier').addEventListener('scroll', () => {
+  if (attendAt) return;
+  attendAt = true;
+  requestAnimationFrame(() => { auFil(); attendAt = false; });
+}, { passive: true });
+
+/* ═══════════ LA MAISON — la chronique ═══════════ */
+CHAPITRES.forEach(c => {
+  const s = document.createElement('section');
+  s.className = 'chap';
+  const m = document.createElement('div'); m.className = 'chap__m';
+  poser(m, VIS[c.v]);
+  s.innerHTML = '<p class="chap__an">' + c.an + '</p>' +
+    '<div><h3 class="chap__t">' + c.t + '</h3><p class="chap__d">' + c.d + '</p>' +
+    (c.q ? '<blockquote class="chap__q">« ' + c.q[0] + ' »<small>' + c.q[1] +
+      '</small></blockquote>' : '') + '</div>';
+  s.appendChild(m);
+  $('chapitres').appendChild(s);
+});
+$('maNote').textContent = 'Les deux générations intermédiaires (' +
+  CHAPITRES.filter(c => c.todo).map(c => c.an).join(' et ') +
+  ') sont des repères d’exemple : dates, prénoms et faits restent à établir avec ' +
+  'la famille. Le reste — 1904, la reprise par Laurène, la règle de l’atelier — ' +
+  'vient de ce que la maison dit d’elle-même.';
 
 /* les visuels d'ambiance */
-poser($('seuilF'), VIS.rotonde);
-poser($('rdvF'), VIS.salle);
-poser($('atV'), VIS.accrochage);
+poser($('seuilF'), VIS['ed-contre-jour']);
+poser($('rdvF'), VIS['ed-victoire']);
 
 /* ═══════════ LE RENDEZ-VOUS ═══════════ */
 $('rdvForm').addEventListener('submit', e => {
@@ -1643,35 +1726,108 @@ $('rdvForm').addEventListener('submit', e => {
   $('rdvOk').scrollIntoView(Object.assign({ block:'nearest' }, doux));
 });
 
-/* ═══════════ LA PORTE ═══════════ */
-const CODE = '1904';
-function ouvrirPorte() {
-  fermerPlan(); fermerPlein(true);
-  $('porte').classList.add('on');
-  setTimeout(() => $('code').focus(), 380);
-}
-$('porteX').onclick = () => { $('porte').classList.remove('on'); $('codeE').classList.remove('on'); };
-$('code').addEventListener('input', function () {
-  $('codeE').classList.remove('on');
-  const v = this.value.trim();
-  if (v.length < CODE.length) return;
-  if (v === CODE) {
-    $('porte').classList.remove('on'); this.value = '';
-    versLieu('boudoir'); versScene('atl');
-  } else $('codeE').classList.add('on');
+/* ═══════════════════════════════════════════════════════════════
+   LA SERRURE — neuf points, on trace un T
+   La figure est l'ensemble {0,1,2} (la barre) et {1,4,7} (le fût).
+   On accepte plusieurs traits : la barre, puis le fût — c'est ainsi
+   qu'on écrit un T, et un tracé d'un seul geste devrait repasser sur
+   un point déjà pris.
+   ═══════════════════════════════════════════════════════════════ */
+const T = [0, 1, 2, 4, 7];
+const P9 = [];
+for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) P9.push([10 + c * 40, 12 + r * 39]);
+P9.forEach(([x, y], i) => {
+  const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  c.setAttribute('cx', x); c.setAttribute('cy', y); c.setAttribute('r', 3.2);
+  c.dataset.i = i;
+  $('sePoints').appendChild(c);
 });
+let pris = [], traits = [], traitEnCours = null;
+
+function dessiner() {
+  const d = traits.concat(traitEnCours ? [traitEnCours] : [])
+    .filter(t => t.length > 1)
+    .map(t => 'M' + t.map(i => P9[i][0] + ' ' + P9[i][1]).join(' L'))
+    .join(' ');
+  $('seTrace').setAttribute('d', d);
+  [...$('sePoints').children].forEach((c, i) => c.classList.toggle('pris', pris.includes(i)));
+}
+function pointSous(e) {
+  const r = $('seSvg').getBoundingClientRect();
+  const x = (e.clientX - r.left) / r.width * 100, y = (e.clientY - r.top) / r.height * 100;
+  for (let i = 0; i < 9; i++) {
+    const dx = x - P9[i][0], dy = y - P9[i][1];
+    if (dx * dx + dy * dy < 130) return i;
+  }
+  return -1;
+}
+function viderFigure() {
+  pris = []; traits = []; traitEnCours = null;
+  $('seE').classList.remove('on'); dessiner();
+}
+function verifier() {
+  const a = [...pris].sort((x, y) => x - y).join(',');
+  if (a === T.join(',')) {
+    $('serrure').classList.remove('on');
+    setTimeout(viderFigure, 500);
+    versLieu('boudoir'); versScene('atl');
+    return;
+  }
+  if (!pris.length) return;
+  $('seE').textContent = 'Ce n’est pas la figure.';
+  $('seE').classList.add('on');
+  $('serrure').classList.add('faux');
+  setTimeout(() => { $('serrure').classList.remove('faux'); viderFigure(); }, 620);
+}
+(function () {
+  const g = $('seG');
+  let actif = false;
+  const ajouter = i => {
+    if (i < 0) return;
+    if (!traitEnCours.includes(i)) traitEnCours.push(i);
+    if (!pris.includes(i)) pris.push(i);
+    dessiner();
+  };
+  g.addEventListener('pointerdown', e => {
+    actif = true; traitEnCours = [];
+    $('seE').classList.remove('on');
+    ajouter(pointSous(e));
+    try { g.setPointerCapture(e.pointerId); } catch (_) {}
+    e.preventDefault();
+  });
+  g.addEventListener('pointermove', e => { if (actif) ajouter(pointSous(e)); });
+  function fin() {
+    if (!actif) return;
+    actif = false;
+    if (traitEnCours && traitEnCours.length > 1) traits.push(traitEnCours);
+    traitEnCours = null; dessiner();
+    /* on laisse le temps d'un second trait — un T s'écrit en deux */
+    clearTimeout(fin.t);
+    fin.t = setTimeout(verifier, 550);
+  }
+  g.addEventListener('pointerup', fin);
+  g.addEventListener('pointercancel', fin);
+})();
+function ouvrirSerrure() {
+  fermerPlan(); fermerPlein(true); viderFigure();
+  $('seG').classList.remove('montre');
+  $('serrure').classList.add('on');
+}
+function fermerSerrure() { $('serrure').classList.remove('on'); viderFigure(); }
+$('seX').onclick = fermerSerrure;
+$('seAide').onclick = () => $('seG').classList.toggle('montre');
 
 /* ═══════════ LE BOUDOIR ═══════════ */
 const CLIENTE = { nom:'Hélène', cercle:'Cercle II' };
 $('bdNom').textContent = CLIENTE.nom;
 const CARNET = [
-  { n:'Colette', d:'Veau grainé Bordeaux · 2023 · ferrures laiton', img:IMG.colette },
-  { n:'Rafaël', d:'Box lisse Noir Absolu · 2024 · initiale H.M.', img:IMG.rafael },
+  { n:'Victoire', d:'Veau box Rouge Carmin · 2023', v:'victoire-a' },
+  { n:'Rafaël', d:'Alligator Noir Absolu · 2024 · initiale H.M.', v:'nu-12' },
 ];
 CARNET.forEach(p => {
   const d = document.createElement('div'); d.className = 'pos1';
   const m = document.createElement('div'); m.className = 'pos1__m';
-  poser(m, p.img); d.appendChild(m);
+  poser(m, VIS[p.v]); d.appendChild(m);
   d.insertAdjacentHTML('beforeend', '<div><p class="pos1__n">' + p.n + '</p>' +
     '<p class="pos1__d">' + p.d + '</p></div>');
   $('carnet').appendChild(d);
@@ -1685,14 +1841,11 @@ document.querySelectorAll('.sb[data-s]').forEach(b => b.onclick = () => {
   versScene(b.dataset.s);
 });
 
-/* ═══════════ LE MODULE 3D ═══════════ */
+/* ═══════════ LE MODULE ═══════════ */
 const MATIERES = [
-  { id:'graine', nom:'Grainé', d:0 },
-  { id:'caviar', nom:'Caviar', d:180 },
-  { id:'lisse', nom:'Box lisse', d:320 },
-  { id:'daim', nom:'Daim', d:240 },
-  { id:'alligator', nom:'Alligator', d:3800 },
-  { id:'galuchat', nom:'Galuchat', d:3100 },
+  { id:'graine', nom:'Grainé', d:0 }, { id:'caviar', nom:'Caviar', d:180 },
+  { id:'lisse', nom:'Box lisse', d:320 }, { id:'daim', nom:'Daim', d:240 },
+  { id:'alligator', nom:'Alligator', d:3800 }, { id:'galuchat', nom:'Galuchat', d:3100 },
 ];
 const FERRURES = [
   { id:'laiton', n:'Laiton naturel', d2:'Patine avec le temps.', d:0, f:'#b08d57' },
@@ -1710,22 +1863,22 @@ const DOUBLURES = [
   { id:'chevreau', n:'Chevreau glacé', d2:"Un léger éclat à l'ouverture.", d:160, tx:'lisse' },
   { id:'soie', n:'Soie sauvage', d2:'Tissée à Lyon.', d:240, f:'#c9b79c' },
 ];
-const BANDOULIERE = [
-  { id:'avec', n:'Avec bandoulière', d2:'Portée épaule ou croisée.', d:0, f:'#3a332c' },
+const CHAINE = [
+  { id:'avec', n:'Avec chaîne', d2:'Portée épaule ou croisée.', d:0, f:'#b08d57' },
   { id:'sans', n:'Pochette nue', d2:'La pièce, rien de plus.', d:-140, f:'#221e1a' },
 ];
-const MODELE = { nom:'Rafaël', base:1900, t:'Pochette · bandoulière amovible',
-  reps:{ ext:[26,60], ferrures:[50.7,74], passepoil:[74,62], bandouliere:[50,11], doublure:[30,84] } };
+const MODELE = { nom:'Rafaël', base:1900, t:'Pochette à chaîne',
+  reps:{ ext:[26,60], ferrures:[50.7,74], passepoil:[74,62], chaine:[50,11], doublure:[30,84] } };
 const AJ = [
-  { k:'ext', n:'Cuir extérieur', type:'cuir' },
+  { k:'ext', n:'Peausserie', type:'cuir' },
   { k:'ferrures', n:'Ferrures', type:'liste', l:FERRURES },
   { k:'passepoil', n:'Passepoil', type:'liste', l:PASSEPOILS },
   { k:'doublure', n:'Doublure', type:'liste', l:DOUBLURES },
-  { k:'bandouliere', n:'Bandoulière', type:'liste', l:BANDOULIERE },
+  { k:'chaine', n:'Chaîne', type:'liste', l:CHAINE },
   { k:'grav', n:'Gravure', type:'texte' },
 ];
 const S = { cuir:'', ferrures:'laiton', passepoil:'framboise', doublure:'agneau',
-            bandouliere:'avec', grav:'' };
+            chaine:'avec', grav:'' };
 const matPar = id => MATIERES.find(m => m.id === id) || null;
 const nuPar = id => NUANCES.find(n => n.id === id) || null;
 function cuirCourant() {
@@ -1741,7 +1894,7 @@ function total() {
   let t = MODELE.base;
   const c = cuirCourant(); if (c) t += c.delta;
   [[FERRURES,'ferrures'],[PASSEPOILS,'passepoil'],[DOUBLURES,'doublure'],
-   [BANDOULIERE,'bandouliere']].forEach(([L, k]) => {
+   [CHAINE,'chaine']].forEach(([L, k]) => {
     const o = L.find(x => x.id === S[k]); if (o) t += o.d;
   });
   if (S.grav) t += 180;
@@ -1832,8 +1985,7 @@ function rafraichir() {
     else {
       $('phT').style.backgroundColor = c.hex;
       $('phT').style.opacity = '1';
-      /* la seule couleur que la pièce donne au salon : le trait de l'arc.
-         Pas de fond teinté — la matière doit se juger sur elle-même. */
+      /* la seule couleur que la pièce donne au salon : le trait de l'arc */
       $('boudoir').style.setProperty('--accent', c.hex);
     }
     tourner(angle, true);
@@ -1874,24 +2026,30 @@ function tourner(a, force) {
 let boucleRot = null;
 function poserAngle(a) { arreterElan(); tourner(a); }
 function arreterElan() { if (boucleRot) cancelAnimationFrame(boucleRot); boucleRot = null; }
+
+/* ── le geste : on saisit la pièce, on la tourne ──
+   La prise porte sur TOUTE la scène, pas seulement sur l'image : on
+   attrape la pièce où qu'on la prenne, et l'invitation s'efface dès le
+   premier tour. */
 (function () {
-  const ph = $('ph');
+  const sc = $('sc');
   let id = null, x0 = 0, a0 = 0, dx = 0, t0 = 0, elan = 0;
-  const pas = () => Math.max(16, ph.clientWidth / POS * 1.6);
-  ph.addEventListener('pointerdown', e => {
-    if (e.target.closest('.rep')) return;
+  const pas = () => Math.max(16, $('ph').clientWidth / POS * 1.5);
+  sc.addEventListener('pointerdown', e => {
+    if (e.target.closest('.rep, .rot')) return;
     id = e.pointerId; x0 = e.clientX; a0 = angle; dx = 0; t0 = e.timeStamp;
-    elan = 0; arreterElan(); ph.classList.add('tourne');
-    try { ph.setPointerCapture(id); } catch (_) {}
+    elan = 0; arreterElan(); sc.classList.add('tourne');
+    try { sc.setPointerCapture(id); } catch (_) {}
   });
-  ph.addEventListener('pointermove', e => {
+  sc.addEventListener('pointermove', e => {
     if (id === null || e.pointerId !== id) return;
     dx = e.clientX - x0;
+    if (Math.abs(dx) > 4) sc.classList.add('deja');
     tourner(a0 - Math.round(dx / pas()));
   });
   function fin(e) {
     if (id === null || e.pointerId !== id) return;
-    id = null; ph.classList.remove('tourne');
+    id = null; sc.classList.remove('tourne');
     const dt = Math.max(1, e.timeStamp - t0);
     if (Math.abs(dx) < 6) return;
     /* l'élan prolonge le geste puis s'éteint — borné à une position par
@@ -1905,12 +2063,12 @@ function arreterElan() { if (boucleRot) cancelAnimationFrame(boucleRot); boucleR
       boucleRot = requestAnimationFrame(file);
     })();
   }
-  ph.addEventListener('pointerup', fin);
-  ph.addEventListener('pointercancel', fin);
-  ph.tabIndex = 0;
-  ph.addEventListener('keydown', e => {
-    if (e.key === 'ArrowLeft') { poserAngle(angle - 1); e.preventDefault(); }
-    if (e.key === 'ArrowRight') { poserAngle(angle + 1); e.preventDefault(); }
+  sc.addEventListener('pointerup', fin);
+  sc.addEventListener('pointercancel', fin);
+  sc.tabIndex = 0;
+  sc.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') { poserAngle(angle - 1); sc.classList.add('deja'); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { poserAngle(angle + 1); sc.classList.add('deja'); e.preventDefault(); }
     if (e.key === 'Home') poserAngle(0);
   });
 })();
@@ -1925,6 +2083,7 @@ function arreterElan() { if (boucleRot) cancelAnimationFrame(boucleRot); boucleR
   const vise = e => {
     const r = p.getBoundingClientRect();
     poserAngle(Math.round((e.clientX - r.left) / r.width * POS));
+    $('sc').classList.add('deja');
   };
   p.addEventListener('pointerdown', e => {
     id = e.pointerId; vise(e);
@@ -1941,9 +2100,7 @@ function arreterElan() { if (boucleRot) cancelAnimationFrame(boucleRot); boucleR
   $('rotZ').onclick = () => poserAngle(0);
 })();
 
-/* ─── la plongée : cover flow des nuances ───
-   Elle sert deux fois : depuis l'atelier pour REGARDER (aucun prix),
-   depuis le boudoir pour CHOISIR. */
+/* ─── la plongée dans la matière ─── */
 let pl = null, typ = 'graine', pi = 0, cartes = [], enGalerie = false;
 MATIERES.forEach(f => {
   const b = document.createElement('button');
@@ -2142,7 +2299,7 @@ function certificat() {
     L.push([a.n, v[0], v[1] ? (v[1] > 0 ? '+ ' : '− ') + euros(Math.abs(v[1])) : 'inclus']);
   });
   L.push(['Façonnage', 'Un seul artisan', '12 à 16 semaines']);
-  L.push(['Reçue par', 'Laurène Mauro', CLIENTE.nom + ' · ' + CLIENTE.cercle]);
+  L.push(['Reçue par', 'Laurène', CLIENTE.nom + ' · ' + CLIENTE.cercle]);
   L.forEach((l, i) => {
     const d = document.createElement('div'); d.className = 'cl';
     d.innerHTML = '<span class="cl__k">' + l[0] + '</span><span class="cl__v">' + l[1] +
@@ -2161,26 +2318,33 @@ $('confier').onclick = () => {
 
 /* ═══ crochets de recette ═══ */
 window.__etat = () => ({
-  lieu: lieuCourant,
-  section: sectCourante,
+  lieu: lieuCourant, section: sectCourante,
   scene: (document.querySelector('.scene.on') || {}).dataset?.s,
   oeuvres: document.querySelectorAll('.tuile').length,
+  nuancier: document.querySelectorAll('.tuile--nu').length,
   ouvertures: document.querySelectorAll('.ouv').length,
+  plans: document.querySelectorAll('.plan6').length,
+  chapitres: document.querySelectorAll('.chap').length,
   ariane: $('fil').innerText.replace(/\s+/g, ' ').trim(),
   plan: $('plan').classList.contains('on'),
-  plein: $('plein').classList.contains('on'),
-  pleinIdx: idxPlein,
-  visite: $('visite').classList.contains('on'),
-  vues: vues.size,
-  plongee: $('plg').classList.contains('on'),
-  cabinet: enGalerie,
+  serrure: $('serrure').classList.contains('on'),
+  figure: [...pris].sort((a, b) => a - b).join(','),
+  plein: $('plein').classList.contains('on'), pleinIdx: idxPlein,
+  visite: $('visite').classList.contains('on'), vues: vues.size,
+  plongee: $('plg').classList.contains('on'), cabinet: enGalerie,
   cuir: S.cuir, total: total(), angle,
+  saisir: getComputedStyle($('saisir')).opacity,
 });
 window.__lieu = versLieu;
 window.__scene = versScene;
 window.__tourner = a => poserAngle(a);
 window.__cabinet = cabinet;
-window.__porte = ouvrirPorte;
+window.__serrure = ouvrirSerrure;
+window.__figure = l => {   /* tracer une figure sans souris, pour la recette */
+  viderFigure();
+  l.forEach(t => { traits.push(t.slice()); t.forEach(i => { if (!pris.includes(i)) pris.push(i); }); });
+  dessiner(); verifier();
+};
 window.__plein = i => {
   const o = OEUVRES[i];
   const t = mur.querySelector('.tuile[data-oe="' + o.id + '"] .tuile__m');
@@ -2188,6 +2352,6 @@ window.__plein = i => {
 };
 window.__fermerPlein = () => fermerPlein();
 
-batirFiche(); batirReperes(); tourner(0, true); rafraichir(); ariane();
+batirFiche(); batirReperes(); tourner(0, true); rafraichir(); ariane(); dessiner();
 </script>
 </body></html>

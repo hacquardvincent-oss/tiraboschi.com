@@ -1,23 +1,17 @@
-/* Recette de la démo Galerie · Atelier · Boudoir.
+/* Recette de la démo Galerie · Atelier · Maison · Boudoir.
    Lancer depuis la racine : NODE_PATH=/opt/node22/lib/node_modules node tests/galerie/recette.js
 
-   Ce qu'on vérifie tient en quatre phrases :
-   — la galerie est blanche, en patchwork, et ne vend rien ;
-   — une œuvre s'ouvre en PLEIN ÉCRAN depuis sa propre tuile, jamais
-     dans une fenêtre ;
-   — on ne s'y perd pas : fil d'Ariane, plan équilibré, rendez-vous
-     toujours à portée, fil de visite qui accompagne ;
-   — le prix et le module 3D n'existent que dans le boudoir, qui est
-     clair et tenu par des noirs. */
+   Ce qu'on vérifie :
+   — la galerie est blanche, tient sur les photographies de la maison,
+     et ne vend rien ;
+   — une pièce s'ouvre en PLEIN ÉCRAN depuis sa propre tuile ;
+   — chaque lieu a sa façon de se déplacer, et l'on ne s'y perd pas ;
+   — le boudoir s'ouvre en traçant un T, et la pièce s'y tourne AU
+     DOIGT autant qu'au rail ;
+   — le prix n'existe que dans le boudoir. */
 const { chromium } = require('playwright');
-const fs = require('fs');
 
 const F = 'file://' + process.cwd() + '/tiraboschi-galerie-demo.html';
-
-/* Le CDN de la boutique n'est pas joignable depuis l'environnement de
-   recette : on sert un rendu d'atelier déjà versionné à sa place, pour
-   que la mise en page se mesure sur une image de taille réaliste. */
-const SUB = fs.readFileSync('tools/rot360/hd-graine.webp');
 
 let ok = 0, ko = 0;
 const cas = [];
@@ -25,8 +19,6 @@ function v(nom, cond, detail) {
   if (cond) { ok++; cas.push('  ok   ' + nom); }
   else { ko++; cas.push('  ÉCHEC ' + nom + (detail !== undefined ? ' → ' + detail : '')); }
 }
-
-/* contraste WCAG */
 const lin = c => { c /= 255; return c <= .03928 ? c / 12.92 : Math.pow((c + .055) / 1.055, 2.4); };
 const lum = ([r, g, b]) => .2126 * lin(r) + .7152 * lin(g) + .0722 * lin(b);
 const contraste = (a, b) => {
@@ -35,16 +27,24 @@ const contraste = (a, b) => {
 };
 const rgb = s => (s.match(/\d+/g) || [0, 0, 0]).slice(0, 3).map(Number);
 
+/* glisser à la souris, comme on prendrait la pièce */
+async function glisser(p, x, y, dx, pas) {
+  await p.mouse.move(x, y);
+  await p.mouse.down();
+  for (let i = 1; i <= (pas || 12); i++) {
+    await p.mouse.move(x + dx * i / (pas || 12), y);
+    await p.waitForTimeout(16);
+  }
+  await p.mouse.up();
+}
+
 (async () => {
   const nav = await chromium.launch();
   const erreurs = [];
-
   async function page(w, h) {
     const p = await nav.newPage({ viewport: { width: w, height: h } });
     p.on('console', m => { if (m.type() === 'error') erreurs.push(w + 'px · ' + m.text()); });
     p.on('pageerror', e => erreurs.push(w + 'px · ' + e.message));
-    await p.route('**cdn.shopify.com/s/files/**', r =>
-      r.fulfill({ contentType: 'image/webp', body: SUB }));
     await p.route('**fonts.googleapis.com/**', r =>
       r.fulfill({ contentType: 'text/css', body: '' }));
     await p.goto(F);
@@ -52,323 +52,288 @@ const rgb = s => (s.match(/\d+/g) || [0, 0, 0]).slice(0, 3).map(Number);
     return p;
   }
 
-  /* ═════════════ 1440 × 900 — le parcours complet ═════════════ */
+  /* ═════════════ 1440 × 900 ═════════════ */
   const p = await page(1440, 900);
   let e = await p.evaluate(() => __etat());
-
   v('le seuil ouvre la démonstration', e.lieu === 'seuil', e.lieu);
-  v('la barre est absente au seuil',
-    !(await p.evaluate(() => document.getElementById('barre').classList.contains('on'))));
   await p.click('#entrer'); await p.waitForTimeout(1000);
   e = await p.evaluate(() => __etat());
-  v('« Entrer » mène directement dans la galerie', e.lieu === 'galerie', e.lieu);
+  v('« Entrer » mène dans la galerie', e.lieu === 'galerie', e.lieu);
 
-  /* ── LA GALERIE EST BLANCHE ── */
-  const fonds = await p.evaluate(() => ({
-    galerie: getComputedStyle(document.getElementById('galerie')).backgroundColor,
-    corps: getComputedStyle(document.body).backgroundColor,
-  }));
-  v('le fond de la galerie est un blanc pur',
-    rgb(fonds.galerie).join() === '255,255,255', fonds.galerie);
-  v('le fond du document est blanc', rgb(fonds.corps).join() === '255,255,255', fonds.corps);
+  /* ── plus une seule image d'emprunt : tout vient de la maison ── */
+  const sources = await p.evaluate(() => {
+    const s = [];
+    document.querySelectorAll('img').forEach(i => s.push(i.getAttribute('src') || ''));
+    const p = s.filter(x => !x.startsWith('data:image/gif'));
+    return { total: p.length, externes: p.filter(x => x && !x.startsWith('data:')).length,
+             vides: p.filter(x => !x).length };
+  });
+  v('toutes les photographies sont embarquées',
+    sources.externes === 0 && sources.vides === 0, JSON.stringify(sources));
+  const casses = await p.evaluate(() =>
+    [...document.querySelectorAll('img')]
+      .filter(i => !(i.getAttribute('src') || '').startsWith('data:image/gif'))
+      .filter(i => i.complete && i.naturalWidth === 0).length);
+  v('aucune image cassée', casses === 0, casses);
 
-  /* ── LE PATCHWORK ── */
-  e = await p.evaluate(() => __etat());
-  v('onze œuvres accrochées', e.oeuvres === 11, e.oeuvres);
-  v('deux ouvertures posées dans le mur', e.ouvertures === 2, e.ouvertures);
+  /* ── le mur ── */
+  v('le fond de la galerie est blanc',
+    rgb(await p.evaluate(() => getComputedStyle(document.getElementById('galerie'))
+      .backgroundColor)).join() === '255,255,255');
+  v('trente-deux pièces accrochées', e.oeuvres === 32, e.oeuvres);
+  v('dont vingt-six au nuancier', e.nuancier === 26, e.nuancier);
+  v('trois ouvertures dans le mur', e.ouvertures === 3, e.ouvertures);
+  const ouv = await p.evaluate(() =>
+    [...document.querySelectorAll('.ouv')].map(o => o.dataset.ouv).join());
+  v('l\'Atelier, le Boudoir et la Maison se rencontrent en marchant',
+    ouv === 'atelier,serrure,maison', ouv);
+
   const patch = await p.evaluate(() => {
     const m = document.getElementById('mur');
-    const s = getComputedStyle(m);
-    const t = [...m.querySelectorAll('.tuile')].map(x => {
-      const r = x.getBoundingClientRect();
-      return { w: Math.round(r.width), h: Math.round(r.height), t: Math.round(r.top) };
+    const t = [...m.querySelectorAll('.tuile:not(.tuile--nu)')].map(x => {
+      const r = x.getBoundingClientRect(); return { w: r.width, h: r.height, t: r.top };
     });
-    const larg = t.map(x => x.w), haut = t.map(x => x.h), hauts = t.map(x => x.t);
-    return {
-      grille: s.display,
-      lignes: s.gridTemplateRows.split(' ').length,
-      debordeX: m.scrollWidth - m.clientWidth,
-      debordeY: m.scrollHeight - m.clientHeight,
-      formats: new Set(larg.map(w => w + 'x')).size,
-      ecartLarge: Math.max(...larg) / Math.min(...larg),
-      ecartHaut: Math.max(...haut) / Math.min(...haut),
-      niveaux: new Set(hauts.map(h => Math.round(h / 20))).size,
-      plusGrande: Math.max(...larg),
-    };
+    const n = [...m.querySelectorAll('.tuile--nu')].map(x => {
+      const r = x.getBoundingClientRect(); return { w: Math.round(r.width), t: Math.round(r.top) };
+    });
+    return { debordeX: m.scrollWidth - m.clientWidth, debordeY: m.scrollHeight - m.clientHeight,
+             ecartL: Math.max(...t.map(x => x.w)) / Math.min(...t.map(x => x.w)),
+             niveaux: new Set(t.map(x => Math.round(x.t / 20))).size,
+             nuLarg: new Set(n.map(x => x.w)).size,
+             nuBandes: new Set(n.map(x => x.t)).size };
   });
-  v('le mur est une trame de douze lignes',
-    patch.grille === 'grid' && patch.lignes === 12, patch.grille + ' · ' + patch.lignes);
-  v('le mur se parcourt à l\'horizontale', patch.debordeX > 2000, patch.debordeX);
+  v('le mur se parcourt à l\'horizontale', patch.debordeX > 2500, patch.debordeX);
   v('le mur ne déborde pas à la verticale', patch.debordeY <= 1, patch.debordeY);
-  /* le patchwork, c'est l'inégalité des formats ET des hauteurs d'accrochage */
-  v('les formats sont franchement inégaux',
-    patch.ecartLarge >= 1.6 && patch.ecartHaut >= 1.9,
-    'largeurs ×' + patch.ecartLarge.toFixed(2) + ' · hauteurs ×' + patch.ecartHaut.toFixed(2));
-  v('les œuvres ne sont pas toutes accrochées à la même hauteur',
-    patch.niveaux >= 4, patch.niveaux + ' niveaux');
-  v('les visuels sont grands', patch.plusGrande >= 500, patch.plusGrande + ' px');
+  /* les silhouettes sont accrochées librement… */
+  v('les silhouettes ont des formats inégaux', patch.ecartL >= 1.4, patch.ecartL.toFixed(2));
+  v('elles ne sont pas à la même hauteur', patch.niveaux >= 4, patch.niveaux);
+  /* …le nuancier, lui, est une grille stricte */
+  v('le nuancier est une grille régulière',
+    patch.nuLarg === 1 && patch.nuBandes === 3,
+    patch.nuLarg + ' largeur(s) · ' + patch.nuBandes + ' bande(s)');
 
-  /* la molette fait marcher */
   await p.hover('.tuile');
   await p.mouse.wheel(0, 700); await p.waitForTimeout(600);
   const marche = await p.evaluate(() => ({
     x: document.getElementById('mur').scrollLeft,
-    barre: document.getElementById('marcheB').style.width,
-    n: document.getElementById('marcheN').textContent,
-  }));
+    n: document.getElementById('marcheN').textContent }));
   v('la molette fait marcher le long du mur', marche.x > 150, marche.x);
-  v('la progression se lit', parseFloat(marche.barre) > 0, marche.barre);
-  v('le repère nomme l\'œuvre courante', /Œuvre \d+ sur 11/.test(marche.n), marche.n);
+  v('le repère nomme la pièce courante', /Pièce \d+ sur 32/.test(marche.n), marche.n);
 
-  /* les tuiles se révèlent en avançant */
-  const revele = await p.evaluate(() => document.querySelectorAll('.tuile.vu').length);
-  v('les tuiles se lèvent à mesure qu\'on avance', revele >= 2, revele);
-
-  /* ── LE PLEIN ÉCRAN ── */
+  /* ── le plein écran ── */
   await p.evaluate(() => __lieu('galerie')); await p.waitForTimeout(400);
-  await p.evaluate(() => __plein(0)); await p.waitForTimeout(1200);
+  await p.evaluate(() => __plein(0)); await p.waitForTimeout(1300);
   e = await p.evaluate(() => __etat());
-  v('l\'œuvre s\'ouvre en plein écran', e.plein && e.pleinIdx === 0);
+  v('la pièce s\'ouvre en plein écran', e.plein && e.pleinIdx === 0);
   const grand = await p.evaluate(() => {
-    const pl = document.getElementById('plein');
-    const r = pl.getBoundingClientRect();
-    const ph = document.getElementById('pleinPh').getBoundingClientRect();
-    return { pleinEcran: Math.round(r.width) === innerWidth && Math.round(r.height) === innerHeight,
-             image: Math.round(ph.height), fenetre: Math.round(innerHeight * .45),
-             fond: getComputedStyle(pl).backgroundColor };
-  });
-  v('le plein écran occupe tout l\'écran', grand.pleinEcran);
-  v('l\'image y est vraiment grande', grand.image > grand.fenetre,
-    grand.image + ' px de haut · seuil ' + grand.fenetre);
-  const cote = await p.evaluate(() => {
     const ph = document.getElementById('pleinPh').getBoundingClientRect();
     const c = document.querySelector('.plein__c').getBoundingClientRect();
-    return { aCote: ph.right <= c.left + 1, part: ph.height / innerHeight };
+    const st = document.querySelector('.plein__s'), cs = getComputedStyle(st);
+    const W = st.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    const H = st.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    return { part: Math.max(ph.width / W, ph.height / H), aCote: ph.right <= c.left + 1,
+             src: document.getElementById('pleinImg').getAttribute('src').slice(0, 22),
+             large: document.getElementById('pleinImg').naturalWidth };
   });
-  v('le cartel se lit à côté de l\'œuvre, pas sous elle', cote.aCote);
-  v('l\'œuvre occupe la hauteur de l\'écran',
-    cote.part > .7, (cote.part * 100).toFixed(0) + ' % de la hauteur');
-  v('le plein écran est blanc', rgb(grand.fond).join() === '255,255,255', grand.fond);
+  v('l\'image remplit la bande qui lui est donnée', grand.part > .96,
+    (grand.part * 100).toFixed(0) + ' %');
+  v('le cartel se lit à côté d\'elle', grand.aCote);
+  v('la photographie est une vraie prise de vue',
+    grand.src.startsWith('data:image/webp') && grand.large >= 1000,
+    grand.src + ' ' + grand.large + 'px');
   const cart = await p.locator('#plein').innerText();
-  v('le cartel accompagne l\'œuvre', /dimensions|matières|façonnage/i.test(cart));
   v('aucun prix en plein écran', !/€/.test(cart), (cart.match(/.{0,26}€.{0,26}/) || [])[0]);
-  v('la seule action est de demander à voir',
-    (await p.locator('#pleinGo').innerText()).toLowerCase().includes('demander'));
-  const monte = await p.evaluate(() => ({
-    dit: document.getElementById('plein').classList.contains('dit'),
-    o: getComputedStyle(document.querySelector('.plein__c .mt')).opacity }));
-  v('le cartel est monté après l\'image', monte.dit && parseFloat(monte.o) > .9,
-    JSON.stringify(monte));
-  /* la tuile d'origine est masquée le temps de l'ouverture : sinon on
-     verrait l'œuvre à deux endroits */
   const source = await p.evaluate(() =>
-    document.querySelector('.tuile[data-oe="rafael"] .tuile__m').style.visibility);
+    document.querySelector('.tuile[data-oe="v0"] .tuile__m').style.visibility);
   v('la tuile d\'origine s\'efface pendant l\'ouverture', source === 'hidden', source);
-
-  /* on passe d'une œuvre à l'autre sans repasser par le mur */
   await p.click('#pleinN'); await p.waitForTimeout(900);
-  e = await p.evaluate(() => __etat());
-  v('la flèche mène à l\'œuvre suivante', e.plein && e.pleinIdx === 1, e.pleinIdx);
-  v('le titre a suivi', /Colette/.test(await p.locator('#pleinN2').innerText()));
-  await p.keyboard.press('ArrowRight'); await p.waitForTimeout(900);
-  v('le clavier avance aussi', (await p.evaluate(() => __etat())).pleinIdx === 2);
+  v('la flèche mène à la pièce suivante',
+    (await p.evaluate(() => __etat())).pleinIdx === 1);
+  /* une pièce du nuancier : elle se montre ENTIÈRE, jamais recadrée */
+  await p.evaluate(() => __plein(10)); await p.waitForTimeout(900);
+  const nu = await p.evaluate(() => ({
+    contient: document.getElementById('pleinPh').classList.contains('contenir'),
+    titre: document.getElementById('pleinN2').textContent,
+    i: document.getElementById('pleinI').textContent }));
+  v('le nuancier se montre entier', nu.contient);
+  v('la pièce du nuancier est nommée', /\w/.test(nu.titre) && /Nuancier/.test(nu.i),
+    nu.titre + ' · ' + nu.i);
+  await p.evaluate(() => __fermerPlein()); await p.waitForTimeout(1000);
+  v('toutes les tuiles sont rendues au mur',
+    await p.evaluate(() =>
+      [...document.querySelectorAll('.tuile__m')].every(m => m.style.visibility !== 'hidden')));
 
-  /* une pièce d'exception : le rendu prend sa nuance */
-  await p.evaluate(() => __plein(3)); await p.waitForTimeout(900);
-  const teinte = await p.evaluate(() => {
-    const t = getComputedStyle(document.getElementById('pleinT'));
-    const i = document.getElementById('pleinImg');
-    return { fond: t.backgroundColor, masque: t.maskImage.slice(0, 24),
-             src: i.getAttribute('src').slice(0, 22), large: i.naturalWidth };
-  });
-  v('la pièce d\'exception est teintée', rgb(teinte.fond).join() === '30,58,48', teinte.fond);
-  v('la teinte passe par le masque du cuir', teinte.masque.includes('url('), teinte.masque);
-  v('le rendu est embarqué',
-    teinte.src.startsWith('data:image/webp') && teinte.large > 300, teinte.src);
-  /* une photographie ordinaire ne doit pas hériter du masque précédent */
-  await p.evaluate(() => __plein(5)); await p.waitForTimeout(700);
-  const propre = await p.evaluate(() => {
-    const t = getComputedStyle(document.getElementById('pleinT'));
-    return { masque: t.maskImage, fond: t.backgroundColor,
-             src: document.getElementById('pleinImg').getAttribute('src').slice(0, 22) };
-  });
-  v('le plein écran se nettoie entre deux œuvres',
-    propre.masque === 'none' && rgb(propre.fond).join() === '0,0,0',
-    propre.masque.slice(0, 18) + ' / ' + propre.fond);
-  v('les sculptures de la maison sont embarquées',
-    propre.src.startsWith('data:image/webp'), propre.src);
-
-  await p.evaluate(() => __fermerPlein()); await p.waitForTimeout(1100);
-  e = await p.evaluate(() => __etat());
-  v('on referme et l\'on revient au mur', !e.plein && e.lieu === 'galerie');
-  const rendue = await p.evaluate(() =>
-    [...document.querySelectorAll('.tuile__m')].every(m => m.style.visibility !== 'hidden'));
-  v('toutes les tuiles sont rendues au mur', rendue);
-
-  /* ── LE FIL DE VISITE ── */
-  e = await p.evaluate(() => __etat());
-  v('le fil de visite apparaît après deux œuvres', e.visite && e.vues >= 2,
-    'vues=' + e.vues + ' visible=' + e.visite);
-  v('le fil conduit au rendez-vous',
-    /rendez-vous/i.test(await p.locator('#visiteGo').innerText()));
-
-  /* ── LE PLAN : quatre lignes ÉQUILIBRÉES ── */
-  await p.click('#planB'); await p.waitForTimeout(800);
-  e = await p.evaluate(() => __etat());
-  v('le plan s\'ouvre', e.plan);
-  const lignes = await p.evaluate(() => [...document.querySelectorAll('.pl')].map(l => {
-    const r = l.getBoundingClientRect();
-    const n = l.querySelector('.pl__n').getBoundingClientRect();
-    const i = l.querySelector('.pl__i').getBoundingClientRect();
-    const d = l.querySelector('.pl__d').getBoundingClientRect();
-    const mil = r.top + r.height / 2;
-    return { h: Math.round(r.height),
-             ecartNum: Math.abs((i.top + i.height / 2) - (n.top + n.height / 2)),
-             ecartDesc: Math.abs((d.top + d.height / 2) - mil) };
-  }));
-  const hauteurs = lignes.map(l => l.h);
-  v('les quatre lignes du plan ont la même hauteur',
-    Math.max(...hauteurs) - Math.min(...hauteurs) <= 1, hauteurs.join(' / '));
-  v('le numéro est aligné sur le nom, ligne par ligne',
-    lignes.every(l => l.ecartNum <= 2), lignes.map(l => l.ecartNum.toFixed(1)).join(' / '));
-  v('la description est centrée dans sa ligne',
-    lignes.every(l => l.ecartDesc <= 2), lignes.map(l => l.ecartDesc.toFixed(1)).join(' / '));
-  const plan = await p.locator('#plan').innerText();
-  v('le plan signale l\'accès réservé du boudoir', /réservé/i.test(plan));
-  /* l'apostrophe ne doit pas être séparée de l'italique qui la suit */
-  const noms = await p.evaluate(() =>
-    [...document.querySelectorAll('.pl__n')].map(n => n.firstChild.textContent +
-      (n.querySelector('em') ? n.querySelector('em').textContent : '')));
-  v('les noms du plan n\'ont pas d\'espace parasite',
-    noms.join('|') === "La Galerie|L'Atelier|Le Boudoir|Le Rendez-vous", noms.join('|'));
-  v('aucun prix dans le plan', !/€/.test(plan), (plan.match(/.{0,26}€.{0,26}/) || [])[0]);
-  const clos = await p.evaluate(() => {
-    const n = document.querySelector('.pl[data-clos] .pl__n');
-    const s = getComputedStyle(n);
-    return { c: s.color, o: parseFloat(s.opacity), t: parseFloat(s.fontSize) };
-  });
-  v('le titre réservé reste lisible',
-    contraste(rgb(clos.c).map(x => Math.round(255 + (x - 255) * clos.o)), [255, 255, 255]) >= 3
-    && clos.t >= 24,
-    contraste(rgb(clos.c).map(x => Math.round(255 + (x - 255) * clos.o)), [255, 255, 255])
-      .toFixed(2) + ':1');
-  await p.keyboard.press('Escape'); await p.waitForTimeout(600);
-  v('Échap referme le plan', !(await p.evaluate(() => __etat())).plan);
-
-  /* ── LA PROMESSE : rien ne se vend hors du boudoir ── */
-  for (const id of ['galerie', 'atelier', 'rdv']) {
-    await p.evaluate(i => __lieu(i), id); await p.waitForTimeout(400);
+  /* ── LA PROMESSE ── */
+  for (const id of ['galerie', 'atelier', 'maison', 'rdv']) {
+    await p.evaluate(i => __lieu(i), id); await p.waitForTimeout(450);
     const txt = await p.locator('#' + id).innerText();
     v('aucun prix dans « ' + id + ' »', !/€|\bprix\b|panier|ajouter au/i.test(txt),
       (txt.match(/.{0,30}(€|\bprix\b|panier).{0,30}/i) || [])[0]);
   }
 
-  /* ── L'ATELIER ── */
-  await p.evaluate(() => __lieu('atelier')); await p.waitForTimeout(700);
+  /* ── L'ATELIER : six plans que l'on traverse ── */
+  await p.evaluate(() => __lieu('atelier')); await p.waitForTimeout(800);
   e = await p.evaluate(() => __etat());
-  v('l\'atelier est un lieu à part', e.lieu === 'atelier', e.lieu);
-  v('le fil d\'Ariane garde le chemin de retour', /GALERIE.*ATELIER/i.test(e.ariane), e.ariane);
+  v('six plans composent l\'atelier', e.plans === 6, e.plans);
   const at = await p.evaluate(() => {
     const a = document.getElementById('atelier');
-    return { gestes: document.querySelectorAll('.geste').length,
+    const s = document.querySelector('.plan6').getBoundingClientRect();
+    return { fond: getComputedStyle(a).backgroundColor,
+             pleineHauteur: Math.abs(s.height - innerHeight) < 2,
              y: a.scrollHeight - a.clientHeight, x: a.scrollWidth - a.clientWidth,
-             fond: getComputedStyle(a).backgroundColor };
+             rail: document.querySelectorAll('.at__rail button').length,
+             texte: getComputedStyle(document.querySelector('.plan6__t')).color };
   });
-  v('six gestes composent l\'atelier', at.gestes === 6, at.gestes);
-  v('l\'atelier se descend', at.y > 600, at.y);
-  v('l\'atelier ne déborde pas latéralement', at.x <= 1, at.x);
-  v('l\'atelier reste clair', lum(rgb(at.fond)) > .85, at.fond);
-  await p.evaluate(() => { document.getElementById('atelier').scrollTop = 900; });
+  v('l\'atelier est sombre', lum(rgb(at.fond)) < .04, at.fond);
+  v('chaque plan tient toute la page', at.pleineHauteur);
+  v('l\'atelier se traverse à la verticale', at.y > 2000, at.y);
+  v('il ne déborde pas latéralement', at.x <= 1, at.x);
+  v('le rail donne les six gestes', at.rail === 6, at.rail);
+  v('le texte y est lisible', contraste(rgb(at.texte), rgb(at.fond)) >= 7,
+    contraste(rgb(at.texte), rgb(at.fond)).toFixed(1) + ':1');
+  v('la barre passe en sombre avec le lieu',
+    await p.evaluate(() => document.getElementById('barre').classList.contains('sombre')));
+  await p.evaluate(() => { document.getElementById('atelier').scrollTop = innerHeight * 2.4; });
   await p.waitForTimeout(900);
-  v('les gestes se révèlent au défilement',
-    (await p.evaluate(() => document.querySelectorAll('[data-rev].vu').length)) >= 2);
+  const fil = await p.evaluate(() => ({
+    ici: document.querySelectorAll('.plan6.ici').length,
+    railIci: [...document.querySelectorAll('.at__rail button')].findIndex(b => b.classList.contains('ici')),
+    retard: document.querySelector('.plan6[data-i="2"] .plan6__m').style.transform }));
+  v('le plan traversé se révèle', fil.ici >= 1, fil.ici);
+  v('le rail suit où l\'on est', fil.railIci >= 1, fil.railIci);
+  const rail = await p.evaluate(() => {
+    const r = document.querySelector('.at__rail').getBoundingClientRect();
+    return { dansEcran: r.top >= 0 && r.bottom <= innerHeight && r.left >= 0,
+             d: Math.round(r.top) + '..' + Math.round(r.bottom) + ' / ' + innerHeight };
+  });
+  /* il est posé en fixe : il ne doit pas partir avec la page */
+  v('le rail reste à l\'écran quand on avance', rail.dansEcran, rail.d);
+  v('l\'image prend du retard sur la page', /translateY/.test(fil.retard), fil.retard);
 
-  /* le cabinet des matières */
-  await p.evaluate(() => __cabinet()); await p.waitForTimeout(800);
+  /* ── LA MAISON : la chronique ── */
+  await p.evaluate(() => __lieu('maison')); await p.waitForTimeout(700);
   e = await p.evaluate(() => __etat());
-  v('le cabinet ouvre la plongée', e.plongee && e.cabinet);
-  const cab = await p.evaluate(() => ({
-    fond: getComputedStyle(document.querySelector('.plg__bg')).backgroundColor,
-    texte: getComputedStyle(document.getElementById('plgNom')).color,
-    legende: document.getElementById('plgD').textContent,
-    bouton: document.getElementById('plgOk').textContent,
-    familles: document.querySelectorAll('.fm').length,
-    cartes: document.querySelectorAll('.sw').length,
-  }));
-  v('le cabinet est clair', rgb(cab.fond).join() === '255,255,255', cab.fond);
-  v('le cabinet reste lisible', contraste(rgb(cab.texte), rgb(cab.fond)) >= 4.5,
-    contraste(rgb(cab.texte), rgb(cab.fond)).toFixed(2) + ':1');
-  v('le cabinet montre les six matières', cab.familles === 6, cab.familles);
-  v('le cabinet montre les 52 nuances', cab.cartes === 52, cab.cartes);
-  v('le cabinet n\'affiche pas de prix', !/€/.test(cab.legende), cab.legende);
-  v('le cabinet ne retient rien', !/retenir/i.test(cab.bouton), cab.bouton);
-  await p.click('#plgOk'); await p.waitForTimeout(600);
-  e = await p.evaluate(() => __etat());
-  v('fermer le cabinet ne pose aucun cuir', !e.plongee && e.cuir === '', e.cuir);
+  v('la maison est un lieu à part', e.lieu === 'maison', e.lieu);
+  v('cinq chapitres', e.chapitres === 5, e.chapitres);
+  const ma = await p.locator('#maison').innerText();
+  v('la chronique part de 1904', /1904/.test(ma));
+  v('elle arrive à Laurène', /Laurène/.test(ma));
+  v('les repères d\'exemple sont signalés', /exemple/i.test(ma));
+  v('le fil d\'Ariane garde le chemin', /GALERIE.*MAISON/i.test(
+    (await p.evaluate(() => __etat())).ariane));
+  const chap = await p.evaluate(() => {
+    const m = document.getElementById('maison');
+    return { y: m.scrollHeight - m.clientHeight, x: m.scrollWidth - m.clientWidth,
+             fond: getComputedStyle(m).backgroundColor };
+  });
+  v('la maison se lit à la verticale', chap.y > 1200, chap.y);
+  v('elle ne déborde pas latéralement', chap.x <= 1, chap.x);
+  v('elle est sur papier clair', lum(rgb(chap.fond)) > .85, chap.fond);
 
-  /* ── LA PORTE ── */
+  /* ── LA SERRURE : on trace un T ── */
   await p.evaluate(() => __lieu('galerie')); await p.waitForTimeout(400);
-  await p.evaluate(() => __porte()); await p.waitForTimeout(700);
-  await p.fill('#code', '0000'); await p.waitForTimeout(300);
-  v('un mauvais code n\'ouvre pas',
-    await p.evaluate(() => document.getElementById('codeE').classList.contains('on')) &&
-    (await p.evaluate(() => __etat())).lieu === 'galerie');
-  await p.fill('#code', '1904'); await p.waitForTimeout(1000);
+  await p.evaluate(() => __serrure()); await p.waitForTimeout(800);
   e = await p.evaluate(() => __etat());
-  v('le bon code ouvre le boudoir', e.lieu === 'boudoir', e.lieu);
+  v('la serrure s\'ouvre', e.serrure);
+  /* `visibility` ne s'interpole pas : un calque refermé reste `visible`
+     pendant toute sa transition. Sans `pointer-events:none`, il avale
+     les clics du lieu que l'on vient d'ouvrir. */
+  const calques = await p.evaluate(() => ['plan', 'plein', 'plg'].map(id => {
+    const el = document.getElementById(id);
+    return id + '=' + (el.classList.contains('on') ? 'ouvert'
+      : getComputedStyle(el).pointerEvents);
+  }));
+  v('un calque fermé n\'intercepte plus rien',
+    calques.every(c => /=none|=ouvert/.test(c)), calques.join(' '));
+  v('elle ne demande aucun code écrit',
+    await p.locator('#serrure input').count() === 0);
+  v('elle présente neuf points',
+    await p.locator('#sePoints circle').count() === 9);
 
-  /* ── LE BOUDOIR : CLAIR, tenu par des noirs, tourné vers le 3D ── */
-  v('le boudoir s\'ouvre DIRECTEMENT sur le module 3D', e.scene === 'atl', e.scene);
+  /* une figure fausse ne doit rien ouvrir */
+  await p.evaluate(() => __figure([[0, 3, 6]])); await p.waitForTimeout(900);
+  e = await p.evaluate(() => __etat());
+  v('une figure fausse n\'ouvre pas', e.serrure && e.lieu === 'galerie',
+    e.lieu + ' figure=' + e.figure);
+  v('elle est signalée puis effacée',
+    await p.evaluate(() => document.getElementById('seE').textContent.length > 0) &&
+    e.figure === '', e.figure);
+
+  /* le T, tracé à la vraie souris : la barre, puis le fût */
+  const pt = await p.evaluate(() => {
+    const r = document.getElementById('seG').getBoundingClientRect();
+    return [...Array(9)].map((_, i) => [
+      r.left + (10 + (i % 3) * 40) / 100 * r.width,
+      r.top + (12 + Math.floor(i / 3) * 39) / 100 * r.height]);
+  });
+  const trait = async l => {
+    await p.mouse.move(pt[l[0]][0], pt[l[0]][1]);
+    await p.mouse.down();
+    for (const i of l.slice(1)) { await p.mouse.move(pt[i][0], pt[i][1]); await p.waitForTimeout(40); }
+    await p.mouse.up();
+  };
+  await trait([0, 1, 2]);
+  await p.waitForTimeout(150);
+  await trait([1, 4, 7]);
+  await p.waitForTimeout(1700);
+  e = await p.evaluate(() => __etat());
+  v('un T tracé au doigt ouvre le boudoir', e.lieu === 'boudoir' && !e.serrure,
+    e.lieu + ' / serrure=' + e.serrure);
+  v('le boudoir s\'ouvre sur le volume', e.scene === 'atl', e.scene);
+
+  /* ── LE MODULE : la pièce se tourne AU DOIGT ── */
   const bd = await p.evaluate(() => {
     const b = document.getElementById('boudoir');
-    const s = getComputedStyle(b);
-    const t = document.querySelector('.tot');
-    const st = getComputedStyle(t);
-    return { fond: s.backgroundColor,
-             texture: /url\(/.test(s.backgroundImage) ? 'oui' : 'aucune',
-             bloc: st.backgroundColor, blocTexte: st.color,
-             piece: document.getElementById('phImg').getBoundingClientRect(),
-             crans: document.querySelectorAll('.rot__c').length };
+    const t = getComputedStyle(document.querySelector('.tot'));
+    return { fond: getComputedStyle(b).backgroundColor, bloc: t.backgroundColor,
+             blocTexte: t.color };
   });
   v('le boudoir est clair', lum(rgb(bd.fond)) > .9, bd.fond);
-  v('aucune texture plaquée dans le boudoir', bd.texture === 'aucune', bd.texture);
-  /* le seul aplat sombre du salon, et c'est le prix */
   v('l\'estimation est posée en noir', lum(rgb(bd.bloc)) < .05, bd.bloc);
-  v('elle reste lisible', contraste(rgb(bd.blocTexte), rgb(bd.bloc)) >= 4.5,
-    contraste(rgb(bd.blocTexte), rgb(bd.bloc)).toFixed(2) + ':1');
-  v('la pièce occupe le centre du salon',
-    bd.piece.width > 300 && bd.piece.height > 300, JSON.stringify(bd.piece));
-  v('une commande de rotation est offerte', bd.crans === 8, bd.crans);
-  /* rien de la fiche ne doit passer sous la sous-barre du salon */
-  const sousBarre = await p.evaluate(() => {
-    const s = document.querySelector('.scene.on .sbar').getBoundingClientRect();
-    const k = document.querySelector('.fiche__k').getBoundingClientRect();
-    const i = document.getElementById('phImg').getBoundingClientRect();
-    return { fiche: Math.round(k.top - s.bottom), piece: Math.round(i.top - s.bottom) };
-  });
-  v('la fiche commence sous la sous-barre', sousBarre.fiche >= 0, sousBarre.fiche + ' px');
-  v('la pièce aussi', sousBarre.piece >= 0, sousBarre.piece + ' px');
+  v('elle reste lisible', contraste(rgb(bd.blocTexte), rgb(bd.bloc)) >= 4.5);
+  v('le geste est annoncé',
+    /tourner/i.test(await p.locator('#saisir').innerText()) &&
+    parseFloat((await p.evaluate(() => __etat())).saisir) > .5,
+    (await p.evaluate(() => __etat())).saisir);
 
-  const av = await p.evaluate(() => document.getElementById('phImg').getAttribute('src'));
-  await p.evaluate(() => __tourner(4)); await p.waitForTimeout(500);
-  const ap = await p.evaluate(() => ({
-    src: document.getElementById('phImg').getAttribute('src'),
+  const boite = await p.locator('#phImg').boundingBox();
+  const av = (await p.evaluate(() => __etat())).angle;
+  await glisser(p, boite.x + boite.width * .5, boite.y + boite.height * .5, -170);
+  await p.waitForTimeout(700);
+  let ap = await p.evaluate(() => __etat());
+  v('la pièce tourne quand on la saisit à la souris', ap.angle !== av,
+    av + ' → ' + ap.angle);
+  v('l\'invitation s\'efface une fois le geste fait', parseFloat(ap.saisir) < .1, ap.saisir);
+
+  /* le même geste au doigt, hors de l'image : toute la scène est saisissable */
+  await p.evaluate(() => __tourner(0));
+  const tourneDoigt = await p.evaluate(async () => {
+    const sc = document.getElementById('sc');
+    const r = sc.getBoundingClientRect();
+    const y = r.top + r.height * .5, x0 = r.left + r.width * .5;
+    const env = (t, x) => sc.dispatchEvent(new PointerEvent(t, { bubbles: true, pointerId: 7,
+      pointerType: 'touch', clientX: x, clientY: y }));
+    env('pointerdown', x0);
+    for (let i = 1; i <= 10; i++) env('pointermove', x0 - i * 18);
+    env('pointerup', x0 - 180);
+    await new Promise(r => setTimeout(r, 400));
+    return __etat().angle;
+  });
+  v('elle tourne aussi au doigt, prise n\'importe où dans la scène',
+    tourneDoigt !== 0, '0 → ' + tourneDoigt);
+
+  await p.evaluate(() => __tourner(4)); await p.waitForTimeout(400);
+  ap = await p.evaluate(() => ({
     deg: document.getElementById('deg').textContent,
-    curseur: document.getElementById('rotT').style.left,
-    aria: document.getElementById('rotP').getAttribute('aria-valuenow') }));
-  v('tourner change le rendu', ap.src !== av);
+    curseur: document.getElementById('rotT').style.left }));
   v('l\'angle est annoncé', ap.deg === '60°', ap.deg);
-  v('le curseur de rotation suit la pièce',
-    Math.abs(parseFloat(ap.curseur) - 100 / 6) < .5 && ap.aria === '60',
-    ap.curseur + ' / ' + ap.aria);
+  v('le rail suit la pièce', Math.abs(parseFloat(ap.curseur) - 100 / 6) < .5, ap.curseur);
   await p.evaluate(() => __tourner(20)); await p.waitForTimeout(400);
-  const mir = await p.evaluate(() => ({
-    miroir: document.getElementById('ph').classList.contains('miroir'),
-    deg: document.getElementById('deg').textContent }));
-  v('la seconde moitié est reflétée', mir.miroir && mir.deg === '300°', mir.deg);
+  v('la seconde moitié est reflétée',
+    await p.evaluate(() => document.getElementById('ph').classList.contains('miroir')));
   await p.evaluate(() => __tourner(0)); await p.waitForTimeout(300);
 
-  /* poser une matière */
+  /* poser une peausserie */
   await p.click('.aj[data-k="ext"]'); await p.waitForTimeout(700);
   await p.click('.fm[data-f="alligator"]'); await p.waitForTimeout(500);
   v('la plongée du boudoir annonce le supplément',
@@ -378,57 +343,57 @@ const rgb = s => (s.match(/\d+/g) || [0, 0, 0]).slice(0, 3).map(Number);
   await p.click('#plgOk'); await p.waitForTimeout(900);
   e = await p.evaluate(() => __etat());
   v('le cuir retenu s\'inscrit', e.cuir === 'alligator:etain', e.cuir);
-  v('le cuir retenu se répercute au total', e.total === 5700, e.total);
-  const acc = await p.evaluate(() => ({
-    opacite: getComputedStyle(document.getElementById('phT')).opacity,
-    accent: getComputedStyle(document.getElementById('boudoir'))
-      .getPropertyValue('--accent').trim(),
-    fond: getComputedStyle(document.getElementById('boudoir')).backgroundColor }));
-  v('la pièce a pris sa nuance', parseFloat(acc.opacite) > .95, acc.opacite);
-  v('le salon reprend la couleur en accent, pas en fond',
-    acc.accent === '#6b6e73' && lum(rgb(acc.fond)) > .9, acc.accent + ' / ' + acc.fond);
-
+  v('il se répercute au total', e.total === 5700, e.total);
   await p.click('#voirCert'); await p.waitForTimeout(1000);
-  e = await p.evaluate(() => __etat());
-  v('la pièce achevée s\'affiche', e.scene === 'cert', e.scene);
   const cert = await p.locator('.scene[data-s="cert"]').innerText();
-  v('le certificat récapitule la composition', /Alligator|Étain/.test(cert));
-  v('le certificat porte l\'estimation ferme', /5\s?700/.test(cert));
-  v('le certificat nomme la cliente', /Hélène/.test(cert));
+  v('la pièce achevée récapitule', /Alligator|Étain/.test(cert) && /5\s?700/.test(cert));
   v('rien n\'est encaissé', /Aucun paiement/.test(cert));
-  await p.click('.scene[data-s="cert"] .sb[data-s="carnet"]'); await p.waitForTimeout(700);
-  v('le carnet est une scène secondaire',
-    (await p.evaluate(() => __etat())).scene === 'carnet');
-  v('le carnet montre ses pièces', await p.locator('#carnet .pos1').count() === 2);
 
-  /* on ressort par le fil d'Ariane */
-  await p.evaluate(() => document.querySelector('#fil button').click());
-  await p.waitForTimeout(800);
-  v('le fil d\'Ariane ramène à la galerie',
-    (await p.evaluate(() => __etat())).lieu === 'galerie');
+  /* le cabinet, depuis l'atelier */
+  await p.evaluate(() => __lieu('atelier')); await p.waitForTimeout(500);
+  await p.evaluate(() => __cabinet()); await p.waitForTimeout(800);
+  e = await p.evaluate(() => __etat());
+  v('le cabinet ouvre la plongée', e.plongee && e.cabinet);
+  const cab = await p.evaluate(() => ({
+    legende: document.getElementById('plgD').textContent,
+    bouton: document.getElementById('plgOk').textContent,
+    familles: document.querySelectorAll('.fm').length }));
+  v('il montre les six matières', cab.familles === 6, cab.familles);
+  v('il n\'affiche pas de prix', !/€/.test(cab.legende), cab.legende);
+  v('il ne retient rien', !/retenir/i.test(cab.bouton), cab.bouton);
+  await p.click('#plgOk'); await p.waitForTimeout(600);
 
-  /* le rendez-vous conclut */
+  /* ── le rendez-vous ── */
   await p.evaluate(() => __lieu('rdv')); await p.waitForTimeout(500);
   await p.fill('#rNom', 'Hélène Mauro');
   await p.fill('#rMail', 'h.mauro@example.com');
   await p.click('.rdv__go'); await p.waitForTimeout(700);
   v('la demande de rendez-vous se confirme',
     /Hélène Mauro/.test(await p.locator('#rdvOk').innerText()));
-  v('le fil de visite se retire une fois le rendez-vous pris',
-    !(await p.evaluate(() => __etat())).visite);
 
-  /* tout ce qui compte est embarqué */
-  const dehors = await p.evaluate(() => {
-    const ext = [];
-    document.querySelectorAll('img').forEach(i => {
-      const s = i.getAttribute('src') || '';
-      if (s && !s.startsWith('data:')) ext.push(s.slice(0, 50));
-    });
-    return ext;
-  });
-  v('sculptures, vues de galerie, rendus et cuirs sont embarqués',
-    dehors.every(s => s.includes('cdn.shopify.com')),
-    dehors.filter(s => !s.includes('cdn')).slice(0, 3));
+  /* ── le plan ── */
+  await p.click('#planB'); await p.waitForTimeout(800);
+  v('le plan liste les cinq destinations', await p.locator('#planL .pl').count() === 5);
+  const lignes = await p.evaluate(() => [...document.querySelectorAll('.pl')].map(l => {
+    const r = l.getBoundingClientRect();
+    const n = l.querySelector('.pl__n').getBoundingClientRect();
+    const i = l.querySelector('.pl__i').getBoundingClientRect();
+    const d = l.querySelector('.pl__d').getBoundingClientRect();
+    return { h: Math.round(r.height),
+             num: Math.abs((i.top + i.height / 2) - (n.top + n.height / 2)),
+             desc: Math.abs((d.top + d.height / 2) - (r.top + r.height / 2)) };
+  }));
+  const H = lignes.map(l => l.h);
+  v('les lignes du plan ont la même hauteur', Math.max(...H) - Math.min(...H) <= 1, H.join('/'));
+  v('numéro et description y sont centrés',
+    lignes.every(l => l.num <= 2 && l.desc <= 2));
+  const noms = await p.evaluate(() =>
+    [...document.querySelectorAll('.pl__n')].map(n =>
+      n.firstChild.textContent + (n.querySelector('em') ? n.querySelector('em').textContent : '')));
+  v('les noms du plan n\'ont pas d\'espace parasite',
+    noms.join('|') === "La Galerie|L'Atelier|La Maison|Le Boudoir|Le Rendez-vous",
+    noms.join('|'));
+  await p.keyboard.press('Escape'); await p.waitForTimeout(500);
 
   await p.close();
 
@@ -436,10 +401,10 @@ const rgb = s => (s.match(/\d+/g) || [0, 0, 0]).slice(0, 3).map(Number);
   for (const [w, h, nom] of [[1280, 800, 'tablette paysage'], [820, 1180, 'tablette portrait'],
                              [390, 844, 'téléphone']]) {
     const q = await page(w, h);
-    await q.evaluate(() => __lieu('galerie')); await q.waitForTimeout(500);
+    await q.evaluate(() => __lieu('galerie')); await q.waitForTimeout(600);
     const deb = await q.evaluate(() => {
       let pire = 0, ou = '';
-      ['galerie', 'atelier', 'rdv', 'boudoir'].forEach(id => {
+      ['galerie', 'atelier', 'maison', 'rdv', 'boudoir'].forEach(id => {
         __lieu(id);
         const el = document.getElementById(id);
         const d = el.scrollWidth - el.clientWidth;
@@ -449,27 +414,10 @@ const rgb = s => (s.match(/\d+/g) || [0, 0, 0]).slice(0, 3).map(Number);
     });
     v(nom + ' : aucun débordement latéral', deb.pire <= 1, deb.pire + ' px (' + deb.ou + ')');
 
-    await q.evaluate(() => __lieu('galerie')); await q.waitForTimeout(500);
-    const mur = await q.evaluate(() => {
-      const m = document.getElementById('mur');
-      const t = m.querySelector('.tuile').getBoundingClientRect();
-      const b = document.getElementById('barre').getBoundingClientRect();
-      return { sousBarre: t.top >= b.bottom - 1, large: Math.round(t.width),
-               deborde: m.scrollWidth - m.clientWidth };
-    });
-    v(nom + ' : le mur ne déborde pas de son axe', mur.deborde <= 1 || mur.deborde > 200,
-      mur.deborde);
-    v(nom + ' : la première tuile est sous la barre', mur.sousBarre, mur.large);
-
-    /* aucune œuvre ne doit en recouvrir une autre — c'est la règle d'un
-       accrochage, et le repli en colonnes l'avait cassée */
+    await q.evaluate(() => __lieu('galerie')); await q.waitForTimeout(600);
     const chev = await q.evaluate(() => {
       const m = document.getElementById('mur');
-      /* on lève toutes les tuiles : sinon on mesure pendant l'animation
-         de révélation, qui décale de 16 px */
-      m.querySelectorAll('.tuile,.ouv').forEach(t => t.classList.add('vu'));
-      /* offset* plutôt que getBoundingClientRect : on mesure la MISE EN
-         PAGE, pas la position animée par les transformations de révélation */
+      /* offset* : on mesure la MISE EN PAGE, pas la position animée */
       const b = [...m.children].map(c => ({
         x: c.offsetLeft, y: c.offsetTop, w: c.offsetWidth, h: c.offsetHeight,
         n: c.className.split(' ')[0] }));
@@ -477,58 +425,52 @@ const rgb = s => (s.match(/\d+/g) || [0, 0, 0]).slice(0, 3).map(Number);
       for (let i = 0; i < b.length; i++) for (let j = i + 1; j < b.length; j++) {
         const a = b[i], e = b[j];
         if (a.x < e.x + e.w - 1 && e.x < a.x + a.w - 1 &&
-            a.y < e.y + e.h - 1 && e.y < a.y + a.h - 1) {
-          n++; if (!ex) ex = a.n + '#' + i + ' × ' + e.n + '#' + j;
-        }
+            a.y < e.y + e.h - 1 && e.y < a.y + a.h - 1) { n++; if (!ex) ex = a.n + '×' + e.n; }
       }
       return { n, ex };
     });
-    v(nom + ' : aucune œuvre n\'en recouvre une autre', chev.n === 0,
-      chev.n + ' chevauchement(s) · ' + chev.ex);
+    v(nom + ' : aucune pièce n\'en recouvre une autre', chev.n === 0, chev.n + ' · ' + chev.ex);
 
-    /* le plein écran doit tenir à l'écran, quelle que soit la taille */
     await q.evaluate(() => __plein(0)); await q.waitForTimeout(1100);
     const pe = await q.evaluate(() => {
       const ph = document.getElementById('pleinPh').getBoundingClientRect();
       const c = document.querySelector('.plein__c').getBoundingClientRect();
       const g = document.getElementById('pleinGo').getBoundingClientRect();
-      /* le cartel est À CÔTÉ de l'œuvre en large, DESSOUS en étroit :
-         dans les deux cas ils ne doivent pas se recouvrir */
-      const cote = ph.right <= c.left + 1, dessous = ph.bottom <= c.top + 1;
-      return { dansEcran: ph.top >= -1 && (cote || dessous),
-               ctaVisible: g.bottom <= innerHeight + 1 && g.width > 40,
-               d: (cote ? 'à côté ' : 'dessous ') +
-                  Math.round(ph.right) + '/' + Math.round(c.left) + ' · ' +
-                  Math.round(ph.bottom) + '/' + Math.round(c.top) };
+      return { libre: ph.right <= c.left + 1 || ph.bottom <= c.top + 1,
+               cta: g.bottom <= innerHeight + 1 && g.width > 40 };
     });
-    v(nom + ' : l\'image et le cartel ne se recouvrent pas', pe.dansEcran, pe.d);
-    v(nom + ' : le bouton de rendez-vous reste à l\'écran', pe.ctaVisible);
-    await q.evaluate(() => __fermerPlein()); await q.waitForTimeout(800);
+    v(nom + ' : image et cartel ne se recouvrent pas', pe.libre);
+    v(nom + ' : le bouton de rendez-vous reste à l\'écran', pe.cta);
+    await q.evaluate(() => __fermerPlein()); await q.waitForTimeout(700);
 
-    if (w <= 760) {
-      const compact = await q.evaluate(() => ({
-        rdv: !!document.getElementById('versRdv').offsetParent,
-        raccourcis: !!document.getElementById('versAtelier').offsetParent }));
-      v(nom + ' : la barre garde le rendez-vous et laisse le reste au plan',
-        compact.rdv && !compact.raccourcis, JSON.stringify(compact));
-    }
+    /* la serrure doit tenir à l'écran, et rester utilisable au doigt */
+    await q.evaluate(() => __serrure()); await q.waitForTimeout(700);
+    const se = await q.evaluate(() => {
+      const g = document.getElementById('seG').getBoundingClientRect();
+      const b = document.getElementById('seX').getBoundingClientRect();
+      return { dansEcran: g.top >= 0 && b.bottom <= innerHeight + 1, taille: Math.round(g.width) };
+    });
+    v(nom + ' : la serrure tient à l\'écran', se.dansEcran, se.taille + ' px');
+    v(nom + ' : les points restent assez grands', se.taille >= 190, se.taille);
+    await q.evaluate(() => { document.getElementById('seX').click(); });
+    await q.waitForTimeout(400);
 
     await q.evaluate(() => { __lieu('boudoir'); __scene('atl'); }); await q.waitForTimeout(700);
     const atl = await q.evaluate(() => {
       const i = document.getElementById('phImg').getBoundingClientRect();
-      const s = document.querySelector('.sbar').getBoundingClientRect();
+      const s = document.querySelector('.scene.on .sbar').getBoundingClientRect();
       const r = document.querySelector('.rot').getBoundingClientRect();
+      const sa = document.getElementById('saisir').getBoundingClientRect();
       return { sousBarre: i.top >= s.bottom - 1, visible: i.width > 60 && i.height > 60,
-               rotVisible: r.bottom <= innerHeight + 2 && r.width > 40,
+               rot: r.bottom <= innerHeight + 2, saisir: sa.bottom <= innerHeight + 2,
                d: Math.round(i.top) + '/' + Math.round(s.bottom) };
     });
     v(nom + ' : la pièce est entière sous la barre', atl.sousBarre && atl.visible, atl.d);
-    v(nom + ' : la commande de rotation reste à l\'écran', atl.rotVisible);
+    v(nom + ' : le rail et l\'invitation restent à l\'écran', atl.rot && atl.saisir);
     await q.close();
   }
 
   await nav.close();
-
   console.log(cas.join('\n'));
   if (erreurs.length) {
     console.log('\nErreurs console :');
