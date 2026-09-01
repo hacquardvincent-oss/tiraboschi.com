@@ -65,8 +65,24 @@ async function glisser(p, x, y, dx, pas) {
     const a = document.getElementById('accueil');
     const h = document.querySelector('.acc__h').getBoundingClientRect();
     const e = document.getElementById('ent').getBoundingClientRect();
-    return { logo: document.querySelector('.ent__logo').textContent.trim().slice(0, 11),
+    const lg = document.querySelector('.ent__logo');
+    const r = lg.getBoundingClientRect();
+    const t = document.querySelector('.acc__hx h1');
+    return { logo: lg.textContent.trim().slice(0, 11),
              nav: document.querySelectorAll('.ent__n .lien').length,
+             /* le logo est CENTRÉ dans la page, pas rangé à gauche */
+             centre: Math.abs((r.left + r.width / 2) - innerWidth / 2),
+             /* et il pèse assez face au titre du hero */
+             corpsLogo: parseFloat(getComputedStyle(lg).fontSize),
+             corpsNav: parseFloat(getComputedStyle(
+               document.querySelector('.ent__n .lien')).fontSize),
+             /* le nom est au centre : RIEN ne doit passer dessous */
+             collision: [...document.querySelectorAll('.ent__n .lien,.ent .plan-b')]
+               .filter(b => { const q = b.getBoundingClientRect();
+                 return q.left < r.right - 1 && r.left < q.right - 1; })
+               .map(b => b.textContent.trim() || 'menu'),
+             corpsTitre: parseFloat(getComputedStyle(t).fontSize),
+             hauteurEnTete: Math.round(e.height),
              enTete: Math.round(e.top) === 0 && e.width >= innerWidth - 1,
              pose: document.getElementById('ent').classList.contains('pose'),
              hero: Math.abs(h.height - innerHeight) < 2,
@@ -76,11 +92,22 @@ async function glisser(p, x, y, dx, pas) {
              barre: document.getElementById('barre').classList.contains('on') };
   });
   v('l\'accueil porte un logo', /Tiraboschi/i.test(ac.logo), ac.logo);
+  /* le reproche tenait à une disproportion : logo minuscule et rangé à
+     gauche, sous un titre de hero deux fois plus grand */
+  v('le logo est centré dans la page', ac.centre <= 2, Math.round(ac.centre) + ' px du centre');
+  v('aucune entrée de menu ne passe sous le nom',
+    ac.collision.length === 0, ac.collision.join(', '));
+  v('il tient sa place face au titre du hero',
+    ac.corpsLogo >= 19 && ac.corpsTitre / ac.corpsLogo <= 3.2,
+    'logo ' + ac.corpsLogo + ' px · titre ' + ac.corpsTitre + ' px (×' +
+      (ac.corpsTitre / ac.corpsLogo).toFixed(1) + ')');
+  v('le menu se lit sans loupe', ac.corpsNav >= 11, ac.corpsNav + ' px');
+  v('l\'en-tête a de la hauteur', ac.hauteurEnTete >= 80, ac.hauteurEnTete + ' px');
   v('un menu et un rendez-vous', ac.nav === 5, ac.nav);
   v('l\'en-tête est posé en haut', ac.enTete);
   v('il est transparent sur le hero', !ac.pose);
   v('le hero occupe la page entière', ac.hero);
-  v('les quatre pièces sont des bandes, pas une liste', ac.pieces === 4, ac.pieces);
+  v('les cinq pièces sont des bandes, pas une liste', ac.pieces === 5, ac.pieces);
   v('un pied de page donne les entrées', ac.pied >= 8, ac.pied);
   v('la page se descend', ac.defile > 1200, ac.defile);
   v('la barre de lieu ne s\'impose pas ici', !ac.barre);
@@ -122,7 +149,7 @@ async function glisser(p, x, y, dx, pas) {
     entrees: document.querySelectorAll('#erL .ap').length,
     titre: document.querySelector('.er__t').textContent.replace(/\s+/g, ' ').trim(),
     fond: getComputedStyle(document.getElementById('erreur')).backgroundColor }));
-  v('elle reprend les quatre pièces', er.entrees === 4, er.entrees);
+  v('elle reprend les cinq pièces', er.entrees === 5, er.entrees);
   v('elle le dit sans jargon', /porte/i.test(er.titre), er.titre);
   v('elle est sombre', lum(rgb(er.fond)) < .04, er.fond);
   await p.evaluate(() => __lieu('accueil')); await p.waitForTimeout(600);
@@ -152,17 +179,26 @@ async function glisser(p, x, y, dx, pas) {
   v('le fond de la galerie est blanc',
     rgb(await p.evaluate(() => getComputedStyle(document.getElementById('galerie'))
       .backgroundColor)).join() === '255,255,255');
-  v('trente-sept pièces accrochées', e.oeuvres === 37, e.oeuvres);
+  v('quarante pièces accrochées', e.oeuvres === 40, e.oeuvres);
   v('dont trente-deux au nuancier', e.nuancier === 32, e.nuancier);
   const hero = await p.evaluate(() => {
     const h = document.querySelector('.hero');
     if (!h) return null;
     const r = h.getBoundingClientRect();
+    const im = h.querySelector('img');
     return { large: Math.round(r.width), haut: Math.round(r.height),
-             part: r.width / innerWidth };
+             part: r.width / innerWidth,
+             /* le visuel d'accueil doit être une PRISE DE VUE ÉDITORIALE
+                définie, pas un packshot agrandi : on mesure le rapport
+                entre les pixels natifs et la place qu'on lui donne */
+             natif: im.naturalWidth, densite: im.naturalWidth / r.width };
   });
   v('la galerie s\'ouvre sur un grand visuel', hero && hero.part > .55,
     hero && hero.part.toFixed(2));
+  v('ce visuel est net à sa taille d\'affichage',
+    hero && hero.natif >= 1500 && hero.densite >= 1.5,
+    hero && hero.natif + ' px natifs pour ' + Math.round(hero.large) +
+      ' px affichés (×' + hero.densite.toFixed(2) + ')');
   /* les tuiles ont grandi */
   const taille = await p.evaluate(() => {
     const t = [...document.querySelectorAll('.tuile')].map(x => x.getBoundingClientRect().width);
@@ -171,11 +207,44 @@ async function glisser(p, x, y, dx, pas) {
   });
   v('les silhouettes sont grandes', taille.max >= 550, taille.max + ' px');
   v('les pièces du nuancier aussi', taille.nu >= 280, taille.nu + ' px');
-  v('trois ouvertures dans le mur', e.ouvertures === 3, e.ouvertures);
+  v('quatre ouvertures dans le mur', e.ouvertures === 4, e.ouvertures);
   const ouv = await p.evaluate(() =>
     [...document.querySelectorAll('.ouv')].map(o => o.dataset.ouv).join());
-  v('l\'Atelier, le Boudoir et la Maison se rencontrent en marchant',
-    ouv === 'atelier,serrure,maison', ouv);
+  v('les quatre autres lieux se rencontrent en marchant',
+    ouv === 'atelier,maison,bibliotheque,serrure', ouv);
+
+  /* ── LES CADRAGES : une pièce se montre ENTIÈRE, jamais rognée ──
+     (le reproche tenait en une capture : la Victoire coupée en haut
+     et en bas par un `object-fit:cover`) */
+  const cadres = await p.evaluate(() => {
+    const t = [...document.querySelectorAll('.tuile')];
+    const rogne = t.filter(x =>
+      getComputedStyle(x.querySelector('.tuile__m img')).objectFit !== 'contain');
+    return { total: t.length, rogne: rogne.length,
+             ex: rogne.length ? rogne[0].dataset.oe : '' };
+  });
+  v('aucune pièce n\'est rognée sur le mur', cadres.rogne === 0,
+    cadres.rogne + '/' + cadres.total + ' rognée(s) · ' + cadres.ex);
+  /* montrer entier ne doit pas vouloir dire noyer la pièce dans du blanc :
+     l'emplacement d'une silhouette suit ses proportions */
+  const emprise = await p.evaluate(() =>
+    [...document.querySelectorAll('.tuile:not(.tuile--nu)')].map(t => {
+      const m = t.querySelector('.tuile__m').getBoundingClientRect();
+      const im = t.querySelector('img');
+      const r = im.naturalWidth / im.naturalHeight;
+      let w = m.width, h = w / r; if (h > m.height) { h = m.height; w = h * r; }
+      return { id: t.dataset.oe, p: (w * h) / (m.width * m.height) };
+    }).sort((a, b) => a.p - b.p)[0]);
+  v('une silhouette occupe son emplacement', emprise.p >= .7,
+    emprise.id + ' à ' + Math.round(emprise.p * 100) + ' %');
+  /* et chaque modèle se reconnaît : il est NOMMÉ sous sa silhouette */
+  const nommes = await p.evaluate(() =>
+    [...document.querySelectorAll('.tuile:not(.tuile--nu) .tuile__n')]
+      .map(n => n.textContent.trim()));
+  v('chaque modèle est nommé sous sa silhouette',
+    nommes.length === 8 && /Victoire/.test(nommes.join()) &&
+    /Jane/.test(nommes.join()) && /Colette/.test(nommes.join()),
+    nommes.join(' · '));
 
   const patch = await p.evaluate(() => {
     const m = document.getElementById('mur');
@@ -236,7 +305,7 @@ async function glisser(p, x, y, dx, pas) {
     x: document.getElementById('mur').scrollLeft,
     n: document.getElementById('marcheN').textContent }));
   v('la molette fait marcher le long du mur', marche.x > 150, marche.x);
-  v('le repère nomme la pièce courante', /Pièce \d+ sur 37/.test(marche.n), marche.n);
+  v('le repère nomme la pièce courante', /Pièce \d+ sur 40/.test(marche.n), marche.n);
 
   /* ── le plein écran ── */
   await p.evaluate(() => __lieu('galerie')); await p.waitForTimeout(400);
@@ -262,7 +331,7 @@ async function glisser(p, x, y, dx, pas) {
   const cart = await p.locator('#plein').innerText();
   v('aucun prix en plein écran', !/€/.test(cart), (cart.match(/.{0,26}€.{0,26}/) || [])[0]);
   const source = await p.evaluate(() =>
-    document.querySelector('.tuile[data-oe="v0"] .tuile__m').style.visibility);
+    document.querySelector('.tuile[data-oe="victoire"] .tuile__m').style.visibility);
   v('la tuile d\'origine s\'efface pendant l\'ouverture', source === 'hidden', source);
 
   /* LES AUTRES VUES SE DÉFILENT — plus de swipe entre pièces pour ça */
@@ -286,6 +355,51 @@ async function glisser(p, x, y, dx, pas) {
   v('défiler passe à la vue suivante', /Vue 2 sur \d/.test(vues1.compte), vues1.compte);
   v('la pièce reste la même', (await p.evaluate(() => __etat())).pleinIdx === 0);
 
+  /* ── L'IMMERSION : après les vues, la matière puis un mot ──
+     ce que la fiche Shopify faisait déjà et qui manquait ici :
+     un gros plan de matière, puis un mot de la maison. */
+  const imm = await p.evaluate(() => {
+    const vs = document.getElementById('pleinVues');
+    const z = vs.querySelector('.plein__vue--z'), m = vs.querySelector('.plein__vue--mot');
+    return { panneaux: vs.querySelectorAll('.plein__vue').length,
+             zoom: !!z, mot: !!m,
+             zoomLegende: z ? z.querySelector('.plein__zc strong').textContent.trim() : '',
+             zoomNatif: z ? z.querySelector('img').naturalWidth : 0,
+             zoomPart: z ? z.querySelector('.plein__zoom').getBoundingClientRect().height /
+                           vs.clientHeight : 0,
+             motTexte: m ? m.querySelector('p').textContent.trim() : '',
+             citation: m ? m.querySelector('blockquote').textContent.trim() : '' };
+  });
+  v('le défilé continue au-delà des vues', imm.panneaux === 6, imm.panneaux);
+  v('un gros plan de matière est accroché', imm.zoom && imm.zoomNatif >= 1000,
+    imm.zoomNatif + ' px');
+  v('il prend toute la scène', imm.zoomPart > .96, (imm.zoomPart * 100).toFixed(0) + ' %');
+  v('il est légendé', imm.zoomLegende.length > 8, imm.zoomLegende);
+  v('un mot de la maison ferme le défilé', imm.mot && imm.motTexte.length > 90,
+    imm.motTexte.slice(0, 46));
+  v('une citation le signe', /«|Made in France/.test(imm.citation),
+    imm.citation.slice(0, 46));
+  /* le repère annonce ce qui vient, et se tait sur les panneaux qui
+     portent déjà leur nom en toutes lettres */
+  await p.evaluate(() => {
+    const vs = document.getElementById('pleinVues');
+    vs.scrollTo({ top: vs.clientHeight * 3, behavior: 'instant' });
+  });
+  await p.waitForTimeout(500);
+  v('la dernière vue annonce la matière',
+    /puis la matière/i.test(await p.evaluate(() =>
+      document.getElementById('pleinVn').textContent)),
+    await p.evaluate(() => document.getElementById('pleinVn').textContent));
+  await p.evaluate(() => {
+    const vs = document.getElementById('pleinVues');
+    vs.scrollTo({ top: vs.clientHeight * 4, behavior: 'instant' });
+  });
+  await p.waitForTimeout(500);
+  v('et il se tait quand le panneau se nomme',
+    (await p.evaluate(() => document.getElementById('pleinVn').textContent)) === '');
+  await p.evaluate(() => { document.getElementById('pleinVues').scrollTop = 0; });
+  await p.waitForTimeout(300);
+
   await p.click('#pleinN'); await p.waitForTimeout(900);
   v('la flèche mène à la pièce suivante',
     (await p.evaluate(() => __etat())).pleinIdx === 1);
@@ -306,7 +420,7 @@ async function glisser(p, x, y, dx, pas) {
       [...document.querySelectorAll('.tuile__m')].every(m => m.style.visibility !== 'hidden')));
 
   /* ── LA PROMESSE ── */
-  for (const id of ['galerie', 'atelier', 'maison', 'rdv']) {
+  for (const id of ['galerie', 'atelier', 'maison', 'bibliotheque', 'rdv']) {
     await p.evaluate(i => __lieu(i), id); await p.waitForTimeout(450);
     const txt = await p.locator('#' + id).innerText();
     v('aucun prix dans « ' + id + ' »', !/€|\bprix\b|panier|ajouter au/i.test(txt),
@@ -373,13 +487,13 @@ async function glisser(p, x, y, dx, pas) {
   /* ── LA MAISON : la chronique ── */
   await p.evaluate(() => __lieu('maison')); await p.waitForTimeout(900);
   e = await p.evaluate(() => __etat());
-  v('le cartonnier est un lieu à part', e.lieu === 'maison', e.lieu);
+  v('la maison est un lieu à part', e.lieu === 'maison', e.lieu);
   v('cinq chapitres', e.chapitres === 5, e.chapitres);
   const ma = await p.locator('#maison').innerText();
   v('la chronique part de 1904', /1904/.test(ma));
   v('elle arrive à Laurène', /Laurène/.test(ma));
   v('les repères d\'exemple sont signalés', /exemple/i.test(ma));
-  v('le fil d\'Ariane garde le chemin', /TIRABOSCHI.*CARTONNIER/i.test(
+  v('le fil d\'Ariane garde le chemin', /TIRABOSCHI.*MAISON/i.test(
     (await p.evaluate(() => __etat())).ariane),
     (await p.evaluate(() => __etat())).ariane);
   const chap = await p.evaluate(() => {
@@ -394,7 +508,7 @@ async function glisser(p, x, y, dx, pas) {
   v('chaque chapitre tient toute la page', chap.pleineHauteur);
   v('l\'année est immense', chap.annee >= 120, Math.round(chap.annee) + ' px');
   v('la frise donne les cinq repères', chap.frise === 5, chap.frise);
-  v('le cartonnier se lit à la verticale', chap.y > 1200, chap.y);
+  v('la maison se lit à la verticale', chap.y > 1200, chap.y);
   v('il ne déborde pas latéralement', chap.x <= 1, chap.x);
   v('il est sur papier clair', lum(rgb(chap.fond)) > .85, chap.fond);
   await p.evaluate(() => { document.getElementById('maison').scrollTop = innerHeight * 3.05; });
@@ -624,36 +738,138 @@ async function glisser(p, x, y, dx, pas) {
   v('il ne retient rien', !/retenir/i.test(cab.bouton), cab.bouton);
   await p.click('#plgOk'); await p.waitForTimeout(600);
 
-  /* ── le rendez-vous ── */
-  await p.evaluate(() => __lieu('rdv')); await p.waitForTimeout(500);
+  /* ── LA BIBLIOTHÈQUE : les cahiers ── */
+  await p.evaluate(() => __lieu('bibliotheque')); await p.waitForTimeout(700);
+  const bi = await p.evaluate(() => {
+    const l = document.getElementById('bibliotheque');
+    const c = [...document.querySelectorAll('#cahiers .cah')];
+    return { cahiers: c.length, x: l.scrollWidth - l.clientWidth,
+             titres: c.map(x => x.querySelector('.cah__n').textContent.trim()),
+             mots: c.map(x => x.querySelector('.cah__c').textContent.trim().split(/\s+/).length),
+             ouvert: document.querySelectorAll('#cahiers .cah.on').length,
+             texte: l.textContent.replace(/\s+/g, ' ') };
+  });
+  v('la bibliothèque tient six cahiers', bi.cahiers === 6, bi.cahiers);
+  v('elle ne déborde pas latéralement', bi.x <= 1, bi.x);
+  /* c'est une pièce de fond : chaque cahier doit porter du texte,
+     c'est ce qui la rend lisible par un moteur comme par une lectrice */
+  v('chaque cahier est écrit, pas titré', Math.min(...bi.mots) >= 150,
+    Math.min(...bi.mots) + ' mots au plus court');
+  v('elle nomme les peausseries de la maison',
+    /alligator/i.test(bi.texte) && /galuchat/i.test(bi.texte) && /autruche/i.test(bi.texte));
+  v('elle porte les faits de la maison',
+    /3\s?400|trois mille quatre cents/i.test(bi.texte) && /Made in France/i.test(bi.texte) &&
+    /tannage végétal/i.test(bi.texte));
+  /* et les tanneries, nommées : c'est ce qui rend le propos vérifiable */
+  v('elle nomme les tanneries partenaires',
+    /Rémy Carriat/.test(bi.texte) && /Tannerie du Puy/.test(bi.texte) &&
+    /Mégisserie Berry/.test(bi.texte));
+  await p.click('#cahiers .cah:nth-child(1) .cah__t'); await p.waitForTimeout(700);
+  v('un cahier s\'ouvre', await p.evaluate(() =>
+    document.querySelector('#cahiers .cah').classList.contains('on')));
+
+  /* ── le rendez-vous : tout se joue AU-DESSUS DE LA LIGNE DE FLOTTAISON ── */
+  await p.evaluate(() => __lieu('rdv')); await p.waitForTimeout(600);
+  const fl = await p.evaluate(() => {
+    const l = document.getElementById('rdv');
+    const f = document.querySelector('.rdv__f').getBoundingClientRect();
+    const g = document.querySelector('.rdv__go').getBoundingClientRect();
+    const t = document.querySelector('.rdv__t').getBoundingClientRect();
+    return { defile: l.scrollHeight - l.clientHeight,
+             visuel: f.bottom <= innerHeight + 1 && f.height > innerHeight * .5,
+             cta: g.bottom <= innerHeight + 1,
+             titre: t.top >= 0,
+             d: 'visuel ' + Math.round(f.bottom) + ' · cta ' + Math.round(g.bottom) +
+                ' / ' + innerHeight };
+  });
+  v('le rendez-vous ne se descend pas', fl.defile <= 1, fl.defile + ' px');
+  v('le visuel est au-dessus de la ligne de flottaison', fl.visuel, fl.d);
+  v('le bouton de rendez-vous aussi', fl.cta && fl.titre, fl.d);
+
   await p.fill('#rNom', 'Hélène Mauro');
   await p.fill('#rMail', 'h.mauro@example.com');
   await p.click('.rdv__go'); await p.waitForTimeout(700);
   v('la demande de rendez-vous se confirme',
     /Hélène Mauro/.test(await p.locator('#rdvOk').innerText()));
 
-  /* ── le plan ── */
+  /* ── le plan, devenu un méga-menu ── */
   await p.click('#planB'); await p.waitForTimeout(800);
-  v('le plan liste les six destinations', await p.locator('#planL .pl').count() === 6);
+  v('le plan liste les cinq lieux', await p.locator('#planL .pl').count() === 5,
+    await p.locator('#planL .pl').count());
+  /* une seule entrée est déployée à la fois — celle qu'on désigne.
+     Les autres doivent rester STRICTEMENT de même hauteur : c'était
+     le déséquilibre reproché sur la capture. */
   const lignes = await p.evaluate(() => [...document.querySelectorAll('.pl')].map(l => {
     const r = l.getBoundingClientRect();
     const n = l.querySelector('.pl__n').getBoundingClientRect();
     const i = l.querySelector('.pl__i').getBoundingClientRect();
-    const d = l.querySelector('.pl__d').getBoundingClientRect();
-    return { h: Math.round(r.height),
-             num: Math.abs((i.top + i.height / 2) - (n.top + n.height / 2)),
-             desc: Math.abs((d.top + d.height / 2) - (r.top + r.height / 2)) };
+    return { h: Math.round(r.height), ouverte: l.classList.contains('vise'),
+             /* le numéro est calé sur la LIGNE DE BASE du nom, pas sur son
+                centre : on vérifie qu'il tombe bien dans la boîte du nom */
+             num: (i.top + i.height / 2) >= n.top && (i.top + i.height / 2) <= n.bottom,
+             large: Math.round(l.querySelector('.pl__n').getBoundingClientRect().width) };
   }));
-  const H = lignes.map(l => l.h);
-  v('les lignes du plan ont la même hauteur', Math.max(...H) - Math.min(...H) <= 1, H.join('/'));
-  v('numéro et description y sont centrés',
-    lignes.every(l => l.num <= 2 && l.desc <= 2));
+  const H = lignes.filter(l => !l.ouverte).map(l => l.h);
+  v('les entrées au repos ont la même hauteur', Math.max(...H) - Math.min(...H) <= 1,
+    lignes.map(l => l.h + (l.ouverte ? '*' : '')).join('/'));
+  v('une seule entrée est déployée', lignes.filter(l => l.ouverte).length === 1);
+  v('l\'entrée déployée est la plus haute',
+    Math.max(...lignes.map(l => l.h)) === lignes.find(l => l.ouverte).h);
+  v('le numéro est calé sur le nom', lignes.every(l => l.num));
   const noms = await p.evaluate(() =>
     [...document.querySelectorAll('.pl__n')].map(n =>
       n.firstChild.textContent + (n.querySelector('em') ? n.querySelector('em').textContent : '')));
   v('les noms du plan n\'ont pas d\'espace parasite',
-    noms.join('|') === "L'Accueil|La Galerie|L'Atelier|Le Cartonnier|Le Boudoir|Le Rendez-vous",
+    noms.join('|') === "La Galerie|L'Atelier|La Maison|La Bibliothèque|Le Boudoir",
     noms.join('|'));
+
+  /* le méga-menu : une image éditoriale suit l'entrée survolée, et
+     toutes les pages du site sont atteignables depuis là */
+  const mega = await p.evaluate(() => {
+    const v = document.getElementById('planV');
+    return { visuels: v.children.length,
+             montre: [...v.children].findIndex(c => c.classList.contains('on')),
+             natif: v.querySelector('.on img') ? v.querySelector('.on img').naturalWidth : 0,
+             colonnes: document.querySelectorAll('.plan__f h4').length,
+             liens: [...document.querySelectorAll('.plan__f li button')].map(b =>
+               b.textContent.trim()) };
+  });
+  v('chaque entrée porte son visuel', mega.visuels === 5, mega.visuels);
+  v('un visuel est montré', mega.montre === 0 && mega.natif >= 800,
+    mega.montre + ' · ' + mega.natif + ' px');
+  await p.hover('#planL .pl:nth-child(4)'); await p.waitForTimeout(900);
+  v('le visuel suit l\'entrée désignée',
+    await p.evaluate(() => [...document.getElementById('planV').children]
+      .findIndex(c => c.classList.contains('on'))) === 3);
+  v('le menu range les pages en colonnes', mega.colonnes >= 3, mega.colonnes);
+  /* les pages que le client ne trouvait pas doivent être là */
+  const attendus = ['cabinet', 'nuancier', 'créatrice', 'rendez-vous'];
+  v('les pages secondaires y sont atteignables',
+    attendus.every(a => mega.liens.some(l => new RegExp(a, 'i').test(l))),
+    mega.liens.join(' · '));
+
+  /* et elles mènent vraiment quelque part */
+  const versCabinet = await p.evaluate(() => {
+    const b = [...document.querySelectorAll('.plan__f li button')]
+      .find(x => /cabinet/i.test(x.textContent));
+    b.click(); return 1;
+  });
+  await p.waitForTimeout(900);
+  e = await p.evaluate(() => __etat());
+  v('« le cabinet des matières » ouvre le cabinet', e.plongee && e.cabinet && versCabinet,
+    e.lieu + ' plongée=' + e.plongee);
+  await p.click('#plgOk'); await p.waitForTimeout(600);
+  await p.click('#planB'); await p.waitForTimeout(700);
+  await p.evaluate(() => {
+    const b = [...document.querySelectorAll('.plan__f li button')]
+      .find(x => /créatrice/i.test(x.textContent));
+    b.click();
+  });
+  await p.waitForTimeout(1100);
+  v('« la créatrice » mène à la maison',
+    (await p.evaluate(() => __etat())).lieu === 'maison',
+    (await p.evaluate(() => __etat())).lieu);
+  await p.click('#planB'); await p.waitForTimeout(700);
   await p.keyboard.press('Escape'); await p.waitForTimeout(500);
 
   await p.close();

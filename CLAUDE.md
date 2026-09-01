@@ -493,25 +493,33 @@ python3 tools/demo/assembler.py tools/demo/gabarit-galerie.html tiraboschi-galer
 NODE_PATH=/opt/node22/lib/node_modules node tests/galerie/recette.js
 ```
 
-**Démo Galerie — les six règles à ne pas casser**
+**Démo Galerie — les sept règles à ne pas casser**
 
-1. **Aucun prix hors du boudoir.** Vérifié sur l'accueil, la galerie,
-   l'atelier, le cartonnier, le rendez-vous, le plan, le plein écran et
-   le cabinet.
-2. **L'accueil est une PAGE D'ACCUEIL tenue** : en-tête avec le logo et
-   le menu, hero pleine page, quatre lieux en BANDES qui s'entrebâillent
+1. **Aucun prix hors du boudoir**, et aucun mot de commerce nulle part.
+   Le mot « prix » lui-même est banni des lieux publics, jusque dans un
+   emploi figuré (« c'est le prix d'une coupe soignée » → reformulé).
+2. **L'accueil est une PAGE D'ACCUEIL tenue** : en-tête avec le nom
+   AU CENTRE de la page et le menu partagé de part et d'autre (deux
+   moitiés en `flex:1 1 0`, sinon une entrée passe SOUS le nom — bug
+   réel), hero pleine page, CINQ lieux en BANDES qui s'entrebâillent
    (jamais une liste), un mot de la maison, un pied de page. La liste en
    grand, elle, sert à la page introuvable.
-3. **Quatre lieux, quatre façons de se déplacer** — la galerie se
-   parcourt à l'horizontale (silhouettes accrochées librement, nuancier
-   en grille stricte rangée par famille de couleur), l'atelier se
-   traverse en EMPILANT ses six plans (`position:sticky`, voile et
-   recul), le cartonnier se lit en plein écran avec l'année en
-   filigrane et une frise, le boudoir ne se parcourt pas.
+3. **Cinq lieux, cinq façons de se déplacer** — la galerie se parcourt à
+   l'horizontale (silhouettes accrochées librement, nuancier en grille
+   stricte rangée par famille de couleur), l'atelier se traverse en
+   EMPILANT ses six plans (`position:sticky`, voile et recul), la maison
+   se lit en plein écran avec l'année en filigrane et une frise, la
+   bibliothèque se déplie en six cahiers, le boudoir ne se parcourt pas.
 4. **Une pièce s'ouvre en PLEIN ÉCRAN**, depuis sa propre tuile (FLIP),
-   cartel à côté d'elle. On y DÉFILE pour les autres vues de la pièce ;
-   les flèches changent de pièce. Jamais une pop-in.
-5. **Le boudoir est un PARCOURS**, pas une porte sur un outil :
+   cartel à côté d'elle. On y DÉFILE : les vues de la pièce, puis un
+   GROS PLAN DE MATIÈRE légendé, puis UN MOT DE LA MAISON avec sa
+   citation. Les flèches changent de pièce. Jamais une pop-in.
+5. **Une pièce se montre ENTIÈRE** — `object-fit:contain`, jamais
+   `cover` : un packshot rogné coupe le sac en haut et en bas (reproche
+   client, capture à l'appui). Corollaire : l'emplacement d'une
+   silhouette doit suivre SES proportions (un portrait 2:3 dans une case
+   en paysage laisse 49 % de blanc). La recette mesure les deux.
+6. **Le boudoir est un PARCOURS**, pas une porte sur un outil :
    antichambre (on est nommée, on retrouve ses pièces, deux portes) →
    silhouette → volume → pièce achevée, avec quatre pas dont seuls les
    franchis restent ouverts. Il s'ouvre sur une FIGURE, pas un code :
@@ -519,11 +527,16 @@ NODE_PATH=/opt/node22/lib/node_modules node tests/galerie/recette.js
    au clic. La pièce s'y tourne AU DOIGT, à la souris, et **au balayage
    à deux doigts** (un `wheel`, pas un `pointermove` — c'est ce qui
    manquait sur pavé tactile).
-6. **On ne perd pas le visiteur** — fil d'Ariane cliquable, plan (six
-   lignes de même hauteur), rendez-vous toujours à portée, fil de visite.
-   Les trois ouvertures se rencontrent EN MARCHANT.
+7. **On ne perd pas le visiteur** — fil d'Ariane cliquable, méga-menu
+   (cinq lieux avec visuel au survol + quatre colonnes de pages :
+   modèles, nuancier, cabinet des matières, six gestes, cahiers, 1904,
+   la créatrice, rendez-vous, boudoir, page introuvable), rendez-vous
+   toujours à portée, fil de visite. Les quatre ouvertures se
+   rencontrent EN MARCHANT. **Le rendez-vous tient EN ENTIER au-dessus
+   de la ligne de flottaison** en desktop (visuel + formulaire + CTA) ;
+   il ne redescend qu'en dessous de 960 px.
 
-**Les visuels** — `tools/demo/visuels/*.webp` (~2 Mo, 82 fichiers),
+**Les visuels** — `tools/demo/visuels/*.webp` (~5 Mo, 92 fichiers),
 tirés des originaux déposés sur `main` : `Photoshoot - December 25 -
 BOSCHI/` (l'éditorial JANE/VICTOIRE/DUO), `2026-05-05-photo-download-
 1of1/Highlights/` (les 67 packshots, regroupés en 32 pièces de 1 à 3
@@ -537,12 +550,39 @@ fichiers.
 « s'achète », ni « se vend », ni « vente », ni « panier ». On ne dit pas
 ce qui ne se fait pas ici, on raconte la main, la peau et le temps. La
 recette le vérifie sur l'accueil, la page introuvable, la galerie,
-l'atelier, le cartonnier et le rendez-vous.
+l'atelier, la maison, la bibliothèque et le rendez-vous.
 
 **Les packshots sont RECADRÉS sur la pièce** avant export : sur
 l'original le sac n'occupait que 35 à 47 % du cadre, le reste étant du
 fond de studio — d'où le flou en plein écran. Après recadrage le sujet
 fait ~1 400 px au lieu de ~570.
+
+**Une image ne doit JAMAIS être agrandie à l'affichage.** Deuxième cause
+de flou, mesurée : les éditoriaux sortaient à 1 200 px et servaient de
+fond plein écran à 1 441–1 494 px CSS (l'atelier, la maison, le seuil,
+la page introuvable, le hero de la galerie). Ils sont ré-exportés à
+1 900 px (les vues de modèle à 1 700 px), q62 — +1,4 Mo, et plus un seul
+agrandissement. La recette mesure `naturalWidth / largeur affichée` sur
+le visuel d'arrivée de la galerie et exige ≥ 1,5.
+
+**Le contenu vient du thème Shopify, pas de l'invention** : la Victoire
+née en 1908 pour la fille de Matteo Tiraboschi (« ma victoire
+personnelle »), H28 × L35 × P12, les quatre tanneries nommées
+(Mégisserie Berry, Rémy Carriat, Tannerie du Puy, Gants de Millau), les
+2 % de peaux retenues, les 8 à 10 points au centimètre, les 3 400 points,
+les 48–72 heures. Sources : `sections/tira-icone-victoire.liquid`,
+`tira-matieres.liquid`, `tira-savoir-faire.liquid`, `tira-histoire.liquid`,
+`tira-la-creatrice.liquid`.
+
+**La Bibliothèque est une pièce SEO/GEO** : six cahiers de 180 à 245 mots
+(le point sellier, lire une peau, les cuirs de la maison, les peausseries
+précieuses, Made in France only, entretenir une pièce). Elle porte les
+faits vérifiables et les noms propres — c'est ce qui la rend citable par
+un moteur génératif. La recette exige ≥ 150 mots de corps par cahier et
+la présence des tanneries, des peausseries et des chiffres clés.
+
+**« Le Cartonnier » a été renommé « La Maison »** : un cartonnier est un
+meuble, pas un lieu. Chaque espace doit nommer un univers.
 
 **Le volume 3D du boudoir ne correspond PAS au produit réel** : c'est le
 modèle Cycles rendu avant l'arrivée des photographies. À re-rendre
