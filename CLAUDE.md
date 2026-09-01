@@ -498,9 +498,10 @@ NODE_PATH=/opt/node22/lib/node_modules node tests/galerie/recette.js
 1. **Aucun prix hors du boudoir.** Vérifié sur l'accueil, la galerie,
    l'atelier, le cartonnier, le rendez-vous, le plan, le plein écran et
    le cabinet.
-2. **L'accueil est une PIÈCE, pas un sommaire** : un visuel plein écran
-   qui change avec le lieu désigné, quatre noms, une adresse. Pas de
-   barre de navigation par-dessus.
+2. **L'accueil est une PAGE D'ACCUEIL tenue** : en-tête avec le logo et
+   le menu, hero pleine page, quatre lieux en BANDES qui s'entrebâillent
+   (jamais une liste), un mot de la maison, un pied de page. La liste en
+   grand, elle, sert à la page introuvable.
 3. **Quatre lieux, quatre façons de se déplacer** — la galerie se
    parcourt à l'horizontale (silhouettes accrochées librement, nuancier
    en grille stricte rangée par famille de couleur), l'atelier se
@@ -510,10 +511,14 @@ NODE_PATH=/opt/node22/lib/node_modules node tests/galerie/recette.js
 4. **Une pièce s'ouvre en PLEIN ÉCRAN**, depuis sa propre tuile (FLIP),
    cartel à côté d'elle. On y DÉFILE pour les autres vues de la pièce ;
    les flèches changent de pièce. Jamais une pop-in.
-5. **Le boudoir s'ouvre sur une FIGURE**, pas un code : neuf points, on
-   trace un T. Au doigt d'un trait, ou point par point au clic (pavé
-   tactile) avec un bouton de validation. Et la pièce s'y tourne AU
-   DOIGT, prise n'importe où dans la scène.
+5. **Le boudoir est un PARCOURS**, pas une porte sur un outil :
+   antichambre (on est nommée, on retrouve ses pièces, deux portes) →
+   silhouette → volume → pièce achevée, avec quatre pas dont seuls les
+   franchis restent ouverts. Il s'ouvre sur une FIGURE, pas un code :
+   neuf points, on trace un T — au doigt d'un trait, ou point par point
+   au clic. La pièce s'y tourne AU DOIGT, à la souris, et **au balayage
+   à deux doigts** (un `wheel`, pas un `pointermove` — c'est ce qui
+   manquait sur pavé tactile).
 6. **On ne perd pas le visiteur** — fil d'Ariane cliquable, plan (six
    lignes de même hauteur), rendez-vous toujours à portée, fil de visite.
    Les trois ouvertures se rencontrent EN MARCHANT.
@@ -527,6 +532,17 @@ Les prises de vue d'une même pièce sont détectées par proximité de
 couleur ; l'ordre du nuancier est un rangement par famille (neutres,
 beiges, bruns, ambre, roses, rouges, magentas, bleus), pas l'ordre des
 fichiers.
+
+**Le discours** — aucun mot de commerce dans les lieux publics : ni
+« s'achète », ni « se vend », ni « vente », ni « panier ». On ne dit pas
+ce qui ne se fait pas ici, on raconte la main, la peau et le temps. La
+recette le vérifie sur l'accueil, la page introuvable, la galerie,
+l'atelier, le cartonnier et le rendez-vous.
+
+**Les packshots sont RECADRÉS sur la pièce** avant export : sur
+l'original le sac n'occupait que 35 à 47 % du cadre, le reste étant du
+fond de studio — d'où le flou en plein écran. Après recadrage le sujet
+fait ~1 400 px au lieu de ~570.
 
 **Le volume 3D du boudoir ne correspond PAS au produit réel** : c'est le
 modèle Cycles rendu avant l'arrivée des photographies. À re-rendre
