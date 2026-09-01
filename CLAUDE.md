@@ -493,47 +493,56 @@ python3 tools/demo/assembler.py tools/demo/gabarit-galerie.html tiraboschi-galer
 NODE_PATH=/opt/node22/lib/node_modules node tests/galerie/recette.js
 ```
 
-**Démo Galerie — les sept règles à ne pas casser**
+**Démo Galerie — les huit règles à ne pas casser**
 
 1. **Aucun prix hors du boudoir**, et aucun mot de commerce nulle part.
    Le mot « prix » lui-même est banni des lieux publics, jusque dans un
-   emploi figuré (« c'est le prix d'une coupe soignée » → reformulé).
-2. **L'accueil est une PAGE D'ACCUEIL tenue** : en-tête avec le nom
-   AU CENTRE de la page et le menu partagé de part et d'autre (deux
-   moitiés en `flex:1 1 0`, sinon une entrée passe SOUS le nom — bug
-   réel), hero pleine page, CINQ lieux en BANDES qui s'entrebâillent
-   (jamais une liste), un mot de la maison, un pied de page. La liste en
-   grand, elle, sert à la page introuvable.
-3. **Cinq lieux, cinq façons de se déplacer** — la galerie se parcourt à
-   l'horizontale (silhouettes accrochées librement, nuancier en grille
-   stricte rangée par famille de couleur), l'atelier se traverse en
-   EMPILANT ses six plans (`position:sticky`, voile et recul), la maison
-   se lit en plein écran avec l'année en filigrane et une frise, la
-   bibliothèque se déplie en six cahiers, le boudoir ne se parcourt pas.
-4. **Une pièce s'ouvre en PLEIN ÉCRAN**, depuis sa propre tuile (FLIP),
-   cartel à côté d'elle. On y DÉFILE : les vues de la pièce, puis un
-   GROS PLAN DE MATIÈRE légendé, puis UN MOT DE LA MAISON avec sa
-   citation. Les flèches changent de pièce. Jamais une pop-in.
-5. **Une pièce se montre ENTIÈRE** — `object-fit:contain`, jamais
-   `cover` : un packshot rogné coupe le sac en haut et en bas (reproche
-   client, capture à l'appui). Corollaire : l'emplacement d'une
-   silhouette doit suivre SES proportions (un portrait 2:3 dans une case
-   en paysage laisse 49 % de blanc). La recette mesure les deux.
-6. **Le boudoir est un PARCOURS**, pas une porte sur un outil :
-   antichambre (on est nommée, on retrouve ses pièces, deux portes) →
-   silhouette → volume → pièce achevée, avec quatre pas dont seuls les
-   franchis restent ouverts. Il s'ouvre sur une FIGURE, pas un code :
-   neuf points, on trace un T — au doigt d'un trait, ou point par point
-   au clic. La pièce s'y tourne AU DOIGT, à la souris, et **au balayage
-   à deux doigts** (un `wheel`, pas un `pointermove` — c'est ce qui
-   manquait sur pavé tactile).
-7. **On ne perd pas le visiteur** — fil d'Ariane cliquable, méga-menu
-   (cinq lieux avec visuel au survol + quatre colonnes de pages :
-   modèles, nuancier, cabinet des matières, six gestes, cahiers, 1904,
-   la créatrice, rendez-vous, boudoir, page introuvable), rendez-vous
-   toujours à portée, fil de visite. Les quatre ouvertures se
-   rencontrent EN MARCHANT. **Le rendez-vous tient EN ENTIER au-dessus
-   de la ligne de flottaison** en desktop (visuel + formulaire + CTA) ;
+   emploi figuré.
+2. **UN SEUL EN-TÊTE, LE MÊME PARTOUT** — il ne s'absente qu'au seuil.
+   Le nom (sans le V : le V est la signature des pièces, pas du mot) est
+   DANS LE FLUX entre deux moitiés de menu en `flex:1 1 0` : il est donc
+   exactement centré et aucune entrée ne peut lui passer dessus — la
+   géométrie l'interdit, ce n'est plus un réglage. Les sept entrées sont
+   identiques dans chaque lieu : les cinq lieux, Votre Cercle (le compte
+   client), le rendez-vous. **Jamais un burger ET un menu visible** :
+   au-dessus de 1340 px le menu, en dessous le burger. Le fil d'Ariane
+   est une bande de 38 px SOUS l'en-tête ; `--haut` vaut la somme des
+   deux et tout lieu s'y cale (un en-tête qui grandit sans cela pousse
+   le rail du boudoir hors de l'écran — bug réel).
+3. **Les sous-entrées se déplient SOUS leur entrée** (le volet : deux
+   colonnes de liens + un visuel), jamais rangées en tout petit au bas
+   d'un tiroir — « les clients n'iront jamais ». C'est là que vivent le
+   cabinet des matières, les cinq modèles, les six gestes, les cahiers,
+   les chapitres de la maison, la créatrice.
+4. **Cinq lieux, cinq façons de se déplacer** — la galerie se parcourt à
+   l'horizontale (LA COLLECTION : cinq modèles en ascenseur), l'atelier
+   s'EMPILE en six plans (`position:sticky`), la maison se lit en plein
+   écran avec l'année en filigrane, la bibliothèque se déplie en six
+   cahiers, le boudoir ne se parcourt pas.
+5. **Une pièce ouvre une PAGE, pas une vue** — depuis sa tuile (FLIP),
+   puis l'on DESCEND : les vues, l'origine, la silhouette et ses cotes,
+   les matières et la palette, LE NUANCIER, un gros plan de matière,
+   la fabrication et les six gestes, l'entretien, un mot de la maison,
+   le sur-mesure, les autres modèles. Un sommaire en haut. Plus de 700
+   mots par page. **Le nuancier vit DANS la fiche de la pièce qu'il
+   habille**, jamais sur le mur : désigner une peau change les vues du
+   haut et le mot qui l'accompagne.
+6. **Une pièce se montre ENTIÈRE** — `object-fit:contain`, jamais
+   `cover`. Corollaire : l'emplacement d'une silhouette doit suivre SES
+   proportions (un portrait 2:3 dans une case en paysage laisse 49 % de
+   blanc). La recette mesure les deux, sur le mur et au nuancier.
+7. **Le boudoir est un PARCOURS** : antichambre → silhouette → volume →
+   pièce achevée. Il s'ouvre sur une FIGURE, pas un code : neuf points,
+   on trace un T. **Les points SE SIGNALENT** — un halo bat derrière
+   chacun, en cascade, et après quelques secondes d'hésitation les cinq
+   points de la figure s'allument l'un après l'autre. Sans cela on ne
+   voit pas qu'il y a quelque chose à saisir, et la porte reste fermée
+   faute d'être vue. La pièce s'y tourne au doigt, à la souris, et **au
+   balayage à deux doigts** (un `wheel`, pas un `pointermove`).
+8. **On ne perd pas le visiteur** — fil d'Ariane cliquable, volets,
+   plan complet au burger, rendez-vous toujours à portée, fil de visite.
+   Les quatre ouvertures se rencontrent EN MARCHANT. **Le rendez-vous
+   tient EN ENTIER au-dessus de la ligne de flottaison** en desktop ;
    il ne redescend qu'en dessous de 960 px.
 
 **Les visuels** — `tools/demo/visuels/*.webp` (~5 Mo, 92 fichiers),
@@ -573,6 +582,27 @@ personnelle »), H28 × L35 × P12, les quatre tanneries nommées
 les 48–72 heures. Sources : `sections/tira-icone-victoire.liquid`,
 `tira-matieres.liquid`, `tira-savoir-faire.liquid`, `tira-histoire.liquid`,
 `tira-la-creatrice.liquid`.
+
+**LES TEXTES VIENNENT DU THÈME SHOPIFY, PAS DE L'INVENTION.** La
+chronique de la maison est celle de `sections/tira-histoire.liquid`,
+mot pour mot : 1904 (un maroquinier formé à Florence ouvre son premier
+atelier à Paris), 1938 (la deuxième génération, le veau pleine fleur du
+Limousin, les premiers partenariats avec les tanneries françaises),
+1972 (la boutique rue Saint-Honoré), 2019 (la capsule numérotée,
+@boschi_paris), aujourd'hui (six artisans, neuf modèles, zéro
+sous-traitance). Une version inventée avait été écrite puis corrigée —
+ne pas recommencer. Le Rafaël vient de `tira-icone-rafael.liquid` :
+né en 1952, H32 × L38 × P10, ouverture à glissière cousue sellier,
+16 heures de couture, 3 800 points, « conçu pour accompagner une vie en
+mouvement perpétuel ».
+
+**Les noms des modèles** : les dossiers de prises de vue tranchent —
+VICTOIRE = le hobo triangle, JANE = le seau à anneaux. Le trapèze à V et
+anse haute est appelé **Colette** (à confirmer). Les 32 peaux sont
+celles du **POCHON** (pochette à rabat portée à la chaîne), et non du
+Rafaël comme écrit un temps : le Rafaël est un sac de travail de 38 cm,
+il n'en existe encore aucune prise de vue — sa fiche affiche les volumes
+d'étude en attendant.
 
 **La Bibliothèque est une pièce SEO/GEO** : six cahiers de 180 à 245 mots
 (le point sellier, lire une peau, les cuirs de la maison, les peausseries
