@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sur Mesure — TIRABOSCHI Paris | Pièces Uniques sur Rendez-vous</title>
+<meta name="description" content="Le service sur mesure TIRABOSCHI Paris. Une pièce unique façonnée pour vous, de la sélection des cuirs à la remise par l'artisan. À partir de 4 500€. Sur rendez-vous, Paris.">
+<link rel="canonical" href="https://tiraboschi-paris.com/pages/sur-mesure">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap&subset=latin" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://tiraboschi-paris.com/pages/sur-mesure",
+      "name": "Sur Mesure — TIRABOSCHI Paris",
+      "description": "Service de création sur mesure TIRABOSCHI Paris. Pièces uniques façonnées à la demande, peaux précieuses, artisans maroquiniers depuis 1904.",
+      "url": "https://tiraboschi-paris.com/pages/sur-mesure",
+      "inLanguage": "fr",
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type":"ListItem","position":1,"name":"Accueil","item":"https://tiraboschi-paris.com"},
+          {"@type":"ListItem","position":2,"name":"Sur Mesure"}
+        ]
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Puis-je commander depuis l'étranger ?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Oui, nous livrons dans le monde entier. Un rendez-vous par visioconférence est possible pour les clients internationaux."}
+        },
+        {
+          "@type": "Question",
+          "name": "Combien de temps pour ma pièce ?",
+          "acceptedAnswer": {"@type": "Answer", "text": "8 à 12 semaines selon le modèle choisi. 12 à 16 semaines pour les peaux précieuses (Python, Lézard, Autruche)."}
+        },
+        {
+          "@type": "Question",
+          "name": "Le prix inclut-il tout ?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Oui, le tarif comprend le cuir sélectionné, l'intégralité de la fabrication, les quincailleries, la boîte de présentation et le certificat d'authenticité."}
+        },
+        {
+          "@type": "Question",
+          "name": "Peut-on personnaliser un modèle existant ?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Oui, vous pouvez adapter n'importe quel modèle de la collection : couleur du cuir, couleur de la couture, type de quincaillerie, initiales monogrammées."}
+        },
+        {
+          "@type": "Question",
+          "name": "Y a-t-il un dépôt à la commande ?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Un acompte de 30% est demandé à la validation de la commande. Le solde est réglé lors du rendez-vous de remise."}
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<style>
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+:root {
+  --tira-black: #0a0a0a;
+  --tira-white: #ffffff;
+  --tira-grey: #f7f5f2;
+  --tira-border: #e8e8e8;
+  --tira-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --tira-duration: 0.9s;
+  --header-h: 64px;
+  --search-h: 44px;
+}
+body {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 400;
+  background: var(--tira-white);
+  color: var(--tira-black);
+  overflow-x: hidden;
+  cursor: none;
+}
+@media (hover: none) { body { cursor: auto; } }
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 2px solid var(--tira-black); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* ── Curseur ── */
+.cur-dot, .cur-ring {
+  position: fixed; pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%); border-radius: 50%;
+}
+.cur-dot {
+  width: 6px; height: 6px;
+  background: var(--tira-black);
+  transition: width .3s var(--tira-ease), height .3s var(--tira-ease), background .3s;
+}
+.cur-ring {
+  width: 30px; height: 30px;
+  border: 1px solid rgba(10,10,10,.38);
+  transition: opacity .25s, width .3s var(--tira-ease), height .3s var(--tira-ease);
+}
+body.on-hover .cur-dot { width: 44px; height: 44px; background: rgba(10,10,10,.06); }
+body.on-hover .cur-ring { opacity: 0; }
+body.on-dark .cur-dot { background: var(--tira-white); }
+body.on-dark .cur-ring { border-color: rgba(255,255,255,.38); }
+@media (hover: none) { .cur-dot, .cur-ring { display: none; } }
+
+/* ── Header ── */
+.hdr {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: var(--header-h);
+  background: var(--tira-white);
+  border-bottom: 1px solid var(--tira-border);
+  transition: transform .35s var(--tira-ease);
+}
+.hdr.hidden { transform: translateY(-100%); }
+.hdr__d {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center; gap: 40px;
+  height: 100%; padding: 0 40px;
+}
+.hdr__nav { display: flex; align-items: center; gap: 28px; }
+.hdr__nav a {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+  opacity: .55; transition: opacity .2s; white-space: nowrap;
+}
+.hdr__nav a:hover, .hdr__nav a[aria-current] { opacity: 1; }
+.hdr__nav .sep { width: 1px; height: 11px; background: currentColor; opacity: .2; }
+.hdr__logo { display: flex; align-items: center; justify-content: center; }
+.hdr__logo a { display: block; line-height: 0; }
+.hdr__logo img { height: 28px; width: auto; display: block; }
+.hdr__icons { display: flex; align-items: center; gap: 18px; }
+.hdr__icons button {
+  background: none; border: none; cursor: none;
+  display: flex; align-items: center;
+  opacity: .65; transition: opacity .2s; padding: 2px;
+}
+.hdr__icons button:hover { opacity: 1; }
+.hdr__icons svg {
+  width: 20px; height: 20px; fill: none;
+  stroke: currentColor; stroke-width: 1.5;
+  stroke-linecap: square; stroke-linejoin: miter;
+}
+.tira-bag-icon { display: block; width: 22px; height: 22px; object-fit: contain; }
+/* Mobile header */
+.hdr__m {
+  display: none;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center; gap: 14px;
+  height: 100%; padding: 0 20px;
+}
+.hdr__m a { display: flex; align-items: center; line-height: 0; }
+.hdr__m img.hdr__logo-img { height: 24px; width: auto; }
+.hdr__m svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: square; stroke-linejoin: miter; }
+.hdr__m .tira-bag-icon { width: 24px; height: 24px; }
+.hdr__m button { background: none; border: none; cursor: pointer; display: flex; align-items: center; padding: 2px; }
+@media (max-width: 900px) { .hdr__d { display: none; } .hdr__m { display: grid; } }
+
+/* ── Search bar ── */
+.hdr-search {
+  position: fixed; top: var(--header-h); left: 0; right: 0; z-index: 199;
+  display: flex; align-items: center; justify-content: center;
+  height: var(--search-h); padding: 0 40px;
+  background: var(--tira-white);
+  border-bottom: 1px solid var(--tira-border);
+  transition: top .35s var(--tira-ease);
+}
+.hdr-search.up { top: 0; }
+.hdr-search__field {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; max-width: 560px;
+}
+.hdr-search input {
+  flex: 1; border: none; background: none; outline: none;
+  font-family: inherit; font-size: 11px;
+  text-transform: uppercase; letter-spacing: .12em;
+  color: var(--tira-black);
+  border-bottom: 1px solid var(--tira-border);
+  padding-bottom: 3px;
+}
+.hdr-search input::placeholder { opacity: .35; }
+.hdr-search__icon svg { width: 15px; height: 15px; fill: none; stroke: var(--tira-black); stroke-width: 1.2; opacity: .4; }
+@media (max-width: 900px) { .hdr-search { padding: 0 20px; } }
+
+/* ── Mobile nav drawer ── */
+.nav-overlay {
+  position: fixed; inset: 0; background: rgba(10,10,10,.55);
+  z-index: 300; opacity: 0; pointer-events: none;
+  transition: opacity .4s var(--tira-ease);
+}
+.nav-overlay.open { opacity: 1; pointer-events: auto; }
+.nav-drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; width: 280px;
+  background: var(--tira-white); z-index: 301;
+  transform: translateX(100%); transition: transform .45s var(--tira-ease);
+  padding: 32px 28px; overflow-y: auto;
+}
+.nav-drawer.open { transform: translateX(0); }
+.nav-drawer__close {
+  display: flex; align-items: center; justify-content: flex-end;
+  margin-bottom: 40px;
+}
+.nav-drawer__close button { background: none; border: none; cursor: pointer; padding: 4px; }
+.nav-drawer__close svg { width: 22px; height: 22px; fill: none; stroke: var(--tira-black); stroke-width: 1.5; }
+.nav-drawer a {
+  display: block; font-size: 18px; letter-spacing: -.01em;
+  padding: 14px 0; border-bottom: 1px solid var(--tira-border);
+  transition: opacity .2s;
+}
+.nav-drawer a:hover { opacity: .55; }
+.nav-drawer__sub { margin-top: 32px; }
+.nav-drawer__sub a { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; font-style: normal; padding: 10px 0; }
+
+/* ── Page offset ── */
+.page-offset { padding-top: calc(var(--header-h) + var(--search-h)); }
+
+/* ── Scroll reveal ── */
+[data-tira-reveal] {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity var(--tira-duration) var(--tira-ease),
+              transform var(--tira-duration) var(--tira-ease);
+}
+[data-tira-reveal].is-visible { opacity: 1; transform: none; }
+.d1 { transition-delay: 100ms !important; }
+.d2 { transition-delay: 200ms !important; }
+.d3 { transition-delay: 300ms !important; }
+.d4 { transition-delay: 400ms !important; }
+
+/* ── Word reveal ── */
+[data-tira-word-reveal] span {
+  display: inline-block; opacity: 0; transform: translateY(10px);
+  transition: opacity .5s var(--tira-ease) calc(var(--i) * 55ms),
+              transform .5s var(--tira-ease) calc(var(--i) * 55ms);
+}
+[data-tira-word-reveal].is-visible span { opacity: 1; transform: none; }
+
+/* ══════════════════════════════════════
+   1. HERO — 100vh, dark, Ken Burns
+══════════════════════════════════════ */
+.sm-hero {
+  position: relative; height: 100vh; min-height: 600px;
+  overflow: hidden; background: var(--tira-black);
+}
+.sm-hero__img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+}
+.sm-hero__img img {
+  width: 100%; height: 100%; object-fit: cover;
+  animation: tira-kb 16s ease-in-out infinite alternate;
+}
+@keyframes tira-kb {
+  from { transform: scale(1); }
+  to   { transform: scale(1.07) translate(1.5%, -1%); }
+}
+.sm-hero__overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,.08) 0%,
+    rgba(0,0,0,.42) 55%,
+    rgba(0,0,0,.72) 100%
+  );
+}
+.sm-hero__content {
+  position: absolute; inset: 0; z-index: 2;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; color: var(--tira-white);
+  padding: 0 24px;
+}
+.sm-hero__eyebrow {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+  opacity: .4; margin-bottom: 32px;
+  display: flex; gap: 12px; align-items: center;
+}
+.sm-hero__eyebrow a { transition: opacity .2s; }
+.sm-hero__eyebrow a:hover { opacity: .7; }
+.sm-hero h1 {
+  font-size: clamp(52px, 10vw, 100px);
+  line-height: .9; letter-spacing: -.01em;
+  margin-bottom: 28px;
+}
+.sm-hero__sub {
+  font-size: 17px; font-style: italic;
+  opacity: .65; line-height: 1.6;
+  max-width: 440px;
+}
+.sm-hero__bottom {
+  position: absolute; bottom: 48px; left: 0; right: 0;
+  text-align: center; z-index: 2; color: var(--tira-white);
+  font-size: 11px; text-transform: uppercase; letter-spacing: .15em;
+  opacity: .45;
+}
+@media (max-width: 768px) {
+  .sm-hero h1 { font-size: 56px; }
+  .sm-hero__bottom { bottom: 32px; font-size: 10px; letter-spacing: .12em; }
+}
+
+/* ══════════════════════════════════════
+   2. INTRO ÉDITORIALE
+══════════════════════════════════════ */
+.sm-intro {
+  background: var(--tira-grey);
+  padding: 100px 48px;
+}
+.sm-intro__inner {
+  max-width: 760px; margin: 0 auto; text-align: center;
+}
+.sm-intro__label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+  opacity: .3; margin-bottom: 36px;
+}
+.sm-intro__quote {
+  font-size: clamp(20px, 2.6vw, 30px);
+  font-style: italic; line-height: 1.6;
+  margin-bottom: 48px; opacity: .85;
+}
+.sm-intro__quote::before { content: '\201C'; }
+.sm-intro__quote::after  { content: '\201D'; }
+.sm-intro__body { font-size: 14px; line-height: 2; opacity: .6; }
+.sm-intro__body p + p { margin-top: 20px; }
+@media (max-width: 768px) { .sm-intro { padding: 64px 24px; } }
+
+/* ══════════════════════════════════════
+   3. PROCESSUS — 4 étapes
+══════════════════════════════════════ */
+.sm-process {
+  background: var(--tira-white);
+  padding: 100px 48px;
+  border-top: 1px solid var(--tira-border);
+}
+.sm-process__header {
+  text-align: center; margin-bottom: 80px;
+}
+.sm-process__label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+  opacity: .3; margin-bottom: 16px;
+}
+.sm-process__title { font-size: clamp(32px, 4vw, 48px); letter-spacing: -.01em; }
+/* Timeline horizontale desktop */
+.sm-steps {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 0; position: relative; max-width: 1100px; margin: 0 auto;
+}
+/* Ligne horizontale entre les steps */
+.sm-steps::before {
+  content: ''; position: absolute;
+  top: 28px; left: 12.5%; right: 12.5%;
+  height: 1px; background: var(--tira-border); z-index: 0;
+}
+.sm-step {
+  padding: 0 28px; text-align: center; position: relative; z-index: 1;
+}
+.sm-step__num-wrap {
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 28px;
+}
+.sm-step__num-outer {
+  width: 56px; height: 56px;
+  border: 1px solid var(--tira-border);
+  background: var(--tira-white);
+  display: flex; align-items: center; justify-content: center;
+}
+.sm-step__num {
+  font-size: 22px; opacity: .18; letter-spacing: -.01em;
+}
+.sm-step__title {
+  font-size: 18px; letter-spacing: -.01em; margin-bottom: 16px;
+}
+.sm-step__text { font-size: 13px; line-height: 1.85; opacity: .55; }
+/* Timeline verticale mobile */
+@media (max-width: 900px) {
+  .sm-process { padding: 64px 24px; }
+  .sm-steps { grid-template-columns: 1fr; gap: 0; }
+  .sm-steps::before {
+    top: 0; bottom: 0; left: 26px; right: auto;
+    width: 1px; height: auto;
+  }
+  .sm-step {
+    display: grid; grid-template-columns: 56px 1fr;
+    gap: 0 24px; text-align: left;
+    padding: 0 0 56px 0;
+  }
+  .sm-step:last-child { padding-bottom: 0; }
+  .sm-step__num-wrap { justify-content: flex-start; margin-bottom: 0; }
+  .sm-step__body { padding-top: 6px; }
+}
+
+/* ══════════════════════════════════════
+   4. OPTIONS DE PERSONNALISATION
+══════════════════════════════════════ */
+.sm-options {
+  background: var(--tira-grey);
+  padding: 100px 48px;
+  border-top: 1px solid var(--tira-border);
+}
+.sm-options__header {
+  text-align: center; margin-bottom: 72px;
+}
+.sm-options__label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+  opacity: .3; margin-bottom: 16px;
+}
+.sm-options__title { font-size: clamp(32px, 4vw, 48px); letter-spacing: -.01em; }
+.sm-opts-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 2px; max-width: 1100px; margin: 0 auto;
+}
+.sm-opt {
+  background: var(--tira-white);
+  padding: 48px 36px;
+}
+.sm-opt__illus {
+  width: 62px; height: 80px; margin-bottom: 28px;
+  background: linear-gradient(135deg, #d4c4a8 0%, #b8a48c 50%, #9c8870 100%);
+}
+.sm-opt:nth-child(2) .sm-opt__illus {
+  background: linear-gradient(135deg, #c8b8a0 0%, #a89880 50%, #8c7860 100%);
+}
+.sm-opt:nth-child(3) .sm-opt__illus {
+  background: linear-gradient(135deg, #e0d0b8 0%, #c8b89a 50%, #b09a7c 100%);
+}
+.sm-opt__num {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .15em;
+  opacity: .3; margin-bottom: 16px;
+}
+.sm-opt__title { font-size: 22px; letter-spacing: -.01em; margin-bottom: 14px; }
+.sm-opt__text { font-size: 13px; line-height: 1.85; opacity: .55; }
+.sm-opt__link {
+  display: inline-block; margin-top: 20px;
+  font-size: 11px; text-transform: uppercase; letter-spacing: .12em;
+  border-bottom: 1px solid currentColor; padding-bottom: 2px;
+  opacity: .55; transition: opacity .2s;
+}
+.sm-opt__link:hover { opacity: 1; }
+@media (max-width: 900px) {
+  .sm-options { padding: 64px 24px; }
+  .sm-opts-grid { grid-template-columns: 1fr; gap: 2px; }
+  .sm-opt { padding: 36px 24px; }
+}
+
+/* ══════════════════════════════════════
+   5. EXOTIQUES — dark
+══════════════════════════════════════ */
+.sm-exotic {
+  background: var(--tira-black);
+  color: var(--tira-white);
+  padding: 100px 48px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.sm-exotic__inner {
+  max-width: 1100px; margin: 0 auto;
+}
+.sm-exotic__header {
+  text-align: center; margin-bottom: 72px;
+}
+.sm-exotic__label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+  opacity: .3; margin-bottom: 16px;
+}
+.sm-exotic__title {
+  font-size: clamp(32px, 4vw, 52px); letter-spacing: -.01em;
+  margin-bottom: 24px;
+}
+.sm-exotic__intro {
+  font-size: 14px; line-height: 1.9; opacity: .5;
+  max-width: 640px; margin: 0 auto;
+}
+.sm-exotic-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 2px; margin-top: 64px;
+}
+.sm-exotic-card { text-align: center; }
+.sm-exotic-card__swatch {
+  width: 100%; aspect-ratio: 4/3; margin-bottom: 24px;
+  position: relative; overflow: hidden;
+}
+/* Python — écailles simulées par gradient répété */
+.sm-exotic-card:nth-child(1) .sm-exotic-card__swatch {
+  background:
+    repeating-linear-gradient(
+      60deg,
+      rgba(255,255,255,.04) 0px, rgba(255,255,255,.04) 2px,
+      transparent 2px, transparent 18px
+    ),
+    repeating-linear-gradient(
+      -60deg,
+      rgba(255,255,255,.04) 0px, rgba(255,255,255,.04) 2px,
+      transparent 2px, transparent 18px
+    ),
+    linear-gradient(145deg, #2a2218 0%, #1a1510 50%, #0e0b08 100%);
+}
+/* Lézard — pattern carré */
+.sm-exotic-card:nth-child(2) .sm-exotic-card__swatch {
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255,255,255,.05) 0px, rgba(255,255,255,.05) 1px,
+      transparent 1px, transparent 12px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,.05) 0px, rgba(255,255,255,.05) 1px,
+      transparent 1px, transparent 12px
+    ),
+    linear-gradient(145deg, #3a3028 0%, #252018 50%, #181410 100%);
+}
+/* Autruche — bumps */
+.sm-exotic-card:nth-child(3) .sm-exotic-card__swatch {
+  background:
+    radial-gradient(ellipse 8px 6px at 10% 15%, rgba(255,255,255,.08) 0%, transparent 60%),
+    radial-gradient(ellipse 8px 6px at 40% 45%, rgba(255,255,255,.06) 0%, transparent 60%),
+    radial-gradient(ellipse 8px 6px at 70% 20%, rgba(255,255,255,.07) 0%, transparent 60%),
+    radial-gradient(ellipse 8px 6px at 25% 70%, rgba(255,255,255,.05) 0%, transparent 60%),
+    radial-gradient(ellipse 8px 6px at 80% 70%, rgba(255,255,255,.06) 0%, transparent 60%),
+    linear-gradient(145deg, #1c1a14 0%, #141210 50%, #0c0a08 100%);
+}
+.sm-exotic-card__name {
+  font-size: 16px; letter-spacing: -.005em; margin-bottom: 8px;
+}
+.sm-exotic-card__detail {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+  opacity: .35;
+}
+.sm-exotic__note {
+  text-align: center; margin-top: 56px;
+  font-size: 11px; text-transform: uppercase; letter-spacing: .12em;
+  opacity: .3; border-top: 1px solid rgba(255,255,255,.08);
+  padding-top: 36px;
+}
+@media (max-width: 768px) {
+  .sm-exotic { padding: 64px 24px; }
+  .sm-exotic-grid { grid-template-columns: 1fr; gap: 2px; }
+}
+
+/* ══════════════════════════════════════
+   6. PRIX & DÉMARCHE
+══════════════════════════════════════ */
+.sm-prix {
+  background: var(--tira-white);
+  padding: 100px 48px;
+  border-top: 1px solid var(--tira-border);
+}
+.sm-prix__inner {
+  max-width: 760px; margin: 0 auto; text-align: center;
+}
+.sm-prix__label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+  opacity: .3; margin-bottom: 16px;
+}
+.sm-prix__intro {
+  font-size: 14px; line-height: 1.9; opacity: .55;
+  margin-bottom: 48px; max-width: 560px; margin-left: auto; margin-right: auto;
+}
+.sm-prix__amount {
+  font-size: clamp(36px, 5vw, 56px); letter-spacing: -.02em;
+  margin-bottom: 8px; opacity: .9;
+}
+.sm-prix__amount-note {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .15em;
+  opacity: .35; margin-bottom: 52px;
+}
+.sm-prix__divider {
+  width: 40px; height: 1px; background: var(--tira-border);
+  margin: 48px auto;
+}
+.sm-prix__reassurance {
+  font-size: 13px; font-style: italic; line-height: 1.8;
+  opacity: .55; max-width: 480px; margin: 0 auto;
+}
+@media (max-width: 768px) { .sm-prix { padding: 64px 24px; } }
+
+/* ══════════════════════════════════════
+   7. RENDEZ-VOUS / CTA
+══════════════════════════════════════ */
+.sm-rdv {
+  background: var(--tira-grey);
+  padding: 100px 48px;
+  border-top: 1px solid var(--tira-border);
+}
+.sm-rdv__inner {
+  max-width: 680px; margin: 0 auto; text-align: center;
+}
+.sm-rdv__label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+  opacity: .3; margin-bottom: 16px;
+}
+.sm-rdv__title {
+  font-size: clamp(32px, 4vw, 48px); letter-spacing: -.01em;
+  margin-bottom: 16px;
+}
+.sm-rdv__sub {
+  font-size: 14px; line-height: 1.8; opacity: .5;
+  margin-bottom: 56px; max-width: 480px; margin-left: auto; margin-right: auto;
+  margin-top: 0;
+}
+/* Form */
+.sm-form { text-align: left; }
+.sm-form__row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  margin-bottom: 24px;
+}
+.sm-form__field { display: flex; flex-direction: column; gap: 6px; }
+.sm-form__field--full { grid-column: 1 / -1; }
+.sm-form label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .12em;
+  opacity: .4;
+}
+.sm-form input, .sm-form textarea {
+  background: none; border: none; border-bottom: 1px solid var(--tira-border);
+  outline: none; font-family: inherit; font-size: 14px;
+  color: var(--tira-black); padding: 8px 0;
+  transition: border-color .2s;
+}
+.sm-form input:focus, .sm-form textarea:focus {
+  border-bottom-color: var(--tira-black);
+}
+.sm-form textarea { resize: none; height: 80px; }
+.sm-form__submit {
+  margin-top: 36px; text-align: center;
+}
+.btn-text {
+  background: none; border: none; cursor: pointer;
+  font-family: inherit; font-size: 11px;
+  text-transform: uppercase; letter-spacing: .15em;
+  border-bottom: 1px solid currentColor; padding-bottom: 3px;
+  transition: opacity .2s;
+}
+.btn-text:hover { opacity: .5; }
+/* OR separator */
+.sm-form__divider {
+  display: flex; align-items: center; gap: 16px;
+  margin: 40px 0; opacity: .3;
+}
+.sm-form__divider::before, .sm-form__divider::after {
+  content: ''; flex: 1; height: 1px; background: currentColor;
+}
+.sm-form__divider span {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .15em;
+  white-space: nowrap;
+}
+.sm-cta-links {
+  display: flex; justify-content: center; gap: 40px;
+  flex-wrap: wrap;
+}
+.sm-cta-link {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .15em;
+  border-bottom: 1px solid currentColor; padding-bottom: 3px;
+  transition: opacity .2s;
+}
+.sm-cta-link:hover { opacity: .45; }
+@media (max-width: 768px) {
+  .sm-rdv { padding: 64px 24px; }
+  .sm-form__row { grid-template-columns: 1fr; }
+}
+
+/* ══════════════════════════════════════
+   8. FAQ ACCORDION
+══════════════════════════════════════ */
+.sm-faq {
+  background: var(--tira-white);
+  padding: 100px 48px;
+  border-top: 1px solid var(--tira-border);
+}
+.sm-faq__inner { max-width: 760px; margin: 0 auto; }
+.sm-faq__header {
+  text-align: center; margin-bottom: 64px;
+}
+.sm-faq__label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+  opacity: .3; margin-bottom: 16px;
+}
+.sm-faq__title { font-size: clamp(28px, 3vw, 40px); letter-spacing: -.01em; }
+.faq-item { border-bottom: 1px solid var(--tira-border); }
+.faq-item:first-of-type { border-top: 1px solid var(--tira-border); }
+.faq-item__q {
+  width: 100%; background: none; border: none; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 24px; padding: 24px 0;
+  font-family: inherit; font-size: 16px; letter-spacing: -.005em;
+  text-align: left; color: var(--tira-black);
+  transition: opacity .2s;
+}
+.faq-item__q:hover { opacity: .6; }
+.faq-item__icon {
+  flex-shrink: 0; width: 16px; height: 16px; position: relative;
+  transition: transform .4s var(--tira-ease);
+}
+.faq-item__icon::before, .faq-item__icon::after {
+  content: ''; position: absolute;
+  background: currentColor; border-radius: 0;
+  transition: transform .4s var(--tira-ease), opacity .4s;
+}
+.faq-item__icon::before { width: 16px; height: 1px; top: 50%; left: 0; transform: translateY(-50%); }
+.faq-item__icon::after  { width: 1px; height: 16px; top: 0; left: 50%; transform: translateX(-50%); }
+.faq-item.open .faq-item__icon::after { transform: translateX(-50%) rotate(90deg); opacity: 0; }
+.faq-item__a {
+  font-size: 14px; line-height: 1.85; opacity: .55;
+  max-height: 0; overflow: hidden;
+  transition: max-height .5s var(--tira-ease), padding .4s var(--tira-ease);
+}
+.faq-item.open .faq-item__a { max-height: 300px; padding-bottom: 28px; }
+@media (max-width: 768px) { .sm-faq { padding: 64px 24px; } }
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+.ftr {
+  background: var(--tira-black); color: var(--tira-white);
+  border-top: 1px solid rgba(255,255,255,.06);
+  padding: 72px 48px 40px;
+}
+.ftr__grid {
+  display: grid; grid-template-columns: 1.2fr 1fr 1fr 1fr;
+  gap: 48px; margin-bottom: 64px;
+}
+.ftr__brand img { height: 24px; width: auto; margin-bottom: 20px; filter: invert(1); }
+.ftr__tagline {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .12em;
+  opacity: .35; line-height: 1.7; margin-bottom: 16px;
+}
+.ftr__insta {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+  opacity: .4; border-bottom: 1px solid rgba(255,255,255,.2);
+  padding-bottom: 2px; display: inline-block; transition: opacity .2s;
+}
+.ftr__insta:hover { opacity: .7; }
+.ftr__col-title {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+  opacity: .3; margin-bottom: 20px;
+}
+.ftr__links { display: flex; flex-direction: column; gap: 10px; }
+.ftr__links a {
+  font-size: 13px; opacity: .45; transition: opacity .2s; line-height: 1.4;
+}
+.ftr__links a:hover { opacity: .85; }
+.ftr__bottom {
+  border-top: 1px solid rgba(255,255,255,.06);
+  padding-top: 28px;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 12px;
+}
+.ftr__copy { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; opacity: .25; }
+.ftr__legal { display: flex; gap: 24px; }
+.ftr__legal a { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; opacity: .25; transition: opacity .2s; }
+.ftr__legal a:hover { opacity: .6; }
+/* Mobile footer accordion */
+@media (max-width: 900px) {
+  .ftr { padding: 48px 20px 32px; }
+  .ftr__grid { grid-template-columns: 1fr; gap: 0; }
+  .ftr__brand { padding-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,.06); margin-bottom: 0; }
+  .ftr__col { border-bottom: 1px solid rgba(255,255,255,.06); }
+  .ftr__col-title {
+    padding: 20px 0; margin-bottom: 0; cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .ftr__col-title::after {
+    content: '+'; font-size: 16px; opacity: .4; transition: transform .3s;
+  }
+  .ftr__col.open .ftr__col-title::after { transform: rotate(45deg); }
+  .ftr__links {
+    max-height: 0; overflow: hidden;
+    transition: max-height .4s var(--tira-ease), padding .4s;
+  }
+  .ftr__col.open .ftr__links { max-height: 300px; padding-bottom: 20px; }
+  .ftr__bottom { flex-direction: column; align-items: flex-start; }
+}
+
+/* -- Header (fond blanc, toujours opaque -- page secondaire) -- */
+.hdr { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: var(--header-h); background: var(--tira-white); border-bottom: 1px solid var(--tira-border); transition: transform .35s var(--tira-ease); }
+.hdr.hidden { transform: translateY(-100%); }
+.hdr__d { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 40px; height: 100%; padding: 0 40px; }
+.hdr__logo a { display: block; line-height: 0; }
+.hdr__logo-img { display: block; height: 28px; width: auto; }
+.hdr__nav { display: flex; align-items: center; justify-content: center; gap: 28px; }
+.hdr__nav a { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; opacity: .55; transition: opacity .2s; white-space: nowrap; }
+.hdr__nav a:hover, .hdr__nav a[aria-current] { opacity: 1; }
+.hdr__nav .nav-sep { width: 1px; height: 11px; background: currentColor; opacity: .2; }
+.hdr__icons { display: flex; align-items: center; gap: 18px; }
+.hdr__icons button { background: none; border: none; cursor: pointer; display: flex; align-items: center; opacity: .65; transition: opacity .2s; }
+.hdr__icons button:hover { opacity: 1; }
+.hdr__icons svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: square; stroke-linejoin: miter; }
+.tira-bag-icon { display: block; width: 22px; height: 22px; object-fit: contain; }
+.hdr__m { display: none; grid-template-columns: 1fr auto auto auto; align-items: center; gap: 14px; height: 100%; padding: 0 20px; }
+.hdr__m-logo { display: block; line-height: 0; }
+.hdr__m-logo .hdr__logo-img { height: 24px; }
+.hdr__m svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: square; stroke-linejoin: miter; }
+.hdr__m .tira-bag-icon { width: 24px; height: 24px; }
+.hdr__m button { background: none; border: none; cursor: pointer; display: flex; align-items: center; padding: 2px; }
+@media (max-width: 900px) { .hdr__d { display: none; } .hdr__m { display: grid; } }
+.hdr-search { position: fixed; top: var(--header-h); left: 0; right: 0; z-index: 199; display: flex; align-items: center; justify-content: center; height: var(--search-h); padding: 0 40px; background: var(--tira-white); border-bottom: 1px solid var(--tira-border); transition: top .35s var(--tira-ease); }
+.hdr-search.sticky-mode { top: 0; }
+.hdr-search__field { display: flex; align-items: center; gap: 8px; margin: 0 auto; width: 100%; max-width: 560px; }
+.hdr-search input { flex: 1; border: none; background: none; outline: none; font-family: inherit; font-size: 11px; text-transform: uppercase; letter-spacing: .12em; color: var(--tira-black); border-bottom: 1px solid var(--tira-border); padding-bottom: 3px; }
+.hdr-search input::placeholder { opacity: .35; }
+.hdr-search__icon svg { width: 15px; height: 15px; fill: none; stroke: var(--tira-black); stroke-width: 1.2; opacity: .4; }
+.hdr-search__actions { display: flex; align-items: center; gap: 20px; position: absolute; right: 40px; top: 50%; transform: translateY(-50%); opacity: 0; pointer-events: none; transition: opacity .3s; }
+.hdr-search.sticky-mode .hdr-search__actions { opacity: 1; pointer-events: auto; }
+.hdr-search__actions button { background: none; border: none; cursor: pointer; display: flex; align-items: center; opacity: .65; transition: opacity .2s; }
+.hdr-search__actions svg { width: 20px; height: 20px; fill: none; stroke: var(--tira-black); stroke-width: 1.5; stroke-linecap: square; stroke-linejoin: miter; }
+@media (max-width: 900px) { .hdr-search { padding: 0 20px; } .hdr-search__actions { right: 20px; } }
+.mobile-nav { position: fixed; inset: 0; z-index: 300; background: rgba(10,10,10,.5); opacity: 0; pointer-events: none; transition: opacity .35s var(--tira-ease); }
+.mobile-nav.open { opacity: 1; pointer-events: auto; }
+.mobile-nav__inner { position: absolute; top: 0; right: 0; bottom: 0; width: min(320px, 88vw); background: var(--tira-white); padding: 28px 32px 40px; transform: translateX(100%); transition: transform .4s var(--tira-ease); overflow-y: auto; }
+.mobile-nav.open .mobile-nav__inner { transform: none; }
+.mobile-nav__close { display: flex; margin-left: auto; margin-bottom: 40px; background: none; border: none; cursor: pointer; opacity: .5; }
+.mobile-nav__close svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+.mobile-nav ul { list-style: none; }
+.mobile-nav li a { display: block; font-size: 13px; text-transform: uppercase; letter-spacing: .1em; padding: 14px 0; border-bottom: 1px solid var(--tira-border); opacity: .75; transition: opacity .2s; }
+.mobile-nav li a:hover { opacity: 1; }
+body.nav-open { overflow: hidden; }
+.society-crm { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; padding: 80px 48px; border-top: 1px solid var(--tira-border); border-bottom: 1px solid var(--tira-border); }
+.society-crm__inner { display: contents; }
+.society-crm__title { font-size: clamp(28px, 3.5vw, 48px); font-weight: 400; line-height: 1.1; }
+.society-crm__field { display: flex; align-items: center; border-bottom: 1px solid var(--tira-border); margin-bottom: 14px; }
+.society-crm__input { flex: 1; border: none; background: none; outline: none; font-family: inherit; font-size: 13px; padding: 10px 0; }
+.society-crm__input::placeholder { opacity: .4; }
+.society-crm__arrow { background: none; border: none; cursor: pointer; display: flex; align-items: center; padding: 8px 0 8px 12px; opacity: .6; transition: opacity .2s; }
+.society-crm__arrow:hover { opacity: 1; }
+.society-crm__arrow svg { width: 18px; height: 18px; fill: none; stroke: var(--tira-black); }
+.society-crm__gdpr { font-size: 10px; opacity: .4; line-height: 1.6; margin-bottom: 32px; }
+.society-crm__gdpr a { text-decoration: underline; text-underline-offset: 3px; }
+.society-crm__confirm { font-size: 12px; opacity: .6; font-style: italic; }
+.society-crm__social { display: flex; align-items: center; gap: 20px; }
+.society-crm__social-label { font-size: 10px; text-transform: uppercase; letter-spacing: .14em; opacity: .4; }
+.society-crm__social-icons { display: flex; gap: 16px; }
+.society-crm__social-icons a { display: flex; align-items: center; opacity: .5; transition: opacity .2s; }
+.society-crm__social-icons a:hover { opacity: 1; }
+.society-crm__social-icons svg { width: 20px; height: 20px; }
+@media (max-width: 768px) { .society-crm { grid-template-columns: 1fr; padding: 60px 24px; gap: 44px; } }
+.footer { background: var(--tira-black); color: var(--tira-white); padding: 80px 48px 40px; }
+.footer__top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; padding-bottom: 64px; border-bottom: 1px solid rgba(255,255,255,.08); }
+.footer__brand-logo { font-size: 12px; text-transform: uppercase; letter-spacing: .2em; margin-bottom: 20px; }
+.footer__brand-text { font-size: 13px; opacity: .4; line-height: 1.75; max-width: 220px; }
+.footer__col h4 { font-size: 9px; text-transform: uppercase; letter-spacing: .16em; opacity: .3; margin-bottom: 22px; }
+.footer__col ul { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+.footer__col ul a { font-size: 13px; opacity: .6; transition: opacity .2s; }
+.footer__col ul a:hover { opacity: 1; }
+.footer__seo summary::-webkit-details-marker { display: none; }
+.footer__bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 32px; }
+.footer__copy { font-size: 10px; opacity: .22; text-transform: uppercase; letter-spacing: .1em; }
+.footer__policies { display: flex; gap: 24px; }
+.footer__policies a { font-size: 10px; opacity: .22; text-transform: uppercase; letter-spacing: .1em; transition: opacity .2s; }
+.footer__policies a:hover { opacity: .6; }
+@media (max-width: 900px) {
+  .footer { padding: 60px 24px 32px; } .footer__top { grid-template-columns: 1fr; gap: 0; }
+  .footer__col { border-top: 1px solid rgba(255,255,255,.08); }
+  .footer__col h4 { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; margin-bottom: 0; cursor: pointer; }
+  .footer__col h4::after { content: '+'; font-size: 16px; opacity: .4; transition: transform .3s; }
+  .footer__col.open h4::after { transform: rotate(45deg); }
+  .footer__col ul { max-height: 0; overflow: hidden; transition: max-height .4s var(--tira-ease); }
+  .footer__col.open ul { max-height: 320px; padding-bottom: 20px; }
+  .footer__bottom { flex-direction: column; gap: 16px; text-align: center; }
+  .footer__policies { flex-wrap: wrap; justify-content: center; gap: 16px; }
+}
+</style>
+</head>
+
+<body>
+<!-- Curseur custom -->
+<div class="cur-dot" id="curDot"></div>
+<div class="cur-ring" id="curRing"></div>
+
+<!-- ── HEADER ── -->
+<header class="hdr" id="hdr" role="banner">
+  <div class="hdr__d">
+    <div class="hdr__logo">
+      <a href="/" aria-label="TIRABOSCHI Paris -- accueil">
+        <img class="hdr__logo-img" src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738" alt="TIRABOSCHI Paris" width="auto" height="28">
+      </a>
+    </div>
+    <nav class="hdr__nav" aria-label="Navigation principale">
+      <a href="/collections/sacs">Sacs</a>
+      <a href="/collections/petite-maroquinerie">Petite Maroquinerie</a>
+      <a href="/collections/iconiques">Iconiques</a>
+      <a href="/collections/sur-mesure-exotiques">Sur Mesure</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/pages/histoire">La Maison</a>
+    </nav>
+    <div class="hdr__icons">
+      <button aria-label="Mon compte">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4.418 3.582-8 8-8s8 3.582 8 8"/></svg>
+      </button>
+      <button aria-label="Ouvrir la recherche">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="22" y2="22"/></svg>
+      </button>
+      <button aria-label="Panier -- 0 article">
+        <img class="tira-bag-icon" src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050" alt="" width="22" height="22" aria-hidden="true">
+      </button>
+    </div>
+  </div>
+  <div class="hdr__m" aria-label="Navigation mobile">
+    <a href="/" class="hdr__m-logo" aria-label="TIRABOSCHI Paris -- accueil">
+      <img class="hdr__logo-img" src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738" alt="TIRABOSCHI Paris" height="24">
+    </a>
+    <button aria-label="Panier -- 0 article">
+      <img class="tira-bag-icon" src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050" alt="" width="24" height="24" aria-hidden="true">
+    </button>
+    <button aria-label="Mon compte">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4.418 3.582-8 8-8s8 3.582 8 8"/></svg>
+    </button>
+    <button aria-label="Menu principal" aria-expanded="false" id="mobile-menu-btn">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="hdr-search" id="hdr-search" role="search" aria-label="Recherche">
+  <div class="hdr-search__field">
+    <input type="search" placeholder="Demander a Tiraboschi" aria-label="Recherche">
+    <div class="hdr-search__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="22" y2="22"/></svg>
+    </div>
+  </div>
+  <div class="hdr-search__actions" aria-hidden="true">
+    <button aria-label="Mon compte">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4.418 3.582-8 8-8s8 3.582 8 8"/></svg>
+    </button>
+    <button aria-label="Panier">
+      <img class="tira-bag-icon" src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050" alt="" width="20" height="20">
+    </button>
+  </div>
+</div>
+
+<main id="main">
+<section class="sm-hero" aria-label="Sur Mesure">
+  <div class="sm-hero__img" aria-hidden="true">
+    <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/28092025-DSCF1828.jpg"
+         alt="Atelier TIRABOSCHI Paris — Sur Mesure"
+         fetchpriority="high"
+         width="1920" height="1080">
+  </div>
+  <div class="sm-hero__overlay" aria-hidden="true"></div>
+  <div class="sm-hero__content">
+    <div class="sm-hero__eyebrow" aria-hidden="true">
+      <a href="/">Accueil</a>
+      <span>·</span>
+      <span>Sur Mesure</span>
+    </div>
+    <h1 data-tira-word-reveal>Sur Mesure</h1>
+    <p class="sm-hero__sub" data-tira-reveal>
+      <em>Une pièce unique, façonnée pour vous</em>
+    </p>
+  </div>
+  <div class="sm-hero__bottom" data-tira-reveal aria-hidden="true">
+    Disponible sur rendez-vous&nbsp;·&nbsp;Paris
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     2. INTRO ÉDITORIALE
+══════════════════════════════════════ -->
+<section class="sm-intro" aria-labelledby="intro-heading">
+  <div class="sm-intro__inner">
+    <p class="sm-intro__label" data-tira-reveal>La Démarche</p>
+    <blockquote class="sm-intro__quote" data-tira-reveal>
+      Nous ne fabriquons pas des sacs sur commande. Nous créons des compagnons pour une vie.
+    </blockquote>
+    <div class="sm-intro__body" data-tira-reveal>
+      <p>Chaque pièce sur mesure naît d'une conversation directe avec notre artisan maroquinier. Vous lui expliquez votre usage, vos habitudes, ce que vous portez, comment vous vous déplacez. Il écoute. Puis il propose.</p>
+      <p>Le processus se déroule en trois rendez-vous : la conception, où nous définissons ensemble la silhouette et les proportions ; la sélection des matières, où vous choisissez parmi notre collection exclusive de cuirs et de peaux précieuses ; et la remise, où votre pièce vous est présentée accompagnée de son certificat d'authenticité. Entre le premier rendez-vous et la livraison : 8 à 12 semaines.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     3. PROCESSUS — 4 ÉTAPES
+══════════════════════════════════════ -->
+<section class="sm-process" aria-labelledby="process-heading">
+  <div class="sm-process__header">
+    <p class="sm-process__label" data-tira-reveal>Notre Processus</p>
+    <h2 class="sm-process__title" id="process-heading" data-tira-reveal>De la Rencontre à la Remise</h2>
+  </div>
+  <div class="sm-steps" role="list">
+    <div class="sm-step" role="listitem" data-tira-reveal>
+      <div class="sm-step__num-wrap">
+        <div class="sm-step__num-outer" aria-hidden="true">
+          <span class="sm-step__num">1</span>
+        </div>
+      </div>
+      <div class="sm-step__body">
+        <h3 class="sm-step__title">La Rencontre</h3>
+        <p class="sm-step__text">Premier rendez-vous en atelier, une heure, pour définir ensemble l'usage, l'histoire et les intentions de votre future pièce.</p>
+      </div>
+    </div>
+    <div class="sm-step" role="listitem" data-tira-reveal class="d1">
+      <div class="sm-step__num-wrap">
+        <div class="sm-step__num-outer" aria-hidden="true">
+          <span class="sm-step__num">2</span>
+        </div>
+      </div>
+      <div class="sm-step__body">
+        <h3 class="sm-step__title">Le Choix</h3>
+        <p class="sm-step__text">Sélection des cuirs, couleurs et quincailleries parmi notre collection exclusive. Python, lézard, autruche disponibles sur demande.</p>
+      </div>
+    </div>
+    <div class="sm-step" role="listitem" data-tira-reveal class="d2">
+      <div class="sm-step__num-wrap">
+        <div class="sm-step__num-outer" aria-hidden="true">
+          <span class="sm-step__num">3</span>
+        </div>
+      </div>
+      <div class="sm-step__body">
+        <h3 class="sm-step__title">La Création</h3>
+        <p class="sm-step__text">8 à 12 semaines de fabrication exclusive dans notre atelier parisien. Un artisan, une pièce, de A à Z.</p>
+      </div>
+    </div>
+    <div class="sm-step" role="listitem" data-tira-reveal class="d3">
+      <div class="sm-step__num-wrap">
+        <div class="sm-step__num-outer" aria-hidden="true">
+          <span class="sm-step__num">4</span>
+        </div>
+      </div>
+      <div class="sm-step__body">
+        <h3 class="sm-step__title">La Remise</h3>
+        <p class="sm-step__text">Rendez-vous de remise avec l'artisan créateur. Présentation de la pièce, certificat d'authenticité manuscrit, explications d'entretien personnalisées.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     4. OPTIONS DE PERSONNALISATION
+══════════════════════════════════════ -->
+<section class="sm-options" aria-labelledby="options-heading">
+  <div class="sm-options__header">
+    <p class="sm-options__label" data-tira-reveal>Vos Options</p>
+    <h2 class="sm-options__title" id="options-heading" data-tira-reveal>Ce que vous choisissez</h2>
+  </div>
+  <div class="sm-opts-grid">
+    <article class="sm-opt" data-tira-reveal>
+      <div class="sm-opt__illus" aria-hidden="true"></div>
+      <p class="sm-opt__num">01</p>
+      <h3 class="sm-opt__title">La Forme</h3>
+      <p class="sm-opt__text">Adaptez un modèle existant de la collection ou concevez avec notre artisan une silhouette inédite, proportionnée à votre morphologie et à vos usages quotidiens.</p>
+    </article>
+    <article class="sm-opt" data-tira-reveal class="d1">
+      <div class="sm-opt__illus" aria-hidden="true"></div>
+      <p class="sm-opt__num">02</p>
+      <h3 class="sm-opt__title">La Matière</h3>
+      <p class="sm-opt__text">Veau pleine fleur, agneau nappa, veau box, veau gras — ou parmi nos peaux précieuses pour les esprits plus audacieux.</p>
+      <a href="/pages/matieres-cuirs" class="sm-opt__link">Voir Matières &amp; Cuirs</a>
+    </article>
+    <article class="sm-opt" data-tira-reveal class="d2">
+      <div class="sm-opt__illus" aria-hidden="true"></div>
+      <p class="sm-opt__num">03</p>
+      <h3 class="sm-opt__title">La Finition</h3>
+      <p class="sm-opt__text">Couleur de couture sellier, type de quincaillerie (or, argent ou bruni), initiales monogrammées estampées à chaud, doublure personnalisée.</p>
+    </article>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     5. PEAUX PRÉCIEUSES
+══════════════════════════════════════ -->
+<section class="sm-exotic" aria-labelledby="exotic-heading">
+  <div class="sm-exotic__inner">
+    <div class="sm-exotic__header">
+      <p class="sm-exotic__label" data-tira-reveal>Pour les esprits rares</p>
+      <h2 class="sm-exotic__title" id="exotic-heading" data-tira-word-reveal>Peaux Précieuses</h2>
+      <p class="sm-exotic__intro" data-tira-reveal>
+        Python de Birmanie, Lézard niloticus, Autruche d'Afrique du Sud. Nos stocks sont limités par nature, notre sourcing rigoureusement certifié CITES. Chaque peau est sélectionnée à la main pour ses caractéristiques uniques.
+      </p>
+    </div>
+    <div class="sm-exotic-grid">
+      <div class="sm-exotic-card" data-tira-reveal>
+        <div class="sm-exotic-card__swatch" aria-hidden="true"></div>
+        <p class="sm-exotic-card__name">Python de Birmanie</p>
+        <p class="sm-exotic-card__detail">Écailles naturelles · Reflets nacrés</p>
+      </div>
+      <div class="sm-exotic-card" data-tira-reveal class="d1">
+        <div class="sm-exotic-card__swatch" aria-hidden="true"></div>
+        <p class="sm-exotic-card__name">Lézard Niloticus</p>
+        <p class="sm-exotic-card__detail">Écailles carrées · Toucher précis</p>
+      </div>
+      <div class="sm-exotic-card" data-tira-reveal class="d2">
+        <div class="sm-exotic-card__swatch" aria-hidden="true"></div>
+        <p class="sm-exotic-card__name">Autruche d'Afrique du Sud</p>
+        <p class="sm-exotic-card__detail">Rondeurs caractéristiques · Ultra-souple</p>
+      </div>
+    </div>
+    <p class="sm-exotic__note" data-tira-reveal>
+      Sur demande uniquement&nbsp;·&nbsp;Délai 12 à 16 semaines&nbsp;·&nbsp;Certifiées CITES
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     6. PRIX & DÉMARCHE
+══════════════════════════════════════ -->
+<section class="sm-prix" aria-labelledby="prix-heading">
+  <div class="sm-prix__inner">
+    <p class="sm-prix__label" data-tira-reveal>L'Investissement</p>
+    <p class="sm-prix__intro" data-tira-reveal>
+      Les tarifs sont établis selon la complexité de la pièce, le choix des matières et le temps d'atelier nécessaire. Il n'existe pas de grille tarifaire fixe — chaque devis est personnel.
+    </p>
+    <p class="sm-prix__amount" data-tira-reveal>À partir de 4 500&nbsp;€</p>
+    <p class="sm-prix__amount-note" data-tira-reveal>Hors peaux précieuses</p>
+    <div class="sm-prix__divider" aria-hidden="true"></div>
+    <p class="sm-prix__reassurance" data-tira-reveal>
+      <em>Votre investissement est protégé par un certificat de provenance manuscrit et une garantie à vie sur les coutures et les structures.</em>
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     7. RENDEZ-VOUS CTA
+══════════════════════════════════════ -->
+<section class="sm-rdv" aria-labelledby="rdv-heading">
+  <div class="sm-rdv__inner">
+    <p class="sm-rdv__label" data-tira-reveal>Prendre contact</p>
+    <h2 class="sm-rdv__title" id="rdv-heading" data-tira-word-reveal>Commencer l'aventure</h2>
+    <p class="sm-rdv__sub" data-tira-reveal>
+      Décrivez-nous votre projet en quelques mots. Nous vous répondons sous 48h pour convenir d'un premier rendez-vous.
+    </p>
+    <form class="sm-form" novalidate data-tira-reveal>
+      <div class="sm-form__row">
+        <div class="sm-form__field">
+          <label for="f-prenom">Prénom</label>
+          <input type="text" id="f-prenom" name="prenom" autocomplete="given-name">
+        </div>
+        <div class="sm-form__field">
+          <label for="f-nom">Nom</label>
+          <input type="text" id="f-nom" name="nom" autocomplete="family-name">
+        </div>
+      </div>
+      <div class="sm-form__row">
+        <div class="sm-form__field sm-form__field--full">
+          <label for="f-email">Email</label>
+          <input type="email" id="f-email" name="email" autocomplete="email">
+        </div>
+      </div>
+      <div class="sm-form__row">
+        <div class="sm-form__field sm-form__field--full">
+          <label for="f-message">Votre projet (facultatif)</label>
+          <textarea id="f-message" name="message" placeholder="Décrivez l'usage, le modèle envisagé, vos préférences…"></textarea>
+        </div>
+      </div>
+      <div class="sm-form__submit">
+        <button type="submit" class="btn-text">Envoyer ma demande</button>
+      </div>
+    </form>
+    <div class="sm-form__divider" data-tira-reveal><span>ou</span></div>
+    <div class="sm-cta-links" data-tira-reveal>
+      <a href="/pages/prendrez-rendez-vous" class="sm-cta-link">Prendre rendez-vous en ligne</a>
+      <a href="/pages/contact" class="sm-cta-link">Nous écrire</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     8. FAQ
+══════════════════════════════════════ -->
+<section class="sm-faq" aria-labelledby="faq-heading">
+  <div class="sm-faq__inner">
+    <div class="sm-faq__header">
+      <p class="sm-faq__label" data-tira-reveal>Questions fréquentes</p>
+      <h2 class="sm-faq__title" id="faq-heading" data-tira-reveal>Ce que vous souhaitez savoir</h2>
+    </div>
+    <div role="list">
+      <div class="faq-item" role="listitem">
+        <button class="faq-item__q" aria-expanded="false">
+          <span>Puis-je commander depuis l'étranger&nbsp;?</span>
+          <span class="faq-item__icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-item__a" role="region">
+          <p>Oui, nous livrons dans le monde entier. Un rendez-vous par visioconférence est tout à fait possible pour les clientes internationales qui souhaitent tout de même un premier échange en face à face — virtuel.</p>
+        </div>
+      </div>
+      <div class="faq-item" role="listitem">
+        <button class="faq-item__q" aria-expanded="false">
+          <span>Combien de temps pour ma pièce&nbsp;?</span>
+          <span class="faq-item__icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-item__a" role="region">
+          <p>Entre 8 et 12 semaines selon le modèle et la complexité des finitions. Pour les peaux précieuses — Python, Lézard, Autruche — comptez 12 à 16 semaines, le temps de nous procurer la peau idéale.</p>
+        </div>
+      </div>
+      <div class="faq-item" role="listitem">
+        <button class="faq-item__q" aria-expanded="false">
+          <span>Le prix inclut-il tout&nbsp;?</span>
+          <span class="faq-item__icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-item__a" role="region">
+          <p>Oui. Le devis comprend le cuir sélectionné, la totalité de la fabrication en atelier, les quincailleries, la boîte de présentation en tissu et le certificat d'authenticité manuscrit. Aucun frais caché.</p>
+        </div>
+      </div>
+      <div class="faq-item" role="listitem">
+        <button class="faq-item__q" aria-expanded="false">
+          <span>Peut-on personnaliser un modèle existant&nbsp;?</span>
+          <span class="faq-item__icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-item__a" role="region">
+          <p>Absolument. Vous pouvez choisir la couleur du cuir, la couleur de la couture sellier, le type de quincaillerie (or, argent, bruni), et ajouter des initiales monogrammées estampées à chaud sur n'importe quel modèle de la collection.</p>
+        </div>
+      </div>
+      <div class="faq-item" role="listitem">
+        <button class="faq-item__q" aria-expanded="false">
+          <span>Y a-t-il un dépôt à la commande&nbsp;?</span>
+          <span class="faq-item__icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-item__a" role="region">
+          <p>Un acompte de 30% est demandé à la validation de la commande et de l'ensemble des choix. Le solde est réglé lors du rendez-vous de remise, une fois la pièce en main.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ══════════════════════════════════════
+     FOOTER
+══════════════════════════════════════ -->
+<section class="society-crm" data-tira-reveal aria-labelledby="society-crm-title">
+  <div class="society-crm__inner">
+    <div class="society-crm__left">
+      <h2 class="society-crm__title" id="society-crm-title">Join<br>the Society</h2>
+    </div>
+    <div class="society-crm__right">
+      <form class="society-crm__form" id="society-form" novalidate>
+        <div class="society-crm__field">
+          <input class="society-crm__input" type="email" placeholder="email" required autocomplete="email">
+          <button type="submit" class="society-crm__arrow" aria-label="S'inscrire">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
+          </button>
+        </div>
+        <p class="society-crm__gdpr">En vous inscrivant, vous acceptez notre <a href="/pages/confidentialite">politique de confidentialite</a>. Vous pouvez vous desinscrire a tout moment.</p>
+        <p class="society-crm__confirm" aria-live="polite" hidden>Bienvenue -- votre inscription est confirmee.</p>
+      </form>
+      <div class="society-crm__social">
+        <span class="society-crm__social-label">Suivez-nous</span>
+        <div class="society-crm__social-icons">
+          <a href="https://instagram.com/boschi_paris" target="_blank" rel="noopener" aria-label="Instagram @boschi_paris">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="#" aria-label="LinkedIn TIRABOSCHI">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20"/><line x1="7" y1="10" x2="7" y2="17"/><path d="M11 17v-4a2 2 0 0 1 4 0v4"/><line x1="11" y1="10" x2="11" y2="17"/><circle cx="7" cy="7" r=".8" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="#" aria-label="YouTube TIRABOSCHI">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="20" height="14"/><polygon points="10,9 16,12 10,15"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer" role="contentinfo">
+  <div class="footer__top">
+    <div>
+      <p class="footer__brand-logo">TIRABOSCHI &middot; Since 1904</p>
+      <p class="footer__brand-text">Maroquinerie de luxe francaise. Chaque piece fabriquee a la main, par un seul artisan, dans nos ateliers parisiens.</p>
+      <details class="footer__seo" style="margin-top:28px">
+        <summary style="font-size:10px;text-transform:uppercase;letter-spacing:.12em;opacity:.3;cursor:pointer;list-style:none">Plan du site</summary>
+        <div style="margin-top:12px;font-size:11px;opacity:.3;line-height:2">
+          <a href="/collections/sacs">Sacs</a> &middot; <a href="/collections/petite-maroquinerie">Petite Maroquinerie</a> &middot; <a href="/collections/iconiques">Iconiques</a> &middot; <a href="/collections/sur-mesure-exotiques">Sur Mesure</a> &middot; <a href="/pages/histoire">Histoire</a> &middot; <a href="/pages/savoir-faire">Savoir-Faire</a> &middot; <a href="/pages/matieres-cuirs">Matieres</a> &middot; <a href="/pages/la-societe">The Society</a> &middot; <a href="/pages/contact">Contact</a>
+        </div>
+      </details>
+    </div>
+    <div class="footer__col">
+      <h4>Collections</h4>
+      <ul>
+        <li><a href="/collections/sacs">Sacs</a></li>
+        <li><a href="/collections/petite-maroquinerie">Petite Maroquinerie</a></li>
+        <li><a href="/collections/iconiques">Iconiques</a></li>
+        <li><a href="/collections/fw25">FW 2025</a></li>
+        <li><a href="/collections/sur-mesure-exotiques">Sur Mesure &amp; Exotiques</a></li>
+      </ul>
+    </div>
+    <div class="footer__col">
+      <h4>La Maison</h4>
+      <ul>
+        <li><a href="/pages/histoire">Notre Histoire</a></li>
+        <li><a href="/pages/savoir-faire">Savoir-Faire</a></li>
+        <li><a href="/pages/matieres-cuirs">Matieres &amp; Cuirs</a></li>
+        <li><a href="/blogs/latelier">L'Atelier</a></li>
+        <li><a href="/pages/la-societe">The Society</a></li>
+      </ul>
+    </div>
+    <div class="footer__col">
+      <h4>Service</h4>
+      <ul>
+        <li><a href="/pages/contact">Contact</a></li>
+        <li><a href="/pages/prendrez-rendez-vous">Prendre RDV</a></li>
+        <li><a href="/pages/entretien-reparation">Entretien &amp; Reparation</a></li>
+        <li><a href="/pages/livraison">Livraison</a></li>
+        <li><a href="/pages/faq">FAQ</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer__bottom">
+    <p class="footer__copy">&copy; 2025 TIRABOSCHI Paris. Tous droits reserves.</p>
+    <nav class="footer__policies" aria-label="Liens legaux">
+      <a href="/pages/mentions-legales">Mentions legales</a>
+      <a href="/pages/confidentialite">Confidentialite</a>
+      <a href="/pages/cgv">CGV</a>
+    </nav>
+  </div>
+</footer>
+
+<nav class="mobile-nav" id="mobile-nav" aria-hidden="true">
+  <div class="mobile-nav__inner">
+    <button class="mobile-nav__close" id="mobile-nav-close">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+    </button>
+    <ul>
+      <li><a href="/collections/sacs">Sacs</a></li>
+      <li><a href="/collections/petite-maroquinerie">Petite Maroquinerie</a></li>
+      <li><a href="/collections/iconiques">Iconiques</a></li>
+      <li><a href="/collections/sur-mesure-exotiques">Sur Mesure</a></li>
+      <li><a href="/pages/histoire">Notre Histoire</a></li>
+      <li><a href="/pages/savoir-faire">Savoir-Faire</a></li>
+      <li><a href="/pages/matieres-cuirs">Les Matieres</a></li>
+      <li><a href="/pages/la-societe">The Society</a></li>
+      <li><a href="/pages/contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+
+<script>
+/* -- Header directionnel (toujours opaque) -- */
+const hdr = document.getElementById('hdr');
+const search = document.getElementById('hdr-search');
+let lastY = window.scrollY, ticking = false, lastDir = 'up';
+function updateHdr() {
+  const y = window.scrollY, d = y - lastY;
+  if (y > 120) {
+    if (d > 4 && lastDir !== 'down') { hdr && hdr.classList.add('hidden'); document.body.classList.add('hdr-hidden'); if (search) search.classList.add('sticky-mode'); lastDir = 'down'; }
+    else if (d < -4 && lastDir !== 'up') { hdr && hdr.classList.remove('hidden'); document.body.classList.remove('hdr-hidden'); if (search) search.classList.remove('sticky-mode'); lastDir = 'up'; }
+  } else { hdr && hdr.classList.remove('hidden'); document.body.classList.remove('hdr-hidden'); if (search) search.classList.remove('sticky-mode'); lastDir = 'up'; }
+  lastY = y; ticking = false;
+}
+window.addEventListener('scroll', () => { if (!ticking) { requestAnimationFrame(updateHdr); ticking = true; } }, { passive: true });
+/* -- Mobile menu -- */
+const mmBtn = document.getElementById('mobile-menu-btn');
+const mNav = document.getElementById('mobile-nav');
+const mnClose = document.getElementById('mobile-nav-close');
+if (mmBtn && mNav) {
+  mmBtn.addEventListener('click', () => { mNav.classList.add('open'); mNav.setAttribute('aria-hidden', 'false'); document.body.classList.add('nav-open'); });
+  [mnClose, mNav].forEach(function(el) { el && el.addEventListener('click', function(e) {
+    if (e.target === mNav || e.target.closest('#mobile-nav-close')) { mNav.classList.remove('open'); mNav.setAttribute('aria-hidden', 'true'); document.body.classList.remove('nav-open'); }
+  }); });
+}
+/* -- Footer accordion (mobile) -- */
+document.querySelectorAll('.footer__col h4').forEach(function(h) { h.addEventListener('click', function() { h.closest('.footer__col').classList.toggle('open'); }); });
+/* -- Society CRM form -- */
+const societyForm = document.getElementById('society-form');
+if (societyForm) { societyForm.addEventListener('submit', function(e) { e.preventDefault(); var em = this.querySelector('input[type="email"]').value; if (!em) return; var c = this.querySelector('.society-crm__confirm'); if (c) c.hidden = false; }); }
+</script>
+</body>
+</html>

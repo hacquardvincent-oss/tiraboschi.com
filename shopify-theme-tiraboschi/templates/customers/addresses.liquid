@@ -1,0 +1,46 @@
+{% comment %} TIRABOSCHI · Addresses {% endcomment %}
+<div class="tira-account-page">
+  <a href="{{ routes.account_url }}" class="tira-account__back">← Mon compte</a>
+  <h1 class="tira-account__title">Mes adresses</h1>
+
+  {% form 'customer_address', customer.new_address %}
+    {{ form.errors | default_errors }}
+    <div class="tira-account__address-form">
+      <h2>Nouvelle adresse</h2>
+      <div class="tira-form__field"><label>Prénom</label><input type="text" name="address[first_name]" value="{{ form.first_name }}"></div>
+      <div class="tira-form__field"><label>Nom</label><input type="text" name="address[last_name]" value="{{ form.last_name }}"></div>
+      <div class="tira-form__field"><label>Adresse</label><input type="text" name="address[address1]" value="{{ form.address1 }}"></div>
+      <div class="tira-form__field"><label>Complément</label><input type="text" name="address[address2]" value="{{ form.address2 }}"></div>
+      <div class="tira-form__field"><label>Ville</label><input type="text" name="address[city]" value="{{ form.city }}"></div>
+      <div class="tira-form__field"><label>Code postal</label><input type="text" name="address[zip]" value="{{ form.zip }}" autocapitalize="characters"></div>
+      <div class="tira-form__field"><label>Pays</label>
+        <select name="address[country]" id="AddressCountryNew" data-default="{{ form.country }}">{{ country_option_tags }}</select>
+      </div>
+      <button type="submit" class="tira-account__btn">Enregistrer</button>
+    </div>
+  {% endform %}
+
+  {% if customer.addresses.size > 0 %}
+    <div class="tira-account__addresses-list">
+      <h2>Adresses enregistrées</h2>
+      {% for address in customer.addresses %}
+        <div class="tira-account__address-item">
+          <address>
+            {{ address.name }}<br>
+            {{ address.address1 }}<br>
+            {% if address.address2 != blank %}{{ address.address2 }}<br>{% endif %}
+            {{ address.city }}, {{ address.zip }}<br>
+            {{ address.country }}
+          </address>
+          {% if address == customer.default_address %}
+            <span class="tira-account__default-badge">Adresse par défaut</span>
+          {% endif %}
+          <div class="tira-account__address-actions">
+            <a href="#" onclick="Shopify.CustomerAddress.toggleForm('{{ address.id }}'); return false;">Modifier</a>
+            <a href="#" onclick="Shopify.CustomerAddress.destroy('{{ address.id }}', '{{ 'Êtes-vous sûr ?' }}'); return false;">Supprimer</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>

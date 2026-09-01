@@ -1,0 +1,168 @@
+/* ============================================================
+   TIRABOSCHI PARIS — Header CSS
+   Mobile : Logo gauche · Recherche · Panier+Compte · Burger droite
+   Desktop: Logo gauche · Nav gauche · Icônes droite
+   ============================================================ */
+
+/* ---- Taille logo ---- */
+.header-logo img {
+  height: 22px;
+  width: auto;
+  display: block;
+}
+@media screen and (max-width: 749px) {
+  .header-logo img {
+    height: 18px !important;
+  }
+}
+
+/* ============================================================
+   MOBILE — Réorganisation grille Horizon
+   Grille native Horizon : leftA | leftB | center | rightA | rightB
+   Objectif : logo → leftA  ·  search → visible  ·  burger → rightB
+   ============================================================ */
+@media screen and (max-width: 749px) {
+
+  /* 1. Logo → zone leftA (gauche) au lieu de center */
+  .header-logo {
+    grid-area: leftA !important;
+    justify-self: start;
+    align-self: center;
+  }
+
+  /* 2. Icône recherche → visible, zone leftB */
+  /*    (suppression du display:none précédent) */
+  .search-action {
+    grid-area: leftB !important;
+    display: flex !important;
+    justify-self: center;
+    align-self: center;
+  }
+
+  /* 3. Burger (déclencheur du menu tiroir) → zone rightB */
+  /*    Horizon utilise .header__icon--menu ou details summary dans le header */
+  .header__icon--menu,
+  details.menu-drawer-container > summary,
+  .header__columns details > summary:first-child {
+    grid-area: rightB !important;
+    justify-self: end;
+    align-self: center;
+  }
+
+  /* 4. Header-actions (panier + compte) → zone rightA */
+  header-actions {
+    grid-area: rightA !important;
+    justify-self: end;
+    align-self: center;
+  }
+
+  /* 5. Supprimer la row du bas (plus de barre search persistante) */
+  .header__row--bottom {
+    display: none !important;
+  }
+}
+
+/* ============================================================
+   SEARCH MODAL — Plein écran, style TIRABOSCHI
+   Horizon rend la recherche via <search-modal> (custom element)
+   ============================================================ */
+
+/* Backdrop plein écran foncé */
+search-modal::backdrop {
+  background: rgba(10, 10, 10, 0.96) !important;
+}
+
+/* Conteneur de la modal quand ouverte */
+search-modal[aria-expanded="true"] .modal__content,
+search-modal[open] > :not([slot]),
+.search-modal__content {
+  background: rgba(10, 10, 10, 0.96) !important;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: min(28vh, 180px);
+  padding-inline: 20px;
+}
+
+/* Formulaire de recherche — centré */
+search-modal form,
+.search-modal__form,
+.predictive-search__form {
+  width: min(640px, 90vw) !important;
+}
+
+/* Input — trait bas uniquement, fond transparent */
+search-modal input[type="search"],
+search-modal input[type="text"],
+.search-modal__input,
+.predictive-search input {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.32) !important;
+  border-radius: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color: #ffffff !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: clamp(1.1rem, 2.5vw, 1.75rem) !important;
+  letter-spacing: 0.05em !important;
+  padding: 0.6rem 0 !important;
+  width: 100% !important;
+  caret-color: #ffffff;
+  transition: border-color 0.3s ease;
+}
+search-modal input:focus {
+  border-bottom-color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Placeholder */
+search-modal input::placeholder,
+.search-modal__input::placeholder {
+  color: rgba(255, 255, 255, 0.3) !important;
+  font-style: italic;
+}
+
+/* Bouton Fermer */
+search-modal .search-modal__close-button,
+search-modal [aria-label*="Fermer"],
+search-modal [aria-label*="Close"],
+search-modal .modal-dialog__close {
+  color: #ffffff !important;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+search-modal .search-modal__close-button:hover,
+search-modal .modal-dialog__close:hover {
+  opacity: 1;
+}
+
+/* Résultats prédictifs */
+search-modal .predictive-search,
+search-modal .predictive-search__results-list {
+  background: transparent !important;
+  color: #ffffff !important;
+  width: min(640px, 90vw) !important;
+  margin: 0 auto;
+}
+search-modal .predictive-search__item,
+search-modal .predictive-search__item a {
+  color: rgba(255, 255, 255, 0.65) !important;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color 0.2s ease;
+}
+search-modal .predictive-search__item:hover a {
+  color: #ffffff !important;
+}
+
+/* ============================================================
+   PICTO PANIER CUSTOM
+   ============================================================ */
+.icon-bag-tiraboschi {
+  width: 22px !important;
+  height: 22px !important;
+  display: block;
+}

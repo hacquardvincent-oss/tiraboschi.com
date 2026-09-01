@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "tira-icone-colette": {
+      "type": "tira-icone-colette",
+      "settings": {}
+    }
+  },
+  "order": ["tira-icone-colette"]
+}

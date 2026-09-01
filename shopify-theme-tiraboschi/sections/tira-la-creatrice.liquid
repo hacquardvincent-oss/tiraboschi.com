@@ -1,0 +1,743 @@
+{% comment %}
+  ═══════════════════════════════════════════════════════════════
+  TIRABOSCHI · La Créatrice — Page fondatrice de la maison
+  ═══════════════════════════════════════════════════════════════
+  Structure :
+  1. Hero       — 80vh, fond noir, BOSCHI0154 Ken Burns, H1
+  2. Portrait   — 2 colonnes, citation + portrait BOSCHI0919
+  3. La Vision  — fond --tira-grey, H2 + paragraphes, max 760px
+  4. L'Atelier  — fond noir, 4 chiffres + image pleine hauteur
+  5. La Signature — fond blanc, texte centré, typographique pur
+  6. Engagements — fond --tira-grey, 3 cartes borderless
+  7. The Society — fond noir, CTA
+  8. Contact    — fond blanc, CTA principal border 1px
+  CSS prefix : .cre-
+{% endcomment %}
+
+<style>
+  /* ── Variables & base ── */
+  .cre-page {
+    --tira-black:  #0a0a0a;
+    --tira-white:  #ffffff;
+    --tira-grey:   #f7f5f2;
+    --tira-border: #e8e8e8;
+    --tira-ease:   cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: 'Playfair Display', Georgia, serif;
+    color: var(--tira-black);
+  }
+
+  /* ── Reveal animations ── */
+  .cre-page [data-reveal] {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.9s var(--tira-ease), transform 0.9s var(--tira-ease);
+  }
+  .cre-page [data-reveal].visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .cre-page [data-reveal-delay="1"] { transition-delay: 0.1s; }
+  .cre-page [data-reveal-delay="2"] { transition-delay: 0.2s; }
+  .cre-page [data-reveal-delay="3"] { transition-delay: 0.35s; }
+  .cre-page [data-reveal-delay="4"] { transition-delay: 0.5s; }
+
+  /* Word-by-word reveal */
+  .cre-page [data-words] span {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.5s var(--tira-ease) calc(var(--i) * 55ms),
+                transform  0.5s var(--tira-ease) calc(var(--i) * 55ms);
+  }
+  .cre-page [data-words].visible span { opacity: 1; transform: translateY(0); }
+
+  /* ── Ken Burns ── */
+  @keyframes cre-kb {
+    from { transform: scale(1); }
+    to   { transform: scale(1.07) translate(1.5%, -1%); }
+  }
+
+  /* ══════════════════════════════════════════
+     1. HERO
+  ══════════════════════════════════════════ */
+  .cre-hero {
+    position: relative;
+    height: 80vh;
+    min-height: 520px;
+    overflow: hidden;
+    background: var(--tira-black);
+    display: flex;
+    align-items: flex-end;
+    margin-top: var(--content-top);
+  }
+  .cre-hero__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    animation: cre-kb 16s ease-in-out infinite alternate;
+    filter: brightness(0.6);
+  }
+  .cre-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(10,10,10,0.85) 0%, rgba(10,10,10,0.2) 50%, transparent 100%);
+  }
+  .cre-hero__watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(60px, 10vw, 140px);
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.04);
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    line-height: 1;
+  }
+  .cre-hero__content {
+    position: relative;
+    z-index: 2;
+    padding: 0 40px 60px;
+    color: var(--tira-white);
+    max-width: 900px;
+  }
+  .cre-hero__label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin: 0 0 20px;
+  }
+  .cre-hero__h1 {
+    font-size: clamp(48px, 7vw, 88px);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+    margin: 0;
+  }
+
+  @media (max-width: 767px) {
+    .cre-hero { height: 80vh; }
+    .cre-hero__content { padding: 0 24px 40px; }
+  }
+
+  /* ══════════════════════════════════════════
+     2. PORTRAIT & CITATION
+  ══════════════════════════════════════════ */
+  .cre-portrait {
+    background: var(--tira-white);
+    padding: 100px 40px;
+  }
+  .cre-portrait__inner {
+    max-width: 1240px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 55% 45%;
+    gap: 80px;
+    align-items: center;
+  }
+  .cre-portrait__img-wrap {
+    overflow: hidden;
+    border-radius: 0;
+  }
+  .cre-portrait__img {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+    border-radius: 0;
+  }
+  .cre-portrait__text {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  .cre-portrait__quote {
+    font-size: clamp(24px, 2.6vw, 36px);
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    margin: 0;
+    color: var(--tira-black);
+  }
+  .cre-portrait__author {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin: 0;
+  }
+  .cre-portrait__body {
+    font-size: 14px;
+    line-height: 1.85;
+    color: var(--tira-black);
+    opacity: 0.75;
+    margin: 0;
+    border-top: 1px solid var(--tira-border);
+    padding-top: 32px;
+  }
+
+  @media (max-width: 1023px) {
+    .cre-portrait__inner {
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+    .cre-portrait__img { aspect-ratio: 4 / 3; }
+  }
+  @media (max-width: 767px) {
+    .cre-portrait { padding: 60px 24px; }
+  }
+
+  /* ══════════════════════════════════════════
+     3. LA VISION
+  ══════════════════════════════════════════ */
+  .cre-vision {
+    background: var(--tira-grey);
+    padding: 100px 40px;
+  }
+  .cre-vision__inner {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .cre-vision__eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.45;
+    margin: 0 0 28px;
+  }
+  .cre-vision__h2 {
+    font-size: clamp(32px, 3.5vw, 48px);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    margin: 0 0 40px;
+  }
+  .cre-vision__body {
+    font-size: 14px;
+    line-height: 1.9;
+    opacity: 0.75;
+    margin: 0 0 24px;
+  }
+  .cre-vision__body:last-of-type { margin-bottom: 0; }
+  .cre-vision__sep {
+    margin-top: 60px;
+    border: none;
+    border-top: 1px solid var(--tira-border);
+  }
+
+  @media (max-width: 767px) {
+    .cre-vision { padding: 60px 24px; }
+  }
+
+  /* ══════════════════════════════════════════
+     4. L'ATELIER
+  ══════════════════════════════════════════ */
+  .cre-atelier {
+    background: var(--tira-black);
+    color: var(--tira-white);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 600px;
+  }
+  .cre-atelier__left {
+    padding: 80px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0;
+  }
+  .cre-atelier__eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.4;
+    margin: 0 0 48px;
+  }
+  .cre-atelier__stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px 40px;
+  }
+  .cre-atelier__stat-num {
+    font-size: clamp(40px, 4vw, 64px);
+    font-weight: 400;
+    line-height: 1;
+    margin: 0 0 8px;
+    letter-spacing: -0.02em;
+  }
+  .cre-atelier__stat-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.45;
+    line-height: 1.5;
+    margin: 0;
+  }
+  .cre-atelier__right {
+    overflow: hidden;
+    position: relative;
+  }
+  .cre-atelier__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: brightness(0.65);
+  }
+
+  @media (max-width: 1023px) {
+    .cre-atelier {
+      grid-template-columns: 1fr;
+    }
+    .cre-atelier__right {
+      position: relative;
+      height: 340px;
+    }
+    .cre-atelier__left { padding: 60px 40px; }
+  }
+  @media (max-width: 767px) {
+    .cre-atelier__left { padding: 60px 24px; }
+    .cre-atelier__stats { grid-template-columns: 1fr 1fr; gap: 36px 24px; }
+  }
+
+  /* ══════════════════════════════════════════
+     5. LA SIGNATURE
+  ══════════════════════════════════════════ */
+  .cre-signature {
+    background: var(--tira-white);
+    padding: 100px 40px;
+    text-align: center;
+  }
+  .cre-signature__inner {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .cre-signature__eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.4;
+    margin: 0 0 28px;
+  }
+  .cre-signature__h2 {
+    font-size: clamp(28px, 3.5vw, 48px);
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    margin: 0 0 40px;
+  }
+  .cre-signature__body {
+    font-size: 14px;
+    line-height: 1.9;
+    opacity: 0.7;
+    margin: 0 auto 24px;
+    max-width: 600px;
+    text-align: left;
+  }
+  .cre-signature__letter {
+    font-size: clamp(80px, 14vw, 180px);
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1;
+    color: var(--tira-black);
+    opacity: 0.05;
+    display: block;
+    margin: 32px auto 0;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  @media (max-width: 767px) {
+    .cre-signature { padding: 60px 24px; }
+    .cre-signature__body { text-align: center; }
+  }
+
+  /* ══════════════════════════════════════════
+     6. ENGAGEMENTS
+  ══════════════════════════════════════════ */
+  .cre-engagements {
+    background: var(--tira-grey);
+    padding: 100px 40px;
+  }
+  .cre-engagements__inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .cre-engagements__eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.45;
+    margin: 0 0 56px;
+    display: block;
+  }
+  .cre-engagements__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+  .cre-engagement {
+    padding: 40px 40px 40px 0;
+    border-top: 1px solid var(--tira-border);
+  }
+  .cre-engagement + .cre-engagement {
+    padding-left: 40px;
+    border-left: 1px solid var(--tira-border);
+  }
+  .cre-engagement__label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.4;
+    margin: 0 0 16px;
+    display: block;
+  }
+  .cre-engagement__title {
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1.2;
+    margin: 0 0 16px;
+  }
+  .cre-engagement__desc {
+    font-size: 13px;
+    line-height: 1.75;
+    opacity: 0.65;
+    margin: 0;
+  }
+
+  @media (max-width: 1023px) {
+    .cre-engagements__grid { grid-template-columns: 1fr; }
+    .cre-engagement {
+      padding: 40px 0;
+      border-top: 1px solid var(--tira-border);
+      border-left: none !important;
+    }
+    .cre-engagement + .cre-engagement { padding-left: 0; }
+  }
+  @media (max-width: 767px) {
+    .cre-engagements { padding: 60px 24px; }
+  }
+
+  /* ══════════════════════════════════════════
+     7. THE SOCIETY
+  ══════════════════════════════════════════ */
+  .cre-society {
+    background: var(--tira-black);
+    color: var(--tira-white);
+    padding: 100px 40px;
+    text-align: center;
+  }
+  .cre-society__inner {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .cre-society__eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.4;
+    margin: 0 0 28px;
+  }
+  .cre-society__h2 {
+    font-size: clamp(32px, 4vw, 56px);
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    margin: 0 0 28px;
+  }
+  .cre-society__body {
+    font-size: 14px;
+    line-height: 1.85;
+    opacity: 0.65;
+    margin: 0 0 48px;
+  }
+  .cre-society__cta {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    color: var(--tira-white);
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+  .cre-society__cta:hover { opacity: 1; }
+
+  @media (max-width: 767px) {
+    .cre-society { padding: 60px 24px; }
+  }
+
+  /* ══════════════════════════════════════════
+     8. CONTACT
+  ══════════════════════════════════════════ */
+  .cre-contact {
+    background: var(--tira-white);
+    padding: 100px 40px;
+    text-align: center;
+    border-top: 1px solid var(--tira-border);
+  }
+  .cre-contact__inner {
+    max-width: 560px;
+    margin: 0 auto;
+  }
+  .cre-contact__eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.4;
+    margin: 0 0 28px;
+  }
+  .cre-contact__h2 {
+    font-size: clamp(28px, 3.5vw, 44px);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    margin: 0 0 20px;
+  }
+  .cre-contact__body {
+    font-size: 14px;
+    line-height: 1.75;
+    opacity: 0.6;
+    margin: 0 0 40px;
+  }
+  .cre-contact__cta {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--tira-black);
+    border: 1px solid var(--tira-black);
+    padding: 16px 36px;
+    border-radius: 0;
+    text-decoration: none;
+    transition: background 0.3s var(--tira-ease), color 0.3s var(--tira-ease);
+  }
+  .cre-contact__cta:hover {
+    background: var(--tira-black);
+    color: var(--tira-white);
+  }
+
+  @media (max-width: 767px) {
+    .cre-contact { padding: 60px 24px; }
+  }
+</style>
+
+<div class="cre-page">
+
+  {%- comment -%} ── 1. HERO ── {%- endcomment -%}
+  <section class="cre-hero" aria-label="La Créatrice — portrait héro">
+    <img
+      class="cre-hero__img"
+      src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0154.jpg"
+      alt="Atelier TIRABOSCHI Paris — la créatrice à l'œuvre"
+      width="1920"
+      height="1080"
+      loading="eager"
+      decoding="async"
+    >
+    <div class="cre-hero__overlay" aria-hidden="true"></div>
+    <span class="cre-hero__watermark" aria-hidden="true">La Créatrice</span>
+    <div class="cre-hero__content">
+      <p class="cre-hero__label">TIRABOSCHI Paris · Depuis 1904</p>
+      <h1 class="cre-hero__h1" data-words>La Fondatrice</h1>
+    </div>
+  </section>
+
+  {%- comment -%} ── 2. PORTRAIT & CITATION ── {%- endcomment -%}
+  <section class="cre-portrait" aria-label="Portrait et vision de la fondatrice">
+    <div class="cre-portrait__inner">
+      <div class="cre-portrait__img-wrap" data-reveal>
+        <img
+          class="cre-portrait__img"
+          src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0919.jpg"
+          alt="La fondatrice de TIRABOSCHI Paris dans l'atelier, Paris 17e"
+          width="800"
+          height="1067"
+          loading="lazy"
+          decoding="async"
+        >
+      </div>
+      <div class="cre-portrait__text">
+        <blockquote class="cre-portrait__quote" data-reveal data-reveal-delay="1">
+          "Un sac n'est pas un objet. C'est la somme des gestes d'un artisan, la mémoire d'un cuir, la promesse d'une durée."
+        </blockquote>
+        <p class="cre-portrait__author" data-reveal data-reveal-delay="2">La Fondatrice · TIRABOSCHI Paris</p>
+        <p class="cre-portrait__body" data-reveal data-reveal-delay="3">
+          Elle a repris l'atelier fondé en 1904 avec une conviction : que la maroquinerie de luxe n'a de sens que si elle est entièrement faite à la main, par un seul artisan, en France. Pas de chaîne de montage, pas de délocalisation, pas de compromis. Chaque pièce porte le prénom de l'artisan qui l'a façonnée, de A à Z, en 48 à 72 heures de travail continu.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} ── 3. LA VISION ── {%- endcomment -%}
+  <section class="cre-vision" aria-label="La vision de la maison">
+    <div class="cre-vision__inner">
+      <p class="cre-vision__eyebrow" data-reveal>La Philosophie</p>
+      <h2 class="cre-vision__h2" data-words>Une vision. Une exigence.</h2>
+      <p class="cre-vision__body" data-reveal data-reveal-delay="1">
+        "Made in France, Only." — ces quatre mots ne sont pas un argument marketing. Ils sont un engagement absolu, pris dès la reprise de la maison. À une époque où le luxe se fragmente entre conception française et fabrication étrangère, TIRABOSCHI tient une ligne : chaque cuir est sourcé en Europe, chaque geste est posé à Paris, chaque point est cousu à la main selon la technique sellier transmise depuis 1904.
+      </p>
+      <p class="cre-vision__body" data-reveal data-reveal-delay="2">
+        Cette exigence a un coût — en temps, en savoir-faire, en rareté. Chaque année, l'atelier ne produit qu'un nombre limité de pièces. Non par contrainte, mais par choix. Parce que l'artisan qui passe 3 400 points de couture sur un sac ne peut en faire qu'un à la fois. Et c'est exactement ce que la fondatrice a voulu préserver : la trace d'une main, l'irréductible singularité de chaque pièce.
+      </p>
+      <hr class="cre-vision__sep" aria-hidden="true">
+    </div>
+  </section>
+
+  {%- comment -%} ── 4. L'ATELIER ── {%- endcomment -%}
+  <section class="cre-atelier" aria-label="Les chiffres de l'atelier TIRABOSCHI">
+    <div class="cre-atelier__left">
+      <p class="cre-atelier__eyebrow" data-reveal>L'Atelier en chiffres</p>
+      <div class="cre-atelier__stats">
+        <div data-reveal data-reveal-delay="1">
+          <p class="cre-atelier__stat-num">1904</p>
+          <p class="cre-atelier__stat-label">Fondation<br>de la maison</p>
+        </div>
+        <div data-reveal data-reveal-delay="2">
+          <p class="cre-atelier__stat-num">1</p>
+          <p class="cre-atelier__stat-label">Artisan par sac,<br>de A à Z</p>
+        </div>
+        <div data-reveal data-reveal-delay="3">
+          <p class="cre-atelier__stat-num">3 400</p>
+          <p class="cre-atelier__stat-label">Points de couture<br>sellier par pièce</p>
+        </div>
+        <div data-reveal data-reveal-delay="4">
+          <p class="cre-atelier__stat-num">48–72h</p>
+          <p class="cre-atelier__stat-label">De travail à la main<br>par sac</p>
+        </div>
+      </div>
+    </div>
+    <div class="cre-atelier__right" aria-hidden="true">
+      <img
+        class="cre-atelier__img"
+        src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0154.jpg"
+        alt="Artisan TIRABOSCHI Paris — détail cuture sellier"
+        width="960"
+        height="1200"
+        loading="lazy"
+        decoding="async"
+      >
+    </div>
+  </section>
+
+  {%- comment -%} ── 5. LA SIGNATURE ── {%- endcomment -%}
+  <section class="cre-signature" aria-label="La signature — la forme en V">
+    <div class="cre-signature__inner">
+      <p class="cre-signature__eyebrow" data-reveal>Identité visuelle</p>
+      <h2 class="cre-signature__h2" data-words>La Signature — la forme en V</h2>
+      <p class="cre-signature__body" data-reveal data-reveal-delay="1">
+        Dès les premières esquisses, la fondatrice a imposé une seule contrainte formelle : le V. Présent dans le logo, sculpté dans les anses, dessiné dans le profil de chaque sac, le V n'est pas une lettre — c'est une posture. Celle d'une maison qui s'ouvre vers le haut, qui tend vers l'excellence sans jamais chercher à plaire à tous.
+      </p>
+      <p class="cre-signature__body" data-reveal data-reveal-delay="2">
+        La forme en V apparaît pour la première fois en 1908 sur la Victoire, le modèle fondateur de la maison. Depuis, elle traverse chaque collection sans jamais se répéter. C'est la signature d'une vision autant que d'une femme.
+      </p>
+      <span class="cre-signature__letter" aria-hidden="true">V</span>
+    </div>
+  </section>
+
+  {%- comment -%} ── 6. ENGAGEMENTS ── {%- endcomment -%}
+  <section class="cre-engagements" aria-label="Les engagements de la maison TIRABOSCHI">
+    <div class="cre-engagements__inner">
+      <span class="cre-engagements__eyebrow" data-reveal>Nos engagements</span>
+      <div class="cre-engagements__grid">
+        <div class="cre-engagement" data-reveal data-reveal-delay="1">
+          <span class="cre-engagement__label">Origine</span>
+          <h3 class="cre-engagement__title">Made in France, Only.</h3>
+          <p class="cre-engagement__desc">Chaque pièce est intégralement façonnée à Paris, par un artisan maroquinier formé à la technique sellier. Aucune sous-traitance. Aucune exception.</p>
+        </div>
+        <div class="cre-engagement" data-reveal data-reveal-delay="2">
+          <span class="cre-engagement__label">Durabilité</span>
+          <h3 class="cre-engagement__title">Garantie à vie</h3>
+          <p class="cre-engagement__desc">Tout sac TIRABOSCHI est réparable à vie dans notre atelier. Parce qu'un objet bien fait n'a pas vocation à finir dans un tiroir — il a vocation à durer.</p>
+        </div>
+        <div class="cre-engagement" data-reveal data-reveal-delay="3">
+          <span class="cre-engagement__label">Excellence</span>
+          <h3 class="cre-engagement__title">Sur Mesure</h3>
+          <p class="cre-engagement__desc">Pour les membres du cercle le plus confidentiel, la fondatrice conçoit elle-même des pièces d'exception dans des matières non mises en vente, pensées pour une seule personne.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} ── 7. THE SOCIETY ── {%- endcomment -%}
+  <section class="cre-society" aria-label="The Society — cercle privé TIRABOSCHI">
+    <div class="cre-society__inner" data-reveal>
+      <p class="cre-society__eyebrow">Cercle privé</p>
+      <h2 class="cre-society__h2">The Society</h2>
+      <p class="cre-society__body">
+        Autour de la fondatrice s'est formé, au fil des années, un cercle discret de femmes et d'hommes qui partagent la même conviction : que les objets beaux méritent d'être choisis avec soin, et chéris toute une vie. Ce cercle, c'est The Society. Ni programme de points ni carte de fidélité — des privilèges d'accès, de rareté et d'avant-première.
+      </p>
+      <a href="/pages/la-societe" class="cre-society__cta">Découvrir The Society →</a>
+    </div>
+  </section>
+
+  {%- comment -%} ── 8. CONTACT ── {%- endcomment -%}
+  <section class="cre-contact" aria-label="Rendez-vous avec la fondatrice">
+    <div class="cre-contact__inner">
+      <p class="cre-contact__eyebrow" data-reveal>L'Atelier</p>
+      <h2 class="cre-contact__h2" data-reveal data-reveal-delay="1">Rencontrer la Fondatrice</h2>
+      <p class="cre-contact__body" data-reveal data-reveal-delay="2">
+        L'atelier est ouvert sur rendez-vous, Paris 17e.<br>
+        Un moment singulier, pour découvrir les pièces en cours de création et échanger sur un projet sur mesure.
+      </p>
+      <a href="/pages/contact" class="cre-contact__cta" data-reveal data-reveal-delay="3">Prendre rendez-vous →</a>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function () {
+  // Word-by-word split
+  document.querySelectorAll('[data-words]').forEach(function (el) {
+    el.innerHTML = el.textContent.trim().split(' ')
+      .map(function (w, i) { return '<span style="--i:' + i + '">' + w + '</span>'; })
+      .join(' ');
+  });
+
+  // IntersectionObserver for reveals + words
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.cre-page [data-reveal], .cre-page [data-words]').forEach(function (el) {
+    io.observe(el);
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "La Créatrice",
+  "tag": "section",
+  "settings": [],
+  "presets": [
+    {
+      "name": "La Créatrice"
+    }
+  ]
+}
+{% endschema %}

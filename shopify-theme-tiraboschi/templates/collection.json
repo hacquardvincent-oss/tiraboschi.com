@@ -1,0 +1,25 @@
+{
+  "sections": {
+    "tira-collection": {
+      "type": "tira-collection",
+      "settings": {
+        "products_per_page": 12,
+        "editorial_2x2_enabled": true,
+        "editorial_2x2_position": 4,
+        "editorial_2x2_image_fallback": "https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Asset_Mains_1.png?v=1752607078",
+        "editorial_2x2_label": "Savoir-Faire",
+        "editorial_2x2_title": "3 400 points de couture sellier",
+        "editorial_2x2_cta": "Découvrir l'atelier",
+        "editorial_2x2_link": "/pages/savoir-faire",
+        "editorial_4x1_enabled": true,
+        "editorial_4x1_position": 8,
+        "editorial_4x1_image_fallback": "https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Asset_atelier_1.png?v=1752606834",
+        "editorial_4x1_label": "The Society · Privilèges",
+        "editorial_4x1_title": "Accédez aux pièces non mises en vente",
+        "editorial_4x1_cta": "Découvrir The Society",
+        "editorial_4x1_link": "/pages/la-societe"
+      }
+    }
+  },
+  "order": ["tira-collection"]
+}

@@ -1,0 +1,115 @@
+{% comment %}
+  TIRABOSCHI · Newsletter popup
+  Déclenché après 8s ou 40% scroll, 1× / 30 jours (localStorage)
+{% endcomment %}
+{%- assign customer_subscribed = false -%}
+{%- if customer and customer.accepts_marketing -%}
+  {%- assign customer_subscribed = true -%}
+{%- endif -%}
+
+{%- unless customer_subscribed -%}
+<div id="newsletter-popup" class="nl-popup" role="dialog" aria-modal="true" aria-labelledby="nl-popup-title" hidden>
+  <div class="nl-popup__backdrop" id="nl-popup-backdrop"></div>
+  <div class="nl-popup__card">
+    <button class="nl-popup__close" id="nl-popup-close" aria-label="Fermer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+    <div class="nl-popup__body">
+      <p class="nl-popup__label">The Society</p>
+      <h2 class="nl-popup__title" id="nl-popup-title">Rejoindre<br>le cercle</h2>
+      <p class="nl-popup__text">Avant-premières, pièces exclusives, invitations privées. Jamais de promotions — des privilèges.</p>
+      <form class="nl-popup__form" id="nl-popup-form" action="{{ routes.root_url }}contact#contact_form" method="post">
+        <input type="hidden" name="form_type" value="customer">
+        <input type="hidden" name="utf8" value="✓">
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <input type="hidden" name="contact[accepts_marketing]" value="yes">
+        <div class="nl-popup__field">
+          <label for="nl-email" class="visually-hidden">Email</label>
+          <input type="email" id="nl-email" name="contact[email]" placeholder="email" required autocomplete="email">
+          <button type="submit" aria-label="S'inscrire">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/>
+            </svg>
+          </button>
+        </div>
+        <p class="nl-popup__gdpr">En vous inscrivant, vous acceptez notre <a href="/pages/confidentialite">politique de confidentialité</a>.</p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+.nl-popup { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; }
+.nl-popup[hidden] { display: none; }
+.nl-popup__backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.55); }
+.nl-popup__card { position: relative; z-index: 2; background: var(--tira-white); max-width: 440px; width: 90%; padding: 48px; }
+.nl-popup__close { position: absolute; top: 16px; right: 16px; background: none; border: none; cursor: pointer; display: flex; padding: 4px; }
+.nl-popup__close svg { width: 18px; height: 18px; }
+.nl-popup__label { font-size: 9px; text-transform: uppercase; letter-spacing: .2em; opacity: .3; margin-bottom: 16px; }
+.nl-popup__title { font-size: clamp(28px, 5vw, 40px); line-height: 1.1; letter-spacing: -.01em; margin-bottom: 16px; }
+.nl-popup__text { font-size: 12px; opacity: .55; line-height: 1.7; margin-bottom: 28px; }
+.nl-popup__field { display: flex; border-bottom: 1px solid var(--tira-black); margin-bottom: 12px; }
+.nl-popup__field input { flex: 1; border: none; background: none; font-family: inherit; font-size: 12px; padding: 10px 0; outline: none; }
+.nl-popup__field input::placeholder { opacity: .3; }
+.nl-popup__field button { background: none; border: none; cursor: pointer; display: flex; padding: 8px; }
+.nl-popup__field button svg { width: 18px; height: 18px; }
+.nl-popup__gdpr { font-size: 10px; opacity: .35; line-height: 1.6; }
+.nl-popup__gdpr a { text-decoration: underline; }
+@media (max-width: 768px) {
+  .nl-popup { align-items: flex-end; }
+  .nl-popup__card { max-width: 100%; width: 100%; padding: 36px 24px 48px; }
+}
+</style>
+
+<script>
+(function() {
+  var POPUP_KEY = 'tira-nl-popup-dismissed';
+  var POPUP_DELAY_DAYS = 30;
+  var popup = document.getElementById('newsletter-popup');
+  var closeBtn = document.getElementById('nl-popup-close');
+  var backdrop = document.getElementById('nl-popup-backdrop');
+  if (!popup) return;
+
+  function shouldShow() {
+    var dismissed = localStorage.getItem(POPUP_KEY);
+    if (!dismissed) return true;
+    var dismissedAt = parseInt(dismissed, 10);
+    var now = Date.now();
+    return (now - dismissedAt) > POPUP_DELAY_DAYS * 24 * 60 * 60 * 1000;
+  }
+
+  function show() {
+    popup.removeAttribute('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function close() {
+    popup.setAttribute('hidden', '');
+    document.body.style.overflow = '';
+    localStorage.setItem(POPUP_KEY, Date.now().toString());
+  }
+
+  if (!shouldShow()) return;
+
+  // 8s timeout
+  var timer = setTimeout(show, 8000);
+
+  // 40% scroll trigger
+  function onScroll() {
+    var p = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+    if (p >= 0.4) {
+      clearTimeout(timer);
+      window.removeEventListener('scroll', onScroll);
+      show();
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  if (closeBtn) closeBtn.addEventListener('click', close);
+  if (backdrop) backdrop.addEventListener('click', close);
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') close(); });
+})();
+</script>
+{%- endunless -%}

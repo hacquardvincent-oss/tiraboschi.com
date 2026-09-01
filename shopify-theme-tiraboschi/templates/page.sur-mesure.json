@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "tira-sur-mesure": {
+      "type": "tira-sur-mesure",
+      "settings": {}
+    }
+  },
+  "order": ["tira-sur-mesure"]
+}

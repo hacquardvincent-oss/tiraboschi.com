@@ -1,0 +1,17 @@
+{
+  "sections": {
+    "tira-drops": {
+      "type": "tira-drops",
+      "settings": {
+        "drop_active": false,
+        "drop_next_label": "Automne 2025",
+        "drop_name": "FW25",
+        "drop_end_date": "2025-08-30T23:59:00",
+        "drop_pieces_total": "30",
+        "drop_pieces_left": "12"
+      },
+      "blocks": {}
+    }
+  },
+  "order": ["tira-drops"]
+}

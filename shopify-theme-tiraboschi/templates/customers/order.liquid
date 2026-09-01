@@ -1,0 +1,38 @@
+{% comment %} TIRABOSCHI · Order detail {% endcomment %}
+<div class="tira-account-page">
+  <a href="{{ routes.account_url }}" class="tira-account__back">← Mon compte</a>
+  <h1 class="tira-account__title">Commande {{ order.name }}</h1>
+  <p class="tira-account__date">Passée le {{ order.created_at | date: '%d %B %Y' }}</p>
+
+  <div class="tira-order__items">
+    {% for line_item in order.line_items %}
+      <div class="tira-order__item">
+        <img src="{{ line_item.image | image_url: width: 120 }}" alt="{{ line_item.title | escape }}" width="120" height="160" loading="lazy">
+        <div class="tira-order__item-info">
+          <p class="tira-order__item-name">{{ line_item.product.title }}</p>
+          {% unless line_item.variant.title == 'Default Title' %}
+            <p class="tira-order__item-variant">{{ line_item.variant.title }}</p>
+          {% endunless %}
+          <p class="tira-order__item-qty">Quantité : {{ line_item.quantity }}</p>
+        </div>
+        <p class="tira-order__item-price">{{ line_item.final_line_price | money }}</p>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="tira-order__summary">
+    <div class="tira-order__row"><span>Sous-total</span><span>{{ order.subtotal_price | money }}</span></div>
+    {% for shipping_method in order.shipping_methods %}
+      <div class="tira-order__row"><span>{{ shipping_method.title }}</span><span>{{ shipping_method.price | money }}</span></div>
+    {% endfor %}
+    {% for tax_line in order.tax_lines %}
+      <div class="tira-order__row"><span>{{ tax_line.title }} ({{ tax_line.rate | times: 100 }}%)</span><span>{{ tax_line.price | money }}</span></div>
+    {% endfor %}
+    <div class="tira-order__row tira-order__row--total"><span>Total</span><span>{{ order.total_price | money }}</span></div>
+  </div>
+
+  <div class="tira-order__address">
+    <h2>Adresse de livraison</h2>
+    <address>{{ order.shipping_address | format_address }}</address>
+  </div>
+</div>

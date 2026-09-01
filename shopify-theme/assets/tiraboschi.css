@@ -1,0 +1,274 @@
+/* ============================================================
+   TIRABOSCHI PARIS — Global CSS
+   Playfair Display · Noir #0a0a0a · Blanc · Gris #f7f5f2
+   ============================================================ */
+
+/* ---- TOKENS ---- */
+:root {
+  --tira-black: #0a0a0a;
+  --tira-white: #ffffff;
+  --tira-grey: #f7f5f2;
+  --tira-border: #e8e8e8;
+  --tira-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --tira-duration: 0.9s;
+}
+
+/* ---- TYPOGRAPHIE ---- */
+body, h1, h2, h3, h4, h5, h6, p, a, button, input, textarea, select {
+  font-family: 'Playfair Display', Georgia, serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ---- BOUTONS style Miu Miu ---- */
+.button-secondary,
+.tira-cta {
+  background: transparent !important;
+  border: none !important;
+  color: inherit !important;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  padding: 0 !important;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+.button-secondary:hover,
+.tira-cta:hover {
+  opacity: 0.6;
+}
+
+/* ---- SCROLL REVEALS ---- */
+[data-tira-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity var(--tira-duration) var(--tira-ease),
+    transform var(--tira-duration) var(--tira-ease);
+}
+[data-tira-reveal].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+[data-tira-reveal]:nth-child(1) { transition-delay: 0ms; }
+[data-tira-reveal]:nth-child(2) { transition-delay: 80ms; }
+[data-tira-reveal]:nth-child(3) { transition-delay: 160ms; }
+[data-tira-reveal]:nth-child(4) { transition-delay: 240ms; }
+[data-tira-reveal]:nth-child(5) { transition-delay: 320ms; }
+[data-tira-reveal]:nth-child(6) { transition-delay: 400ms; }
+
+/* ---- SCROLL STACK Homepage ---- */
+.tira-stack-section {
+  position: sticky;
+  top: 0;
+  will-change: transform;
+}
+.tira-stack-1 { z-index: 1; }
+.tira-stack-2 { z-index: 2; }
+.tira-stack-3 { z-index: 3; }
+.tira-stack-4 { z-index: 4; }
+.tira-stack-5 { z-index: 5; }
+.tira-stack-6 { z-index: 6; }
+.tira-stack-out {
+  position: relative;
+  z-index: 10;
+}
+
+/* ---- MARQUEE ---- */
+.tira-marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  background: var(--tira-white);
+  border-top: 1px solid var(--tira-border);
+  border-bottom: 1px solid var(--tira-border);
+  padding: 14px 0;
+  position: relative;
+  z-index: 10;
+}
+.tira-marquee__track {
+  display: inline-flex;
+  animation: tira-marquee 35s linear infinite;
+}
+/* Pause au survol sur le conteneur parent (fonctionne sur les 2 tracks clonés) */
+.tira-marquee:hover .tira-marquee__track {
+  animation-play-state: paused;
+}
+.tira-marquee__item {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tira-black);
+  padding: 0 48px;
+  display: inline-block;
+}
+@keyframes tira-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ---- KEN BURNS (classes utilitaires, utilisé en dehors de la homepage stack) ---- */
+.tira-ken-burns img {
+  animation: tira-kburn 20s ease-in-out infinite alternate;
+  transform-origin: center center;
+}
+@keyframes tira-kburn {
+  from { transform: scale(1.0); }
+  to   { transform: scale(1.04); }
+}
+
+/* ---- CURSEUR CUSTOM (desktop) ---- */
+.tira-cursor {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.9);
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tira-black);
+  font-family: 'Playfair Display', serif;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.tira-cursor.is-active {
+  opacity: 1;
+}
+@media screen and (max-width: 749px) {
+  .tira-cursor { display: none !important; }
+}
+
+/* ---- TRANSITIONS DE PAGE ---- */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.4s;
+  animation-timing-function: ease;
+}
+
+/* ---- CARDS PRODUIT ---- */
+.product-card,
+[class*='product-card'] {
+  border-radius: 0 !important;
+  overflow: hidden;
+}
+
+/* ---- GRILLE COLLECTION — style Miu Miu ---- */
+.tira-collection-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+@media screen and (max-width: 1024px) {
+  .tira-collection-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media screen and (max-width: 749px) {
+  .tira-collection-grid { grid-template-columns: repeat(2, 1fr); gap: 1px; }
+}
+
+/* ---- HERO COLLECTION — 100vh, texte bas gauche ---- */
+.tira-collection-hero {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  padding: 48px;
+}
+.tira-collection-hero__media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.tira-collection-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 60%);
+}
+.tira-collection-hero__content {
+  position: relative;
+  z-index: 2;
+  color: white;
+}
+.tira-collection-hero__title {
+  font-size: clamp(40px, 8vw, 88px);
+  line-height: 1;
+  margin: 0 0 16px;
+  letter-spacing: -0.01em;
+}
+@media screen and (max-width: 749px) {
+  .tira-collection-hero { padding: 32px 20px; }
+}
+
+/* ---- FICHE PRODUIT sticky ATC mobile ---- */
+@media screen and (max-width: 749px) {
+  .tira-sticky-atc {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: var(--tira-white);
+    border-top: 1px solid var(--tira-border);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .tira-sticky-atc__price {
+    font-size: 13px;
+    flex: 1;
+  }
+  .tira-sticky-atc__btn {
+    background: var(--tira-black);
+    color: var(--tira-white);
+    border: none;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 14px 24px;
+    cursor: pointer;
+    font-family: inherit;
+    flex: 2;
+  }
+}
+
+/* ---- REDUCED MOTION ---- */
+@media (prefers-reduced-motion: reduce) {
+  [data-tira-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .tira-marquee__track { animation: none !important; }
+  .tira-ken-burns img { animation: none !important; }
+  .tira-cursor { display: none !important; }
+}
+
+/* ---- HEADER override Horizon mobile (complété par tiraboschi-header.css) ---- */
+@media screen and (max-width: 749px) {
+  .header-logo img {
+    height: 18px !important;
+    width: auto !important;
+  }
+}
+.header-logo img {
+  height: 18px;
+  width: auto;
+}
+@media screen and (min-width: 750px) {
+  .header-logo img { height: 22px; }
+}

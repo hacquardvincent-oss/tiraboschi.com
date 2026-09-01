@@ -1,0 +1,163 @@
+{
+  "_comment": "TIRABOSCHI Paris — Japanese translations",
+  "_version": "1.0.0",
+  "_date": "2026-05-26",
+  "_note": "Professional translation required — this is machine-translated draft only",
+
+  "general": {
+    "accessibility": {
+      "close": "閉じる",
+      "open_menu": "メニューを開く",
+      "close_menu": "メニューを閉じる",
+      "skip_to_content": "コンテンツへスキップ",
+      "loading": "読み込み中",
+      "next": "次へ",
+      "previous": "前へ"
+    },
+    "currency": {
+      "includes_tax": "税込",
+      "excludes_tax": "税抜"
+    }
+  },
+
+  "localization": {
+    "country_label": "国 / 地域",
+    "language_label": "言語",
+    "submit": "適用する",
+    "switch_currency": "通貨を変更"
+  },
+
+  "geo": {
+    "suggestion": "日本からアクセスされているようです。",
+    "switch": "{symbol}（{currency}）で続ける →",
+    "stay": "€ EURのまま続ける",
+    "dismiss_label": "提案を閉じる"
+  },
+
+  "header": {
+    "search_placeholder": "バッグ、素材を検索...",
+    "cart_count": {
+      "one": "1点",
+      "other": "{{ count }}点"
+    },
+    "menu": "メニュー"
+  },
+
+  "products": {
+    "product": {
+      "add_to_cart": "カートに追加",
+      "sold_out": "売り切れ",
+      "unavailable": "在庫なし",
+      "see_details": "詳細を見る",
+      "discover": "詳細を見る",
+      "quantity_label": "数量",
+      "color_label": "カラー",
+      "size_label": "サイズ",
+      "material_label": "素材",
+      "share": "シェア",
+      "add_to_wishlist": "ウィッシュリストに追加",
+      "remove_from_wishlist": "ウィッシュリストから削除",
+      "recently_viewed": "最近閲覧した商品"
+    },
+    "facets": {
+      "filter_by": "絞り込み",
+      "sort_by": "並び替え",
+      "clear_all": "すべてクリア",
+      "filters_active": {
+        "one": "1件のフィルター適用中",
+        "other": "{{ count }}件のフィルター適用中"
+      }
+    }
+  },
+
+  "cart": {
+    "title": "カート",
+    "empty": "カートは空です。",
+    "continue_shopping": "ショッピングを続ける",
+    "checkout": "購入手続きへ",
+    "subtotal": "小計",
+    "taxes_notice": "税・送料はお支払い時に計算されます",
+    "remove_item": "削除"
+  },
+
+  "checkout": {
+    "contact": "お客様情報",
+    "email_placeholder": "メールアドレス",
+    "continue_to_shipping": "配送情報へ",
+    "continue_to_payment": "お支払いへ",
+    "pay_now": "注文を確定する",
+    "shipping": "配送",
+    "payment": "お支払い",
+    "summary": "注文内容"
+  },
+
+  "shipping": {
+    "free": "送料無料",
+    "included": "送料込み",
+    "worldwide": "国際配送対応"
+  },
+
+  "customer": {
+    "login": "ログイン",
+    "logout": "ログアウト",
+    "register": "アカウント作成",
+    "account": "マイアカウント",
+    "orders": "注文履歴",
+    "la_societe": "La Société",
+    "forgot_password": "パスワードをお忘れですか？"
+  },
+
+  "la_societe": {
+    "title": "La Société",
+    "join": "ラ・ソシエテに参加する",
+    "privileges": "あなたの特典"
+  },
+
+  "newsletter": {
+    "title": "インサイダーになる",
+    "subtitle": "新コレクションの先行アクセスとアトリエの舞台裏をお届けします。",
+    "email_placeholder": "メールアドレス",
+    "submit": "参加する",
+    "success": "ご登録ありがとうございます。",
+    "error": "エラーが発生しました。再度お試しください。"
+  },
+
+  "sections": {
+    "marquee": {
+      "text": "Made in France, Only. · Since 1904 · 高級革製品 · パリ · 手作り"
+    },
+    "hero": {
+      "scroll_cta": "詳細を見る"
+    },
+    "collection": {
+      "view_all": "コレクションを見る"
+    },
+    "sur_mesure": {
+      "cta": "予約する"
+    }
+  },
+
+  "pages": {
+    "histoire": {
+      "title": "私たちの歴史",
+      "seo_title": "1904年からの歴史 | TIRABOSCHI Paris"
+    },
+    "savoir_faire": {
+      "title": "職人技",
+      "seo_title": "職人の技法 | TIRABOSCHI Paris"
+    },
+    "sur_mesure": {
+      "title": "オーダーメイド",
+      "seo_title": "オーダーメイド | TIRABOSCHI Paris"
+    },
+    "contact": {
+      "title": "お問い合わせ",
+      "seo_title": "お問い合わせ・ご予約 | TIRABOSCHI Paris"
+    },
+    "404": {
+      "title": "ページが見つかりません",
+      "message": "お探しのページは存在しないか、移動されました。",
+      "cta": "ホームへ戻る"
+    }
+  }
+}

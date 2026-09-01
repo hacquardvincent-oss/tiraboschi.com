@@ -1,0 +1,546 @@
+{% comment %}
+  ═══════════════════════════════════════════════════════════════
+  TIRABOSCHI · Contact + Booking RDV
+  ═══════════════════════════════════════════════════════════════
+  Structure :
+  1. Hero — gris 60vh, typographique, chips contact
+  2. Motifs de visite — blanc, 3 cartes
+  3. L'Atelier — fond noir, 2-col, adresse + horaires
+  4. Formulaire — gris, form Shopify contact
+  5. International — blanc, centré
+  6. Informations pratiques — gris, 2-col
+{% endcomment %}
+
+<style>
+  .ctt-page {
+    --tira-black: #0a0a0a;
+    --tira-white: #ffffff;
+    --tira-grey: #f7f5f2;
+    --tira-border: #e8e8e8;
+    --tira-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: 'Playfair Display', Georgia, serif;
+    color: var(--tira-black);
+  }
+
+  /* ── 1. Hero ── */
+  .ctt-hero {
+    background: var(--tira-grey);
+    min-height: 60vh;
+    padding-top: calc(var(--content-top) + 80px);
+    padding-bottom: 80px;
+    padding-left: 40px; padding-right: 40px;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .ctt-hero__filigree {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(80px, 14vw, 220px);
+    font-style: italic; color: var(--tira-black);
+    opacity: .04; white-space: nowrap;
+    pointer-events: none; line-height: 1;
+    letter-spacing: -0.02em; z-index: 0;
+  }
+  .ctt-hero__content { position: relative; z-index: 1; max-width: 700px; }
+  .ctt-hero__content h1 {
+    font-size: clamp(36px, 6vw, 56px);
+    font-weight: 400; letter-spacing: -0.01em; line-height: 1; margin-bottom: 16px;
+  }
+  .ctt-hero__sub {
+    font-size: 13px; font-style: italic; opacity: .55; margin-bottom: 48px; letter-spacing: .02em;
+  }
+  .ctt-hero__chips { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+  .ctt-hero__chip {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+    padding: 10px 20px;
+    border: 1px solid var(--tira-border);
+    background: var(--tira-white);
+    opacity: .8; transition: opacity .2s;
+  }
+  .ctt-hero__chip a { color: inherit; }
+  .ctt-hero__chip:hover { opacity: 1; }
+
+  /* ── 2. Motifs ── */
+  .ctt-motifs { background: var(--tira-white); padding: 100px 40px; }
+  .ctt-motifs__header { text-align: center; margin-bottom: 72px; }
+  .ctt-motifs__header h2 {
+    font-size: clamp(28px, 3.5vw, 40px); font-weight: 400; letter-spacing: -0.01em;
+  }
+  .ctt-label {
+    display: block; font-size: 11px; text-transform: uppercase;
+    letter-spacing: .15em; opacity: .5; margin-bottom: 24px;
+  }
+  .ctt-motifs__grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    max-width: 1100px; margin: 0 auto;
+  }
+  .ctt-motif-card {
+    padding: 48px 40px;
+    border-left: 1px solid var(--tira-border);
+    transition: background .3s;
+  }
+  .ctt-motif-card:first-child { border-left: none; }
+  .ctt-motif-card:hover { background: var(--tira-grey); }
+  .ctt-motif-card__icon {
+    width: 32px; height: 32px; margin-bottom: 28px;
+    stroke: var(--tira-black); fill: none;
+    stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .ctt-motif-card__title {
+    font-size: clamp(18px, 2.2vw, 24px); font-weight: 400; letter-spacing: -0.01em; margin-bottom: 16px;
+  }
+  .ctt-motif-card__body { font-size: 14px; line-height: 1.8; opacity: .7; margin-bottom: 28px; }
+  .ctt-motif-card__cta {
+    font-size: 12px; text-transform: uppercase; letter-spacing: .12em;
+    text-decoration: underline; text-underline-offset: 3px; transition: opacity .2s;
+  }
+  .ctt-motif-card__cta:hover { opacity: .5; }
+
+  /* ── 3. L'Atelier ── */
+  .ctt-atelier { background: var(--tira-black); color: var(--tira-white); }
+  .ctt-atelier__grid { display: grid; grid-template-columns: 1fr 1fr; min-height: 640px; }
+  .ctt-atelier__img {
+    background: linear-gradient(135deg, #2a1f14 0%, #3d2d1e 25%, #1e1610 50%, #32251a 75%, #1a1008 100%);
+    position: relative; overflow: hidden;
+  }
+  .ctt-atelier__img img {
+    width: 100%; height: 100%; object-fit: cover; opacity: .55; mix-blend-mode: luminosity;
+  }
+  .ctt-atelier__img::after {
+    content: '96, avenue de Clichy · Paris 17e';
+    position: absolute; bottom: 32px; left: 32px;
+    font-size: 10px; text-transform: uppercase; letter-spacing: .15em;
+    color: rgba(255,255,255,.25);
+  }
+  .ctt-atelier__content {
+    padding: 80px 72px; display: flex; flex-direction: column; justify-content: center;
+  }
+  .ctt-atelier__content .ctt-label { color: rgba(255,255,255,.4); }
+  .ctt-atelier__content h2 {
+    font-size: clamp(24px, 3vw, 36px);
+    font-weight: 400; letter-spacing: -0.01em; line-height: 1.2; margin-bottom: 24px; color: var(--tira-white);
+  }
+  .ctt-atelier__content > p { font-size: 15px; line-height: 1.85; opacity: .7; margin-bottom: 40px; }
+  .ctt-atelier__horaires { width: 100%; border-collapse: collapse; margin-bottom: 32px; }
+  .ctt-atelier__horaires tr { border-bottom: 1px solid rgba(255,255,255,.06); }
+  .ctt-atelier__horaires td { padding: 10px 0; font-size: 13px; }
+  .ctt-atelier__horaires td:first-child {
+    opacity: .4; text-transform: uppercase; letter-spacing: .08em; font-size: 11px; padding-right: 32px;
+  }
+  .ctt-atelier__horaires td:last-child { opacity: .75; }
+  .ctt-atelier__horaires tr.ctt-ferme td:last-child { opacity: .3; font-style: italic; }
+  .ctt-atelier__access {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+    opacity: .35; margin-bottom: 28px; line-height: 1.8;
+  }
+  .ctt-atelier__content .ctt-btn-light {
+    font-size: 12px; text-transform: uppercase; letter-spacing: .12em;
+    text-decoration: underline; text-underline-offset: 3px;
+    color: var(--tira-white); transition: opacity .2s;
+  }
+  .ctt-atelier__content .ctt-btn-light:hover { opacity: .5; }
+
+  /* ── 4. Formulaire ── */
+  .ctt-formulaire { background: var(--tira-grey); padding: 100px 40px; }
+  .ctt-formulaire__inner { max-width: 720px; margin: 0 auto; }
+  .ctt-formulaire__header { margin-bottom: 56px; }
+  .ctt-formulaire__header h2 {
+    font-size: clamp(32px, 4.5vw, 48px); font-weight: 400; letter-spacing: -0.01em; margin-bottom: 8px;
+  }
+  .ctt-formulaire__header p { font-size: 13px; opacity: .5; font-style: italic; }
+  .ctt-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+  .ctt-form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+  .ctt-form-group label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .15em; opacity: .5;
+  }
+  .ctt-form-group input,
+  .ctt-form-group select,
+  .ctt-form-group textarea {
+    font-family: inherit; font-size: 14px; background: none;
+    border: none; border-bottom: 1px solid var(--tira-border);
+    padding: 10px 0; color: var(--tira-black); outline: none;
+    transition: border-color .3s; width: 100%;
+    -webkit-appearance: none; appearance: none;
+  }
+  .ctt-form-group input::placeholder,
+  .ctt-form-group textarea::placeholder { opacity: .3; }
+  .ctt-form-group input:focus,
+  .ctt-form-group select:focus,
+  .ctt-form-group textarea:focus { border-bottom-color: var(--tira-black); }
+  .ctt-form-group textarea { resize: none; line-height: 1.7; }
+  .ctt-select-wrap { position: relative; }
+  .ctt-select-wrap::after {
+    content: '↓'; position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+    font-size: 12px; opacity: .4; pointer-events: none;
+  }
+  .ctt-form-gdpr {
+    display: flex; align-items: flex-start; gap: 14px;
+    margin-bottom: 40px; padding: 24px 0; border-top: 1px solid var(--tira-border);
+  }
+  .ctt-form-gdpr input[type="checkbox"] {
+    width: 16px; height: 16px; flex-shrink: 0; accent-color: var(--tira-black); margin-top: 2px;
+  }
+  .ctt-form-gdpr label { font-size: 11px; opacity: .55; line-height: 1.6; }
+  .ctt-form-submit { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
+  .ctt-form-submit button {
+    font-family: inherit; font-size: 13px; text-transform: uppercase;
+    letter-spacing: .12em; text-decoration: underline; text-underline-offset: 3px;
+    background: none; border: none; padding: 0; cursor: pointer;
+    color: var(--tira-black); transition: opacity .2s;
+  }
+  .ctt-form-submit button:hover { opacity: .5; }
+  .ctt-form-submit .ctt-response-time { font-size: 11px; opacity: .4; font-style: italic; }
+  .ctt-form-success {
+    padding: 24px; border: 1px solid var(--tira-border);
+    font-size: 14px; opacity: .7; font-style: italic; line-height: 1.7;
+    display: none;
+  }
+  .ctt-form-success.ctt-visible { display: block; }
+
+  /* ── 5. International ── */
+  .ctt-international { background: var(--tira-white); padding: 100px 40px; text-align: center; }
+  .ctt-international__inner { max-width: 640px; margin: 0 auto; }
+  .ctt-international h3 {
+    font-size: clamp(24px, 3.5vw, 32px); font-weight: 400; letter-spacing: -0.01em; margin-bottom: 20px;
+  }
+  .ctt-international p { font-size: 15px; line-height: 1.8; opacity: .75; margin-bottom: 40px; }
+  .ctt-international__ctas { display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; }
+  .ctt-international__ctas a {
+    font-size: 13px; letter-spacing: .1em; text-transform: uppercase;
+    text-decoration: underline; text-underline-offset: 3px; transition: opacity .2s;
+  }
+  .ctt-international__ctas a:hover { opacity: .5; }
+
+  /* ── 6. Infos ── */
+  .ctt-infos { background: var(--tira-grey); padding: 100px 40px; }
+  .ctt-infos__header { margin-bottom: 64px; }
+  .ctt-infos__header h2 {
+    font-size: clamp(24px, 3vw, 32px); font-weight: 400; letter-spacing: -0.01em;
+  }
+  .ctt-infos__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; max-width: 1000px; }
+  .ctt-infos__col h3 {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .15em; opacity: .4; margin-bottom: 32px;
+  }
+  .ctt-info-item {
+    padding: 20px 0; border-bottom: 1px solid var(--tira-border);
+    display: grid; grid-template-columns: 140px 1fr; gap: 16px;
+  }
+  .ctt-info-item:first-of-type { border-top: 1px solid var(--tira-border); }
+  .ctt-info-item__label { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; opacity: .4; padding-top: 2px; }
+  .ctt-info-item__value { font-size: 13px; line-height: 1.7; opacity: .8; }
+  .ctt-info-item__value a { text-decoration: underline; text-underline-offset: 3px; transition: opacity .2s; }
+  .ctt-info-item__value a:hover { opacity: .5; }
+  .ctt-societe-badge {
+    display: inline-block; font-size: 9px; text-transform: uppercase; letter-spacing: .1em;
+    padding: 3px 8px; border: 1px solid var(--tira-border); margin-top: 4px; opacity: .6;
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 900px) {
+    .ctt-motifs__grid { grid-template-columns: 1fr; }
+    .ctt-motif-card { border-left: none; border-top: 1px solid var(--tira-border); padding: 36px 0; }
+    .ctt-motif-card:first-child { border-top: none; padding-top: 0; }
+    .ctt-atelier__grid { grid-template-columns: 1fr; }
+    .ctt-atelier__img { min-height: 300px; order: -1; }
+    .ctt-atelier__content { padding: 56px 24px; }
+    .ctt-infos__grid { grid-template-columns: 1fr; gap: 48px; }
+    .ctt-info-item { grid-template-columns: 1fr; gap: 4px; }
+  }
+  @media (max-width: 768px) {
+    .ctt-hero { padding-left: 20px; padding-right: 20px; }
+    .ctt-hero__chips { flex-direction: column; align-items: center; }
+    .ctt-motifs { padding: 72px 20px; }
+    .ctt-formulaire { padding: 72px 20px; }
+    .ctt-form-row { grid-template-columns: 1fr; gap: 0; }
+    .ctt-international { padding: 72px 20px; }
+    .ctt-international__ctas { flex-direction: column; align-items: center; gap: 20px; }
+    .ctt-infos { padding: 72px 20px; }
+  }
+</style>
+
+<div class="ctt-page">
+
+  {%- comment -%} ── 1. HERO ── {%- endcomment -%}
+  <section class="ctt-hero" aria-label="Contact TIRABOSCHI Paris">
+    <div class="ctt-hero__filigree" aria-hidden="true">Rencontrons-nous</div>
+    <div class="ctt-hero__content">
+      <h1 data-words>Contact</h1>
+      <p class="ctt-hero__sub" data-reveal>Notre atelier vous accueille sur rendez-vous</p>
+      <div class="ctt-hero__chips" data-reveal>
+        <div class="ctt-hero__chip">Atelier Paris 17<sup>e</sup></div>
+        <div class="ctt-hero__chip">
+          <a href="tel:+33100000000">+33 1 XX XX XX XX</a>
+        </div>
+        <div class="ctt-hero__chip">
+          <a href="mailto:bonjour@tiraboschi-paris.com">bonjour@tiraboschi-paris.com</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} ── 2. MOTIFS DE VISITE ── {%- endcomment -%}
+  <section class="ctt-motifs" aria-label="Motifs de visite">
+    <div class="ctt-motifs__header">
+      <span class="ctt-label" data-reveal>L'Atelier</span>
+      <h2 data-words>Nous rencontrer</h2>
+    </div>
+
+    <div class="ctt-motifs__grid">
+      <article class="ctt-motif-card" data-reveal>
+        <svg class="ctt-motif-card__icon" viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M6 12h20l-2 14H8L6 12z"/>
+          <path d="M12 12V9a4 4 0 0 1 8 0v3"/>
+          <line x1="11" y1="19" x2="21" y2="19"/>
+        </svg>
+        <h3 class="ctt-motif-card__title">Conseil &amp; Essai</h3>
+        <p class="ctt-motif-card__body">
+          Venez découvrir nos modèles, toucher les matières, essayer les formats.
+          45 minutes, sans engagement. Notre équipe vous accueille avec plaisir.
+        </p>
+        <a href="#ctt-form" class="ctt-motif-card__cta">Prendre rendez-vous →</a>
+      </article>
+
+      <article class="ctt-motif-card" data-reveal>
+        <svg class="ctt-motif-card__icon" viewBox="0 0 32 32" aria-hidden="true">
+          <circle cx="9" cy="10" r="3"/>
+          <circle cx="9" cy="22" r="3"/>
+          <line x1="11.8" y1="11.8" x2="26" y2="26"/>
+          <line x1="11.8" y1="20.2" x2="26" y2="6"/>
+        </svg>
+        <h3 class="ctt-motif-card__title">Créer sur Mesure</h3>
+        <p class="ctt-motif-card__body">
+          Première rencontre de 1h avec notre fondatrice pour définir votre pièce unique.
+          Matière, teinte, couture, quincaillerie, dimensions — chaque détail est le vôtre.
+          Délai 8–12 semaines.
+        </p>
+        <a href="#ctt-form" class="ctt-motif-card__cta">Prendre rendez-vous →</a>
+      </article>
+
+      <article class="ctt-motif-card" data-reveal>
+        <svg class="ctt-motif-card__icon" viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M8 24 L24 8" stroke-linecap="round"/>
+          <path d="M6 22 L6 26 L10 26" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="24" cy="8" r="2"/>
+          <line x1="22" y1="6" x2="24" y2="4"/>
+          <path d="M14 12 Q18 10 20 16 Q16 18 12 16" stroke-linecap="round"/>
+        </svg>
+        <h3 class="ctt-motif-card__title">Entretien &amp; Réparation</h3>
+        <p class="ctt-motif-card__body">
+          Apportez votre pièce TIRABOSCHI pour un bilan complet et gratuit.
+          Devis d'entretien ou de réparation établi sur place. Nous soignons toutes
+          les générations de la maison.
+        </p>
+        <a href="#ctt-form" class="ctt-motif-card__cta">Prendre rendez-vous →</a>
+      </article>
+    </div>
+  </section>
+
+  {%- comment -%} ── 3. L'ATELIER ── {%- endcomment -%}
+  <section class="ctt-atelier" aria-label="Notre atelier, Paris 17e">
+    <div class="ctt-atelier__grid">
+      <div class="ctt-atelier__img" aria-hidden="true">
+        <img
+          src="{{ 'https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0154.jpg' }}"
+          alt="" loading="lazy" width="960" height="1280">
+      </div>
+      <div class="ctt-atelier__content">
+        <span class="ctt-label" data-reveal>Nous trouver</span>
+        <h2 data-words>96, avenue de Clichy<br>Paris 17<sup>e</sup></h2>
+        <p data-reveal>
+          Notre showroom privé vous accueille au 96 avenue de Clichy, Paris 17<sup>e</sup>.
+          Nous ouvrons sur rendez-vous uniquement.
+          Pas de vitrine, pas d'enseigne lumineuse.
+        </p>
+        <table class="ctt-atelier__horaires" data-reveal>
+          <tbody>
+            <tr class="ctt-ferme">
+              <td>Lundi</td>
+              <td>Fermé</td>
+            </tr>
+            <tr>
+              <td>Mardi – Vendredi</td>
+              <td>10h – 18h30</td>
+            </tr>
+            <tr>
+              <td>Samedi</td>
+              <td>10h – 17h00</td>
+            </tr>
+            <tr class="ctt-ferme">
+              <td>Dimanche</td>
+              <td>Fermé</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="ctt-atelier__access" data-reveal>
+          Accès : Métro Clichy (L13) · Brochant (L13)<br>
+          Parking disponible avenue de Clichy
+        </p>
+        <a href="https://maps.google.com/?q=96+avenue+de+Clichy+Paris+75017"
+           class="ctt-btn-light" target="_blank" rel="noopener" data-reveal>
+          Voir sur la carte →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} ── 4. FORMULAIRE ── {%- endcomment -%}
+  <section class="ctt-formulaire" id="ctt-form" aria-label="Formulaire de contact et rendez-vous">
+    <div class="ctt-formulaire__inner">
+      <div class="ctt-formulaire__header" data-reveal>
+        <span class="ctt-label">Nous écrire · Prendre rendez-vous</span>
+        <h2>Votre message</h2>
+        <p>Nous répondons sous 24h ouvrées</p>
+      </div>
+
+      {%- if form.posted_successfully? -%}
+        <div class="ctt-form-success ctt-visible" role="status">
+          Votre message a bien été envoyé. Nous vous répondons sous 24h ouvrées.
+          À très bientôt chez TIRABOSCHI Paris.
+        </div>
+      {%- endif -%}
+
+      {%- form 'contact', id: 'ctt-contact-form' -%}
+        <div class="ctt-form-row">
+          <div class="ctt-form-group">
+            <label for="ctt-prenom">Prénom</label>
+            <input type="text" id="ctt-prenom" name="contact[prenom]"
+                   placeholder="Marie" autocomplete="given-name">
+          </div>
+          <div class="ctt-form-group">
+            <label for="ctt-nom">Nom</label>
+            <input type="text" id="ctt-nom" name="contact[nom]"
+                   placeholder="Dupont" autocomplete="family-name">
+          </div>
+        </div>
+
+        <div class="ctt-form-group">
+          <label for="ctt-email">Email *</label>
+          <input type="email" id="ctt-email" name="contact[email]"
+                 placeholder="marie.dupont@email.com"
+                 autocomplete="email" required>
+        </div>
+
+        <div class="ctt-form-group">
+          <label for="ctt-objet">Objet</label>
+          <div class="ctt-select-wrap">
+            <select id="ctt-objet" name="contact[objet]">
+              <option value="" disabled selected>Choisir un motif</option>
+              <option value="Conseil & Essai">Conseil &amp; Essai</option>
+              <option value="Sur Mesure">Sur Mesure</option>
+              <option value="Entretien & Réparation">Entretien &amp; Réparation</option>
+              <option value="Commande en cours">Commande en cours</option>
+              <option value="Autre demande">Autre demande</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="ctt-form-group">
+          <label for="ctt-message">Message *</label>
+          <textarea id="ctt-message" name="contact[body]" rows="4"
+                    placeholder="Décrivez votre demande…" required></textarea>
+        </div>
+
+        <div class="ctt-form-gdpr">
+          <input type="checkbox" id="ctt-gdpr" name="contact[gdpr]" required>
+          <label for="ctt-gdpr">
+            J'accepte que mes données personnelles soient utilisées par TIRABOSCHI Paris
+            uniquement pour répondre à ma demande, conformément à notre
+            <a href="{{ routes.root_url }}pages/confidentialite">politique de confidentialité</a>.
+          </label>
+        </div>
+
+        <div class="ctt-form-submit">
+          <button type="submit">Envoyer ma demande →</button>
+          <span class="ctt-response-time">Réponse sous 24h ouvrées</span>
+        </div>
+      {%- endform -%}
+    </div>
+  </section>
+
+  {%- comment -%} ── 5. INTERNATIONAL ── {%- endcomment -%}
+  <section class="ctt-international" aria-label="Clients internationaux">
+    <div class="ctt-international__inner">
+      <span class="ctt-label" data-reveal>International</span>
+      <h3 data-words>Vous n'êtes pas à Paris ?</h3>
+      <p data-reveal>
+        La consultation Sur Mesure peut se faire en visioconférence — nous y avons recours
+        régulièrement avec nos clientes à l'international. L'envoi postal est disponible
+        dans 40 pays avec retours gratuits sous 14 jours.
+      </p>
+      <div class="ctt-international__ctas" data-reveal>
+        <a href="#ctt-form">Consultation par vidéo →</a>
+        <a href="{{ routes.root_url }}pages/livraison">Informations livraison internationale →</a>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} ── 6. INFORMATIONS PRATIQUES ── {%- endcomment -%}
+  <section class="ctt-infos" aria-label="Informations pratiques">
+    <div class="ctt-infos__header" data-reveal>
+      <span class="ctt-label">Pratique</span>
+      <h2>Informations utiles</h2>
+    </div>
+
+    <div class="ctt-infos__grid">
+      <div class="ctt-infos__col" data-reveal>
+        <h3>Accès &amp; Confort</h3>
+        <div class="ctt-info-item">
+          <span class="ctt-info-item__label">Accès PMR</span>
+          <span class="ctt-info-item__value">Ascenseur disponible à l'entrée de l'immeuble</span>
+        </div>
+        <div class="ctt-info-item">
+          <span class="ctt-info-item__label">Langues</span>
+          <span class="ctt-info-item__value">Français · English · Italiano</span>
+        </div>
+        <div class="ctt-info-item">
+          <span class="ctt-info-item__label">Durée RDV</span>
+          <span class="ctt-info-item__value">
+            Conseil &amp; Essai : 45 min<br>
+            Sur Mesure : 1h – 1h30<br>
+            Entretien : 20 min
+          </span>
+        </div>
+      </div>
+
+      <div class="ctt-infos__col" data-reveal>
+        <h3>Contacts Spéciaux</h3>
+        <div class="ctt-info-item">
+          <span class="ctt-info-item__label">Presse</span>
+          <span class="ctt-info-item__value">
+            <a href="mailto:presse@tiraboschi-paris.com">presse@tiraboschi-paris.com</a><br>
+            Sur rendez-vous uniquement
+          </span>
+        </div>
+        <div class="ctt-info-item">
+          <span class="ctt-info-item__label">Pro &amp; Corporate</span>
+          <span class="ctt-info-item__value">
+            Commandes professionnelles sur devis.<br>
+            <a href="mailto:bonjour@tiraboschi-paris.com">bonjour@tiraboschi-paris.com</a>
+          </span>
+        </div>
+        <div class="ctt-info-item">
+          <span class="ctt-info-item__label">Urgences</span>
+          <span class="ctt-info-item__value">
+            WhatsApp disponible pour les clients La Société
+            <span class="ctt-societe-badge">Cercle II &amp; III</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+{% schema %}
+{
+  "name": "Contact + RDV",
+  "tag": "section",
+  "class": "tira-section tira-section--contact",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Contact + RDV"
+    }
+  ]
+}
+{% endschema %}

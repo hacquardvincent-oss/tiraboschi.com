@@ -1,0 +1,281 @@
+{% comment %}
+  ═══════════════════════════════════════════════════════════════
+  TIRABOSCHI · Footer
+  ═══════════════════════════════════════════════════════════════
+  1. Bloc CRM "Join the Society" (avant footer)
+  2. Footer principal fond noir (brand + 3 colonnes + bottom)
+  Styles : assets/tiraboschi.css
+{% endcomment %}
+
+{%- liquid
+  assign menu_collections = section.settings.footer_menu_collections
+  assign menu_maison = section.settings.footer_menu_maison
+  assign menu_service = section.settings.footer_menu_service
+  assign privacy_url = ''
+  if pages.confidentialite != empty
+    assign privacy_url = pages.confidentialite.url
+  elsif shop.privacy_policy != blank
+    assign privacy_url = shop.privacy_policy.url
+  endif
+-%}
+
+{%- if section.settings.show_crm -%}
+  {%- comment -%} ═══ JOIN THE SOCIETY ═══ {%- endcomment -%}
+  <section class="society-crm" data-reveal aria-labelledby="society-title">
+    <div class="society-crm__col-title">
+      <h2 class="society-crm__title" id="society-title">Join<br>the Society</h2>
+    </div>
+
+    <div class="society-crm__right">
+      <form id="society-form" action="{{ routes.root_url }}contact#contact_form" method="post" accept-charset="UTF-8" novalidate>
+        <input type="hidden" name="form_type" value="customer">
+        <input type="hidden" name="utf8" value="✓">
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <input type="hidden" name="contact[accepts_marketing]" value="yes">
+
+        <div class="society-crm__field">
+          <label for="society-email" class="society-crm__label">Email</label>
+          <input class="society-crm__input"
+                 type="email"
+                 id="society-email"
+                 name="contact[email]"
+                 required
+                 autocomplete="email">
+          <button type="submit" class="society-crm__arrow" aria-label="S'inscrire">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12,5 19,12 12,19"/>
+            </svg>
+          </button>
+        </div>
+
+        <p class="society-crm__gdpr">
+          En vous inscrivant, vous acceptez notre
+          <a href="{{ privacy_url | default: '#' }}">politique de confidentialité</a>.
+          Vous pouvez vous désinscrire à tout moment.
+        </p>
+
+        {%- if form.posted_successfully? -%}
+          <p class="society-crm__confirm" aria-live="polite">
+            Bienvenue — votre inscription est confirmée.
+          </p>
+        {%- endif -%}
+      </form>
+    </div>
+
+    {%- comment -%} ─── Bloc social Instagram ─── {%- endcomment -%}
+    <div class="society-crm__col-social">
+      <p class="society-crm__social-eyebrow">Suivez-nous</p>
+      {%- if section.settings.social_instagram_link != blank -%}
+        <a href="{{ section.settings.social_instagram_link }}"
+           target="_blank" rel="noopener"
+           class="society-crm__insta-link"
+           aria-label="Suivez TIRABOSCHI sur Instagram">
+          <svg class="society-crm__insta-icon" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="1.2" aria-hidden="true">
+            <rect x="2" y="2" width="20" height="20" rx="5"/>
+            <circle cx="12" cy="12" r="5"/>
+            <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/>
+          </svg>
+          <span class="society-crm__insta-handle">@boschi_paris</span>
+          <svg class="society-crm__insta-arrow" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12,5 19,12 12,19"/>
+          </svg>
+        </a>
+      {%- endif -%}
+    </div>
+  </section>
+{%- endif -%}
+
+{%- comment -%} ═══ FOOTER PRINCIPAL ═══ {%- endcomment -%}
+<footer class="footer" role="contentinfo">
+  <div class="footer__top">
+
+    <div>
+      <p class="footer__brand-logo">{{ shop.name }} · Since 1904</p>
+      <p class="footer__brand-text">{{ section.settings.footer_brand_text }}</p>
+
+      {%- comment -%} Bloc SEO caché — style Louis Vuitton {%- endcomment -%}
+      <details class="footer__sitemap">
+        <summary>Plan du site</summary>
+        <div class="footer__sitemap-links">
+          <a href="{{ routes.collections_url }}/sacs">Sacs</a> ·
+          <a href="{{ routes.collections_url }}/petite-maroquinerie">Petite Maroquinerie</a> ·
+          <a href="/pages/histoire">Histoire</a> ·
+          <a href="/pages/savoir-faire">Savoir-Faire</a> ·
+          <a href="/pages/matieres-cuirs">Les Matières</a> ·
+          <a href="/pages/sur-mesure">Sur Mesure</a> ·
+          <a href="/pages/la-societe">The Society</a> ·
+          <a href="/pages/contact">Contact</a>
+        </div>
+      </details>
+    </div>
+
+    <div class="footer__col">
+      <h4>Collections</h4>
+      <ul>
+        {%- if linklists[menu_collections].links.size > 0 -%}
+          {%- for link in linklists[menu_collections].links -%}
+            <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+          {%- endfor -%}
+        {%- else -%}
+          <li><a href="{{ routes.collections_url }}/sacs">Sacs</a></li>
+          <li><a href="{{ routes.collections_url }}/petite-maroquinerie">Petite Maroquinerie</a></li>
+          <li><a href="{{ routes.collections_url }}/iconiques">Iconiques</a></li>
+          <li><a href="{{ routes.collections_url }}/fw25">FW 2025</a></li>
+          <li><a href="{{ routes.collections_url }}/sur-mesure-exotiques">Sur Mesure &amp; Exotiques</a></li>
+        {%- endif -%}
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h4>La Maison</h4>
+      <ul>
+        {%- if linklists[menu_maison].links.size > 0 -%}
+          {%- for link in linklists[menu_maison].links -%}
+            <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+          {%- endfor -%}
+        {%- else -%}
+          <li><a href="/pages/histoire">Notre Histoire</a></li>
+          <li><a href="/pages/savoir-faire">Savoir-Faire</a></li>
+          <li><a href="/pages/matieres-cuirs">Les Matières &amp; Cuirs</a></li>
+          <li><a href="/blogs/latelier">L'Atelier</a></li>
+          <li><a href="/pages/la-societe">The Society</a></li>
+        {%- endif -%}
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h4>Service</h4>
+      <ul>
+        {%- if linklists[menu_service].links.size > 0 -%}
+          {%- for link in linklists[menu_service].links -%}
+            <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+          {%- endfor -%}
+        {%- else -%}
+          <li><a href="/pages/contact">Contact</a></li>
+          {%- if shop.shipping_policy != blank -%}
+            <li><a href="{{ shop.shipping_policy.url }}">Livraison &amp; Retours</a></li>
+          {%- else -%}
+            <li><a href="/pages/livraison-retours">Livraison &amp; Retours</a></li>
+          {%- endif -%}
+          <li><a href="/pages/entretien-reparation">Entretien du cuir</a></li>
+          <li><a href="/pages/faq">FAQ</a></li>
+          <li><a href="/pages/contact">Prendre rendez-vous</a></li>
+        {%- endif -%}
+      </ul>
+    </div>
+
+  </div>{%- comment -%} /footer__top {%- endcomment -%}
+
+  {%- comment -%} ─── Barre locale + social ─── {%- endcomment -%}
+  <div class="footer__locale-bar">
+    {%- render 'tira-locale-selector', context: 'footer' -%}
+
+    <nav class="footer__social" aria-label="Réseaux sociaux">
+      {%- if section.settings.social_instagram_link != blank -%}
+        <a href="{{ section.settings.social_instagram_link }}" target="_blank" rel="noopener">Instagram</a>
+      {%- endif -%}
+      {%- if section.settings.social_linkedin_link != blank -%}
+        <a href="{{ section.settings.social_linkedin_link }}" target="_blank" rel="noopener">LinkedIn</a>
+      {%- endif -%}
+      {%- if section.settings.social_youtube_link != blank -%}
+        <a href="{{ section.settings.social_youtube_link }}" target="_blank" rel="noopener">YouTube</a>
+      {%- endif -%}
+    </nav>
+  </div>
+
+  <div class="footer__bottom">
+    <p class="footer__copy">© {{ 'now' | date: '%Y' }} {{ shop.name }}. Tous droits réservés.</p>
+    <nav class="footer__policies" aria-label="Liens légaux">
+      {%- if shop.legal_notice_policy != blank -%}
+        <a href="{{ shop.legal_notice_policy.url }}">Mentions légales</a>
+      {%- else -%}
+        <a href="/pages/mentions-legales">Mentions légales</a>
+      {%- endif -%}
+
+      {%- if shop.privacy_policy != blank -%}
+        <a href="{{ shop.privacy_policy.url }}">Confidentialité</a>
+      {%- else -%}
+        <a href="/pages/confidentialite">Confidentialité</a>
+      {%- endif -%}
+
+      {%- if shop.terms_of_service != blank -%}
+        <a href="{{ shop.terms_of_service.url }}">CGV</a>
+      {%- else -%}
+        <a href="/pages/cgv">CGV</a>
+      {%- endif -%}
+
+      {%- if shop.refund_policy != blank -%}
+        <a href="{{ shop.refund_policy.url }}">Retours</a>
+      {%- endif -%}
+    </nav>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer TIRABOSCHI",
+  "tag": "footer",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Bloc CRM Join the Society"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_crm",
+      "label": "Afficher le bloc Join the Society",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Réseaux sociaux"
+    },
+    {
+      "type": "text",
+      "id": "social_instagram_link",
+      "label": "URL Instagram",
+      "default": "https://instagram.com/boschi_paris"
+    },
+    {
+      "type": "text",
+      "id": "social_linkedin_link",
+      "label": "URL LinkedIn"
+    },
+    {
+      "type": "text",
+      "id": "social_youtube_link",
+      "label": "URL YouTube"
+    },
+    {
+      "type": "header",
+      "content": "Menus footer"
+    },
+    {
+      "type": "link_list",
+      "id": "footer_menu_collections",
+      "label": "Menu Collections"
+    },
+    {
+      "type": "link_list",
+      "id": "footer_menu_maison",
+      "label": "Menu La Maison"
+    },
+    {
+      "type": "link_list",
+      "id": "footer_menu_service",
+      "label": "Menu Service"
+    },
+    {
+      "type": "text",
+      "id": "footer_brand_text",
+      "label": "Texte brand",
+      "default": "Maroquinerie de luxe française. Chaque pièce fabriquée à la main, par un seul artisan, dans nos ateliers parisiens."
+    }
+  ],
+  "presets": [{ "name": "Footer TIRABOSCHI" }]
+}
+{% endschema %}

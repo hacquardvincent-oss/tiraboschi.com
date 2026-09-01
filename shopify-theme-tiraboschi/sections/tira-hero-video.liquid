@@ -1,0 +1,143 @@
+{% comment %}
+  TIRABOSCHI — Hero vidéo responsive 9:16 mobile / 16:9 desktop
+  Référence : tiraboschi-homepage-prototype.html L1126-1164
+
+  CDN fallback intégré : si aucune vidéo configurée via le thème editor,
+  on utilise directement VIDEO HOMEPAGE.mp4 / TEST 9-16 Boschi 1.
+{% endcomment %}
+
+{%- comment -%} ── URLs CDN de fallback (toujours disponibles) ── {%- endcomment -%}
+{%- assign fb_desktop_hd  = 'https://cdn.shopify.com/videos/c/vp/a34148cdb12a474b8ca71469bf389e47/a34148cdb12a474b8ca71469bf389e47.HD-720p-4.5Mbps-79621443.mp4' -%}
+{%- assign fb_mobile_hd   = 'https://cdn.shopify.com/videos/c/vp/1358774942114ba8966c625ffb4d90ab/1358774942114ba8966c625ffb4d90ab.HD-1080p-7.2Mbps-67848507.mp4' -%}
+
+{%- comment -%} ── URLs réelles (si configurées via Personnaliser) ── {%- endcomment -%}
+{%- assign src_desktop = fb_desktop_hd -%}
+{%- assign src_mobile  = fb_mobile_hd -%}
+
+{%- if section.settings.video_desktop -%}
+  {%- assign src_desktop = section.settings.video_desktop.sources[1].url | default: section.settings.video_desktop.sources[0].url -%}
+{%- endif -%}
+{%- if section.settings.video_mobile -%}
+  {%- assign src_mobile = section.settings.video_mobile.sources[1].url | default: section.settings.video_mobile.sources[0].url -%}
+{%- endif -%}
+
+<section class="hero" aria-label="{{ section.settings.aria_label | escape }}">
+
+  <div class="hero__video-wrap">
+    <video class="hero__video" id="hero-video"
+           autoplay muted loop playsinline
+           {% if section.settings.poster %}poster="{{ section.settings.poster | image_url: width: 1920 }}"{% endif %}
+           aria-hidden="true">
+    </video>
+  </div>
+  <script>
+    (function() {
+      var video = document.getElementById('hero-video');
+      var isMobile = window.matchMedia('(max-width: 768px)').matches;
+      var src = isMobile ? {{ src_mobile | json }} : {{ src_desktop | json }};
+      video.src = src;
+      video.load();
+    })();
+  </script>
+
+  <div class="hero__overlay"></div>
+
+  <div class="hero__content">
+    {%- if section.settings.label != blank -%}
+      <p class="hero__label">{{ section.settings.label }}</p>
+    {%- endif -%}
+    {%- if section.settings.title != blank -%}
+      <h1 class="hero__title">{{ section.settings.title }}</h1>
+    {%- endif -%}
+    {%- if section.settings.cta_label != blank -%}
+      <a href="{{ section.settings.cta_link | default: '#' }}" class="hero__cta tira-magnetic">{{ section.settings.cta_label }}</a>
+    {%- endif -%}
+  </div>
+
+  {%- if section.settings.show_scroll_indicator -%}
+    <div class="hero__scroll" aria-hidden="true">{{ section.settings.scroll_label | default: 'Défiler' }}</div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Hero vidéo",
+  "tag": "section",
+  "class": "tira-section tira-section--hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Contenu"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Sur-titre",
+      "default": "Automne — Hiver 2025"
+    },
+    {
+      "type": "richtext",
+      "id": "title",
+      "label": "Titre H1",
+      "default": "<p>L'Art<br>du Cuir</p>"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Libellé CTA",
+      "default": "Découvrir la collection"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Lien CTA"
+    },
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "Aria-label section",
+      "default": "Collection Automne–Hiver 2025"
+    },
+    {
+      "type": "header",
+      "content": "Médias (optionnels — CDN fallback intégré)"
+    },
+    {
+      "type": "video",
+      "id": "video_desktop",
+      "label": "Vidéo desktop (16:9) — remplace le fallback CDN"
+    },
+    {
+      "type": "video",
+      "id": "video_mobile",
+      "label": "Vidéo mobile (9:16) — remplace le fallback CDN"
+    },
+    {
+      "type": "image_picker",
+      "id": "poster",
+      "label": "Image poster (fallback si vidéo non disponible)"
+    },
+    {
+      "type": "header",
+      "content": "Options"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scroll_indicator",
+      "label": "Afficher l'indicateur de scroll",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "scroll_label",
+      "label": "Texte indicateur scroll",
+      "default": "Défiler"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero vidéo TIRABOSCHI"
+    }
+  ]
+}
+{% endschema %}

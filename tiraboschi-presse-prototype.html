@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relations Presse | TIRABOSCHI Paris</title>
+<meta name="description" content="Relations presse TIRABOSCHI Paris — Kit presse, contacts, revue de presse et ressources pour les journalistes et rédactions. Maroquinerie de luxe française since 1904.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root {
+  --tira-black:  #0a0a0a;
+  --tira-white:  #ffffff;
+  --tira-grey:   #f7f5f2;
+  --tira-border: #e8e8e8;
+  --tira-ease:   cubic-bezier(0.16, 1, 0.3, 1);
+  --tira-duration: 0.9s;
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 400;
+  background: var(--tira-white);
+  color: var(--tira-black);
+  cursor: none;
+  overflow-x: hidden;
+}
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+
+/* ============================================================
+   CUSTOM CURSOR
+   ============================================================ */
+.cursor-dot {
+  position: fixed; top: 0; left: 0; width: 6px; height: 6px;
+  background: var(--tira-black); border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%);
+}
+.cursor-ring {
+  position: fixed; top: 0; left: 0; width: 30px; height: 30px;
+  border: 1px solid var(--tira-black); border-radius: 50%;
+  pointer-events: none; z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s var(--tira-ease), height 0.3s var(--tira-ease);
+}
+.cursor-ring.hovered { width: 48px; height: 48px; }
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.site-header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: var(--tira-white);
+  box-shadow: 0 1px 0 var(--tira-border);
+  transition: transform 0.4s var(--tira-ease);
+}
+.site-header.hidden { transform: translateY(-100%); }
+.header-main {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px; height: 64px; position: relative;
+}
+.header-nav {
+  display: flex; gap: 32px; align-items: center;
+}
+.header-nav a {
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--tira-black); transition: opacity 0.2s;
+}
+.header-nav a:hover { opacity: 0.5; }
+.header-logo {
+  position: absolute; left: 50%; transform: translateX(-50%);
+}
+.header-logo img { height: 28px; width: auto; }
+.header-actions {
+  display: flex; align-items: center; gap: 24px;
+}
+.header-actions a {
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--tira-black); transition: opacity 0.2s;
+}
+.header-actions a:hover { opacity: 0.5; }
+.header-search {
+  height: 44px; border-top: 1px solid var(--tira-border);
+  display: flex; align-items: center; padding: 0 40px;
+  background: var(--tira-white);
+}
+.header-search input {
+  border: none; outline: none; background: transparent;
+  font-family: 'Playfair Display', serif; font-size: 13px;
+  border-bottom: 1px solid var(--tira-black); padding-bottom: 2px;
+  width: 240px; color: var(--tira-black);
+}
+.header-search input::placeholder { color: #999; font-style: italic; }
+
+/* Header spacer */
+.header-spacer { height: 108px; }
+
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+[data-tira-reveal] {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity var(--tira-duration) var(--tira-ease),
+              transform var(--tira-duration) var(--tira-ease);
+}
+[data-tira-reveal].is-visible { opacity: 1; transform: none; }
+[data-tira-reveal].d1 { transition-delay: 0.1s; }
+[data-tira-reveal].d2 { transition-delay: 0.25s; }
+[data-tira-reveal].d3 { transition-delay: 0.4s; }
+
+[data-tira-word-reveal] span {
+  display: inline-block; opacity: 0; transform: translateY(10px);
+  transition: opacity 0.5s var(--tira-ease) calc(var(--i) * 55ms),
+              transform 0.5s var(--tira-ease) calc(var(--i) * 55ms);
+}
+[data-tira-word-reveal].is-visible span { opacity: 1; transform: none; }
+
+/* ============================================================
+   SECTION 1 — HERO (50vh)
+   ============================================================ */
+.presse-hero {
+  background: var(--tira-grey);
+  min-height: 50vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 80px 40px;
+  position: relative; overflow: hidden;
+}
+.hero-filigree {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(100px, 20vw, 220px);
+  font-weight: 400; letter-spacing: -0.02em;
+  color: var(--tira-black); opacity: 0.04;
+  white-space: nowrap; pointer-events: none;
+  user-select: none;
+  line-height: 1;
+}
+.hero-page-label {
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  opacity: 0.4; margin-bottom: 20px;
+  position: relative; z-index: 1;
+}
+.presse-hero h1 {
+  font-size: clamp(32px, 5vw, 56px);
+  letter-spacing: -0.01em; margin-bottom: 16px;
+  position: relative; z-index: 1;
+}
+.presse-hero-subtitle {
+  font-size: 15px; opacity: 0.6; margin-bottom: 32px;
+  max-width: 480px; line-height: 1.6;
+  position: relative; z-index: 1;
+}
+.presse-contact-direct {
+  position: relative; z-index: 1;
+}
+.presse-contact-direct a {
+  font-size: 13px; letter-spacing: 0.05em;
+  text-decoration: underline; text-underline-offset: 4px;
+  transition: opacity 0.2s;
+}
+.presse-contact-direct a:hover { opacity: 0.5; }
+
+/* ============================================================
+   SECTION 2 — CONTACT ATTACHÉE
+   ============================================================ */
+.contact-section {
+  background: var(--tira-white);
+  padding: 100px 40px;
+  text-align: center;
+}
+.contact-profile {
+  display: flex; flex-direction: column; align-items: center; gap: 20px;
+  margin-bottom: 32px;
+}
+.contact-avatar {
+  width: 80px; height: 80px;
+  background: var(--tira-grey);
+  border: 1px solid var(--tira-border);
+  flex-shrink: 0;
+}
+.contact-name {
+  font-size: 22px; margin-bottom: 4px; letter-spacing: -0.01em;
+}
+.contact-title {
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  opacity: 0.4; margin-bottom: 12px;
+}
+.contact-details {
+  display: flex; flex-direction: column; gap: 4px;
+}
+.contact-details a {
+  font-size: 13px; text-decoration: underline; text-underline-offset: 3px;
+  transition: opacity 0.2s;
+}
+.contact-details a:hover { opacity: 0.5; }
+.contact-desc {
+  font-size: 14px; line-height: 1.9; max-width: 540px;
+  margin: 0 auto 16px; opacity: 0.7;
+}
+.contact-response {
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  opacity: 0.35;
+}
+
+/* ============================================================
+   SECTION 3 — TÉLÉCHARGEMENTS
+   ============================================================ */
+.downloads-section {
+  background: var(--tira-grey);
+  padding: 100px 40px;
+}
+.section-label {
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  opacity: 0.4; margin-bottom: 48px; display: block;
+}
+.downloads-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+  background: var(--tira-border);
+  border: 1px solid var(--tira-border);
+}
+.download-card {
+  background: var(--tira-white);
+  padding: 48px 40px;
+  display: flex; flex-direction: column; gap: 16px;
+  transition: background 0.2s;
+}
+.download-card:hover { background: #faf9f7; }
+.download-icon {
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--tira-border);
+  flex-shrink: 0;
+}
+.download-icon svg { stroke: var(--tira-black); stroke-width: 1; fill: none; }
+.download-name {
+  font-size: 17px; letter-spacing: -0.01em;
+}
+.download-desc {
+  font-size: 13px; line-height: 1.7; opacity: 0.6;
+}
+.download-meta {
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  opacity: 0.4;
+}
+.download-cta {
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  text-decoration: underline; text-underline-offset: 4px;
+  margin-top: auto; padding-top: 8px;
+  transition: opacity 0.2s; cursor: none;
+}
+.download-cta:hover { opacity: 0.5; }
+
+/* ============================================================
+   SECTION 4 — REVUE DE PRESSE
+   ============================================================ */
+.revue-section {
+  background: var(--tira-white);
+  padding: 100px 40px;
+}
+.revue-section h2 {
+  font-size: 36px; letter-spacing: -0.01em; margin-bottom: 56px;
+}
+.press-rows {
+  display: flex; flex-direction: column;
+  border-top: 1px solid var(--tira-border);
+}
+.press-row {
+  display: grid; grid-template-columns: 120px 1fr auto;
+  gap: 32px; align-items: center;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--tira-border);
+  transition: background 0.2s;
+}
+.press-row:hover { background: var(--tira-grey); margin: 0 -40px; padding-left: 40px; padding-right: 40px; }
+.press-logo {
+  width: 80px; height: 30px;
+  background: var(--tira-border);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.press-logo span {
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  opacity: 0.5;
+}
+.press-quote {
+  font-size: 14px; line-height: 1.6;
+  font-style: italic;
+}
+.press-quote strong {
+  font-style: normal; display: block; margin-bottom: 4px;
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  opacity: 0.4;
+}
+.press-date {
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  opacity: 0.35; white-space: nowrap; flex-shrink: 0;
+}
+
+/* ============================================================
+   SECTION 5 — À PROPOS (2-col)
+   ============================================================ */
+.about-section {
+  background: var(--tira-grey);
+  padding: 100px 40px;
+}
+.about-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+  align-items: start;
+}
+.about-col-label {
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  opacity: 0.4; margin-bottom: 24px;
+}
+.about-intro {
+  font-size: 15px; line-height: 1.85; margin-bottom: 24px;
+}
+.key-figures {
+  display: flex; gap: 32px; flex-wrap: wrap; margin-top: 32px;
+  padding-top: 24px; border-top: 1px solid var(--tira-border);
+}
+.key-figure {
+  display: flex; flex-direction: column; gap: 4px;
+}
+.key-figure-value {
+  font-size: 22px; letter-spacing: -0.01em;
+}
+.key-figure-label {
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  opacity: 0.4;
+}
+.bio-text {
+  font-size: 14px; line-height: 1.9; opacity: 0.75;
+}
+
+/* ============================================================
+   SECTION 6 — INFORMATIONS (2-col)
+   ============================================================ */
+.info-section {
+  background: var(--tira-white);
+  padding: 100px 40px;
+}
+.info-section h2 {
+  font-size: 36px; letter-spacing: -0.01em; margin-bottom: 56px;
+}
+.info-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+}
+.info-col-label {
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  opacity: 0.4; margin-bottom: 24px;
+}
+.info-list {
+  list-style: none; display: flex; flex-direction: column; gap: 16px;
+}
+.info-list li {
+  display: flex; gap: 16px; align-items: baseline;
+  padding-bottom: 16px; border-bottom: 1px solid var(--tira-border);
+}
+.info-list li:last-child { border-bottom: none; padding-bottom: 0; }
+.info-list-key {
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  opacity: 0.4; flex-shrink: 0; min-width: 130px;
+}
+.info-list-value {
+  font-size: 13px; line-height: 1.6; opacity: 0.8;
+}
+.info-contact {
+  margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--tira-border);
+}
+.info-contact p { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.4; margin-bottom: 8px; }
+.info-contact a {
+  font-size: 13px; text-decoration: underline; text-underline-offset: 3px;
+  transition: opacity 0.2s;
+}
+.info-contact a:hover { opacity: 0.5; }
+
+/* ============================================================
+   MARQUEE
+   ============================================================ */
+.tira-marquee {
+  overflow: hidden; border-top: 1px solid var(--tira-border);
+  border-bottom: 1px solid var(--tira-border);
+  padding: 14px 0; background: var(--tira-white);
+}
+.tira-marquee__track {
+  display: flex; white-space: nowrap;
+  animation: marquee-scroll 18s linear infinite;
+}
+.tira-marquee:hover .tira-marquee__track { animation-play-state: paused; }
+.tira-marquee__item {
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  padding: 0 24px; opacity: 0.5;
+}
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.site-footer {
+  background: var(--tira-black); color: var(--tira-white);
+  padding: 80px 40px 40px;
+}
+.footer-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 48px;
+  margin-bottom: 64px;
+}
+.footer-col-title {
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  opacity: 0.4; margin-bottom: 24px;
+}
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.footer-col ul li a {
+  font-size: 13px; opacity: 0.7; transition: opacity 0.2s;
+}
+.footer-col ul li a:hover { opacity: 1; }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 32px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footer-copyright { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.3; }
+.footer-legal { display: flex; gap: 24px; }
+.footer-legal a { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.3; transition: opacity 0.2s; }
+.footer-legal a:hover { opacity: 0.7; }
+.footer-logo { text-align: center; margin-bottom: 48px; opacity: 0.2; }
+.footer-logo img { height: 24px; margin: 0 auto; filter: invert(1); }
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+@media (max-width: 767px) {
+  .header-main { padding: 0 20px; height: 56px; }
+  .header-logo { position: static; transform: none; }
+  .header-nav { display: none; }
+  .header-spacer { height: 100px; }
+  .header-search { padding: 0 20px; }
+  .presse-hero { padding: 64px 24px; }
+  .contact-section { padding: 72px 24px; }
+  .downloads-section { padding: 72px 24px; }
+  .downloads-grid { grid-template-columns: 1fr; }
+  .download-card { padding: 40px 28px; }
+  .revue-section { padding: 72px 24px; }
+  .press-row { grid-template-columns: 1fr; gap: 12px; }
+  .press-row:hover { margin: 0; padding-left: 0; padding-right: 0; }
+  .about-section { padding: 72px 24px; }
+  .about-grid { grid-template-columns: 1fr; gap: 48px; }
+  .info-section { padding: 72px 24px; }
+  .info-grid { grid-template-columns: 1fr; gap: 48px; }
+  .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+  .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+  .key-figures { gap: 24px; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .downloads-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "name": "TIRABOSCHI Paris",
+      "url": "https://tiraboschi-paris.myshopify.com",
+      "foundingDate": "1904",
+      "description": "Maison de maroquinerie de luxe française fondée en 1904. Made in France, Only.",
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "contactType": "Press",
+          "email": "press@tiraboschi-paris.com"
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "TIRABOSCHI Paris", "item": "https://tiraboschi-paris.myshopify.com" },
+        { "@type": "ListItem", "position": 2, "name": "Relations Presse", "item": "https://tiraboschi-paris.myshopify.com/pages/presse" }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+
+<body>
+<!-- CURSOR -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<header class="site-header" id="siteHeader">
+  <div class="header-main">
+    <nav class="header-nav">
+      <a href="/collections/sacs">Sacs</a>
+      <a href="/collections/petite-maroquinerie">Petite Maroquinerie</a>
+      <a href="/pages/histoire">La Maison</a>
+    </nav>
+    <div class="header-logo">
+      <a href="/">
+        <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738"
+             height="28" alt="TIRABOSCHI Paris">
+      </a>
+    </div>
+    <div class="header-actions">
+      <a href="/pages/recherche" aria-label="Rechercher">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+      </a>
+      <a href="/account" aria-label="Compte">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+      </a>
+      <a href="/cart" aria-label="Panier">
+        <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050"
+             width="22" height="22" alt="Panier">
+      </a>
+    </div>
+  </div>
+  <div class="header-search">
+    <input type="text" placeholder="Rechercher…" aria-label="Recherche">
+  </div>
+</header>
+<div class="header-spacer"></div>
+
+<!-- ============================================================
+     SECTION 1 — HERO
+     ============================================================ -->
+<section class="presse-hero">
+  <div class="hero-filigree" aria-hidden="true">Presse</div>
+  <p class="hero-page-label" data-tira-reveal>TIRABOSCHI Paris</p>
+  <h1 data-tira-word-reveal>Relations Presse</h1>
+  <p class="presse-hero-subtitle" data-tira-reveal class="d1">
+    Ressources pour les journalistes et rédactions
+  </p>
+  <div class="presse-contact-direct" data-tira-reveal class="d2">
+    <a href="mailto:press@tiraboschi-paris.com">press@tiraboschi-paris.com</a>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 2 — CONTACT ATTACHÉE DE PRESSE
+     ============================================================ -->
+<section class="contact-section">
+  <div class="contact-profile" data-tira-reveal>
+    <div class="contact-avatar" role="img" aria-label="Marie Lecomte, Attachée de Presse"></div>
+    <div>
+      <p class="contact-name">Marie Lecomte</p>
+      <p class="contact-title">Attachée de Presse</p>
+      <div class="contact-details">
+        <a href="mailto:m.lecomte@tiraboschi-paris.com">m.lecomte@tiraboschi-paris.com</a>
+        <a href="tel:+33142000000">+33 (0)1 42 00 00 00</a>
+      </div>
+    </div>
+  </div>
+  <p class="contact-desc" data-tira-reveal class="d1">
+    Pour toute demande d'interview, prêt de pièce, ou accréditation shooting.
+  </p>
+  <p class="contact-response" data-tira-reveal class="d2">Réponse sous 24h ouvrées</p>
+</section>
+
+<!-- MARQUEE -->
+<div class="tira-marquee" aria-hidden="true">
+  <div class="tira-marquee__track">
+    <span class="tira-marquee__item">Made in France, Only.</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Since 1904</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Maroquinerie de Luxe</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Paris</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Un artisan, une pièce</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Made in France, Only.</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Since 1904</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Maroquinerie de Luxe</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Paris</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Un artisan, une pièce</span>
+    <span class="tira-marquee__item">·</span>
+  </div>
+</div>
+
+<!-- ============================================================
+     SECTION 3 — TÉLÉCHARGEMENTS
+     ============================================================ -->
+<section class="downloads-section">
+  <span class="section-label" data-tira-reveal>Kit Presse</span>
+  <div class="downloads-grid">
+
+    <div class="download-card" data-tira-reveal>
+      <div class="download-icon">
+        <!-- PDF icon -->
+        <svg width="20" height="20" viewBox="0 0 24 24">
+          <rect x="4" y="2" width="16" height="20"/><path d="M9 7h6M9 12h6M9 17h4"/>
+          <path d="M14 2v4h4" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <p class="download-name">Communiqué FW25</p>
+      <p class="download-desc">La collection FW25 — Permanence · Automne-Hiver 2025. Présentation des modèles, orientations créatives, matières.</p>
+      <p class="download-meta">PDF · 2.4 Mo</p>
+      <a href="#" class="download-cta">Télécharger →</a>
+    </div>
+
+    <div class="download-card" data-tira-reveal class="d1">
+      <div class="download-icon">
+        <!-- Image icon -->
+        <svg width="20" height="20" viewBox="0 0 24 24">
+          <rect x="3" y="3" width="18" height="18"/><circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+      </div>
+      <p class="download-name">Photos HD</p>
+      <p class="download-desc">Photos de campagne FW25 · Portraits atelier · Détails produits · Fonds blancs packshots.</p>
+      <p class="download-meta">ZIP · 48 Mo · 12 visuels · Résolution 300 dpi</p>
+      <a href="#" class="download-cta">Télécharger le dossier →</a>
+    </div>
+
+    <div class="download-card" data-tira-reveal class="d2">
+      <div class="download-icon">
+        <!-- Document icon -->
+        <svg width="20" height="20" viewBox="0 0 24 24">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+        </svg>
+      </div>
+      <p class="download-name">Biographie Maison</p>
+      <p class="download-desc">Histoire de TIRABOSCHI Paris depuis 1904 · Biographie fondatrice Sophie Tiraboschi · Formats court (100 mots), moyen (300 mots), long (800 mots).</p>
+      <p class="download-meta">PDF · 1.2 Mo</p>
+      <a href="#" class="download-cta">Télécharger →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 4 — REVUE DE PRESSE
+     ============================================================ -->
+<section class="revue-section">
+  <h2 data-tira-word-reveal>La maison dans la presse</h2>
+
+  <div class="press-rows">
+
+    <div class="press-row" data-tira-reveal>
+      <div class="press-logo"><span>Le Monde</span></div>
+      <div class="press-quote">
+        <strong>Mars 2025</strong>
+        "La maroquinerie de luxe qui résiste au temps"
+      </div>
+      <span class="press-date">Mars 2025</span>
+    </div>
+
+    <div class="press-row" data-tira-reveal class="d1">
+      <div class="press-logo"><span>Vogue France</span></div>
+      <div class="press-quote">
+        <strong>Février 2025</strong>
+        "Ces créateurs qui font le luxe autrement"
+      </div>
+      <span class="press-date">Fév. 2025</span>
+    </div>
+
+    <div class="press-row" data-tira-reveal class="d2">
+      <div class="press-logo"><span>Mme Figaro</span></div>
+      <div class="press-quote">
+        <strong>Janvier 2025</strong>
+        "L'atelier parisien qui répare ce qu'il fabrique"
+      </div>
+      <span class="press-date">Jan. 2025</span>
+    </div>
+
+    <div class="press-row" data-tira-reveal>
+      <div class="press-logo"><span>L'Obs</span></div>
+      <div class="press-quote">
+        <strong>Novembre 2024</strong>
+        "Made in France, le vrai"
+      </div>
+      <span class="press-date">Nov. 2024</span>
+    </div>
+
+    <div class="press-row" data-tira-reveal class="d1">
+      <div class="press-logo"><span>Elle</span></div>
+      <div class="press-quote">
+        <strong>Octobre 2024</strong>
+        "Les 10 marques luxe à découvrir absolument cette saison"
+      </div>
+      <span class="press-date">Oct. 2024</span>
+    </div>
+
+    <div class="press-row" data-tira-reveal class="d2">
+      <div class="press-logo"><span>Libération</span></div>
+      <div class="press-quote">
+        <strong>Septembre 2024</strong>
+        "Maroquinerie : l'artisan contre la mode"
+      </div>
+      <span class="press-date">Sep. 2024</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 5 — À PROPOS (2-col)
+     ============================================================ -->
+<section class="about-section">
+  <div class="about-grid">
+    <div class="about-left">
+      <p class="about-col-label" data-tira-reveal>En bref</p>
+      <p class="about-intro" data-tira-reveal class="d1">
+        TIRABOSCHI Paris est une maison de maroquinerie de luxe française indépendante, fondée en 1904 dans le Marais.
+      </p>
+      <p class="about-intro" data-tira-reveal class="d2">
+        Chaque pièce est fabriquée par un seul artisan, de la première coupe à la dernière finition. Made in France, Only.
+      </p>
+      <div class="key-figures" data-tira-reveal class="d3">
+        <div class="key-figure">
+          <span class="key-figure-value">1904</span>
+          <span class="key-figure-label">Fondation</span>
+        </div>
+        <div class="key-figure">
+          <span class="key-figure-value">120 ans</span>
+          <span class="key-figure-label">D'histoire</span>
+        </div>
+        <div class="key-figure">
+          <span class="key-figure-value">1 artisan</span>
+          <span class="key-figure-label">Par pièce</span>
+        </div>
+        <div class="key-figure">
+          <span class="key-figure-value">3</span>
+          <span class="key-figure-label">Générations</span>
+        </div>
+      </div>
+    </div>
+    <div class="about-right">
+      <p class="about-col-label" data-tira-reveal>Biographie</p>
+      <p class="bio-text" data-tira-reveal class="d1">
+        Sophie Tiraboschi dirige aujourd'hui la maison fondée par son arrière-grand-père Matteo Tiraboschi en 1904. Formée au CFPJ et à la London School of Economics, elle recentre en 2019 la maison sur son héritage artisanal, abandonne la distribution wholesale pour la vente directe et relance les lignes iconiques avec des matières françaises exclusives.
+      </p>
+      <p class="bio-text" data-tira-reveal class="d2" style="margin-top: 20px;">
+        Chaque pièce TIRABOSCHI est fabriquée dans l'atelier du Marais par un seul artisan maroquinier — du tracé de la pièce à la finition des tranches. Un processus qui peut prendre jusqu'à 28 heures pour les modèles les plus construits, et que la maison refuse de rationaliser.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 6 — INFORMATIONS
+     ============================================================ -->
+<section class="info-section">
+  <h2 data-tira-word-reveal>Informations</h2>
+  <div class="info-grid">
+    <div>
+      <p class="info-col-label" data-tira-reveal>Assets disponibles</p>
+      <ul class="info-list">
+        <li data-tira-reveal>
+          <span class="info-list-key">Photos produits</span>
+          <span class="info-list-value">Résolution 300 dpi, fond blanc, fichiers TIFF et JPEG</span>
+        </li>
+        <li data-tira-reveal class="d1">
+          <span class="info-list-key">Photos atelier</span>
+          <span class="info-list-value">Report intérieur, lumière naturelle, artisans en action</span>
+        </li>
+        <li data-tira-reveal class="d2">
+          <span class="info-list-key">Vidéo savoir-faire</span>
+          <span class="info-list-value">Format 16:9 et 9:16, qualité broadcast, sous-titres FR/EN disponibles</span>
+        </li>
+        <li data-tira-reveal class="d3">
+          <span class="info-list-key">Logos</span>
+          <span class="info-list-value">Versions noir, blanc, fond transparent — formats SVG, PNG, EPS</span>
+        </li>
+      </ul>
+    </div>
+    <div>
+      <p class="info-col-label" data-tira-reveal>Mentions légales pour la presse</p>
+      <ul class="info-list">
+        <li data-tira-reveal>
+          <span class="info-list-key">Mentions obligatoires</span>
+          <span class="info-list-value">TIRABOSCHI Paris · tiraboschi-paris.com</span>
+        </li>
+        <li data-tira-reveal class="d1">
+          <span class="info-list-key">Droits images</span>
+          <span class="info-list-value">Usage éditorial uniquement · Crédits obligatoires · Toute utilisation commerciale soumise à autorisation écrite</span>
+        </li>
+        <li data-tira-reveal class="d2">
+          <span class="info-list-key">Prêts de pièces</span>
+          <span class="info-list-value">Durée maximale 7 jours · Bon de retour signé obligatoire · Assurance à la charge du demandeur</span>
+        </li>
+      </ul>
+      <div class="info-contact" data-tira-reveal class="d3">
+        <p>Demandes spéciales</p>
+        <a href="mailto:press@tiraboschi-paris.com">press@tiraboschi-paris.com</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="tira-marquee" aria-hidden="true">
+  <div class="tira-marquee__track">
+    <span class="tira-marquee__item">Made in France, Only.</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Since 1904</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Maroquinerie de Luxe</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Paris</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Made in France, Only.</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Since 1904</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Maroquinerie de Luxe</span>
+    <span class="tira-marquee__item">·</span>
+    <span class="tira-marquee__item">Paris</span>
+    <span class="tira-marquee__item">·</span>
+  </div>
+</div>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="site-footer">
+  <div class="footer-logo">
+    <img src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738"
+         height="24" alt="TIRABOSCHI Paris">
+  </div>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <p class="footer-col-title">Collections</p>
+      <ul>
+        <li><a href="/collections/fw25">FW25 — Permanence</a></li>
+        <li><a href="/collections/sacs">Sacs</a></li>
+        <li><a href="/collections/petite-maroquinerie">Petite Maroquinerie</a></li>
+        <li><a href="/collections/iconiques">Les Iconiques</a></li>
+        <li><a href="/collections/sur-mesure-exotiques">Sur Mesure</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <p class="footer-col-title">La Maison</p>
+      <ul>
+        <li><a href="/pages/histoire">Notre Histoire</a></li>
+        <li><a href="/pages/savoir-faire">Savoir-Faire</a></li>
+        <li><a href="/pages/matieres-cuirs">Matières & Cuirs</a></li>
+        <li><a href="/pages/engagement">Notre Engagement</a></li>
+        <li><a href="/pages/presse">Presse</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <p class="footer-col-title">Service</p>
+      <ul>
+        <li><a href="/pages/contact">Contact</a></li>
+        <li><a href="/pages/prendrez-rendez-vous">Prendre RDV</a></li>
+        <li><a href="/pages/sur-mesure">Sur Mesure</a></li>
+        <li><a href="/pages/entretien">Entretien & Réparation</a></li>
+        <li><a href="/pages/la-societe">La Société</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <p class="footer-col-title">Suivre</p>
+      <ul>
+        <li><a href="https://instagram.com/boschi_paris" target="_blank" rel="noopener">@boschi_paris</a></li>
+        <li><a href="/blogs/latelier">L'Atelier — Blog</a></li>
+        <li><a href="/pages/newsletter">Newsletter</a></li>
+      </ul>
+      <div style="margin-top: 32px;">
+        <p class="footer-col-title">Newsletter</p>
+        <div style="display: flex; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 4px; margin-top: 8px;">
+          <input type="email" placeholder="votre@email.com"
+                 style="background: none; border: none; outline: none; font-family: inherit; font-size: 13px; color: #fff; width: 100%; opacity: 0.7;">
+          <button style="background: none; border: none; color: #fff; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; cursor: none; white-space: nowrap; opacity: 0.5;">→</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copyright">© 2025 TIRABOSCHI Paris · Tous droits réservés</p>
+    <nav class="footer-legal">
+      <a href="/pages/mentions-legales">Mentions légales</a>
+      <a href="/pages/confidentialite">Confidentialité</a>
+      <a href="/pages/cgv">CGV</a>
+    </nav>
+  </div>
+</footer>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+/* --- Custom Cursor --- */
+const dot  = document.getElementById('cursorDot');
+const ring = document.getElementById('cursorRing');
+let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX; mouseY = e.clientY;
+  dot.style.left = mouseX + 'px';
+  dot.style.top  = mouseY + 'px';
+});
+(function animRing() {
+  ringX += (mouseX - ringX) * 0.12;
+  ringY += (mouseY - ringY) * 0.12;
+  ring.style.left = ringX + 'px';
+  ring.style.top  = ringY + 'px';
+  requestAnimationFrame(animRing);
+})();
+document.querySelectorAll('a, button, [role="button"]').forEach(el => {
+  el.addEventListener('mouseenter', () => ring.classList.add('hovered'));
+  el.addEventListener('mouseleave', () => ring.classList.remove('hovered'));
+});
+
+/* --- Directional sticky header --- */
+const header = document.getElementById('siteHeader');
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+  const scroll = window.scrollY;
+  if (scroll > lastScroll + 4 && scroll > 120) {
+    header.classList.add('hidden');
+  } else if (scroll < lastScroll - 4) {
+    header.classList.remove('hidden');
+  }
+  lastScroll = scroll;
+}, { passive: true });
+
+/* --- Scroll reveal --- */
+const revealEls = document.querySelectorAll('[data-tira-reveal]');
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('is-visible');
+      revealObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+revealEls.forEach(el => revealObs.observe(el));
+
+/* --- Word reveal --- */
+document.querySelectorAll('[data-tira-word-reveal]').forEach(el => {
+  el.innerHTML = el.textContent.trim().split(' ')
+    .map((w, i) => `<span style="--i:${i}">${w}</span>`).join(' ');
+});
+const wordObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('is-visible');
+      wordObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.2 });
+document.querySelectorAll('[data-tira-word-reveal]').forEach(el => wordObs.observe(el));
+</script>
+</body>
+</html>

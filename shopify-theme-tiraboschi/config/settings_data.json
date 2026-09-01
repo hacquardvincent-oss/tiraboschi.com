@@ -1,0 +1,26 @@
+{
+  "current": {
+    "lenis_smooth_scroll": true,
+    "page_transitions": true,
+    "splash_screen": false,
+    "drop_active": false,
+    "drop_name": "H26",
+    "drop_bar_text": "Drop H26 — Précommandes ouvertes",
+    "drop_cta_label": "Découvrir",
+    "drop_end_date": "2026-08-30T23:59:00",
+    "newsletter_popup_enabled": true,
+    "social_instagram_link": "https://instagram.com/boschi_paris",
+    "contact_address": "96 Avenue de Clichy, 75017 Paris",
+    "contact_email": "contact@tiraboschi-paris.com",
+    "contact_hours": "Lundi—Vendredi, 10h—18h · Sur rendez-vous"
+  },
+  "presets": {
+    "TIRABOSCHI Bespoke": {
+      "lenis_smooth_scroll": true,
+      "page_transitions": true,
+      "newsletter_popup_enabled": true,
+      "social_instagram_link": "https://instagram.com/boschi_paris",
+      "contact_address": "96 Avenue de Clichy, 75017 Paris"
+    }
+  }
+}

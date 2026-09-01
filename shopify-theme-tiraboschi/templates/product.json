@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "tira-product": {
+      "type": "tira-product",
+      "settings": {
+        "show_dimensions": true
+      }
+    }
+  },
+  "order": ["tira-product"]
+}

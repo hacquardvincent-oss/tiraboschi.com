@@ -1,0 +1,1194 @@
+{% comment %}
+  ═══════════════════════════════════════════════════════════════
+  TIRABOSCHI · Drops & Éditions Limitées
+  ═══════════════════════════════════════════════════════════════
+  Structure :
+  1. Hero         — 70vh, fond noir, Ken Burns DSCF1828, H1 + sous-titre + label
+  2. Comment ça marche — blanc, 4 étapes horizontales / verticales mobile
+  3. Drop en cours ou à venir — settings-driven, form Shopify contact
+  4. Planning     — gris, grille 3 colonnes, blocs drop_planning
+  5. Drops passés — blanc, liste 2 colonnes desktop
+  6. FAQ          — gris, 3 questions accordion JS
+  7. Newsletter drops — noir, form Shopify contact + RGPD
+  ═══════════════════════════════════════════════════════════════
+{% endcomment %}
+
+<style>
+  .drp-page {
+    --tira-black:  #0a0a0a;
+    --tira-white:  #ffffff;
+    --tira-grey:   #f7f5f2;
+    --tira-border: #e8e8e8;
+    --tira-ease:   cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: 'Playfair Display', Georgia, serif;
+    color: var(--tira-black);
+  }
+
+  /* ─────────────────────────────────────────────
+     1. HERO
+  ───────────────────────────────────────────── */
+  .drp-hero {
+    position: relative;
+    height: 70vh; min-height: 520px;
+    overflow: hidden;
+    background: var(--tira-black);
+    margin-top: var(--content-top);
+  }
+  .drp-hero__img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: cover;
+    animation: drp-kb 14s ease-in-out infinite alternate;
+    opacity: .55;
+  }
+  @keyframes drp-kb {
+    from { transform: scale(1); }
+    to   { transform: scale(1.07) translate(1.5%, -1%); }
+  }
+  .drp-hero__overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(0,0,0,.72) 0%,
+      rgba(0,0,0,.30) 50%,
+      rgba(0,0,0,.05) 100%
+    );
+    z-index: 1;
+  }
+  .drp-hero__content {
+    position: absolute; z-index: 2;
+    bottom: 64px; left: 56px; right: 56px;
+    color: var(--tira-white);
+    max-width: 760px;
+  }
+  .drp-hero__label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .22em;
+    opacity: .55; margin-bottom: 28px;
+    display: inline-block;
+    border: 1px solid rgba(255,255,255,.25);
+    padding: 6px 14px;
+  }
+  .drp-hero__title {
+    font-size: clamp(44px, 7vw, 88px);
+    font-weight: 400; line-height: .95;
+    letter-spacing: -.01em; margin-bottom: 28px;
+  }
+  .drp-hero__sub {
+    font-size: clamp(14px, 1.6vw, 18px);
+    font-style: italic; opacity: .75; max-width: 520px;
+    line-height: 1.55;
+  }
+
+  /* ─────────────────────────────────────────────
+     2. COMMENT ÇA MARCHE
+  ───────────────────────────────────────────── */
+  .drp-how {
+    background: var(--tira-white);
+    padding: 100px 48px;
+  }
+  .drp-how__header {
+    text-align: center; margin-bottom: 72px;
+  }
+  .drp-how__label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+    opacity: .4; margin-bottom: 20px; display: block;
+  }
+  .drp-how__title {
+    font-size: clamp(28px, 3.5vw, 42px);
+    font-weight: 400; letter-spacing: -.01em; line-height: 1.05;
+  }
+  .drp-how__steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 1200px; margin: 0 auto;
+    position: relative; gap: 0;
+  }
+  .drp-how__steps::before {
+    content: '';
+    position: absolute;
+    top: 22px;
+    left: calc(12.5% + 22px);
+    right: calc(12.5% + 22px);
+    height: 1px; background: var(--tira-border); z-index: 0;
+  }
+  .drp-step {
+    text-align: center; padding: 0 28px; position: relative; z-index: 1;
+  }
+  .drp-step__num {
+    width: 44px; height: 44px;
+    border: 1px solid var(--tira-black);
+    background: var(--tira-white);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 28px;
+    font-size: 11px; text-transform: uppercase; letter-spacing: .12em;
+  }
+  .drp-step__title {
+    font-size: 18px; font-weight: 400; margin-bottom: 16px;
+    letter-spacing: -.01em;
+  }
+  .drp-step__desc {
+    font-size: 13px; line-height: 1.75; opacity: .65;
+  }
+
+  /* ─────────────────────────────────────────────
+     3. DROP EN COURS / À VENIR
+  ───────────────────────────────────────────── */
+  .drp-active {
+    background: var(--tira-black);
+    color: var(--tira-white);
+    padding: 80px 48px;
+  }
+  .drp-active__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px; max-width: 1200px; margin: 0 auto;
+    align-items: stretch;
+  }
+  .drp-active__img-col {
+    position: relative; overflow: hidden;
+    min-height: 540px;
+  }
+  .drp-active__img-col img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: cover;
+    opacity: .75;
+    transition: opacity .4s var(--tira-ease);
+  }
+  .drp-active__img-col:hover img { opacity: .9; }
+  .drp-active__form-col {
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.1);
+    padding: 56px 48px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .drp-active__badge {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+    display: inline-block;
+    border: 1px solid rgba(255,255,255,.3);
+    padding: 5px 14px; margin-bottom: 32px;
+    color: rgba(255,255,255,.8);
+  }
+  .drp-active__drop-name {
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 400; letter-spacing: -.01em;
+    margin-bottom: 8px; line-height: 1;
+  }
+  .drp-active__models {
+    font-size: 13px; font-style: italic;
+    opacity: .55; margin-bottom: 40px;
+  }
+  /* Countdown */
+  .drp-countdown {
+    display: flex; gap: 24px; margin-bottom: 40px;
+  }
+  .drp-countdown__unit { text-align: center; }
+  .drp-countdown__value {
+    display: block;
+    font-size: 40px; line-height: 1;
+    font-weight: 400; letter-spacing: -.02em;
+  }
+  .drp-countdown__label {
+    font-size: 9px; text-transform: uppercase;
+    letter-spacing: .16em; opacity: .45; margin-top: 6px;
+    display: block;
+  }
+  .drp-countdown__sep {
+    font-size: 36px; opacity: .3; align-self: center; margin-top: -10px;
+  }
+  /* Scarcity bar */
+  .drp-scarcity {
+    margin-bottom: 40px;
+    border-top: 1px solid rgba(255,255,255,.12);
+    padding-top: 24px;
+  }
+  .drp-scarcity__text {
+    font-size: 13px; opacity: .7; margin-bottom: 12px;
+    letter-spacing: .02em;
+  }
+  .drp-scarcity__text strong { color: var(--tira-white); opacity: 1; }
+  .drp-scarcity__bar {
+    height: 1px; background: rgba(255,255,255,.15); position: relative;
+  }
+  .drp-scarcity__fill {
+    position: absolute; top: 0; left: 0; height: 1px;
+    background: var(--tira-white);
+    transition: width .8s var(--tira-ease);
+  }
+  /* Form */
+  .drp-form-title {
+    font-size: 16px; font-weight: 400;
+    margin-bottom: 28px; letter-spacing: -.01em;
+    opacity: .85;
+  }
+  .drp-form { display: flex; flex-direction: column; gap: 16px; }
+  .drp-field { display: flex; flex-direction: column; gap: 6px; }
+  .drp-field label {
+    font-size: 10px; text-transform: uppercase;
+    letter-spacing: .14em; opacity: .5;
+  }
+  .drp-field input,
+  .drp-field select {
+    background: transparent;
+    border: none; border-bottom: 1px solid rgba(255,255,255,.2);
+    color: var(--tira-white);
+    font-family: inherit; font-size: 14px;
+    padding: 10px 0; outline: none;
+    transition: border-color .2s;
+  }
+  .drp-field input:focus,
+  .drp-field select:focus {
+    border-color: var(--tira-white);
+  }
+  .drp-field select option { color: var(--tira-black); background: var(--tira-white); }
+  .drp-btn-reserve {
+    margin-top: 8px;
+    display: inline-block;
+    font-family: inherit;
+    font-size: 12px; text-transform: uppercase; letter-spacing: .14em;
+    color: var(--tira-black); background: var(--tira-white);
+    border: 1px solid var(--tira-white);
+    padding: 16px 36px; cursor: pointer;
+    transition: background .25s, color .25s;
+    align-self: flex-start;
+  }
+  .drp-btn-reserve:hover {
+    background: transparent;
+    color: var(--tira-white);
+  }
+  .drp-form-success {
+    font-size: 14px; font-style: italic;
+    opacity: .8; padding: 24px 0;
+    border-top: 1px solid rgba(255,255,255,.15);
+  }
+  /* Waitlist fallback */
+  .drp-waitlist {
+    max-width: 620px; margin: 0 auto; text-align: center;
+    padding: 80px 32px;
+  }
+  .drp-waitlist__title {
+    font-size: clamp(22px, 3vw, 32px); font-weight: 400;
+    letter-spacing: -.01em; margin-bottom: 20px;
+    color: var(--tira-white);
+  }
+  .drp-waitlist__sub {
+    font-size: 14px; font-style: italic;
+    opacity: .55; margin-bottom: 48px;
+    color: var(--tira-white);
+  }
+  .drp-waitlist__form {
+    display: flex; gap: 0; max-width: 440px; margin: 0 auto;
+    border-bottom: 1px solid rgba(255,255,255,.3);
+  }
+  .drp-waitlist__input {
+    flex: 1; background: transparent;
+    border: none; outline: none;
+    font-family: inherit; font-size: 14px;
+    color: var(--tira-white); padding: 12px 0;
+  }
+  .drp-waitlist__input::placeholder { opacity: .4; }
+  .drp-waitlist__submit {
+    background: transparent; border: none;
+    font-family: inherit; font-size: 11px;
+    text-transform: uppercase; letter-spacing: .14em;
+    color: var(--tira-white); cursor: pointer;
+    padding: 0 0 0 16px;
+    text-decoration: underline; text-underline-offset: 3px;
+    opacity: .75; transition: opacity .2s;
+  }
+  .drp-waitlist__submit:hover { opacity: 1; }
+
+  /* ─────────────────────────────────────────────
+     4. PLANNING DES PROCHAINS DROPS
+  ───────────────────────────────────────────── */
+  .drp-planning {
+    background: var(--tira-grey);
+    padding: 100px 48px;
+  }
+  .drp-planning__header {
+    text-align: center; margin-bottom: 64px;
+  }
+  .drp-planning__label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+    opacity: .4; margin-bottom: 20px; display: block;
+  }
+  .drp-planning__title {
+    font-size: clamp(28px, 3.5vw, 42px);
+    font-weight: 400; letter-spacing: -.01em;
+  }
+  .drp-planning__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px; max-width: 1200px; margin: 0 auto;
+  }
+  .drp-plan-card {
+    background: var(--tira-white);
+    border: 1px solid var(--tira-border);
+    padding: 40px 36px;
+    display: flex; flex-direction: column;
+    transition: border-color .3s;
+  }
+  .drp-plan-card:hover { border-color: var(--tira-black); }
+  .drp-plan-card__season {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .16em;
+    opacity: .4; margin-bottom: 16px;
+  }
+  .drp-plan-card__date {
+    font-size: clamp(20px, 2.5vw, 28px); font-weight: 400;
+    letter-spacing: -.01em; margin-bottom: 20px; line-height: 1.1;
+  }
+  .drp-plan-card__models {
+    font-size: 13px; font-style: italic;
+    opacity: .6; margin-bottom: 12px;
+  }
+  .drp-plan-card__pieces {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .12em;
+    opacity: .45; margin-bottom: 28px;
+  }
+  .drp-plan-card__badge {
+    display: inline-block; margin-bottom: 28px;
+    font-size: 10px; text-transform: uppercase; letter-spacing: .14em;
+    padding: 5px 12px; border: 1px solid var(--tira-border);
+    align-self: flex-start;
+  }
+  .drp-plan-card__badge--open {
+    border-color: var(--tira-black);
+    background: var(--tira-black); color: var(--tira-white);
+  }
+  .drp-plan-card__badge--coming { opacity: .55; }
+  .drp-plan-card__form { margin-top: auto; }
+  .drp-plan-card__input {
+    width: 100%; background: transparent;
+    border: none; border-bottom: 1px solid var(--tira-border);
+    font-family: inherit; font-size: 13px;
+    padding: 9px 0; outline: none; margin-bottom: 16px;
+    transition: border-color .2s;
+    display: block;
+  }
+  .drp-plan-card__input:focus { border-color: var(--tira-black); }
+  .drp-plan-card__cta {
+    font-size: 11px; text-transform: uppercase;
+    letter-spacing: .14em; cursor: pointer;
+    background: transparent; border: none;
+    font-family: inherit; color: var(--tira-black);
+    text-decoration: underline; text-underline-offset: 3px;
+    padding: 0; opacity: .75; transition: opacity .2s;
+  }
+  .drp-plan-card__cta:hover { opacity: 1; }
+
+  /* ─────────────────────────────────────────────
+     5. DROPS PASSÉS
+  ───────────────────────────────────────────── */
+  .drp-past {
+    background: var(--tira-white);
+    padding: 100px 48px;
+  }
+  .drp-past__header {
+    text-align: center; margin-bottom: 64px;
+  }
+  .drp-past__label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+    opacity: .4; margin-bottom: 20px; display: block;
+  }
+  .drp-past__title {
+    font-size: clamp(28px, 3vw, 38px); font-weight: 400; letter-spacing: -.01em;
+  }
+  .drp-past__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px; max-width: 1000px; margin: 0 auto;
+  }
+  .drp-past-row {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 28px 32px;
+    border: 1px solid var(--tira-border);
+    background: var(--tira-white);
+    gap: 16px;
+  }
+  .drp-past-row__name {
+    font-size: 18px; font-weight: 400; letter-spacing: -.01em;
+  }
+  .drp-past-row__meta {
+    text-align: right;
+  }
+  .drp-past-row__status {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .14em;
+    opacity: .45; display: block; margin-bottom: 4px;
+  }
+  .drp-past-row__date {
+    font-size: 12px; opacity: .45; font-style: italic;
+  }
+
+  /* ─────────────────────────────────────────────
+     6. FAQ
+  ───────────────────────────────────────────── */
+  .drp-faq {
+    background: var(--tira-grey);
+    padding: 100px 48px;
+  }
+  .drp-faq__header {
+    text-align: center; margin-bottom: 64px;
+  }
+  .drp-faq__label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .2em;
+    opacity: .4; margin-bottom: 20px; display: block;
+  }
+  .drp-faq__title {
+    font-size: clamp(28px, 3vw, 38px); font-weight: 400; letter-spacing: -.01em;
+  }
+  .drp-faq__list {
+    max-width: 780px; margin: 0 auto;
+  }
+  .drp-faq-item {
+    border-bottom: 1px solid var(--tira-border);
+  }
+  .drp-faq-item:first-child { border-top: 1px solid var(--tira-border); }
+  .drp-faq-item__trigger {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 28px 0; cursor: pointer;
+    background: transparent; border: none;
+    width: 100%; text-align: left; font-family: inherit;
+  }
+  .drp-faq-item__q {
+    font-size: 18px; font-weight: 400; letter-spacing: -.01em;
+    color: var(--tira-black);
+  }
+  .drp-faq-item__icon {
+    width: 20px; height: 20px; flex-shrink: 0;
+    position: relative;
+    transition: transform .4s var(--tira-ease);
+  }
+  .drp-faq-item__icon::before,
+  .drp-faq-item__icon::after {
+    content: '';
+    position: absolute; background: var(--tira-black);
+  }
+  .drp-faq-item__icon::before {
+    width: 20px; height: 1px; top: 50%; left: 0; transform: translateY(-50%);
+  }
+  .drp-faq-item__icon::after {
+    width: 1px; height: 20px; left: 50%; top: 0; transform: translateX(-50%);
+    transition: transform .4s var(--tira-ease), opacity .4s var(--tira-ease);
+  }
+  .drp-faq-item.is-open .drp-faq-item__icon::after {
+    transform: translateX(-50%) scaleY(0); opacity: 0;
+  }
+  .drp-faq-item__answer {
+    overflow: hidden; height: 0;
+    transition: height .45s var(--tira-ease);
+  }
+  .drp-faq-item__answer-inner {
+    padding-bottom: 28px;
+    font-size: 14px; line-height: 1.8; opacity: .7;
+    max-width: 620px;
+  }
+
+  /* ─────────────────────────────────────────────
+     7. NEWSLETTER DROPS
+  ───────────────────────────────────────────── */
+  .drp-newsletter {
+    background: var(--tira-black);
+    color: var(--tira-white);
+    padding: 120px 48px;
+    text-align: center;
+  }
+  .drp-newsletter__label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .22em;
+    opacity: .4; margin-bottom: 24px; display: block;
+  }
+  .drp-newsletter__title {
+    font-size: clamp(32px, 5vw, 60px); font-weight: 400;
+    letter-spacing: -.01em; line-height: 1; margin-bottom: 16px;
+  }
+  .drp-newsletter__sub {
+    font-size: 14px; font-style: italic;
+    opacity: .55; max-width: 480px; margin: 0 auto 56px;
+    line-height: 1.6;
+  }
+  .drp-newsletter__form {
+    max-width: 480px; margin: 0 auto 24px;
+    border-bottom: 1px solid rgba(255,255,255,.25);
+    display: flex; gap: 0;
+  }
+  .drp-newsletter__input {
+    flex: 1; background: transparent;
+    border: none; outline: none;
+    font-family: inherit; font-size: 14px;
+    color: var(--tira-white); padding: 14px 0;
+  }
+  .drp-newsletter__input::placeholder { opacity: .35; }
+  .drp-newsletter__btn {
+    background: transparent; border: 1px solid rgba(255,255,255,.4);
+    font-family: inherit; font-size: 11px;
+    text-transform: uppercase; letter-spacing: .14em;
+    color: var(--tira-white); cursor: pointer;
+    padding: 10px 24px; margin: 4px 0;
+    transition: border-color .25s, background .25s;
+  }
+  .drp-newsletter__btn:hover {
+    border-color: var(--tira-white);
+    background: rgba(255,255,255,.06);
+  }
+  .drp-newsletter__gdpr {
+    font-size: 10px; opacity: .3;
+    max-width: 440px; margin: 0 auto;
+    line-height: 1.6;
+  }
+  .drp-newsletter__success {
+    font-size: 14px; font-style: italic;
+    opacity: .7; padding: 20px 0;
+  }
+
+  /* ─────────────────────────────────────────────
+     REVEAL ANIMATIONS
+  ───────────────────────────────────────────── */
+  [data-reveal] {
+    opacity: 0; transform: translateY(28px);
+    transition: opacity .9s var(--tira-ease), transform .9s var(--tira-ease);
+  }
+  [data-reveal].is-visible {
+    opacity: 1; transform: none;
+  }
+  [data-words] span {
+    display: inline-block; opacity: 0; transform: translateY(10px);
+    transition: opacity .5s var(--tira-ease) calc(var(--i) * 55ms),
+                transform  .5s var(--tira-ease) calc(var(--i) * 55ms);
+  }
+  [data-words].is-visible span {
+    opacity: 1; transform: none;
+  }
+
+  /* ─────────────────────────────────────────────
+     RESPONSIVE
+  ───────────────────────────────────────────── */
+  @media (max-width: 1023px) {
+    .drp-how__steps { grid-template-columns: repeat(2, 1fr); gap: 48px 0; }
+    .drp-how__steps::before { display: none; }
+    .drp-active__grid { grid-template-columns: 1fr; }
+    .drp-active__img-col { min-height: 320px; }
+    .drp-planning__grid { grid-template-columns: 1fr; }
+    .drp-past__grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 767px) {
+    .drp-hero { margin-top: var(--content-top); }
+    .drp-hero__content { left: 24px; right: 24px; bottom: 40px; }
+    .drp-how { padding: 72px 24px; }
+    .drp-how__steps { grid-template-columns: 1fr; gap: 40px; }
+    .drp-active { padding: 56px 24px; }
+    .drp-active__form-col { padding: 36px 24px; }
+    .drp-countdown { gap: 14px; }
+    .drp-countdown__value { font-size: 28px; }
+    .drp-planning { padding: 72px 24px; }
+    .drp-past { padding: 72px 24px; }
+    .drp-faq { padding: 72px 24px; }
+    .drp-newsletter { padding: 80px 24px; }
+  }
+</style>
+
+<div class="drp-page">
+
+  {%- comment -%} ── 1. HERO ── {%- endcomment -%}
+  <section class="drp-hero" aria-label="Drops & Éditions Limitées">
+    <img
+      class="drp-hero__img"
+      src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/28092025-DSCF1828.jpg"
+      alt=""
+      loading="eager"
+      fetchpriority="high"
+      width="1920" height="1280"
+    >
+    <div class="drp-hero__overlay" aria-hidden="true"></div>
+    <div class="drp-hero__content">
+      <span class="drp-hero__label" data-reveal>
+        Prochain drop :&nbsp;{{ section.settings.drop_next_label | default: 'Automne 2025' }}
+      </span>
+      <h1 class="drp-hero__title" data-words>Drops &amp; Éditions Limitées</h1>
+      <p class="drp-hero__sub" data-reveal>
+        Chaque pièce est façonnée après la clôture des inscriptions.
+        Jamais de stock.
+      </p>
+    </div>
+  </section>
+
+  {%- comment -%} ── 2. COMMENT ÇA MARCHE ── {%- endcomment -%}
+  <section class="drp-how" aria-label="Comment fonctionne un drop TIRABOSCHI">
+    <div class="drp-how__header">
+      <span class="drp-how__label" data-reveal>Le principe</span>
+      <h2 class="drp-how__title" data-words>Comment fonctionne un drop TIRABOSCHI</h2>
+    </div>
+    <div class="drp-how__steps">
+      <div class="drp-step" data-reveal>
+        <div class="drp-step__num">01</div>
+        <h3 class="drp-step__title">Inscription</h3>
+        <p class="drp-step__desc">
+          Réservez votre pièce avant la date de clôture.
+          Votre engagement suffit — paiement à la livraison.
+        </p>
+      </div>
+      <div class="drp-step" data-reveal style="--delay:.1s">
+        <div class="drp-step__num">02</div>
+        <h3 class="drp-step__title">Clôture</h3>
+        <p class="drp-step__desc">
+          À la date annoncée, les inscriptions ferment.
+          Chaque artisan connaît son nombre de pièces.
+        </p>
+      </div>
+      <div class="drp-step" data-reveal style="--delay:.2s">
+        <div class="drp-step__num">03</div>
+        <h3 class="drp-step__title">Façonnage</h3>
+        <p class="drp-step__desc">
+          Un artisan. Une pièce. 48 à 72 heures de travail.
+          Livrée dans les délais annoncés.
+        </p>
+      </div>
+      <div class="drp-step" data-reveal style="--delay:.3s">
+        <div class="drp-step__num">04</div>
+        <h3 class="drp-step__title">Livraison</h3>
+        <p class="drp-step__desc">
+          Votre pièce arrive emballée, avec son certificat
+          d'authenticité et sa carte artisan.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} ── 3. DROP EN COURS OU À VENIR ── {%- endcomment -%}
+  <section class="drp-active" aria-label="Drop en cours">
+    {%- if section.settings.drop_active -%}
+
+      {%- assign pieces_total = section.settings.drop_pieces_total | plus: 0 -%}
+      {%- assign pieces_left  = section.settings.drop_pieces_left  | plus: 0 -%}
+      {%- assign pieces_reserved = pieces_total | minus: pieces_left -%}
+      {%- assign fill_pct = pieces_reserved | times: 100 | divided_by: pieces_total -%}
+
+      <div class="drp-active__grid">
+        <div class="drp-active__img-col" aria-hidden="true">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0919.jpg"
+            alt=""
+            loading="lazy"
+            width="960" height="1280"
+          >
+        </div>
+        <div class="drp-active__form-col">
+          <span class="drp-active__badge">Inscriptions ouvertes</span>
+          <h2 class="drp-active__drop-name">Drop {{ section.settings.drop_name | default: 'FW25' }}</h2>
+          <p class="drp-active__models">Victoire · Colette · Colette Mini</p>
+
+          <div
+            class="drp-countdown"
+            data-countdown-end="{{ section.settings.drop_end_date | default: '2025-08-30T23:59:00' }}"
+            aria-label="Temps restant avant clôture"
+          >
+            <div class="drp-countdown__unit">
+              <span class="drp-countdown__value" data-cd-days>--</span>
+              <span class="drp-countdown__label">Jours</span>
+            </div>
+            <span class="drp-countdown__sep" aria-hidden="true">·</span>
+            <div class="drp-countdown__unit">
+              <span class="drp-countdown__value" data-cd-hours>--</span>
+              <span class="drp-countdown__label">Heures</span>
+            </div>
+            <span class="drp-countdown__sep" aria-hidden="true">·</span>
+            <div class="drp-countdown__unit">
+              <span class="drp-countdown__value" data-cd-mins>--</span>
+              <span class="drp-countdown__label">Minutes</span>
+            </div>
+          </div>
+
+          <div class="drp-scarcity">
+            <p class="drp-scarcity__text">
+              <strong>{{ pieces_reserved }}</strong> réservées
+              &nbsp;·&nbsp;
+              <strong>{{ pieces_left }}</strong> disponibles sur {{ pieces_total }}
+            </p>
+            <div class="drp-scarcity__bar" aria-hidden="true">
+              <div class="drp-scarcity__fill" style="width: {{ fill_pct }}%"></div>
+            </div>
+          </div>
+
+          {%- if form.posted_successfully? -%}
+            <p class="drp-form-success" role="status">
+              Votre réservation est enregistrée — nous vous contacterons avant la clôture.
+            </p>
+          {%- else -%}
+            <p class="drp-form-title">Réserver ma pièce</p>
+            {%- form 'contact', id: 'drp-reserve-form' -%}
+              <input type="hidden" name="contact[drop]" value="{{ section.settings.drop_name | default: 'FW25' }}">
+              <input type="hidden" name="contact[type]" value="drop-reservation">
+              <div class="drp-form">
+                <div class="drp-field">
+                  <label for="drp-prenom">Prénom *</label>
+                  <input
+                    type="text" id="drp-prenom"
+                    name="contact[prenom]"
+                    autocomplete="given-name" required
+                    placeholder="Votre prénom"
+                  >
+                </div>
+                <div class="drp-field">
+                  <label for="drp-email">Email *</label>
+                  <input
+                    type="email" id="drp-email"
+                    name="contact[email]"
+                    autocomplete="email" required
+                    placeholder="votre@email.com"
+                  >
+                </div>
+                <div class="drp-field">
+                  <label for="drp-modele">Modèle souhaité *</label>
+                  <select id="drp-modele" name="contact[modele]" required>
+                    <option value="">Choisir un modèle</option>
+                    <option>Victoire</option>
+                    <option>Colette</option>
+                    <option>Colette Mini</option>
+                    <option>Rafael</option>
+                    <option>Jane</option>
+                  </select>
+                </div>
+                <button type="submit" class="drp-btn-reserve">
+                  Réserver ma pièce &rarr;
+                </button>
+              </div>
+            {%- endform -%}
+          {%- endif -%}
+        </div>
+      </div>
+
+    {%- else -%}
+
+      <div class="drp-waitlist">
+        <h2 class="drp-waitlist__title">Aucun drop en cours</h2>
+        <p class="drp-waitlist__sub">
+          Le prochain drop est en préparation.
+          Inscrivez-vous pour être la première informée à la date d'ouverture.
+        </p>
+        {%- if form.posted_successfully? -%}
+          <p class="drp-newsletter__success" role="status">
+            Votre inscription est confirmée — vous serez alertée en avant-première.
+          </p>
+        {%- else -%}
+          {%- form 'contact', id: 'drp-waitlist-form' -%}
+            <input type="hidden" name="contact[type]" value="drop-waitlist">
+            <div class="drp-waitlist__form">
+              <input
+                class="drp-waitlist__input"
+                type="email"
+                name="contact[email]"
+                placeholder="votre@email.com"
+                autocomplete="email" required
+              >
+              <button type="submit" class="drp-waitlist__submit">
+                Me prévenir &rarr;
+              </button>
+            </div>
+          {%- endform -%}
+        {%- endif -%}
+      </div>
+
+    {%- endif -%}
+  </section>
+
+  {%- comment -%} ── 4. PLANNING DES PROCHAINS DROPS ── {%- endcomment -%}
+  {%- if section.blocks.size > 0 -%}
+  <section class="drp-planning" aria-label="Planning des prochains drops">
+    <div class="drp-planning__header">
+      <span class="drp-planning__label" data-reveal>Agenda</span>
+      <h2 class="drp-planning__title" data-words>Le planning</h2>
+    </div>
+    <div class="drp-planning__grid">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'drop_planning' -%}
+          <div class="drp-plan-card" data-reveal {{ block.shopify_attributes }}>
+            <p class="drp-plan-card__season">{{ block.settings.season_label | default: 'SS26' }}</p>
+            <h3 class="drp-plan-card__date">{{ block.settings.date_label | default: 'Printemps 2026' }}</h3>
+            <p class="drp-plan-card__models">{{ block.settings.models_label | default: 'Victoire · Colette' }}</p>
+            <p class="drp-plan-card__pieces">{{ block.settings.pieces_label | default: '10' }} pièces par modèle</p>
+            {%- if block.settings.status == 'open' -%}
+              <span class="drp-plan-card__badge drp-plan-card__badge--open">Inscriptions ouvertes</span>
+            {%- else -%}
+              <span class="drp-plan-card__badge drp-plan-card__badge--coming">À venir</span>
+            {%- endif -%}
+            <div class="drp-plan-card__form">
+              {%- form 'contact', id: 'drp-plan-form-{{ block.id }}' -%}
+                <input type="hidden" name="contact[type]" value="drop-notify">
+                <input type="hidden" name="contact[drop]" value="{{ block.settings.season_label }}">
+                <input
+                  class="drp-plan-card__input"
+                  type="email"
+                  name="contact[email]"
+                  placeholder="votre@email.com"
+                  autocomplete="email" required
+                >
+                <button type="submit" class="drp-plan-card__cta">Me prévenir &rarr;</button>
+              {%- endform -%}
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </section>
+  {%- endif -%}
+
+  {%- comment -%} ── 5. DROPS PASSÉS ── {%- endcomment -%}
+  <section class="drp-past" aria-label="Drops précédents">
+    <div class="drp-past__header">
+      <span class="drp-past__label" data-reveal>Archives</span>
+      <h2 class="drp-past__title" data-words>Les drops précédents</h2>
+    </div>
+    <div class="drp-past__grid">
+      <div class="drp-past-row" data-reveal>
+        <span class="drp-past-row__name">Drop FW24</span>
+        <div class="drp-past-row__meta">
+          <span class="drp-past-row__status">Complet · Livré</span>
+          <span class="drp-past-row__date">Automne 2024</span>
+        </div>
+      </div>
+      <div class="drp-past-row" data-reveal>
+        <span class="drp-past-row__name">Drop SS25</span>
+        <div class="drp-past-row__meta">
+          <span class="drp-past-row__status">Complet · Livré</span>
+          <span class="drp-past-row__date">Printemps 2025</span>
+        </div>
+      </div>
+      <div class="drp-past-row" data-reveal>
+        <span class="drp-past-row__name">Drop FW25</span>
+        <div class="drp-past-row__meta">
+          <span class="drp-past-row__status">Complet · Livré</span>
+          <span class="drp-past-row__date">Automne 2025</span>
+        </div>
+      </div>
+      <div class="drp-past-row" data-reveal>
+        <span class="drp-past-row__name">Édition Noël 2024</span>
+        <div class="drp-past-row__meta">
+          <span class="drp-past-row__status">Complet · Livré</span>
+          <span class="drp-past-row__date">Décembre 2024</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} ── 6. FAQ ── {%- endcomment -%}
+  <section class="drp-faq" aria-label="Questions fréquentes sur les drops">
+    <div class="drp-faq__header">
+      <span class="drp-faq__label" data-reveal>Questions</span>
+      <h2 class="drp-faq__title" data-words>Ce qu'on nous demande souvent</h2>
+    </div>
+    <div class="drp-faq__list" role="list">
+
+      <div class="drp-faq-item" data-reveal>
+        <button
+          class="drp-faq-item__trigger"
+          aria-expanded="false"
+          aria-controls="drp-faq-a1"
+        >
+          <span class="drp-faq-item__q">Dois-je payer maintenant ?</span>
+          <span class="drp-faq-item__icon" aria-hidden="true"></span>
+        </button>
+        <div class="drp-faq-item__answer" id="drp-faq-a1" role="region">
+          <div class="drp-faq-item__answer-inner">
+            Non. Votre inscription ne déclenche aucun paiement immédiat.
+            Le règlement n'intervient qu'à la livraison, une fois votre pièce façonnée et expédiée.
+            Vous pouvez annuler gratuitement avant la clôture des inscriptions, sans aucune justification requise.
+          </div>
+        </div>
+      </div>
+
+      <div class="drp-faq-item" data-reveal>
+        <button
+          class="drp-faq-item__trigger"
+          aria-expanded="false"
+          aria-controls="drp-faq-a2"
+        >
+          <span class="drp-faq-item__q">Puis-je annuler mon inscription ?</span>
+          <span class="drp-faq-item__icon" aria-hidden="true"></span>
+        </button>
+        <div class="drp-faq-item__answer" id="drp-faq-a2" role="region">
+          <div class="drp-faq-item__answer-inner">
+            Oui, librement, jusqu'à la date de clôture annoncée — sans frais, sans question.
+            Passé ce délai, la fabrication est engagée : votre artisan a commencé votre pièce.
+            Dans ce cas, nous vous contacterons directement pour trouver la meilleure solution.
+          </div>
+        </div>
+      </div>
+
+      <div class="drp-faq-item" data-reveal>
+        <button
+          class="drp-faq-item__trigger"
+          aria-expanded="false"
+          aria-controls="drp-faq-a3"
+        >
+          <span class="drp-faq-item__q">Pourquoi un délai de livraison ?</span>
+          <span class="drp-faq-item__icon" aria-hidden="true"></span>
+        </button>
+        <div class="drp-faq-item__answer" id="drp-faq-a3" role="region">
+          <div class="drp-faq-item__answer-inner">
+            Parce qu'un seul artisan façonne votre sac, de A à Z, en 48 à 72 heures de travail.
+            Nous ne fabriquons pas à l'avance. Votre pièce n'existe pas encore au moment de votre inscription.
+            Ce délai n'est pas une contrainte logistique — c'est la définition même de l'artisanat.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  {%- comment -%} ── 7. NEWSLETTER DROPS ── {%- endcomment -%}
+  <section class="drp-newsletter" aria-label="Ne manquer aucun drop">
+    <span class="drp-newsletter__label" data-reveal>La liste</span>
+    <h2 class="drp-newsletter__title" data-words>Ne manquer aucun drop</h2>
+    <p class="drp-newsletter__sub" data-reveal>
+      Les drops TIRABOSCHI sont annoncés en avant-première aux inscrits.
+      Quelques heures d'avance. Pas de bruit. Pas de spam.
+    </p>
+
+    {%- if form.posted_successfully? -%}
+      <p class="drp-newsletter__success" role="status" data-reveal>
+        Vous êtes sur la liste — la prochaine annonce vous sera réservée.
+      </p>
+    {%- else -%}
+      {%- form 'contact', id: 'drp-newsletter-form' -%}
+        <input type="hidden" name="contact[type]" value="newsletter-drops">
+        <div class="drp-newsletter__form">
+          <input
+            class="drp-newsletter__input"
+            type="email"
+            name="contact[email]"
+            placeholder="votre@email.com"
+            autocomplete="email" required
+          >
+          <button type="submit" class="drp-newsletter__btn">
+            Rejoindre la liste &rarr;
+          </button>
+        </div>
+      {%- endform -%}
+    {%- endif -%}
+
+    <p class="drp-newsletter__gdpr" data-reveal>
+      En vous inscrivant, vous acceptez de recevoir les communications de TIRABOSCHI Paris.
+      Désinscription possible à tout moment. Aucune donnée communiquée à des tiers.
+      Conformément au RGPD et à la loi Informatique &amp; Libertés.
+    </p>
+  </section>
+
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  /* ── Reveal ── */
+  var revealEls = document.querySelectorAll('[data-reveal]');
+  var wordsEls  = document.querySelectorAll('[data-words]');
+
+  wordsEls.forEach(function(el) {
+    el.innerHTML = el.textContent.split(' ')
+      .map(function(w, i) { return '<span style="--i:' + i + '">' + w + '</span>'; })
+      .join(' ');
+  });
+
+  var allReveal = Array.from(revealEls).concat(Array.from(wordsEls));
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('is-visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    allReveal.forEach(function(el) { io.observe(el); });
+  } else {
+    allReveal.forEach(function(el) { el.classList.add('is-visible'); });
+  }
+
+  /* ── Countdown ── */
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  document.querySelectorAll('[data-countdown-end]').forEach(function(el) {
+    var endStr = el.getAttribute('data-countdown-end');
+    if (!endStr) return;
+    var endDate = new Date(endStr).getTime();
+    var daysEl  = el.querySelector('[data-cd-days]');
+    var hrsEl   = el.querySelector('[data-cd-hours]');
+    var minsEl  = el.querySelector('[data-cd-mins]');
+
+    function tick() {
+      var now  = Date.now();
+      var diff = endDate - now;
+      if (diff <= 0) {
+        if (daysEl)  daysEl.textContent  = '00';
+        if (hrsEl)   hrsEl.textContent   = '00';
+        if (minsEl)  minsEl.textContent  = '00';
+        el.setAttribute('aria-label', 'Inscriptions closes');
+        return;
+      }
+      var d = Math.floor(diff / 86400000);
+      var h = Math.floor((diff % 86400000) / 3600000);
+      var m = Math.floor((diff % 3600000)  / 60000);
+      if (daysEl)  daysEl.textContent  = pad(d);
+      if (hrsEl)   hrsEl.textContent   = pad(h);
+      if (minsEl)  minsEl.textContent  = pad(m);
+      el.setAttribute('aria-label', 'Clôture dans ' + d + ' jours ' + h + 'h ' + m + 'min');
+      setTimeout(tick, 30000);
+    }
+    tick();
+  });
+
+  /* ── FAQ accordion ── */
+  document.querySelectorAll('.drp-faq-item__trigger').forEach(function(trigger) {
+    trigger.addEventListener('click', function() {
+      var item   = trigger.closest('.drp-faq-item');
+      var answer = item.querySelector('.drp-faq-item__answer');
+      var inner  = answer.querySelector('.drp-faq-item__answer-inner');
+      var isOpen = item.classList.contains('is-open');
+
+      /* Close all */
+      document.querySelectorAll('.drp-faq-item.is-open').forEach(function(openItem) {
+        openItem.classList.remove('is-open');
+        openItem.querySelector('.drp-faq-item__trigger').setAttribute('aria-expanded', 'false');
+        openItem.querySelector('.drp-faq-item__answer').style.height = '0';
+      });
+
+      /* Open clicked (if it was closed) */
+      if (!isOpen) {
+        item.classList.add('is-open');
+        trigger.setAttribute('aria-expanded', 'true');
+        answer.style.height = inner.offsetHeight + 'px';
+      }
+    });
+  });
+
+  /* ── Scarcity fill bar animate on scroll ── */
+  var fills = document.querySelectorAll('.drp-scarcity__fill');
+  if ('IntersectionObserver' in window && fills.length) {
+    var fillIO = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) {
+          /* width already set inline, just trigger a reflow */
+          e.target.style.transition = 'width 1.2s cubic-bezier(0.16,1,0.3,1)';
+          fillIO.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    fills.forEach(function(el) { fillIO.observe(el); });
+  }
+
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Drops & Éditions Limitées",
+  "tag": "section",
+  "class": "tira-section tira-section--drops",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "drop_active",
+      "label": "Drop actif en ce moment",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "drop_next_label",
+      "label": "Label prochain drop (ex: Automne 2025)",
+      "default": "Automne 2025"
+    },
+    {
+      "type": "text",
+      "id": "drop_name",
+      "label": "Nom du drop actif (ex: FW25)",
+      "default": "FW25"
+    },
+    {
+      "type": "text",
+      "id": "drop_end_date",
+      "label": "Date de clôture ISO (ex: 2025-08-30T23:59:00)",
+      "default": "2025-08-30T23:59:00",
+      "info": "Format ISO 8601. Exemple : 2025-08-30T23:59:00"
+    },
+    {
+      "type": "text",
+      "id": "drop_pieces_total",
+      "label": "Nombre total de pièces",
+      "default": "30"
+    },
+    {
+      "type": "text",
+      "id": "drop_pieces_left",
+      "label": "Pièces restantes",
+      "default": "12"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "drop_planning",
+      "name": "Drop planifié",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "text",
+          "id": "season_label",
+          "label": "Saison (ex: SS26)",
+          "default": "SS26"
+        },
+        {
+          "type": "text",
+          "id": "date_label",
+          "label": "Période (ex: Printemps 2026)",
+          "default": "Printemps 2026"
+        },
+        {
+          "type": "text",
+          "id": "models_label",
+          "label": "Modèles concernés",
+          "default": "Victoire · Colette"
+        },
+        {
+          "type": "text",
+          "id": "pieces_label",
+          "label": "Nombre de pièces par modèle",
+          "default": "10"
+        },
+        {
+          "type": "select",
+          "id": "status",
+          "label": "Statut",
+          "options": [
+            { "value": "coming", "label": "À venir" },
+            { "value": "open",   "label": "Inscriptions ouvertes" }
+          ],
+          "default": "coming"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Drops & Éditions Limitées",
+      "blocks": [
+        {
+          "type": "drop_planning",
+          "settings": {
+            "season_label": "SS26",
+            "date_label": "Printemps 2026",
+            "models_label": "Victoire · Colette · Colette Mini",
+            "pieces_label": "10",
+            "status": "coming"
+          }
+        },
+        {
+          "type": "drop_planning",
+          "settings": {
+            "season_label": "FW26",
+            "date_label": "Automne 2026",
+            "models_label": "Rafael · Jane · Olympe",
+            "pieces_label": "8",
+            "status": "coming"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,548 @@
+{% comment %}
+  ═══════════════════════════════════════════════════════════════
+  TIRABOSCHI · Savoir-Faire — Page éditoriale
+  ═══════════════════════════════════════════════════════════════
+  Structure :
+  1. Hero fond --tira-grey + breadcrumb
+  2. Intro citation + stats (48-72h / 1 artisan / 6 techniques)
+  3. Les 6 Techniques — grille 3×2
+  4. La Transmission — 3 sous-sections alternées
+  5. CTA fond noir — lien Sur Mesure
+  Styles : scoped .sf-*
+{% endcomment %}
+
+<style>
+  /* ── Variables locales ── */
+  .sf-page {
+    --tira-black: #0a0a0a;
+    --tira-white: #ffffff;
+    --tira-grey: #f7f5f2;
+    --tira-border: #e8e8e8;
+    --tira-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: 'Playfair Display', Georgia, serif;
+    color: var(--tira-black);
+  }
+
+  /* ── 1. Hero ── */
+  .sf-hero {
+    background: var(--tira-grey);
+    padding: calc(var(--content-top) + 80px) 40px 80px;
+    text-align: center;
+  }
+  .sf-hero__eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin: 0 0 24px;
+    opacity: 0.5;
+  }
+  .sf-hero__title {
+    font-size: 56px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    margin: 0 0 16px;
+    line-height: 1.1;
+  }
+  .sf-hero__sub {
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 0 0 48px;
+    opacity: 0.6;
+  }
+  .sf-hero__scroll {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.3;
+  }
+  .sf-hero__scroll-line {
+    width: 1px;
+    height: 48px;
+    background: currentColor;
+  }
+  .sf-hero__scroll-label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+  }
+  @media (max-width: 768px) {
+    .sf-hero { padding: calc(var(--content-top) + 48px) 24px 48px; }
+    .sf-hero__title { font-size: 36px; }
+  }
+
+  /* ── 2. Intro ── */
+  .sf-intro {
+    padding: 96px 40px;
+    background: var(--tira-white);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .sf-intro__inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .sf-intro__quote {
+    font-size: 28px;
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.4;
+    margin: 0;
+    border-left: 1px solid var(--tira-black);
+    padding-left: 32px;
+  }
+  .sf-intro__body {
+    font-size: 14px;
+    line-height: 1.8;
+    opacity: 0.75;
+    margin: 0 0 40px;
+  }
+  .sf-intro__stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+  .sf-intro__stat-num {
+    font-size: 32px;
+    font-weight: 400;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .sf-intro__stat-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    line-height: 1.4;
+  }
+  @media (max-width: 900px) {
+    .sf-intro__inner { grid-template-columns: 1fr; gap: 40px; }
+    .sf-intro { padding: 64px 24px; }
+  }
+  @media (max-width: 600px) {
+    .sf-intro__stats { grid-template-columns: 1fr 1fr; }
+    .sf-intro__quote { font-size: 22px; }
+  }
+
+  /* ── 3. Les 6 Techniques ── */
+  .sf-techniques {
+    background: var(--tira-grey);
+    padding: 96px 40px;
+  }
+  .sf-techniques__header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+  .sf-techniques__label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    display: block;
+    margin-bottom: 16px;
+  }
+  .sf-techniques__title {
+    font-size: 40px;
+    font-weight: 400;
+    margin: 0;
+  }
+  .sf-techniques__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .sf-tech-card {
+    background: var(--tira-white);
+    padding: 48px 40px;
+    position: relative;
+  }
+  .sf-tech-card__num {
+    font-size: 56px;
+    font-weight: 400;
+    color: var(--tira-border);
+    display: block;
+    line-height: 1;
+    margin-bottom: 24px;
+    font-style: italic;
+  }
+  .sf-tech-card__name {
+    font-size: 18px;
+    font-weight: 400;
+    margin: 0 0 16px;
+  }
+  .sf-tech-card__desc {
+    font-size: 13px;
+    line-height: 1.75;
+    opacity: 0.65;
+    margin: 0;
+  }
+  @media (max-width: 900px) {
+    .sf-techniques { padding: 64px 24px; }
+    .sf-techniques__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .sf-techniques__grid { grid-template-columns: 1fr; }
+    .sf-techniques__title { font-size: 28px; }
+  }
+
+  /* ── 4. La Transmission ── */
+  .sf-transmission__header {
+    text-align: center;
+    padding: 96px 40px 64px;
+    background: var(--tira-white);
+  }
+  .sf-transmission__eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    display: block;
+    margin-bottom: 16px;
+  }
+  .sf-transmission__title {
+    font-size: 40px;
+    font-weight: 400;
+    margin: 0;
+  }
+  .sf-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 560px;
+  }
+  .sf-split--reverse { direction: rtl; }
+  .sf-split--reverse > * { direction: ltr; }
+  .sf-split__img {
+    overflow: hidden;
+    background: var(--tira-grey);
+  }
+  .sf-split__img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .sf-split__text {
+    padding: 64px 56px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+  }
+  .sf-split--dark .sf-split__text {
+    background: var(--tira-black);
+    color: var(--tira-white);
+  }
+  .sf-split--grey .sf-split__text {
+    background: var(--tira-grey);
+  }
+  .sf-split--white .sf-split__text {
+    background: var(--tira-white);
+  }
+  .sf-split__watermark {
+    font-size: 120px;
+    font-weight: 400;
+    font-style: italic;
+    opacity: 0.05;
+    position: absolute;
+    bottom: -20px;
+    right: 32px;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+  .sf-split__eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .sf-split__heading {
+    font-size: 28px;
+    font-weight: 400;
+    margin: 0 0 24px;
+  }
+  .sf-split__body {
+    font-size: 14px;
+    line-height: 1.85;
+    opacity: 0.75;
+    margin: 0;
+  }
+  @media (max-width: 900px) {
+    .sf-split {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+    .sf-split--reverse { direction: ltr; }
+    .sf-split__img { aspect-ratio: 3/2; min-height: 280px; }
+    .sf-split__text { padding: 48px 24px; }
+    .sf-transmission__header { padding: 64px 24px 40px; }
+    .sf-transmission__title { font-size: 28px; }
+  }
+
+  /* ── 5. CTA ── */
+  .sf-cta {
+    background: var(--tira-black);
+    color: var(--tira-white);
+    padding: 96px 40px;
+    text-align: center;
+  }
+  .sf-cta__eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.45;
+    display: block;
+    margin-bottom: 24px;
+  }
+  .sf-cta__title {
+    font-size: 40px;
+    font-weight: 400;
+    margin: 0 0 16px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .sf-cta__sub {
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    opacity: 0.55;
+    margin: 0 0 48px;
+  }
+  .sf-cta__link {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    color: var(--tira-white);
+    transition: opacity 0.3s;
+  }
+  .sf-cta__link:hover { opacity: 0.6; }
+  @media (max-width: 768px) {
+    .sf-cta { padding: 64px 24px; }
+    .sf-cta__title { font-size: 28px; }
+  }
+
+  /* ── Reveal animations ── */
+  [data-tira-reveal] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.9s var(--tira-ease), transform 0.9s var(--tira-ease);
+  }
+  [data-tira-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+</style>
+
+<div class="sf-page" id="MainContent">
+
+  {%- comment -%} ══ 1. HERO ══ {%- endcomment -%}
+  <section class="sf-hero" aria-labelledby="sf-hero-title">
+    <p class="sf-hero__eyebrow" data-tira-reveal>La Maison · Depuis 1904</p>
+    <h1 class="sf-hero__title" id="sf-hero-title" data-tira-reveal>Savoir-Faire</h1>
+    <p class="sf-hero__sub" data-tira-reveal>L'excellence transmise de main en main</p>
+    <div class="sf-hero__scroll" aria-hidden="true" data-tira-reveal>
+      <div class="sf-hero__scroll-line"></div>
+      <span class="sf-hero__scroll-label">Découvrir</span>
+    </div>
+  </section>
+
+  {%- comment -%} ══ 2. INTRO ══ {%- endcomment -%}
+  <section class="sf-intro" aria-label="Philosophie artisanale">
+    <div class="sf-intro__inner">
+      <blockquote class="sf-intro__quote" data-tira-reveal>
+        « Chaque pièce est façonnée par un seul artisan,
+        de la première coupe à la livraison signée. »
+      </blockquote>
+      <div>
+        <p class="sf-intro__body" data-tira-reveal>
+          Depuis 1904, TIRABOSCHI Paris perpétue une tradition maroquinière fondée sur la transmission directe du geste. Nos artisans ne suivent pas une chaîne de production — ils accompagnent chaque pièce de son premier tracé jusqu'à son conditionnement final. Un artisan. Un sac. Soixante-douze heures de travail à la main.
+        </p>
+        <p class="sf-intro__body" data-tira-reveal>
+          C'est ce choix radical — un seul homme ou une seule femme par pièce — qui définit TIRABOSCHI et le distingue des manufactures de série. La responsabilité est entière, la signature authentique.
+        </p>
+        <div class="sf-intro__stats" role="list" aria-label="Chiffres clés">
+          <div data-tira-reveal role="listitem">
+            <span class="sf-intro__stat-num">48–72h</span>
+            <span class="sf-intro__stat-label">Par pièce, à la main</span>
+          </div>
+          <div data-tira-reveal role="listitem">
+            <span class="sf-intro__stat-num">1</span>
+            <span class="sf-intro__stat-label">Artisan par sac, de A à Z</span>
+          </div>
+          <div data-tira-reveal role="listitem">
+            <span class="sf-intro__stat-num">3 400</span>
+            <span class="sf-intro__stat-label">Points sellier par pièce</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} ══ 3. LES 6 TECHNIQUES ══ {%- endcomment -%}
+  <section class="sf-techniques" aria-labelledby="sf-tech-title">
+    <div class="sf-techniques__header">
+      <span class="sf-techniques__label" data-tira-reveal>Expertise</span>
+      <h2 class="sf-techniques__title" id="sf-tech-title" data-tira-reveal>Les 6 Techniques</h2>
+    </div>
+    <div class="sf-techniques__grid">
+      <article class="sf-tech-card" data-tira-reveal>
+        <span class="sf-tech-card__num" aria-hidden="true">01</span>
+        <h3 class="sf-tech-card__name">Couture Sellier</h3>
+        <p class="sf-tech-card__desc">
+          Point sellier à deux aiguilles, fil de lin ciré, 8 à 10 points par centimètre.
+          La couture la plus robuste qui soit — celle des selliers de cour depuis le
+          XVIII<sup>e</sup> siècle. Chaque point est passé à la main, l'un après l'autre.
+        </p>
+      </article>
+      <article class="sf-tech-card" data-tira-reveal>
+        <span class="sf-tech-card__num" aria-hidden="true">02</span>
+        <h3 class="sf-tech-card__name">Coupe &amp; Gabarit</h3>
+        <p class="sf-tech-card__desc">
+          Gabarits en bois centenaires, coupe entièrement à la main, respect absolu du sens
+          du grain. Chaque peau est lue avant d'être taillée — aucune coupe n'est identique.
+          Le tracé, la lame, le geste : tout est à la main.
+        </p>
+      </article>
+      <article class="sf-tech-card" data-tira-reveal>
+        <span class="sf-tech-card__num" aria-hidden="true">03</span>
+        <h3 class="sf-tech-card__name">Teinture &amp; Finitions</h3>
+        <p class="sf-tech-card__desc">
+          Teintures à l'eau naturelles, trois passes successives, séchage de 24 heures entre
+          chaque couche. La couleur pénètre la fibre plutôt que de la recouvrir.
+          Le résultat vieillit, il ne s'écaille pas.
+        </p>
+      </article>
+      <article class="sf-tech-card" data-tira-reveal>
+        <span class="sf-tech-card__num" aria-hidden="true">04</span>
+        <h3 class="sf-tech-card__name">Assemblage</h3>
+        <p class="sf-tech-card__desc">
+          Collage à la colle de peau naturelle, martelage à main levée, pressage à froid.
+          L'assemblage définit la tenue de la pièce pour les décennies à venir.
+          Aucune colle synthétique, aucun raccourci.
+        </p>
+      </article>
+      <article class="sf-tech-card" data-tira-reveal>
+        <span class="sf-tech-card__num" aria-hidden="true">05</span>
+        <h3 class="sf-tech-card__name">Pose des Quincailleries</h3>
+        <p class="sf-tech-card__desc">
+          Fermoirs, passants, anneaux — chaque quincaillerie est sertie à la main, jamais à
+          la machine. La précision au dixième de millimètre, à l'œil et au toucher.
+          Laiton massif, finition satiné, pour l'éternité.
+        </p>
+      </article>
+      <article class="sf-tech-card" data-tira-reveal>
+        <span class="sf-tech-card__num" aria-hidden="true">06</span>
+        <h3 class="sf-tech-card__name">Lustre &amp; Contrôle</h3>
+        <p class="sf-tech-card__desc">
+          Lustrage à la cire naturelle d'abeille, contrôle qualité en 32 points, livraison
+          signée de la main de l'artisan. Chaque pièce est unique — et certifiée telle.
+          Votre sac porte un prénom.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  {%- comment -%} ══ 4. LA TRANSMISSION ══ {%- endcomment -%}
+  <div aria-labelledby="sf-transmission-title">
+    <div class="sf-transmission__header">
+      <span class="sf-transmission__eyebrow" data-tira-reveal>Héritage</span>
+      <h2 class="sf-transmission__title" id="sf-transmission-title" data-tira-reveal>La Transmission</h2>
+    </div>
+
+    {%- comment -%} Sub 1 — L'Apprentissage, fond noir {%- endcomment -%}
+    <div class="sf-split sf-split--dark">
+      <div class="sf-split__img">
+        <img src="{{ 'BOSCHI0154.jpg' | file_url }}"
+             alt="Artisan TIRABOSCHI Paris dans l'atelier, travail du cuir"
+             width="800" height="1067"
+             loading="lazy">
+      </div>
+      <div class="sf-split__text">
+        <span class="sf-split__watermark" aria-hidden="true">3</span>
+        <span class="sf-split__eyebrow" data-tira-reveal>I. Héritage</span>
+        <h3 class="sf-split__heading" data-tira-reveal>L'Apprentissage</h3>
+        <p class="sf-split__body" data-tira-reveal>
+          Trois ans. C'est le temps minimum pour qu'un apprenti TIRABOSCHI maîtrise les gestes
+          fondamentaux. Il apprend aux côtés d'un maître artisan — pas dans un manuel, pas devant
+          un écran. La main guide la main. Les erreurs se voient, se corrigent, se comprennent.
+          Cette transmission lente est notre assurance qualité la plus absolue.
+        </p>
+      </div>
+    </div>
+
+    {%- comment -%} Sub 2 — La Matière, fond gris {%- endcomment -%}
+    <div class="sf-split sf-split--grey sf-split--reverse">
+      <div class="sf-split__img">
+        <img src="{{ 'BOSCHI0919.jpg' | file_url }}"
+             alt="Sélection du cuir pleine fleur — atelier TIRABOSCHI Paris"
+             width="800" height="600"
+             loading="lazy">
+      </div>
+      <div class="sf-split__text">
+        <span class="sf-split__watermark" aria-hidden="true">2%</span>
+        <span class="sf-split__eyebrow" data-tira-reveal>II. Matière Première</span>
+        <h3 class="sf-split__heading" data-tira-reveal>La Matière</h3>
+        <p class="sf-split__body" data-tira-reveal>
+          Nous sélectionnons nos peaux directement en mégisserie, à quelques heures de Paris.
+          Cuir pleine fleur uniquement — la surface naturelle de l'animal, non corrigée, non poncée.
+          Seulement 2% des peaux inspectées satisfont nos critères. La texture, la régularité du grain,
+          l'absence de cicatrices : chaque peau est une conversation entre l'éleveur, le tanneur, et
+          notre artisan.
+        </p>
+      </div>
+    </div>
+
+    {%- comment -%} Sub 3 — La Pièce, fond blanc {%- endcomment -%}
+    <div class="sf-split sf-split--white">
+      <div class="sf-split__img">
+        <img src="{{ 'BOSCHI0103.jpg' | file_url }}"
+             alt="Sac Victoire TIRABOSCHI Paris — pièce finie, vue face"
+             width="800" height="1067"
+             loading="lazy">
+      </div>
+      <div class="sf-split__text">
+        <span class="sf-split__watermark" aria-hidden="true">01</span>
+        <span class="sf-split__eyebrow" data-tira-reveal>III. La Création</span>
+        <h3 class="sf-split__heading" data-tira-reveal>La Pièce</h3>
+        <p class="sf-split__body" data-tira-reveal>
+          Au terme de soixante-douze heures de travail, la pièce est achevée. L'artisan y glisse
+          un certificat numéroté et y appose sa signature. Pas un numéro de série — un prénom, une
+          date, une promesse. Vous ne portez pas un sac : vous portez le travail d'une personne,
+          que vous pouvez nommer.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} ══ 5. CTA ══ {%- endcomment -%}
+  <section class="sf-cta" aria-label="Appel à l'action">
+    <span class="sf-cta__eyebrow" data-tira-reveal>La Maison</span>
+    <h2 class="sf-cta__title" data-tira-reveal>Une pièce façonnée pour vous</h2>
+    <p class="sf-cta__sub" data-tira-reveal>Sur mesure, dans votre cuir, à votre rythme.</p>
+    <a href="/pages/sur-mesure" class="sf-cta__link" data-tira-reveal>
+      Découvrir le Sur Mesure →
+    </a>
+  </section>
+
+</div>
+
+{% schema %}
+{
+  "name": "Savoir-Faire TIRABOSCHI",
+  "tag": "main",
+  "class": "section",
+  "settings": [],
+  "presets": [{ "name": "Savoir-Faire TIRABOSCHI" }]
+}
+{% endschema %}

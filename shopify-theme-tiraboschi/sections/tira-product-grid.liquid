@@ -1,0 +1,131 @@
+{% comment %}
+  TIRABOSCHI — Grille produits 4 cols desktop / 2 mobile
+  Référence : tiraboschi-homepage-prototype.html L1199-1387
+{% endcomment %}
+
+{%- assign coll = collections[section.settings.collection] -%}
+{%- if coll == blank or coll.products_count == 0 -%}
+  {%- assign coll = collections.all -%}
+{%- endif -%}
+
+<section aria-labelledby="coll-title-{{ section.id }}" class="tira-products">
+  {%- if section.settings.title != blank or section.settings.view_all_label != blank -%}
+    <div class="sec-head" data-tira-reveal>
+      {%- if section.settings.title != blank -%}
+        <h2 id="coll-title-{{ section.id }}">{{ section.settings.title }}</h2>
+      {%- endif -%}
+      {%- if section.settings.view_all_label != blank -%}
+        <a href="{{ section.settings.view_all_url | default: coll.url | default: '#' }}">{{ section.settings.view_all_label }}</a>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="grid">
+    {%- for product in coll.products limit: section.settings.max_products -%}
+      {%- assign img_main = product.featured_image -%}
+      {%- assign img_alt = product.images[1] | default: product.featured_image -%}
+
+      <article class="card">
+        <a href="{{ product.url }}" class="card__img" aria-label="{{ product.title | escape }}">
+          {%- if img_main -%}
+            <img src="{{ img_main | image_url: width: 600 }}"
+                 srcset="{{ img_main | image_url: width: 400 }} 400w,
+                         {{ img_main | image_url: width: 600 }} 600w,
+                         {{ img_main | image_url: width: 900 }} 900w"
+                 sizes="(max-width: 768px) 50vw, 25vw"
+                 alt="{{ img_main.alt | default: product.title | escape }}"
+                 width="600" height="800"
+                 loading="{% if forloop.index <= 4 %}eager{% else %}lazy{% endif %}">
+          {%- endif -%}
+          {%- if img_alt and img_alt != img_main -%}
+            <img src="{{ img_alt | image_url: width: 600 }}"
+                 srcset="{{ img_alt | image_url: width: 400 }} 400w,
+                         {{ img_alt | image_url: width: 600 }} 600w,
+                         {{ img_alt | image_url: width: 900 }} 900w"
+                 sizes="(max-width: 768px) 50vw, 25vw"
+                 alt=""
+                 class="img-alt"
+                 aria-hidden="true"
+                 width="600" height="800"
+                 loading="lazy">
+          {%- endif -%}
+
+          <div class="card__actions">
+            <button type="button" class="card__wish" aria-label="Ajouter {{ product.title | escape }} aux favoris" data-product-handle="{{ product.handle }}">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+            </button>
+            {%- if product.available -%}
+              <form method="post" action="/cart/add" class="card__atc-form">
+                <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                <button type="submit" class="card__atc">Ajouter au panier</button>
+              </form>
+            {%- else -%}
+              <span class="card__atc card__atc--sold">Rupture</span>
+            {%- endif -%}
+          </div>
+        </a>
+
+        <div class="card__info">
+          {%- if product.type != blank -%}
+            <p class="card__type">{{ product.type }}</p>
+          {%- endif -%}
+          <p class="card__name"><a href="{{ product.url }}">{{ product.title }}</a></p>
+          <p class="card__price">{{ product.price | money }}</p>
+          {%- if product.metafields.custom.composition != blank -%}
+            <p class="card__meta">{{ product.metafields.custom.composition }}</p>
+          {%- endif -%}
+        </div>
+      </article>
+    {%- else -%}
+      <p class="tira-empty">{{ 'sections.collection_template.empty' | t | default: 'Aucun produit pour le moment.' }}</p>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Grille produits",
+  "tag": "section",
+  "class": "tira-section tira-section--products",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre section",
+      "default": "Collection FW25"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "max_products",
+      "label": "Nombre de produits",
+      "min": 4,
+      "max": 12,
+      "step": 2,
+      "default": 8
+    },
+    {
+      "type": "text",
+      "id": "view_all_label",
+      "label": "Libellé voir tout",
+      "default": "Voir toutes les pièces"
+    },
+    {
+      "type": "url",
+      "id": "view_all_url",
+      "label": "URL voir tout"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Grille produits TIRABOSCHI"
+    }
+  ]
+}
+{% endschema %}

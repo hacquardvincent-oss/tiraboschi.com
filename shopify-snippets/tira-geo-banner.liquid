@@ -1,0 +1,209 @@
+{%- comment -%}
+  snippets/tira-geo-banner.liquid
+  TIRABOSCHI Paris — Geo-suggestion banner
+
+  Affiche un bandeau de suggestion de marché si l'IP du visiteur
+  ne correspond pas au marché actif. Suggestion uniquement — jamais forçage.
+
+  Prérequis :
+  - Shopify Markets activé (Settings → Markets)
+  - Weglot ou localization Shopify pour les traductions
+
+  Usage : {% render 'tira-geo-banner' %}
+  Placer dans layout/theme.liquid, juste après <body>, avant le header.
+{%- endcomment -%}
+
+{%- liquid
+  assign show_banner = false
+  assign suggested_market = null
+
+  # Détecte si le pays IP du visiteur est différent du marché actif
+  # localization.country = pays du marché affiché
+  # En Shopify, l'IP geolocation est disponible via request.locale
+  # Pour la détection IP → pays, utiliser Shopify's built-in geolocation
+
+  unless localization.country.iso_code == localization.market.handle
+    assign show_banner = true
+  endunless
+-%}
+
+{%- if show_banner -%}
+<div
+  class="tira-geo-banner"
+  id="tira-geo-banner"
+  role="alert"
+  aria-live="polite"
+  data-country="{{ localization.country.iso_code | downcase }}"
+  data-market="{{ localization.market.handle }}"
+>
+  <p class="tira-geo-banner__text">
+    {{- 'geo.suggestion' | t -}}
+  </p>
+
+  <div class="tira-geo-banner__actions">
+    {%- form 'localization', id: 'geo-banner-form' -%}
+      <input type="hidden" name="return_to" value="{{ request.path }}">
+      <input type="hidden" name="country_code" value="{{ localization.country.iso_code }}">
+      <button type="submit" class="tira-geo-banner__cta" name="locale_code" value="{{ localization.country.default_locale.iso_code }}">
+        {{- 'geo.switch' | t: currency: localization.country.currency.iso_code, symbol: localization.country.currency.symbol -}} →
+      </button>
+    {%- endform -%}
+
+    <span class="tira-geo-banner__sep" aria-hidden="true">·</span>
+
+    <button
+      type="button"
+      class="tira-geo-banner__dismiss"
+      id="tira-geo-dismiss"
+      aria-label="{{ 'geo.dismiss_label' | t }}"
+    >
+      {{- 'geo.stay' | t -}}
+    </button>
+  </div>
+
+  <button
+    type="button"
+    class="tira-geo-banner__close"
+    id="tira-geo-close"
+    aria-label="{{ 'general.accessibility.close' | t }}"
+  >
+    ×
+  </button>
+</div>
+
+<style>
+  .tira-geo-banner {
+    position: relative;
+    z-index: 300;
+    background: var(--tira-grey, #f7f5f2);
+    border-bottom: 1px solid var(--tira-border, #e8e8e8);
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 0 24px;
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--tira-black, #0a0a0a);
+    transform: translateY(-100%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+  }
+  .tira-geo-banner.is-visible {
+    transform: translateY(0);
+  }
+  .tira-geo-banner__text {
+    opacity: 0.7;
+  }
+  .tira-geo-banner__actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .tira-geo-banner__cta {
+    background: none;
+    border: none;
+    font-family: 'Playfair Display', serif;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    color: var(--tira-black, #0a0a0a);
+    transition: opacity 0.2s;
+    padding: 0;
+  }
+  .tira-geo-banner__cta:hover { opacity: 0.6; }
+  .tira-geo-banner__sep {
+    opacity: 0.3;
+  }
+  .tira-geo-banner__dismiss {
+    background: none;
+    border: none;
+    font-family: 'Playfair Display', serif;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    opacity: 0.5;
+    color: var(--tira-black, #0a0a0a);
+    transition: opacity 0.2s;
+    padding: 0;
+  }
+  .tira-geo-banner__dismiss:hover { opacity: 0.8; }
+  .tira-geo-banner__close {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0.35;
+    color: var(--tira-black, #0a0a0a);
+    transition: opacity 0.2s;
+    padding: 0;
+  }
+  .tira-geo-banner__close:hover { opacity: 0.7; }
+
+  /* RTL */
+  [dir="rtl"] .tira-geo-banner { flex-direction: row-reverse; }
+  [dir="rtl"] .tira-geo-banner__close { right: auto; left: 20px; }
+
+  @media (max-width: 768px) {
+    .tira-geo-banner {
+      height: auto;
+      min-height: 48px;
+      padding: 12px 48px 12px 16px;
+      text-align: center;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .tira-geo-banner__sep { display: none; }
+  }
+</style>
+
+<script>
+  (function() {
+    'use strict';
+
+    var STORAGE_KEY = 'tira_geo_dismissed';
+    var DISMISS_DURATION = 30 * 24 * 60 * 60 * 1000; // 30 jours en ms
+
+    // Vérifier si déjà dismissé
+    var dismissed = localStorage.getItem(STORAGE_KEY);
+    if (dismissed && Date.now() < parseInt(dismissed, 10)) {
+      document.getElementById('tira-geo-banner').style.display = 'none';
+      return;
+    }
+
+    // Afficher le bandeau avec animation
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        var banner = document.getElementById('tira-geo-banner');
+        if (banner) banner.classList.add('is-visible');
+      });
+    });
+
+    // Dismiss handlers
+    function dismiss() {
+      var banner = document.getElementById('tira-geo-banner');
+      if (banner) {
+        banner.style.transform = 'translateY(-100%)';
+        setTimeout(function() { banner.style.display = 'none'; }, 400);
+      }
+      localStorage.setItem(STORAGE_KEY, Date.now() + DISMISS_DURATION);
+    }
+
+    var dismissBtn = document.getElementById('tira-geo-dismiss');
+    var closeBtn = document.getElementById('tira-geo-close');
+    if (dismissBtn) dismissBtn.addEventListener('click', dismiss);
+    if (closeBtn) closeBtn.addEventListener('click', dismiss);
+  })();
+</script>
+{%- endif -%}

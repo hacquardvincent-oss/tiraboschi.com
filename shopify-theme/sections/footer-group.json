@@ -1,0 +1,190 @@
+{
+  "type": "footer",
+  "name": "Footer",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "divider_top": {
+          "type": "_divider",
+          "settings": {
+            "thickness": 1,
+            "corner_radius": "square",
+            "width_percent": 100,
+            "padding-block-start": 0,
+            "padding-block-end": 0
+          },
+          "blocks": {}
+        },
+        "main_row": {
+          "type": "group",
+          "name": "Main row",
+          "settings": {
+            "content_direction": "row",
+            "vertical_on_mobile": true,
+            "horizontal_alignment": "space-between",
+            "vertical_alignment": "flex-start",
+            "gap": 48,
+            "width": "fill",
+            "width_mobile": "fill",
+            "height": "fit",
+            "inherit_color_scheme": true,
+            "padding-block-start": 60,
+            "padding-block-end": 60
+          },
+          "blocks": {
+            "newsletter_col": {
+              "type": "group",
+              "name": "Newsletter",
+              "settings": {
+                "content_direction": "column",
+                "horizontal_alignment": "flex-start",
+                "gap": 16,
+                "width": "custom",
+                "custom_width": 35,
+                "width_mobile": "fill",
+                "height": "fit",
+                "inherit_color_scheme": true,
+                "padding-block-start": 0,
+                "padding-block-end": 0
+              },
+              "blocks": {
+                "heading": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<h3>Join the Society</h3>",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "padding-block-start": 0,
+                    "padding-block-end": 0
+                  },
+                  "blocks": {}
+                },
+                "email": {
+                  "type": "email-signup",
+                  "settings": {
+                    "width": "fill",
+                    "inherit_color_scheme": true,
+                    "heading": "",
+                    "border_style": "bottom",
+                    "border_width": 1,
+                    "border_radius": 0,
+                    "input_type_preset": "paragraph",
+                    "style_class": "button-unstyled",
+                    "display_type": "arrow",
+                    "label": "Envoyer",
+                    "integrated_button": true,
+                    "button_type_preset": "paragraph",
+                    "padding-block-start": 0,
+                    "padding-block-end": 0
+                  },
+                  "blocks": {}
+                },
+                "rgpd": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>En vous inscrivant, vous acceptez notre politique de confidentialité.</p>",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "padding-block-start": 4,
+                    "padding-block-end": 0
+                  },
+                  "blocks": {}
+                },
+                "instagram": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p><a href='https://www.instagram.com/boschi_paris/' target='_blank' rel='noopener'>@boschi_paris</a></p>",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "padding-block-start": 8,
+                    "padding-block-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": ["heading", "email", "rgpd", "instagram"]
+            },
+            "col_collections": {
+              "type": "menu",
+              "name": "Collections",
+              "settings": {
+                "menu": "footer-collections",
+                "heading": "Collections",
+                "padding-block-start": 0,
+                "padding-block-end": 0
+              },
+              "blocks": {}
+            },
+            "col_maison": {
+              "type": "menu",
+              "name": "La Maison",
+              "settings": {
+                "menu": "footer-maison",
+                "heading": "La Maison",
+                "padding-block-start": 0,
+                "padding-block-end": 0
+              },
+              "blocks": {}
+            },
+            "col_legal": {
+              "type": "menu",
+              "name": "Mentions légales",
+              "settings": {
+                "menu": "footer",
+                "heading": "Mentions légales",
+                "padding-block-start": 0,
+                "padding-block-end": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": ["newsletter_col", "col_collections", "col_maison", "col_legal"]
+        },
+        "footer_utilities": {
+          "type": "footer-utilities",
+          "settings": {
+            "divider_thickness": 1,
+            "padding-block-start": 20,
+            "padding-block-end": 20
+          },
+          "blocks": {
+            "copyright": {
+              "type": "_footer-copyright",
+              "static": true,
+              "settings": {
+                "show_powered_by": false,
+                "font_size": "0.75rem",
+                "case": "uppercase"
+              },
+              "blocks": {}
+            },
+            "policy_list": {
+              "type": "_footer-policy-list",
+              "static": true,
+              "settings": {
+                "font_size": "0.75rem",
+                "case": "uppercase"
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": []
+        }
+      },
+      "block_order": ["divider_top", "main_row", "footer_utilities"],
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "center",
+        "vertical_alignment": "center",
+        "gap": 0,
+        "section_width": "page-width",
+        "color_scheme": "scheme-31f09ca3-1031-4740-a2fb-9e46aea899cb",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    }
+  },
+  "order": ["footer"]
+}

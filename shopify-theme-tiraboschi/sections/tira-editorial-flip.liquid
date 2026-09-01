@@ -1,0 +1,147 @@
+{% comment %}
+  TIRABOSCHI — Section éditoriale 2 colonnes (image + texte, flippable)
+  Référence : tiraboschi-homepage-prototype.html L1389-1407 (standard) + L1523-1540 (flip)
+
+  image_url_fallback : URL CDN texte — utilisée quand aucune image n'est
+  sélectionnée via l'image_picker du thème editor.
+{% endcomment %}
+
+{%- assign editorial_class = 'editorial' -%}
+{%- if section.settings.flip -%}
+  {%- assign editorial_class = 'editorial flip' -%}
+{%- endif -%}
+
+{%- comment -%} Résoudre l'image : picker > fallback url > rien {%- endcomment -%}
+{%- assign has_image = false -%}
+{%- assign img_src   = '' -%}
+{%- assign img_src2x = '' -%}
+{%- if section.settings.image -%}
+  {%- assign has_image = true -%}
+  {%- assign img_src   = section.settings.image | image_url: width: 1200 -%}
+  {%- assign img_src2x = section.settings.image | image_url: width: 900 -%}
+{%- elsif section.settings.image_url_fallback != blank -%}
+  {%- assign has_image = true -%}
+  {%- assign img_src   = section.settings.image_url_fallback -%}
+  {%- assign img_src2x = section.settings.image_url_fallback -%}
+{%- endif -%}
+
+<section class="{{ editorial_class }}" data-tira-reveal aria-labelledby="edit-title-{{ section.id }}">
+  {%- assign ed_link = section.settings.link_url | default: '' -%}
+  {%- if ed_link != blank -%}
+    <a href="{{ ed_link }}" class="editorial__img" aria-label="{{ section.settings.title | escape }}">
+  {%- else -%}
+    <div class="editorial__img">
+  {%- endif -%}
+    {%- if has_image -%}
+      {%- if section.settings.image -%}
+        <img src="{{ img_src }}"
+             srcset="{{ section.settings.image | image_url: width: 600 }} 600w,
+                     {{ section.settings.image | image_url: width: 900 }} 900w,
+                     {{ section.settings.image | image_url: width: 1200 }} 1200w"
+             sizes="(max-width: 768px) 100vw, 50vw"
+             alt="{{ section.settings.image.alt | default: section.settings.title | escape }}"
+             width="1200" height="900"
+             loading="lazy">
+      {%- else -%}
+        <img src="{{ img_src }}"
+             alt="{{ section.settings.title | escape }}"
+             width="1200" height="900"
+             loading="lazy">
+      {%- endif -%}
+    {%- else -%}
+      <div class="editorial__img-placeholder" aria-hidden="true"></div>
+    {%- endif -%}
+  {%- if ed_link != blank -%}
+    </a>
+  {%- else -%}
+    </div>
+  {%- endif -%}
+  <div class="editorial__body">
+    {%- if section.settings.label != blank -%}
+      <p class="editorial__label">{{ section.settings.label }}</p>
+    {%- endif -%}
+    {%- if section.settings.title != blank -%}
+      <h2 class="editorial__title"
+          id="edit-title-{{ section.id }}"
+          {% if section.settings.text_words_reveal %}data-tira-word-reveal{% endif %}>
+        {{ section.settings.title }}
+      </h2>
+    {%- endif -%}
+    {%- if section.settings.text != blank -%}
+      <p class="editorial__text">{{ section.settings.text }}</p>
+    {%- endif -%}
+    {%- if section.settings.link_label != blank -%}
+      <a href="{{ section.settings.link_url | default: '#' }}" class="editorial__link">{{ section.settings.link_label }}</a>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Editorial flip",
+  "tag": "section",
+  "class": "tira-section tira-section--editorial",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "flip",
+      "label": "Inverser (image à droite)",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Sur-titre",
+      "default": "Savoir-Faire"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre",
+      "default": "Un seul artisan. De A à Z."
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Texte",
+      "default": "Chaque sac TIRABOSCHI est fabriqué par un unique maître artisan — du découpage du cuir à la pose de la dernière finition. Une discipline qui peut représenter jusqu'à 40 heures de travail pour une seule pièce."
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Libellé lien",
+      "default": "Découvrir notre atelier"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Lien"
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image (thème editor)"
+    },
+    {
+      "type": "text",
+      "id": "image_url_fallback",
+      "label": "URL image CDN (fallback si image picker vide)"
+    },
+    {
+      "type": "checkbox",
+      "id": "text_words_reveal",
+      "label": "Animation reveal mot par mot sur titre",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Editorial TIRABOSCHI"
+    }
+  ]
+}
+{% endschema %}

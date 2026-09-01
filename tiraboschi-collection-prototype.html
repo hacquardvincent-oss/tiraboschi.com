@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Collection FW25 — TIRABOSCHI Paris | Maroquinerie de Luxe</title>
+<meta name="description" content="Découvrez la collection Automne–Hiver 2025 TIRABOSCHI Paris. Sacs en cuir fabriqués à la main, de A à Z, par un seul artisan. Made in France, Only.">
+<link rel="canonical" href="https://tiraboschi-paris.com/collections/fw25">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Collection FW25 — TIRABOSCHI Paris">
+<meta property="og:description" content="Sacs en cuir fabriqués à la main dans nos ateliers parisiens. Made in France, Only. · Since 1904">
+<meta property="og:image" content="https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=1200&q=80">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap&subset=latin" rel="stylesheet">
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=1920&q=80" fetchpriority="high">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Collection FW25",
+  "description": "Collection Automne–Hiver 2025 TIRABOSCHI Paris — sacs et maroquinerie de luxe Made in France",
+  "url": "https://tiraboschi-paris.com/collections/fw25",
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem","position": 1,"name": "Accueil","item": "https://tiraboschi-paris.com"},
+      {"@type": "ListItem","position": 2,"name": "Collections","item": "https://tiraboschi-paris.com/collections"},
+      {"@type": "ListItem","position": 3,"name": "FW25"}
+    ]
+  }
+}
+</script>
+
+<style>
+/* ════════════════════════════════════════════
+   RESET & DESIGN TOKENS
+════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --tira-black:    #0a0a0a;
+  --tira-white:    #ffffff;
+  --tira-grey:     #f7f5f2;
+  --tira-border:   #e8e8e8;
+  --tira-ease:     cubic-bezier(0.16, 1, 0.3, 1);
+  --tira-duration: 0.9s;
+  --header-h:      64px;
+  --search-h:      44px;
+  --filter-h:      48px;
+}
+
+body {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 400;
+  background: var(--tira-white);
+  color: var(--tira-black);
+  overflow-x: hidden;
+  cursor: none;
+}
+@media (hover: none) { body { cursor: auto; } }
+
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+a { color: inherit; text-decoration: none; }
+
+:focus-visible { outline: 2px solid var(--tira-black); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ════════════════════════════════════════════
+   CURSEUR
+════════════════════════════════════════════ */
+.cur-dot, .cur-ring {
+  position: fixed; border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%);
+}
+.cur-dot {
+  width: 6px; height: 6px; background: var(--tira-black);
+  transition: width .3s var(--tira-ease), height .3s var(--tira-ease), background .3s;
+}
+.cur-ring {
+  width: 30px; height: 30px;
+  border: 1px solid rgba(10,10,10,.38);
+  transition: opacity .25s, width .3s var(--tira-ease), height .3s var(--tira-ease);
+}
+body.on-hover .cur-dot  { width: 44px; height: 44px; background: rgba(10,10,10,.06); }
+body.on-hover .cur-ring { opacity: 0; }
+body.on-dark  .cur-dot  { background: var(--tira-white); }
+body.on-dark  .cur-ring { border-color: rgba(255,255,255,.38); }
+@media (hover: none) { .cur-dot, .cur-ring { display: none; } }
+
+/* ════════════════════════════════════════════
+   HEADER — identique homepage
+════════════════════════════════════════════ */
+.hdr {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: var(--header-h);
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background .5s ease, border-color .5s ease, transform .35s var(--tira-ease);
+}
+.hdr.solid {
+  background: var(--tira-white);
+  border-bottom-color: var(--tira-border);
+}
+.hdr.hidden { transform: translateY(-100%); }
+
+/* Desktop */
+.hdr__d {
+  display: grid; grid-template-columns: auto 1fr auto;
+  align-items: center; gap: 40px;
+  height: 100%; padding: 0 40px;
+  color: var(--tira-white); transition: color .5s ease;
+}
+.hdr.solid .hdr__d { color: var(--tira-black); }
+
+.hdr__logo a { display: block; line-height: 0; }
+.hdr__logo-img {
+  display: block; height: 28px; width: auto;
+  filter: brightness(0) invert(1);
+  transition: filter .5s ease;
+}
+.hdr.solid .hdr__logo-img { filter: none; }
+
+.hdr__nav { display: flex; align-items: center; gap: 28px; }
+.hdr__nav a {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+  opacity: .75; transition: opacity .2s; white-space: nowrap;
+}
+.hdr__nav a:hover { opacity: 1; }
+.hdr__nav a[aria-current] { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
+.hdr__nav .nav-sep { width: 1px; height: 11px; background: currentColor; opacity: .2; }
+
+.hdr__icons { display: flex; align-items: center; justify-content: flex-end; gap: 18px; }
+.hdr__icons button {
+  background: none; border: none; cursor: none;
+  display: flex; align-items: center; color: inherit;
+  opacity: .75; transition: opacity .2s;
+}
+.hdr__icons button:hover { opacity: 1; }
+.hdr__icons svg {
+  width: 20px; height: 20px; fill: none;
+  stroke: currentColor; stroke-width: 1.5;
+  stroke-linecap: square; stroke-linejoin: miter;
+}
+
+.tira-bag-icon {
+  display: block; width: 22px; height: 22px; object-fit: contain;
+  filter: brightness(0) invert(1); transition: filter .5s ease;
+}
+.hdr.solid .tira-bag-icon { filter: none; }
+.hdr-search__actions .tira-bag-icon { filter: none; }
+
+/* Mobile */
+.hdr__m {
+  display: none;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center; gap: 14px;
+  height: 100%; padding: 0 20px;
+  color: var(--tira-white); transition: color .5s ease;
+}
+.hdr.solid .hdr__m { color: var(--tira-black); }
+.hdr__m-logo { display: block; line-height: 0; }
+.hdr__m-logo .hdr__logo-img { height: 24px; }
+.hdr__m svg {
+  width: 24px; height: 24px; fill: none;
+  stroke: currentColor; stroke-width: 1.5;
+  stroke-linecap: square; stroke-linejoin: miter;
+}
+.hdr__m .tira-bag-icon { width: 24px; height: 24px; }
+.hdr__m button {
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; color: inherit; padding: 2px;
+}
+
+@media (max-width: 900px) { .hdr__d { display: none; } .hdr__m { display: grid; } }
+
+/* ════════════════════════════════════════════
+   SEARCH BAR — identique homepage
+════════════════════════════════════════════ */
+.hdr-search {
+  position: fixed; top: var(--header-h); left: 0; right: 0; z-index: 199;
+  display: flex; align-items: center; justify-content: center;
+  height: var(--search-h); padding: 0 40px;
+  background: rgba(0,0,0,.18); border-bottom: none;
+  transition: top .35s var(--tira-ease), background .5s ease;
+}
+.hdr-search.solid {
+  background: var(--tira-white);
+  border-bottom: 1px solid var(--tira-border);
+}
+.hdr-search.sticky-mode {
+  top: 0; background: var(--tira-white);
+  border-bottom: 1px solid var(--tira-border);
+}
+.hdr-search__field {
+  display: flex; align-items: center; gap: 8px;
+  margin: 0 auto; width: 100%; max-width: 560px;
+}
+.hdr-search.sticky-mode .hdr-search__field { max-width: 560px; margin: 0 auto; flex: unset; }
+.hdr-search input {
+  flex: 1; border: none; background: none; outline: none;
+  font-family: inherit; font-size: 11px;
+  text-transform: uppercase; letter-spacing: .12em;
+  color: var(--tira-white);
+  border-bottom: 1px solid rgba(255,255,255,.5);
+  transition: color .4s, border-color .4s;
+  padding-bottom: 3px; text-align: center;
+}
+.hdr-search input::placeholder { color: rgba(255,255,255,.8); opacity: 1; letter-spacing: .1em; }
+.hdr-search.solid input, .hdr-search.sticky-mode input {
+  color: var(--tira-black); border-bottom-color: var(--tira-border); text-align: left;
+}
+.hdr-search.solid input::placeholder, .hdr-search.sticky-mode input::placeholder {
+  color: var(--tira-black); opacity: .45;
+}
+.hdr-search.solid input:focus, .hdr-search.sticky-mode input:focus { border-bottom-color: var(--tira-black); }
+.hdr-search__icon { flex-shrink: 0; display: flex; align-items: center; }
+.hdr-search__icon svg {
+  width: 15px; height: 15px; fill: none;
+  stroke: var(--tira-white); stroke-width: 1.2; opacity: .75; transition: stroke .4s;
+}
+.hdr-search.solid .hdr-search__icon svg,
+.hdr-search.sticky-mode .hdr-search__icon svg { stroke: var(--tira-black); opacity: .5; }
+
+.hdr-search__actions {
+  display: flex; align-items: center; gap: 20px; flex-shrink: 0;
+  opacity: 0; pointer-events: none;
+  position: absolute; right: 40px; top: 50%; transform: translateY(-50%);
+  transition: opacity .3s var(--tira-ease);
+}
+.hdr-search.sticky-mode .hdr-search__actions { opacity: 1; pointer-events: auto; }
+.hdr-search__actions button {
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; color: var(--tira-black);
+  opacity: .7; transition: opacity .2s;
+}
+.hdr-search__actions button:hover { opacity: 1; }
+.hdr-search__actions svg {
+  width: 20px; height: 20px; fill: none;
+  stroke: currentColor; stroke-width: 1.5;
+  stroke-linecap: square; stroke-linejoin: miter;
+}
+
+@media (max-width: 900px) {
+  .hdr-search { padding: 0 20px; }
+  .hdr-search__actions { right: 20px; gap: 16px; }
+}
+
+/* ════════════════════════════════════════════
+   HERO COLLECTION — 52vh, Ken Burns, breadcrumb
+════════════════════════════════════════════ */
+.col-hero {
+  position: relative;
+  height: 52vh; min-height: 340px;
+  overflow: hidden; background: #0a0a0a;
+  /* Compenser header + search */
+  margin-top: calc(var(--header-h) + var(--search-h));
+}
+.col-hero__img {
+  position: absolute; inset: 0; overflow: hidden;
+}
+.col-hero__img img {
+  width: 100%; height: 100%;
+  animation: tira-kb 14s ease-in-out infinite alternate;
+}
+@keyframes tira-kb {
+  from { transform: scale(1); }
+  to   { transform: scale(1.07) translate(1.5%, -1%); }
+}
+.col-hero__overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.55) 0%, rgba(0,0,0,.2) 50%, rgba(0,0,0,.1) 100%);
+}
+.col-hero__content {
+  position: absolute; z-index: 2;
+  bottom: 40px; left: 48px;
+  color: var(--tira-white);
+}
+.col-hero__breadcrumb {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .14em;
+  opacity: .5; margin-bottom: 16px;
+}
+.col-hero__breadcrumb a { opacity: 1; transition: opacity .2s; }
+.col-hero__breadcrumb a:hover { opacity: .7; }
+.col-hero__breadcrumb span { opacity: .4; }
+.col-hero h1 {
+  font-size: clamp(40px, 6vw, 72px);
+  line-height: .95; letter-spacing: -.01em;
+  margin-bottom: 12px;
+}
+.col-hero__meta {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .18em; opacity: .5;
+}
+
+@media (max-width: 768px) {
+  .col-hero { height: 45vh; }
+  .col-hero__content { left: 24px; bottom: 28px; }
+}
+
+/* ════════════════════════════════════════════
+   BARRE FILTRES — sticky sous header+search
+════════════════════════════════════════════ */
+.col-filters {
+  position: sticky;
+  top: calc(var(--header-h) + var(--search-h)); /* 108px */
+  z-index: 100;
+  background: var(--tira-white);
+  border-bottom: 1px solid var(--tira-border);
+  transition: top .35s var(--tira-ease);
+}
+/* Quand header caché, search est à top:0 → filtres montent */
+body.hdr-hidden .col-filters {
+  top: var(--search-h); /* 44px */
+}
+.col-filters__inner {
+  display: flex; align-items: center; justify-content: space-between;
+  height: var(--filter-h); padding: 0 40px;
+  position: relative;
+}
+.col-filters__left { display: flex; align-items: center; gap: 0; }
+.col-filters__right { display: flex; align-items: center; gap: 24px; }
+
+/* Bouton filtre */
+.col-filter-btn {
+  background: none; border: none; cursor: none;
+  display: flex; align-items: center; gap: 5px;
+  font-family: inherit; font-size: 10px;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: var(--tira-black); opacity: .55;
+  padding: 0 18px; height: var(--filter-h);
+  border-right: 1px solid var(--tira-border);
+  transition: opacity .2s, background .2s;
+  white-space: nowrap;
+}
+.col-filter-btn:first-child { padding-left: 0; border-left: none; }
+.col-filter-btn:hover,
+.col-filter-btn.active { opacity: 1; background: var(--tira-grey); }
+.col-filter-btn.has-value { opacity: 1; }
+.col-filter-btn.has-value::after {
+  content: ''; display: inline-block;
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--tira-black); margin-left: 4px;
+}
+.col-filter-btn svg {
+  width: 10px; height: 10px; fill: none;
+  stroke: currentColor; stroke-width: 1.5;
+  transition: transform .25s var(--tira-ease);
+}
+.col-filter-btn.active svg { transform: rotate(180deg); }
+
+/* Dropdown panneau filtre */
+.col-filter-panel {
+  position: absolute; top: 100%; left: 0;
+  background: var(--tira-white);
+  border: 1px solid var(--tira-border);
+  border-top: none; z-index: 10;
+  min-width: 220px; padding: 20px 24px 24px;
+  opacity: 0; pointer-events: none; transform: translateY(-4px);
+  transition: opacity .2s var(--tira-ease), transform .2s var(--tira-ease);
+}
+.col-filter-panel.open {
+  opacity: 1; pointer-events: auto; transform: none;
+}
+.col-filter-panel ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.col-filter-panel li label {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 11px; text-transform: uppercase; letter-spacing: .08em;
+  cursor: pointer; opacity: .65; transition: opacity .2s;
+}
+.col-filter-panel li label:hover { opacity: 1; }
+.col-filter-panel input[type="checkbox"] {
+  width: 14px; height: 14px; accent-color: var(--tira-black);
+  cursor: pointer; flex-shrink: 0;
+}
+.col-filter-panel .col-filter-apply {
+  display: block; width: 100%; margin-top: 20px;
+  background: none; border: none;
+  font-family: inherit; font-size: 10px;
+  text-transform: uppercase; letter-spacing: .14em;
+  text-decoration: underline; text-underline-offset: 4px;
+  cursor: pointer; opacity: .6; transition: opacity .2s;
+  text-align: left;
+}
+.col-filter-panel .col-filter-apply:hover { opacity: 1; }
+
+/* Couleur swatch panel */
+.col-swatch-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+.col-swatch {
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  cursor: pointer;
+}
+.col-swatch input { position: absolute; opacity: 0; pointer-events: none; }
+.col-swatch__color {
+  width: 24px; height: 24px;
+  border: 1px solid transparent;
+  transition: border-color .2s;
+}
+.col-swatch:hover .col-swatch__color,
+.col-swatch input:checked ~ .col-swatch__color { border-color: var(--tira-black); }
+.col-swatch__name { font-size: 9px; text-transform: uppercase; letter-spacing: .08em; opacity: .5; }
+
+/* Prix slider */
+.col-price-range { display: flex; flex-direction: column; gap: 12px; }
+.col-price-range input[type="range"] {
+  width: 100%; accent-color: var(--tira-black);
+}
+.col-price-labels { display: flex; justify-content: space-between; font-size: 10px; opacity: .5; }
+
+/* Résultats */
+.col-filters__count {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .1em;
+  opacity: .35;
+}
+
+/* Tri */
+.col-sort-wrap { position: relative; }
+.col-sort-btn {
+  background: none; border: none; cursor: none;
+  display: flex; align-items: center; gap: 5px;
+  font-family: inherit; font-size: 10px;
+  text-transform: uppercase; letter-spacing: .1em;
+  opacity: .55; transition: opacity .2s; white-space: nowrap;
+}
+.col-sort-btn:hover { opacity: 1; }
+.col-sort-btn svg { width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.col-sort-panel {
+  position: absolute; right: 0; top: calc(100% + 16px);
+  background: var(--tira-white); border: 1px solid var(--tira-border);
+  z-index: 10; min-width: 190px; padding: 8px 0;
+  opacity: 0; pointer-events: none; transform: translateY(-4px);
+  transition: opacity .2s var(--tira-ease), transform .2s var(--tira-ease);
+}
+.col-sort-panel.open { opacity: 1; pointer-events: auto; transform: none; }
+.col-sort-panel button {
+  display: block; width: 100%; background: none; border: none;
+  padding: 10px 20px; text-align: left;
+  font-family: inherit; font-size: 10px;
+  text-transform: uppercase; letter-spacing: .1em;
+  opacity: .55; transition: opacity .2s, background .2s; cursor: none;
+}
+.col-sort-panel button:hover { opacity: 1; background: var(--tira-grey); }
+.col-sort-panel button.selected { opacity: 1; }
+
+@media (max-width: 900px) {
+  .col-filters__inner { padding: 0 20px; }
+  /* Sur mobile, on cache la barre desktop */
+  .col-filters { display: none; }
+}
+
+/* ════════════════════════════════════════════
+   GRILLE PRODUITS — style Miu Miu
+════════════════════════════════════════════ */
+.col-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3px; padding: 3px;
+}
+@media (max-width: 900px) {
+  .col-grid { grid-template-columns: repeat(2, 1fr); gap: 2px; padding: 2px; }
+}
+
+/* Card */
+.card { cursor: none; position: relative; }
+
+.card__img {
+  position: relative; aspect-ratio: 3/4;
+  overflow: hidden; background: var(--tira-grey);
+}
+.card__img img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  transition: transform .7s var(--tira-ease);
+}
+.card__img .img-alt { opacity: 0; transition: opacity .4s ease; }
+.card:hover .card__img img:first-child { transform: scale(1.04); }
+.card:hover .img-alt { opacity: 1; }
+
+/* Wishlist + ATC — apparaissent au hover */
+.card__actions {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  justify-content: space-between; padding: 14px;
+  opacity: 0; transition: opacity .25s ease;
+}
+.card:hover .card__actions { opacity: 1; }
+
+.card__wish {
+  align-self: flex-end; width: 32px; height: 32px;
+  background: transparent; border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: none;
+}
+.card__wish svg {
+  width: 18px; height: 18px; fill: none;
+  stroke: var(--tira-white); stroke-width: 1.5;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,.55));
+  transition: fill .2s;
+}
+.card__wish.active svg { fill: var(--tira-white); }
+
+/* ════════════════════════════════════════════
+   ENCARTS ÉDITORIAUX dans la grille
+════════════════════════════════════════════ */
+/* Encart 2×2 (2 cols × 2 rows) */
+.col-editorial-2x2 {
+  grid-column: span 2;
+  grid-row: span 2;
+  position: relative; overflow: hidden;
+  background: var(--tira-black); cursor: pointer;
+}
+.col-editorial-2x2 img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform .9s var(--tira-ease);
+}
+.col-editorial-2x2:hover img { transform: scale(1.04); }
+.col-editorial-2x2__overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.6) 0%, rgba(0,0,0,.08) 50%, transparent 100%);
+}
+.col-editorial-2x2__body {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 32px; color: var(--tira-white); z-index: 2;
+}
+.col-editorial-2x2__label {
+  font-size: 9px; text-transform: uppercase; letter-spacing: .2em;
+  opacity: .6; margin-bottom: 8px;
+}
+.col-editorial-2x2__title {
+  font-size: clamp(22px, 2.5vw, 36px); line-height: 1.05;
+  margin-bottom: 16px;
+}
+.col-editorial-2x2__link {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .14em;
+  text-decoration: underline; text-underline-offset: 5px;
+  opacity: .8; transition: opacity .2s;
+}
+.col-editorial-2x2__link:hover { opacity: 1; }
+
+/* Encart 4×1 (full-width banner) */
+.col-editorial-4x1 {
+  grid-column: span 4;
+  position: relative; overflow: hidden;
+  background: var(--tira-grey); cursor: pointer;
+  display: flex; align-items: center;
+  min-height: 300px;
+}
+.col-editorial-4x1 img {
+  position: absolute; right: 0; top: 0;
+  height: 100%; width: 50%; object-fit: cover;
+  transition: transform .9s var(--tira-ease);
+}
+.col-editorial-4x1:hover img { transform: scale(1.03); }
+.col-editorial-4x1__body {
+  position: relative; z-index: 2;
+  padding: 60px 64px; max-width: 55%;
+}
+.col-editorial-4x1__label {
+  font-size: 9px; text-transform: uppercase; letter-spacing: .2em;
+  opacity: .4; margin-bottom: 12px;
+}
+.col-editorial-4x1__title {
+  font-size: clamp(24px, 3vw, 44px); line-height: 1.05;
+  margin-bottom: 20px;
+}
+.col-editorial-4x1__link {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .14em;
+  text-decoration: underline; text-underline-offset: 5px;
+  opacity: .6; transition: opacity .2s;
+}
+.col-editorial-4x1__link:hover { opacity: 1; }
+@media (max-width: 900px) {
+  .col-editorial-2x2 { grid-column: span 2; grid-row: span 1; aspect-ratio: 3/2; }
+  .col-editorial-4x1 { grid-column: span 2; min-height: 220px; }
+  .col-editorial-4x1 img { width: 100%; height: 100%; }
+  .col-editorial-4x1__body { max-width: 100%; padding: 36px 24px; }
+}
+
+.card__atc {
+  background: rgba(10,10,10,.88); color: var(--tira-white);
+  border: none; width: 100%; padding: 11px;
+  font-family: inherit; font-size: 10px;
+  text-transform: uppercase; letter-spacing: .12em;
+  cursor: none; transition: background .2s;
+}
+.card__atc:hover { background: var(--tira-black); }
+
+/* Badge nouveau */
+.card__badge {
+  position: absolute; top: 14px; left: 14px;
+  background: var(--tira-black); color: var(--tira-white);
+  font-size: 9px; text-transform: uppercase; letter-spacing: .1em;
+  padding: 4px 8px; pointer-events: none;
+}
+
+/* Info sous la carte */
+.card__info { padding: 10px 0 18px; }
+.card__type { font-size: 9px; text-transform: uppercase; letter-spacing: .12em; opacity: .35; margin-bottom: 4px; }
+.card__name { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 5px; opacity: .8; }
+.card__price { font-size: 12px; opacity: .5; letter-spacing: .04em; }
+
+/* Mobile : touch wishlist toujours visible (pas de hover) */
+@media (hover: none) {
+  .card__actions { opacity: 1; }
+  .card__atc { display: none; } /* sur mobile, CTA sur la fiche produit */
+}
+
+/* ════════════════════════════════════════════
+   LOAD MORE
+════════════════════════════════════════════ */
+.col-more {
+  display: flex; justify-content: center;
+  padding: 60px 48px;
+  border-top: 1px solid var(--tira-border);
+}
+.col-more__btn {
+  background: none; border: none;
+  font-family: inherit; font-size: 10px;
+  text-transform: uppercase; letter-spacing: .14em;
+  text-decoration: underline; text-underline-offset: 5px;
+  cursor: none; opacity: .55; transition: opacity .2s;
+}
+.col-more__btn:hover { opacity: 1; }
+
+/* ════════════════════════════════════════════
+   MOBILE — Bouton filtre FAB
+════════════════════════════════════════════ */
+.col-filter-fab {
+  display: none; /* visible only mobile */
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  z-index: 290;
+  background: var(--tira-black); color: var(--tira-white);
+  border: none; padding: 13px 28px;
+  font-family: inherit; font-size: 10px;
+  text-transform: uppercase; letter-spacing: .14em;
+  display: none; align-items: center; gap: 10px;
+  cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,.25);
+  transition: background .2s, transform .2s;
+}
+.col-filter-fab:hover { background: rgba(10,10,10,.85); }
+.col-filter-fab svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+
+@media (max-width: 900px) {
+  .col-filter-fab { display: flex; }
+  .col-more { padding: 48px 20px; }
+}
+
+/* ════════════════════════════════════════════
+   MOBILE — Bottom sheet filtres
+════════════════════════════════════════════ */
+.filter-sheet {
+  display: none; /* JS le rend visible */
+  position: fixed; inset: 0; z-index: 400;
+}
+.filter-sheet.open { display: block; }
+
+.filter-sheet__backdrop {
+  position: absolute; inset: 0;
+  background: rgba(10,10,10,.5);
+  opacity: 0; transition: opacity .35s var(--tira-ease);
+}
+.filter-sheet.open .filter-sheet__backdrop { opacity: 1; }
+
+.filter-sheet__inner {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  background: var(--tira-white);
+  max-height: 88vh; overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform .4s var(--tira-ease);
+}
+.filter-sheet.open .filter-sheet__inner { transform: none; }
+
+.filter-sheet__head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--tira-border);
+  position: sticky; top: 0; background: var(--tira-white); z-index: 2;
+}
+.filter-sheet__head h3 {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .12em;
+}
+.filter-sheet__close {
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; opacity: .5; transition: opacity .2s;
+}
+.filter-sheet__close:hover { opacity: 1; }
+.filter-sheet__close svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 1.5; fill: none; }
+
+/* Accordéons catégories */
+.filter-sheet__section { border-bottom: 1px solid var(--tira-border); }
+.filter-sheet__section-btn {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; background: none; border: none; cursor: pointer;
+  padding: 18px 24px;
+  font-family: inherit; font-size: 11px;
+  text-transform: uppercase; letter-spacing: .1em; opacity: .7;
+}
+.filter-sheet__section-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.5; transition: transform .25s; }
+.filter-sheet__section.open .filter-sheet__section-btn svg { transform: rotate(180deg); }
+.filter-sheet__section-body {
+  padding: 0 24px; max-height: 0; overflow: hidden;
+  transition: max-height .35s var(--tira-ease), padding .3s;
+}
+.filter-sheet__section.open .filter-sheet__section-body { max-height: 400px; padding: 0 24px 20px; }
+.filter-sheet__section-body ul { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+.filter-sheet__section-body label {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 12px; opacity: .65;
+}
+.filter-sheet__section-body input[type="checkbox"] { accent-color: var(--tira-black); }
+
+/* CTA footer feuille */
+.filter-sheet__foot {
+  display: flex; gap: 12px; padding: 20px 24px;
+  position: sticky; bottom: 0; background: var(--tira-white);
+  border-top: 1px solid var(--tira-border);
+}
+.filter-sheet__reset {
+  flex: 1; background: none; border: 1px solid var(--tira-border);
+  font-family: inherit; font-size: 10px;
+  text-transform: uppercase; letter-spacing: .12em;
+  padding: 13px; cursor: pointer; opacity: .65; transition: opacity .2s;
+}
+.filter-sheet__reset:hover { opacity: 1; }
+.filter-sheet__apply {
+  flex: 2; background: var(--tira-black); color: var(--tira-white);
+  border: none; font-family: inherit; font-size: 10px;
+  text-transform: uppercase; letter-spacing: .12em;
+  padding: 13px; cursor: pointer; transition: background .2s;
+}
+.filter-sheet__apply:hover { background: rgba(10,10,10,.85); }
+
+/* ════════════════════════════════════════════
+   MOBILE NAV DRAWER
+════════════════════════════════════════════ */
+.mobile-nav {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(10,10,10,.5);
+  opacity: 0; pointer-events: none;
+  transition: opacity .35s var(--tira-ease);
+}
+.mobile-nav.open { opacity: 1; pointer-events: auto; }
+.mobile-nav__inner {
+  position: absolute; top: 0; right: 0; bottom: 0;
+  width: min(320px, 88vw); background: var(--tira-white);
+  padding: 28px 32px 40px;
+  transform: translateX(100%);
+  transition: transform .4s var(--tira-ease);
+  overflow-y: auto;
+}
+.mobile-nav.open .mobile-nav__inner { transform: none; }
+.mobile-nav__close {
+  display: flex; margin-left: auto; margin-bottom: 40px;
+  background: none; border: none; cursor: pointer;
+  opacity: .5; transition: opacity .2s;
+}
+.mobile-nav__close:hover { opacity: 1; }
+.mobile-nav__close svg { width: 20px; height: 20px; stroke-width: 1.5; stroke: currentColor; fill: none; }
+.mobile-nav ul { list-style: none; }
+.mobile-nav li a {
+  display: block; font-size: 13px;
+  text-transform: uppercase; letter-spacing: .1em;
+  padding: 14px 0; border-bottom: 1px solid var(--tira-border);
+  opacity: .75; transition: opacity .2s;
+}
+.mobile-nav li a:hover, .mobile-nav li a[aria-current] { opacity: 1; }
+body.nav-open { overflow: hidden; }
+
+/* ════════════════════════════════════════════
+   FOOTER — identique homepage
+════════════════════════════════════════════ */
+.footer {
+  background: var(--tira-black); color: var(--tira-white);
+  padding: 80px 48px 40px;
+}
+.footer__top {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px;
+  padding-bottom: 64px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.footer__brand-logo {
+  font-size: 12px; text-transform: uppercase; letter-spacing: .2em; margin-bottom: 20px;
+}
+.footer__brand-text { font-size: 13px; opacity: .4; line-height: 1.75; max-width: 220px; }
+.footer__social { display: flex; gap: 20px; margin-top: 28px; }
+.footer__social a {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .12em;
+  opacity: .4; transition: opacity .2s;
+}
+.footer__social a:hover { opacity: .8; }
+.footer__col h4 {
+  font-size: 9px; text-transform: uppercase; letter-spacing: .16em;
+  opacity: .3; margin-bottom: 22px;
+}
+.footer__col ul { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+.footer__col ul a { font-size: 13px; opacity: .6; transition: opacity .2s; }
+.footer__col ul a:hover { opacity: 1; }
+.footer__bottom {
+  display: flex; justify-content: space-between; align-items: center; padding-top: 32px;
+}
+.footer__copy { font-size: 10px; opacity: .22; text-transform: uppercase; letter-spacing: .1em; }
+.footer__policies { display: flex; gap: 24px; }
+.footer__policies a {
+  font-size: 10px; opacity: .22; text-transform: uppercase; letter-spacing: .1em; transition: opacity .2s;
+}
+.footer__policies a:hover { opacity: .6; }
+
+@media (max-width: 900px) {
+  .footer { padding: 60px 24px 32px; }
+  .footer__top { grid-template-columns: 1fr; gap: 0; }
+  .footer__brand-text { max-width: 100%; }
+  .footer__col { border-top: 1px solid rgba(255,255,255,.08); }
+  .footer__col h4 {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 0; margin-bottom: 0; cursor: pointer;
+  }
+  .footer__col h4::after { content: '+'; font-size: 16px; opacity: .4; transition: transform .3s; }
+  .footer__col.open h4::after { transform: rotate(45deg); }
+  .footer__col ul { max-height: 0; overflow: hidden; transition: max-height .4s var(--tira-ease), padding .3s; }
+  .footer__col.open ul { max-height: 320px; padding-bottom: 20px; }
+  .footer__bottom { flex-direction: column; gap: 16px; text-align: center; padding-top: 28px; }
+  .footer__policies { flex-wrap: wrap; justify-content: center; gap: 16px; }
+}
+
+/* ════════════════════════════════════════════
+   SCROLL REVEALS
+════════════════════════════════════════════ */
+[data-reveal] {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity var(--tira-duration) var(--tira-ease),
+              transform var(--tira-duration) var(--tira-ease);
+}
+[data-reveal].visible { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<div class="cur-dot" id="cur-dot" aria-hidden="true"></div>
+<div class="cur-ring" id="cur-ring" aria-hidden="true"></div>
+
+<!-- ════════════════════════════════════════
+     HEADER
+════════════════════════════════════════ -->
+<header class="hdr" id="hdr" role="banner">
+  <div class="hdr__d">
+    <div class="hdr__logo">
+      <a href="/" aria-label="TIRABOSCHI Paris — accueil">
+        <img class="hdr__logo-img"
+             src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738"
+             alt="TIRABOSCHI Paris" width="auto" height="28">
+      </a>
+    </div>
+    <nav class="hdr__nav" aria-label="Navigation principale">
+      <a href="/collections/sacs" aria-current="page">Sacs</a>
+      <a href="/collections/petite-maroquinerie">Petite Maroquinerie</a>
+      <a href="/collections/iconiques">Iconiques</a>
+      <a href="/collections/sur-mesure-exotiques">Sur Mesure</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/pages/histoire">La Maison</a>
+    </nav>
+    <div class="hdr__icons">
+      <button aria-label="Mon compte">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.5" r="3.5"/><path d="M3.5 20c0-4.5 3.8-7 8.5-7s8.5 2.5 8.5 7"/></svg>
+      </button>
+      <button aria-label="Ouvrir la recherche">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
+      </button>
+      <button aria-label="Panier — 0 article">
+        <img class="tira-bag-icon"
+             src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050"
+             alt="" aria-hidden="true" width="22" height="22">
+      </button>
+    </div>
+  </div>
+
+  <div class="hdr__m" aria-label="Navigation mobile">
+    <a href="/" class="hdr__m-logo" aria-label="TIRABOSCHI Paris — accueil">
+      <img class="hdr__logo-img"
+           src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/Logo_-_since_1904.png?v=1772832738"
+           alt="TIRABOSCHI Paris" width="auto" height="24">
+    </a>
+    <button aria-label="Panier — 0 article">
+      <img class="tira-bag-icon"
+           src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050"
+           alt="" aria-hidden="true" width="24" height="24">
+    </button>
+    <button aria-label="Mon compte">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.5" r="3.5"/><path d="M3.5 20c0-4.5 3.8-7 8.5-7s8.5 2.5 8.5 7"/></svg>
+    </button>
+    <button aria-label="Menu principal" aria-expanded="false" id="mobile-menu-btn">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <line x1="3" y1="6"  x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<!-- ════════════════════════════════════════
+     SEARCH BAR
+════════════════════════════════════════ -->
+<div class="hdr-search" id="hdr-search" role="search" aria-label="Recherche">
+  <div class="hdr-search__field">
+    <input type="search" placeholder="Demander à Tiraboschi" aria-label="Recherche">
+    <div class="hdr-search__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
+    </div>
+  </div>
+  <div class="hdr-search__actions" aria-hidden="true">
+    <button aria-label="Mon compte">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.5" r="3.5"/><path d="M3.5 20c0-4.5 3.8-7 8.5-7s8.5 2.5 8.5 7"/></svg>
+    </button>
+    <button aria-label="Panier">
+      <img class="tira-bag-icon"
+           src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/prpi701_1.svg?v=1769633050"
+           alt="" aria-hidden="true" width="20" height="20">
+    </button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     HERO COLLECTION
+════════════════════════════════════════ -->
+<section class="col-hero" aria-label="Collection FW25 TIRABOSCHI Paris">
+  <div class="col-hero__img">
+    <!-- SHOPIFY : shopify://shop_images/BOSCHI0154.jpg ou BOSCHI0919.jpg -->
+    <img src="https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=1920&q=80"
+         alt="Collection FW25 — cuirs TIRABOSCHI Paris"
+         width="1920" height="800" fetchpriority="high">
+  </div>
+  <div class="col-hero__overlay"></div>
+  <div class="col-hero__content">
+    <nav class="col-hero__breadcrumb" aria-label="Fil d'Ariane">
+      <a href="/">Accueil</a>
+      <span aria-hidden="true">—</span>
+      <a href="/collections">Collections</a>
+      <span aria-hidden="true">—</span>
+      <span aria-current="page">FW25</span>
+    </nav>
+    <h1>Collection FW25</h1>
+    <p class="col-hero__meta">9 pièces · Made in France, Only.</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     BARRE FILTRES — desktop sticky
+════════════════════════════════════════ -->
+<div class="col-filters" id="col-filters" role="search" aria-label="Filtres collection">
+  <div class="col-filters__inner">
+
+    <div class="col-filters__left">
+
+      <!-- Filtre Modèle -->
+      <button class="col-filter-btn" id="btn-type" aria-expanded="false" aria-controls="panel-type">
+        Modèle
+        <svg viewBox="0 0 12 12" aria-hidden="true"><polyline points="2,4 6,8 10,4"/></svg>
+      </button>
+      <div class="col-filter-panel" id="panel-type" role="region" aria-label="Filtrer par modèle">
+        <ul>
+          <li><label><input type="checkbox" value="sac-main"> Sac à main (6)</label></li>
+          <li><label><input type="checkbox" value="bandouliere"> Sac à bandoulière (2)</label></li>
+          <li><label><input type="checkbox" value="petite-maro"> Petite maroquinerie (1)</label></li>
+        </ul>
+        <button class="col-filter-apply">Appliquer</button>
+      </div>
+
+      <!-- Filtre Matière -->
+      <button class="col-filter-btn" id="btn-matiere" aria-expanded="false" aria-controls="panel-matiere">
+        Matière
+        <svg viewBox="0 0 12 12" aria-hidden="true"><polyline points="2,4 6,8 10,4"/></svg>
+      </button>
+      <div class="col-filter-panel" id="panel-matiere" role="region" aria-label="Filtrer par matière">
+        <ul>
+          <li><label><input type="checkbox" value="veau-grainé"> Veau grainé (4)</label></li>
+          <li><label><input type="checkbox" value="agneau-nappa"> Agneau nappa (3)</label></li>
+          <li><label><input type="checkbox" value="buffle"> Cuir de buffle (2)</label></li>
+        </ul>
+        <button class="col-filter-apply">Appliquer</button>
+      </div>
+
+      <!-- Filtre Couleur -->
+      <button class="col-filter-btn" id="btn-couleur" aria-expanded="false" aria-controls="panel-couleur">
+        Couleur
+        <svg viewBox="0 0 12 12" aria-hidden="true"><polyline points="2,4 6,8 10,4"/></svg>
+      </button>
+      <div class="col-filter-panel" id="panel-couleur" role="region" aria-label="Filtrer par couleur" style="min-width:260px">
+        <div class="col-swatch-grid" role="list">
+          <label class="col-swatch" role="listitem" aria-label="Noir">
+            <input type="checkbox" value="noir">
+            <span class="col-swatch__color" style="background:#0a0a0a"></span>
+            <span class="col-swatch__name">Noir</span>
+          </label>
+          <label class="col-swatch" aria-label="Caramel">
+            <input type="checkbox" value="caramel">
+            <span class="col-swatch__color" style="background:#c4874b"></span>
+            <span class="col-swatch__name">Caramel</span>
+          </label>
+          <label class="col-swatch" aria-label="Cognac">
+            <input type="checkbox" value="cognac">
+            <span class="col-swatch__color" style="background:#8b4513"></span>
+            <span class="col-swatch__name">Cognac</span>
+          </label>
+          <label class="col-swatch" aria-label="Marine">
+            <input type="checkbox" value="marine">
+            <span class="col-swatch__color" style="background:#1a2744"></span>
+            <span class="col-swatch__name">Marine</span>
+          </label>
+          <label class="col-swatch" aria-label="Crème">
+            <input type="checkbox" value="creme">
+            <span class="col-swatch__color" style="background:#f0ede6; border:1px solid #ddd"></span>
+            <span class="col-swatch__name">Crème</span>
+          </label>
+          <label class="col-swatch" aria-label="Bordeaux">
+            <input type="checkbox" value="bordeaux">
+            <span class="col-swatch__color" style="background:#6d1a26"></span>
+            <span class="col-swatch__name">Bordeaux</span>
+          </label>
+        </div>
+        <button class="col-filter-apply">Appliquer</button>
+      </div>
+
+    </div>
+
+    <div class="col-filters__right">
+      <span class="col-filters__count" aria-live="polite">9 résultats</span>
+      <div class="col-sort-wrap">
+        <button class="col-sort-btn" id="sort-btn" aria-expanded="false" aria-controls="sort-panel">
+          Trier par
+          <svg viewBox="0 0 12 12" aria-hidden="true"><polyline points="2,4 6,8 10,4"/></svg>
+        </button>
+        <div class="col-sort-panel" id="sort-panel" role="listbox" aria-label="Trier les résultats">
+          <button class="selected" role="option" aria-selected="true">Nouveautés</button>
+          <button role="option">Prix croissant</button>
+          <button role="option">Prix décroissant</button>
+          <button role="option">Best-sellers</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     GRILLE PRODUITS — 9 pièces FW25
+════════════════════════════════════════ -->
+<main class="col-grid" id="col-grid" aria-label="Produits collection FW25">
+
+  <!-- 1. Victoire — Sac à main — Noir -->
+  <article class="card" data-reveal>
+    <a href="/products/victoire" aria-label="Voir le sac Victoire">
+      <div class="card__img">
+        <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80"
+             alt="Sac Victoire, cuir veau grainé noir, TIRABOSCHI Paris"
+             width="600" height="800" loading="eager" aspect-ratio="3/4">
+        <img src="https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=600&q=80"
+             alt="" class="img-alt" aria-hidden="true" width="600" height="800" loading="lazy">
+        <div class="card__actions" aria-hidden="true">
+          <button class="card__wish" aria-label="Ajouter Victoire aux favoris" tabindex="-1">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <button class="card__atc" tabindex="-1">Ajouter au panier</button>
+        </div>
+        <div class="card__badge">Nouveau</div>
+      </div>
+    </a>
+    <div class="card__info">
+      <p class="card__type">Sac à main</p>
+      <p class="card__name">Victoire</p>
+      <p class="card__price">2 850 EUR</p>
+    </div>
+  </article>
+
+  <!-- 2. Colette — Sac à main — Caramel -->
+  <article class="card" data-reveal>
+    <a href="/products/colette" aria-label="Voir le sac Colette">
+      <div class="card__img">
+        <img src="https://images.unsplash.com/photo-1584917865442-de89be41a0f3?w=600&q=80"
+             alt="Sac Colette, cuir agneau nappa caramel, TIRABOSCHI Paris"
+             width="600" height="800" loading="eager">
+        <img src="https://images.unsplash.com/photo-1590739293931-a8c0c85b5e24?w=600&q=80"
+             alt="" class="img-alt" aria-hidden="true" width="600" height="800" loading="lazy">
+        <div class="card__actions" aria-hidden="true">
+          <button class="card__wish" aria-label="Ajouter Colette aux favoris" tabindex="-1">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <button class="card__atc" tabindex="-1">Ajouter au panier</button>
+        </div>
+      </div>
+    </a>
+    <div class="card__info">
+      <p class="card__type">Sac à main</p>
+      <p class="card__name">Colette</p>
+      <p class="card__price">2 290 EUR</p>
+    </div>
+  </article>
+
+  <!-- 3. Rafael — Sac à main — Cognac -->
+  <article class="card" data-reveal>
+    <a href="/products/rafael" aria-label="Voir le sac Rafael">
+      <div class="card__img">
+        <img src="https://images.unsplash.com/photo-1594938298603-c8148c4b4781?w=600&q=80"
+             alt="Sac Rafael, cuir veau grainé cognac, TIRABOSCHI Paris"
+             width="600" height="800" loading="lazy">
+        <img src="https://images.unsplash.com/photo-1611923134239-b9be5816b23c?w=600&q=80"
+             alt="" class="img-alt" aria-hidden="true" width="600" height="800" loading="lazy">
+        <div class="card__actions" aria-hidden="true">
+          <button class="card__wish" aria-label="Ajouter Rafael aux favoris" tabindex="-1">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <button class="card__atc" tabindex="-1">Ajouter au panier</button>
+        </div>
+      </div>
+    </a>
+    <div class="card__info">
+      <p class="card__type">Sac à main</p>
+      <p class="card__name">Rafael</p>
+      <p class="card__price">3 200 EUR</p>
+    </div>
+  </article>
+
+  <!-- 4. Colette Mini — Bandoulière — Caramel -->
+  <article class="card" data-reveal>
+    <a href="/products/colette-mini" aria-label="Voir le sac Colette Mini">
+      <div class="card__img">
+        <img src="https://images.unsplash.com/photo-1590739293931-a8c0c85b5e24?w=600&q=80"
+             alt="Sac Colette Mini, bandoulière cuir caramel, TIRABOSCHI Paris"
+             width="600" height="800" loading="lazy">
+        <img src="https://images.unsplash.com/photo-1584917865442-de89be41a0f3?w=600&q=80"
+             alt="" class="img-alt" aria-hidden="true" width="600" height="800" loading="lazy">
+        <div class="card__actions" aria-hidden="true">
+          <button class="card__wish" aria-label="Ajouter Colette Mini aux favoris" tabindex="-1">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <button class="card__atc" tabindex="-1">Ajouter au panier</button>
+        </div>
+        <div class="card__badge">Nouveau</div>
+      </div>
+    </a>
+    <div class="card__info">
+      <p class="card__type">Sac à bandoulière</p>
+      <p class="card__name">Colette Mini</p>
+      <p class="card__price">1 890 EUR</p>
+    </div>
+  </article>
+
+  <!-- ── Encart éditorial 2×2 — Savoir-Faire ── -->
+  <a class="col-editorial-2x2" href="/pages/savoir-faire" data-reveal>
+    <img src="https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=1200&q=80"
+         alt="Savoir-faire TIRABOSCHI Paris — artisan maroquinier"
+         loading="lazy">
+    <div class="col-editorial-2x2__overlay"></div>
+    <div class="col-editorial-2x2__body">
+      <p class="col-editorial-2x2__label">Savoir-Faire</p>
+      <h3 class="col-editorial-2x2__title">3 400 points<br>de couture sellier</h3>
+      <span class="col-editorial-2x2__link">Découvrir l'atelier</span>
+    </div>
+  </a>
+
+  <!-- 5. Jane — Sac à main — Marine -->
+  <article class="card" data-reveal>
+    <a href="/products/jane" aria-label="Voir le sac Jane">
+      <div class="card__img">
+        <img src="https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=600&q=80"
+             alt="Sac Jane, cuir buffle marine, TIRABOSCHI Paris"
+             width="600" height="800" loading="lazy">
+        <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80"
+             alt="" class="img-alt" aria-hidden="true" width="600" height="800" loading="lazy">
+        <div class="card__actions" aria-hidden="true">
+          <button class="card__wish" aria-label="Ajouter Jane aux favoris" tabindex="-1">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <button class="card__atc" tabindex="-1">Ajouter au panier</button>
+        </div>
+      </div>
+    </a>
+    <div class="card__info">
+      <p class="card__type">Sac à main</p>
+      <p class="card__name">Jane</p>
+      <p class="card__price">2 650 EUR</p>
+    </div>
+  </article>
+
+  <!-- 6. Olympe — Sac à main — Noir -->
+  <article class="card" data-reveal>
+    <a href="/products/olympe" aria-label="Voir le sac Olympe">
+      <div class="card__img">
+        <img src="https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=600&q=80"
+             alt="Sac Olympe, cuir veau grainé noir, TIRABOSCHI Paris"
+             width="600" height="800" loading="lazy">
+        <img src="https://images.unsplash.com/photo-1594938298603-c8148c4b4781?w=600&q=80"
+             alt="" class="img-alt" aria-hidden="true" width="600" height="800" loading="lazy">
+        <div class="card__actions" aria-hidden="true">
+          <button class="card__wish" aria-label="Ajouter Olympe aux favoris" tabindex="-1">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <button class="card__atc" tabindex="-1">Ajouter au panier</button>
+        </div>
+        <div class="card__badge">Nouveau</div>
+      </div>
+    </a>
+    <div class="card__info">
+      <p class="card__type">Sac à main</p>
+      <p class="card__name">Olympe</p>
+      <p class="card__price">3 450 EUR</p>
+    </div>
+  </article>
+
+  <!-- 7. Pochon — Petite maroquinerie — Cognac -->
+  <article class="card" data-reveal>
+    <a href="/products/pochon" aria-label="Voir le Pochon">
+      <div class="card__img">
+        <img src="https://images.unsplash.com/photo-1611923134239-b9be5816b23c?w=600&q=80"
+             alt="Pochon cuir cognac, petite maroquinerie TIRABOSCHI Paris"
+             width="600" height="800" loading="lazy">
+        <img src="https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=600&q=80"
+             alt="" class="img-alt" aria-hidden="true" width="600" height="800" loading="lazy">
+        <div class="card__actions" aria-hidden="true">
+          <button class="card__wish" aria-label="Ajouter Pochon aux favoris" tabindex="-1">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <button class="card__atc" tabindex="-1">Ajouter au panier</button>
+        </div>
+      </div>
+    </a>
+    <div class="card__info">
+      <p class="card__type">Petite maroquinerie</p>
+      <p class="card__name">Pochon</p>
+      <p class="card__price">490 EUR</p>
+    </div>
+  </article>
+
+  <!-- 8. Chaine — Accessoire — Noir -->
+  <article class="card" data-reveal>
+    <a href="/products/chaine" aria-label="Voir la Chaine">
+      <div class="card__img" style="background:#f0ede6">
+        <img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=600&q=80"
+             alt="Chaine d'anse cuir noir, accessoire TIRABOSCHI Paris"
+             width="600" height="800" loading="lazy">
+        <img src="https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=600&q=80"
+             alt="" class="img-alt" aria-hidden="true" width="600" height="800" loading="lazy">
+        <div class="card__actions" aria-hidden="true">
+          <button class="card__wish" aria-label="Ajouter Chaine aux favoris" tabindex="-1">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <button class="card__atc" tabindex="-1">Ajouter au panier</button>
+        </div>
+      </div>
+    </a>
+    <div class="card__info">
+      <p class="card__type">Accessoire</p>
+      <p class="card__name">Chaine</p>
+      <p class="card__price">190 EUR</p>
+    </div>
+  </article>
+
+  <!-- ── Encart éditorial 4×1 — The Society ── -->
+  <a class="col-editorial-4x1" href="/pages/la-societe" data-reveal>
+    <div class="col-editorial-4x1__body">
+      <p class="col-editorial-4x1__label">The Society · Privilèges</p>
+      <h3 class="col-editorial-4x1__title">Accédez aux pièces<br>non mises en vente</h3>
+      <span class="col-editorial-4x1__link">Découvrir The Society</span>
+    </div>
+    <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1200&q=80"
+         alt="The Society TIRABOSCHI — privilèges exclusifs"
+         loading="lazy">
+  </a>
+
+  <!-- 9. Anse en Cuir — Accessoire — Caramel -->
+  <article class="card" data-reveal>
+    <a href="/products/anse-en-cuir" aria-label="Voir l'Anse en Cuir">
+      <div class="card__img" style="background:#f0ede6">
+        <img src="https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=600&q=80"
+             alt="Anse en cuir caramel, accessoire TIRABOSCHI Paris"
+             width="600" height="800" loading="lazy">
+        <img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=600&q=80"
+             alt="" class="img-alt" aria-hidden="true" width="600" height="800" loading="lazy">
+        <div class="card__actions" aria-hidden="true">
+          <button class="card__wish" aria-label="Ajouter Anse en Cuir aux favoris" tabindex="-1">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <button class="card__atc" tabindex="-1">Ajouter au panier</button>
+        </div>
+      </div>
+    </a>
+    <div class="card__info">
+      <p class="card__type">Accessoire</p>
+      <p class="card__name">Anse en Cuir</p>
+      <p class="card__price">290 EUR</p>
+    </div>
+  </article>
+
+</main>
+
+<!-- Load more -->
+<div class="col-more">
+  <button class="col-more__btn">Charger plus de pièces</button>
+</div>
+
+<!-- ════════════════════════════════════════
+     MOBILE — FAB Filtrer & Trier
+════════════════════════════════════════ -->
+<button class="col-filter-fab" id="filter-fab" aria-label="Ouvrir les filtres" aria-expanded="false" aria-controls="filter-sheet">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="17" x2="10" y2="17"/></svg>
+  Filtrer &amp; Trier
+</button>
+
+<!-- ════════════════════════════════════════
+     MOBILE — Bottom sheet filtres
+════════════════════════════════════════ -->
+<div class="filter-sheet" id="filter-sheet" role="dialog" aria-modal="true" aria-label="Filtres et tri">
+  <div class="filter-sheet__backdrop" id="filter-backdrop"></div>
+  <div class="filter-sheet__inner">
+    <div class="filter-sheet__head">
+      <h3>Filtrer &amp; Trier</h3>
+      <button class="filter-sheet__close" id="filter-close" aria-label="Fermer les filtres">
+        <svg viewBox="0 0 24 24"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+      </button>
+    </div>
+
+    <!-- Trier par -->
+    <div class="filter-sheet__section open">
+      <button class="filter-sheet__section-btn" aria-expanded="true">
+        Trier par
+        <svg viewBox="0 0 12 12" aria-hidden="true"><polyline points="2,4 6,8 10,4"/></svg>
+      </button>
+      <div class="filter-sheet__section-body">
+        <ul>
+          <li><label><input type="radio" name="sort" value="new" checked> Nouveautés</label></li>
+          <li><label><input type="radio" name="sort" value="asc"> Prix croissant</label></li>
+          <li><label><input type="radio" name="sort" value="desc"> Prix décroissant</label></li>
+          <li><label><input type="radio" name="sort" value="best"> Best-sellers</label></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Modèle -->
+    <div class="filter-sheet__section">
+      <button class="filter-sheet__section-btn" aria-expanded="false">
+        Modèle
+        <svg viewBox="0 0 12 12" aria-hidden="true"><polyline points="2,4 6,8 10,4"/></svg>
+      </button>
+      <div class="filter-sheet__section-body">
+        <ul>
+          <li><label><input type="checkbox"> Sac à main (6)</label></li>
+          <li><label><input type="checkbox"> Sac à bandoulière (2)</label></li>
+          <li><label><input type="checkbox"> Petite maroquinerie (1)</label></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Matière -->
+    <div class="filter-sheet__section">
+      <button class="filter-sheet__section-btn" aria-expanded="false">
+        Matière
+        <svg viewBox="0 0 12 12" aria-hidden="true"><polyline points="2,4 6,8 10,4"/></svg>
+      </button>
+      <div class="filter-sheet__section-body">
+        <ul>
+          <li><label><input type="checkbox"> Veau grainé (4)</label></li>
+          <li><label><input type="checkbox"> Agneau nappa (3)</label></li>
+          <li><label><input type="checkbox"> Cuir de buffle (2)</label></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Prix -->
+    <div class="filter-sheet__section">
+      <button class="filter-sheet__section-btn" aria-expanded="false">
+        Prix
+        <svg viewBox="0 0 12 12" aria-hidden="true"><polyline points="2,4 6,8 10,4"/></svg>
+      </button>
+      <div class="filter-sheet__section-body">
+        <div class="col-price-range">
+          <div class="col-price-labels"><span>190 EUR</span><span>3 450 EUR</span></div>
+          <input type="range" min="190" max="3450" value="3450" step="10">
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-sheet__foot">
+      <button class="filter-sheet__reset">Réinitialiser</button>
+      <button class="filter-sheet__apply">Voir 9 résultats</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════ -->
+<footer class="footer" role="contentinfo">
+  <div class="footer__top">
+    <div>
+      <p class="footer__brand-logo">TIRABOSCHI · Since 1904</p>
+      <p class="footer__brand-text">Maroquinerie de luxe française. Chaque pièce fabriquée à la main, par un seul artisan, dans nos ateliers parisiens.</p>
+      <div class="footer__social">
+        <a href="https://instagram.com/boschi_paris" target="_blank" rel="noopener">Instagram</a>
+        <a href="#">Pinterest</a>
+      </div>
+    </div>
+    <div class="footer__col">
+      <h4>Collections</h4>
+      <ul>
+        <li><a href="#">Sacs</a></li>
+        <li><a href="#">Petite Maroquinerie</a></li>
+        <li><a href="#">Iconiques</a></li>
+        <li><a href="#">FW 2025</a></li>
+        <li><a href="#">Sur Mesure</a></li>
+      </ul>
+    </div>
+    <div class="footer__col">
+      <h4>La Maison</h4>
+      <ul>
+        <li><a href="#">Notre Histoire</a></li>
+        <li><a href="#">Savoir-Faire</a></li>
+        <li><a href="#">Les Matières</a></li>
+        <li><a href="#">L'Atelier</a></li>
+        <li><a href="#">La Société</a></li>
+      </ul>
+    </div>
+    <div class="footer__col">
+      <h4>Service</h4>
+      <ul>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">Livraison &amp; Retours</a></li>
+        <li><a href="#">Entretien</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Rendez-vous</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer__bottom">
+    <p class="footer__copy">© 2025 TIRABOSCHI Paris. Tous droits réservés.</p>
+    <nav class="footer__policies">
+      <a href="#">Mentions légales</a>
+      <a href="#">Confidentialité</a>
+      <a href="#">CGV</a>
+    </nav>
+  </div>
+</footer>
+
+<!-- ════════════════════════════════════════
+     MOBILE NAV DRAWER
+════════════════════════════════════════ -->
+<nav class="mobile-nav" id="mobile-nav" aria-label="Menu principal" aria-hidden="true">
+  <div class="mobile-nav__inner">
+    <button class="mobile-nav__close" id="mobile-nav-close" aria-label="Fermer le menu">
+      <svg viewBox="0 0 24 24"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+    </button>
+    <ul>
+      <li><a href="/collections/sacs" aria-current="page">Sacs</a></li>
+      <li><a href="/collections/petite-maroquinerie">Petite Maroquinerie</a></li>
+      <li><a href="/collections/iconiques">Iconiques</a></li>
+      <li><a href="/collections/fw25">Collection FW25</a></li>
+      <li><a href="/collections/sur-mesure-exotiques">Sur Mesure</a></li>
+      <li><a href="/pages/histoire">Notre Histoire</a></li>
+      <li><a href="/pages/savoir-faire">Savoir-Faire</a></li>
+      <li><a href="/blogs/latelier">L'Atelier</a></li>
+      <li><a href="/pages/contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════ -->
+<script>
+'use strict';
+
+const noMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ── Curseur ── */
+if (window.matchMedia('(hover: hover)').matches) {
+  const dot  = document.getElementById('cur-dot');
+  const ring = document.getElementById('cur-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+  });
+  if (!noMotion) {
+    (function followRing() {
+      rx += (mx - rx) * .1; ry += (my - ry) * .1;
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(followRing);
+    })();
+  }
+  document.querySelectorAll('a, button, .card').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('on-hover'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('on-hover'));
+  });
+}
+
+/* ── Header sticky directionnel ── */
+const hdr    = document.getElementById('hdr');
+const search = document.getElementById('hdr-search');
+let lastScrollY = window.scrollY, ticking = false, lastDir = 'up';
+
+function updateHeader() {
+  const y = window.scrollY;
+  const heroH = document.querySelector('.col-hero').offsetHeight;
+  const heroOffset = heroH + parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h'))
+                            + parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--search-h'));
+
+  const isSolid = y >= heroH * 0.7;
+  hdr.classList.toggle('solid', isSolid);
+  if (search && !search.classList.contains('sticky-mode')) {
+    search.classList.toggle('solid', isSolid);
+  }
+  document.body.classList.toggle('on-dark', !isSolid);
+
+  const delta = y - lastScrollY;
+  if (y > 120) {
+    if (delta > 4 && lastDir !== 'down') {
+      hdr.classList.add('hidden');
+      document.body.classList.add('hdr-hidden');
+      if (search) { search.classList.add('sticky-mode'); search.classList.remove('solid'); }
+      lastDir = 'down';
+    } else if (delta < -4 && lastDir !== 'up') {
+      hdr.classList.remove('hidden');
+      document.body.classList.remove('hdr-hidden');
+      if (search) { search.classList.remove('sticky-mode'); search.classList.toggle('solid', isSolid); }
+      lastDir = 'up';
+    }
+  } else {
+    hdr.classList.remove('hidden');
+    document.body.classList.remove('hdr-hidden');
+    if (search) { search.classList.remove('sticky-mode'); search.classList.toggle('solid', isSolid); }
+    lastDir = 'up';
+  }
+
+  lastScrollY = y; ticking = false;
+}
+
+window.addEventListener('scroll', () => {
+  if (!ticking) { requestAnimationFrame(updateHeader); ticking = true; }
+}, { passive: true });
+updateHeader();
+
+/* ── Filtres desktop — dropdowns ── */
+const filterBtns = document.querySelectorAll('.col-filter-btn');
+const filterPanels = document.querySelectorAll('.col-filter-panel');
+
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const panelId = btn.getAttribute('aria-controls');
+    const panel   = document.getElementById(panelId);
+    const isOpen  = btn.classList.contains('active');
+
+    // Fermer tous
+    filterBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-expanded','false'); });
+    filterPanels.forEach(p => p.classList.remove('open'));
+
+    if (!isOpen && panel) {
+      btn.classList.add('active');
+      btn.setAttribute('aria-expanded','true');
+      panel.classList.add('open');
+    }
+  });
+});
+
+// Fermer en cliquant ailleurs
+document.addEventListener('click', e => {
+  if (!e.target.closest('.col-filter-btn') && !e.target.closest('.col-filter-panel')) {
+    filterBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-expanded','false'); });
+    filterPanels.forEach(p => p.classList.remove('open'));
+  }
+});
+
+// Boutons "Appliquer" dans les panels
+document.querySelectorAll('.col-filter-apply').forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-expanded','false'); });
+    filterPanels.forEach(p => p.classList.remove('open'));
+  });
+});
+
+/* ── Tri — dropdown ── */
+const sortBtn   = document.getElementById('sort-btn');
+const sortPanel = document.getElementById('sort-panel');
+
+sortBtn && sortBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  const isOpen = sortPanel.classList.contains('open');
+  // Fermer filtres d'abord
+  filterBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-expanded','false'); });
+  filterPanels.forEach(p => p.classList.remove('open'));
+  sortPanel.classList.toggle('open', !isOpen);
+  sortBtn.setAttribute('aria-expanded', !isOpen ? 'true' : 'false');
+});
+
+sortPanel && sortPanel.querySelectorAll('button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    sortPanel.querySelectorAll('button').forEach(b => { b.classList.remove('selected'); b.setAttribute('aria-selected','false'); });
+    btn.classList.add('selected');
+    btn.setAttribute('aria-selected','true');
+    sortBtn.querySelector('svg') && null; // update label si besoin
+    sortPanel.classList.remove('open');
+    sortBtn.setAttribute('aria-expanded','false');
+  });
+});
+
+/* ── Wishlist ── */
+document.querySelectorAll('.card__wish').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.preventDefault();
+    btn.classList.toggle('active');
+    btn.setAttribute('aria-label', btn.classList.contains('active')
+      ? btn.getAttribute('aria-label').replace('Ajouter','Retirer')
+      : btn.getAttribute('aria-label').replace('Retirer','Ajouter'));
+  });
+});
+
+/* ── Mobile filtre sheet ── */
+const filterFab  = document.getElementById('filter-fab');
+const filterSheet = document.getElementById('filter-sheet');
+const filterClose = document.getElementById('filter-close');
+const filterBackdrop = document.getElementById('filter-backdrop');
+
+function openFilterSheet() {
+  filterSheet.classList.add('open');
+  filterFab.setAttribute('aria-expanded','true');
+  document.body.style.overflow = 'hidden';
+}
+function closeFilterSheet() {
+  filterSheet.classList.remove('open');
+  filterFab.setAttribute('aria-expanded','false');
+  document.body.style.overflow = '';
+}
+
+filterFab && filterFab.addEventListener('click', openFilterSheet);
+filterClose && filterClose.addEventListener('click', closeFilterSheet);
+filterBackdrop && filterBackdrop.addEventListener('click', closeFilterSheet);
+
+// Accordéons dans la sheet
+document.querySelectorAll('.filter-sheet__section-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const section = btn.closest('.filter-sheet__section');
+    const isOpen  = section.classList.contains('open');
+    // Toggle
+    section.classList.toggle('open', !isOpen);
+    btn.setAttribute('aria-expanded', !isOpen ? 'true' : 'false');
+  });
+});
+
+/* ── Footer mobile accordion ── */
+document.querySelectorAll('.footer__col h4').forEach(h => {
+  h.addEventListener('click', () => {
+    h.closest('.footer__col').classList.toggle('open');
+  });
+});
+
+/* ── Mobile nav ── */
+const mobileMenuBtn  = document.getElementById('mobile-menu-btn');
+const mobileNav      = document.getElementById('mobile-nav');
+const mobileNavClose = document.getElementById('mobile-nav-close');
+
+mobileMenuBtn && mobileMenuBtn.addEventListener('click', () => {
+  mobileNav.classList.add('open');
+  mobileNav.setAttribute('aria-hidden','false');
+  mobileMenuBtn.setAttribute('aria-expanded','true');
+  document.body.classList.add('nav-open');
+});
+[mobileNavClose, mobileNav].forEach(el => {
+  el && el.addEventListener('click', e => {
+    if (e.target === mobileNav || e.target === mobileNavClose || e.target.closest('#mobile-nav-close')) {
+      mobileNav.classList.remove('open');
+      mobileNav.setAttribute('aria-hidden','true');
+      mobileMenuBtn && mobileMenuBtn.setAttribute('aria-expanded','false');
+      document.body.classList.remove('nav-open');
+    }
+  });
+});
+
+/* ── Scroll reveals ── */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
+</script>
+</body>
+</html>

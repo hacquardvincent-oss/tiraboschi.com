@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TIRABOSCHI Paris — International · Démo de validation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── TOKENS ─────────────────────────────────────────── */
+    :root {
+      --tira-black:    #0a0a0a;
+      --tira-white:    #ffffff;
+      --tira-grey:     #f7f5f2;
+      --tira-border:   #e8e8e8;
+      --tira-ease:     cubic-bezier(0.16, 1, 0.3, 1);
+      --tira-duration: 0.9s;
+    }
+
+    /* ─── RESET ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-family: 'Playfair Display', serif; font-weight: 400; background: var(--tira-white); color: var(--tira-black); }
+    body { min-height: 100vh; }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; font-family: inherit; font-weight: 400; background: none; border: none; }
+    img, video { display: block; max-width: 100%; }
+    select { font-family: inherit; }
+
+    /* ─── DEMO CONTROL BAR ───────────────────────────────── */
+    .demo-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 9999;
+      background: var(--tira-black);
+      color: var(--tira-white);
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 0 20px;
+      height: 52px;
+      border-bottom: 1px solid #333;
+    }
+    .demo-bar__label {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.5;
+      white-space: nowrap;
+      margin-right: 16px;
+      flex-shrink: 0;
+    }
+    .demo-bar__markets {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .demo-bar__btn {
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--tira-white);
+      padding: 6px 12px;
+      border: 1px solid transparent;
+      opacity: 0.6;
+      transition: opacity 0.2s, border-color 0.2s;
+      border-radius: 0;
+      white-space: nowrap;
+    }
+    .demo-bar__btn:hover { opacity: 1; }
+    .demo-bar__btn.active { opacity: 1; border-color: var(--tira-white); }
+    .demo-bar__note {
+      margin-left: auto;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      opacity: 0.35;
+      white-space: nowrap;
+      display: none;
+    }
+    @media (min-width: 1024px) { .demo-bar__note { display: block; } }
+
+    /* ─── STICKY NOTE ────────────────────────────────────── */
+    .demo-sticky-note {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9000;
+      background: #fffbe6;
+      border: 1px solid #e8d88a;
+      padding: 12px 16px;
+      max-width: 280px;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      line-height: 1.6;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+    .demo-sticky-note strong {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      opacity: 0.6;
+    }
+
+    /* ─── GEO BANNER ─────────────────────────────────────── */
+    .tira-geo-banner {
+      position: relative;
+      z-index: 300;
+      background: var(--tira-grey);
+      border-bottom: 1px solid var(--tira-border);
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 0 24px;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      transform: translateY(-100%);
+      transition: transform 0.4s var(--tira-ease);
+    }
+    .tira-geo-banner.visible { transform: translateY(0); }
+    .tira-geo-banner.dismissed { display: none; }
+    .tira-geo-banner__text { opacity: 0.7; }
+    .tira-geo-banner__cta {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+    }
+    .tira-geo-banner__cta:hover { opacity: 0.6; }
+    .tira-geo-banner__sep { opacity: 0.3; }
+    .tira-geo-banner__dismiss {
+      opacity: 0.5;
+      cursor: pointer;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+    }
+    .tira-geo-banner__dismiss:hover { opacity: 1; }
+    .tira-geo-banner__close {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      line-height: 1;
+      opacity: 0.4;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .tira-geo-banner__close:hover { opacity: 1; }
+    [dir="rtl"] .tira-geo-banner__close { right: auto; left: 16px; }
+
+    /* ─── HEADER ─────────────────────────────────────────── */
+    .tira-header {
+      position: sticky;
+      top: 52px; /* below demo bar */
+      z-index: 400;
+      background: var(--tira-white);
+      border-bottom: 1px solid var(--tira-border);
+      height: 64px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 0 24px;
+    }
+    .tira-header__nav {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+    }
+    .tira-header__nav-link {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .tira-header__nav-link:hover { opacity: 1; }
+    .tira-header__logo {
+      text-align: center;
+      font-size: 15px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+    .tira-header__actions {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .tira-header__icon {
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+    .tira-header__icon:hover { opacity: 1; }
+    .tira-header__icon svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1; }
+
+    /* ─── LOCALE CHIP ────────────────────────────────────── */
+    .tira-locale-chip {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+    }
+    .tira-locale-chip__flag { font-size: 16px; line-height: 1; }
+    .tira-locale-chip__code { opacity: 0.7; transition: opacity 0.2s; }
+    .tira-locale-chip:hover .tira-locale-chip__code { opacity: 1; }
+    .tira-locale-chip__caret {
+      font-size: 8px;
+      opacity: 0.4;
+      transition: transform 0.2s;
+    }
+    .tira-locale-chip.open .tira-locale-chip__caret { transform: rotate(180deg); }
+    .tira-locale-dropdown {
+      position: absolute;
+      top: calc(100% + 12px);
+      right: 0;
+      background: var(--tira-white);
+      border: 1px solid var(--tira-border);
+      min-width: 220px;
+      z-index: 500;
+      display: none;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+    }
+    .tira-locale-chip.open .tira-locale-dropdown { display: block; }
+    .tira-locale-dropdown__item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      border-bottom: 1px solid var(--tira-border);
+      transition: background 0.15s;
+    }
+    .tira-locale-dropdown__item:last-child { border-bottom: none; }
+    .tira-locale-dropdown__item:hover { background: var(--tira-grey); }
+    .tira-locale-dropdown__item.active { font-size: 11px; }
+    .tira-locale-dropdown__item.active::after {
+      content: '✓';
+      margin-left: auto;
+      opacity: 0.5;
+    }
+    .tira-locale-dropdown__flag { font-size: 18px; }
+    .tira-locale-dropdown__info { display: flex; flex-direction: column; gap: 2px; }
+    .tira-locale-dropdown__name { text-transform: uppercase; letter-spacing: 0.08em; }
+    .tira-locale-dropdown__currency { opacity: 0.4; font-size: 10px; letter-spacing: 0.05em; }
+
+    /* ─── MAIN CONTENT WRAPPER ───────────────────────────── */
+    .tira-main {
+      padding-top: 0;
+    }
+
+    /* ─── EXPLAINER SECTION ──────────────────────────────── */
+    .tira-section {
+      padding: 80px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .tira-section--full {
+      max-width: none;
+      padding: 80px 40px;
+    }
+    .tira-section--grey {
+      background: var(--tira-grey);
+      border-top: 1px solid var(--tira-border);
+      border-bottom: 1px solid var(--tira-border);
+    }
+    .tira-section__label {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.4;
+      margin-bottom: 16px;
+    }
+    .tira-section__title {
+      font-size: 40px;
+      letter-spacing: -0.01em;
+      margin-bottom: 24px;
+      line-height: 1.1;
+    }
+    @media (max-width: 768px) { .tira-section__title { font-size: 28px; } }
+    .tira-section__body {
+      font-size: 14px;
+      line-height: 1.7;
+      opacity: 0.7;
+      max-width: 560px;
+    }
+
+    /* ─── EXPLAINER GRID ─────────────────────────────────── */
+    .tira-explainer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1px;
+      background: var(--tira-border);
+      border: 1px solid var(--tira-border);
+      margin-top: 48px;
+    }
+    .tira-explainer-card {
+      background: var(--tira-white);
+      padding: 32px 28px;
+    }
+    .tira-explainer-card__num {
+      font-size: 36px;
+      opacity: 0.08;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+    .tira-explainer-card__title {
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .tira-explainer-card__body {
+      font-size: 12px;
+      line-height: 1.65;
+      opacity: 0.55;
+    }
+
+    /* ─── PRODUCT CARDS ──────────────────────────────────── */
+    .tira-products-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 32px;
+    }
+    .tira-products-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3px;
+    }
+    @media (max-width: 1024px) { .tira-products-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px)  { .tira-products-grid { grid-template-columns: 1fr 1fr; gap: 2px; } }
+
+    .tira-card {
+      position: relative;
+      cursor: pointer;
+    }
+    .tira-card__img {
+      aspect-ratio: 3/4;
+      background: linear-gradient(135deg, #e8e4de 0%, #d4cfc8 50%, #c8c3bb 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .tira-card__img--victoire {
+      background: linear-gradient(160deg, #d4c9be 0%, #b8a99a 60%, #a89285 100%);
+    }
+    .tira-card__img--colette {
+      background: linear-gradient(160deg, #c8beb4 0%, #a09088 60%, #8c7c74 100%);
+    }
+    .tira-card__img--rafael {
+      background: linear-gradient(160deg, #1a1614 0%, #2a2220 60%, #3a3230 100%);
+    }
+    .tira-card__img--pochon {
+      background: linear-gradient(160deg, #d8d0c8 0%, #b8b0a8 60%, #a8a098 100%);
+    }
+    .tira-card__img-label {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.35;
+      color: var(--tira-white);
+    }
+    .tira-card__img--victoire .tira-card__img-label,
+    .tira-card__img--colette .tira-card__img-label { color: var(--tira-white); }
+    .tira-card__img--pochon .tira-card__img-label { color: var(--tira-black); opacity: 0.3; }
+    .tira-card__info {
+      padding: 14px 0 20px;
+    }
+    .tira-card__name {
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .tira-card__price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .tira-card__price {
+      font-size: 14px;
+      letter-spacing: 0.04em;
+      transition: opacity 0.3s;
+    }
+    .tira-card__tax {
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      opacity: 0.4;
+    }
+    .tira-card__actions {
+      display: flex;
+      gap: 16px;
+      margin-top: 10px;
+    }
+    .tira-card__cta {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .tira-card__cta:hover { opacity: 1; }
+    .tira-card__wishlist {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 18px;
+      line-height: 1;
+      opacity: 0;
+      transition: opacity 0.2s;
+      cursor: pointer;
+    }
+    .tira-card:hover .tira-card__wishlist { opacity: 1; }
+
+    /* ─── TAX NOTICE SECTION ─────────────────────────────── */
+    .tira-tax-notice {
+      background: var(--tira-grey);
+      border: 1px solid var(--tira-border);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 32px;
+    }
+    .tira-tax-notice__icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      opacity: 0.4;
+    }
+    .tira-tax-notice__text {
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      line-height: 1.6;
+      opacity: 0.65;
+    }
+    .tira-tax-notice__text strong {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+      opacity: 0.5;
+    }
+
+    /* ─── LABELS TABLE ───────────────────────────────────── */
+    .tira-labels-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .tira-labels-table th {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--tira-border);
+      opacity: 0.45;
+      white-space: nowrap;
+    }
+    .tira-labels-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--tira-border);
+      letter-spacing: 0.03em;
+      vertical-align: middle;
+    }
+    .tira-labels-table tr:last-child td { border-bottom: none; }
+    .tira-labels-table td.active-col {
+      background: var(--tira-grey);
+      font-size: 13px;
+    }
+    .tira-labels-table td.lang-ar,
+    .tira-labels-table th.lang-ar { text-align: right; }
+    .tira-labels-table tbody tr:hover td { background: var(--tira-grey); }
+    .tira-labels-table tbody tr:hover td.active-col { background: #eeebe6; }
+    .tira-col-header {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .tira-col-header__flag { font-size: 16px; }
+    .tira-col-header__name { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; }
+
+    /* ─── FOOTER ─────────────────────────────────────────── */
+    .tira-footer {
+      background: var(--tira-black);
+      color: var(--tira-white);
+      padding: 64px 40px 40px;
+    }
+    .tira-footer__grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+      padding-bottom: 56px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    @media (max-width: 1024px) { .tira-footer__grid { grid-template-columns: 1fr 1fr; gap: 32px; } }
+    @media (max-width: 600px)  { .tira-footer__grid { grid-template-columns: 1fr; } }
+    .tira-footer__brand-name {
+      font-size: 16px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .tira-footer__brand-tagline {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      opacity: 0.35;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    .tira-footer__col-title {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.4;
+      margin-bottom: 20px;
+    }
+    .tira-footer__links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      list-style: none;
+    }
+    .tira-footer__links a {
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      opacity: 0.55;
+      transition: opacity 0.2s;
+    }
+    .tira-footer__links a:hover { opacity: 1; }
+
+    /* ─── FOOTER LOCALE SELECTOR ─────────────────────────── */
+    .tira-footer__locale {
+      max-width: 1200px;
+      margin: 48px auto 0;
+      padding-top: 48px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .tira-footer__locale-title {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.35;
+      margin-bottom: 24px;
+    }
+    .tira-footer__locale-form {
+      display: flex;
+      gap: 24px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+    .tira-footer__locale-field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 200px;
+    }
+    .tira-footer__locale-label {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.4;
+    }
+    .tira-footer__locale-select {
+      background: transparent;
+      color: var(--tira-white);
+      border: none;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      padding: 8px 0;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='white' stroke-opacity='0.4' fill='none' stroke-width='1'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 4px center;
+      padding-right: 20px;
+      transition: border-color 0.2s;
+    }
+    .tira-footer__locale-select:focus { border-bottom-color: rgba(255,255,255,0.5); }
+    .tira-footer__locale-select option { background: var(--tira-black); color: var(--tira-white); }
+    .tira-footer__locale-submit {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      color: var(--tira-white);
+      opacity: 0.7;
+      padding: 8px 0;
+      transition: opacity 0.2s;
+      cursor: pointer;
+    }
+    .tira-footer__locale-submit:hover { opacity: 1; }
+
+    /* ─── FOOTER BOTTOM ──────────────────────────────────── */
+    .tira-footer__bottom {
+      max-width: 1200px;
+      margin: 40px auto 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .tira-footer__copy {
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      opacity: 0.25;
+    }
+    .tira-footer__policy-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+    .tira-footer__policy-links a {
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      opacity: 0.3;
+      transition: opacity 0.2s;
+    }
+    .tira-footer__policy-links a:hover { opacity: 0.7; }
+
+    /* ─── PRICE TRANSITIONS ──────────────────────────────── */
+    .price-updating {
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .price-updated {
+      opacity: 1;
+      transition: opacity 0.3s 0.1s;
+    }
+
+    /* ─── RTL SUPPORT ────────────────────────────────────── */
+    [dir="rtl"] .tira-header__nav { justify-content: flex-end; }
+    [dir="rtl"] .tira-header__actions { justify-content: flex-start; }
+    [dir="rtl"] .tira-locale-dropdown { right: auto; left: 0; }
+    [dir="rtl"] .tira-footer__locale-select {
+      background-position: left 4px center;
+      padding-right: 0;
+      padding-left: 20px;
+    }
+
+    /* ─── DEMO SECTION WRAPPER ───────────────────────────── */
+    .demo-section-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border: 1px solid var(--tira-border);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.5;
+      margin-bottom: 32px;
+    }
+    .demo-section-tag::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: currentColor;
+      border-radius: 50%;
+      opacity: 0.4;
+    }
+
+    /* ─── UTILITY ────────────────────────────────────────── */
+    .text-uppercase { text-transform: uppercase; }
+    .text-small { font-size: 11px; letter-spacing: 0.08em; }
+    .opacity-50 { opacity: 0.5; }
+    .mb-4 { margin-bottom: 4px; }
+    .mt-8 { margin-top: 8px; }
+    .divider {
+      border: none;
+      border-top: 1px solid var(--tira-border);
+      margin: 0;
+    }
+
+    /* ─── MOBILE DRAWER LOCALE ───────────────────────────── */
+    .tira-drawer-locale {
+      padding: 20px 24px;
+      border-top: 1px solid var(--tira-border);
+      margin-top: 8px;
+    }
+    .tira-drawer-locale__title {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.4;
+      margin-bottom: 14px;
+    }
+    .tira-drawer-locale__options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .tira-drawer-locale__opt {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      opacity: 0.6;
+      padding: 4px 0;
+      transition: opacity 0.2s;
+    }
+    .tira-drawer-locale__opt:hover { opacity: 1; }
+    .tira-drawer-locale__opt.active { opacity: 1; }
+    .tira-drawer-locale__opt.active::after {
+      content: '✓';
+      margin-left: auto;
+      font-size: 12px;
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- DEMO CONTROL BAR                                        -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="demo-bar" role="navigation" aria-label="Sélecteur de marché (démo)">
+  <span class="demo-bar__label">Marché :</span>
+  <div class="demo-bar__markets">
+    <button class="demo-bar__btn active" onclick="switchMarket('fr')" id="btn-fr">🇫🇷 France · EUR</button>
+    <button class="demo-bar__btn" onclick="switchMarket('gb')" id="btn-gb">🇬🇧 Royaume-Uni · GBP</button>
+    <button class="demo-bar__btn" onclick="switchMarket('us')" id="btn-us">🇺🇸 États-Unis · USD</button>
+    <button class="demo-bar__btn" onclick="switchMarket('jp')" id="btn-jp">🇯🇵 Japon · JPY</button>
+    <button class="demo-bar__btn" onclick="switchMarket('kr')" id="btn-kr">🇰🇷 Corée · KRW</button>
+    <button class="demo-bar__btn" onclick="switchMarket('ar')" id="btn-ar">🇸🇦 Moyen-Orient · USD</button>
+  </div>
+  <span class="demo-bar__note">Ceci est une page de validation — pas une page réelle du site</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- COMPONENT 1 — GEO-SUGGESTION BANNER                    -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="tira-geo-banner" id="geo-banner" role="banner" aria-live="polite">
+  <span class="tira-geo-banner__text" id="geo-text">Vous semblez naviguer depuis…</span>
+  <button class="tira-geo-banner__cta" id="geo-cta" onclick="geoBannerAccept()">Continuer →</button>
+  <span class="tira-geo-banner__sep">·</span>
+  <button class="tira-geo-banner__dismiss" id="geo-dismiss" onclick="geoBannerDismiss()">Rester en EUR</button>
+  <button class="tira-geo-banner__close" onclick="geoBannerDismiss()" aria-label="Fermer">×</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- COMPONENT 2 — HEADER WITH LOCALE SELECTOR              -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<header class="tira-header" role="banner">
+
+  <!-- Nav gauche -->
+  <nav class="tira-header__nav" aria-label="Navigation principale">
+    <a href="#" class="tira-header__nav-link">Collections</a>
+    <a href="#" class="tira-header__nav-link">Maison</a>
+    <a href="#" class="tira-header__nav-link">Sur Mesure</a>
+  </nav>
+
+  <!-- Logo centré -->
+  <div class="tira-header__logo" aria-label="TIRABOSCHI Paris">
+    TIRABOSCHI
+  </div>
+
+  <!-- Actions droite -->
+  <div class="tira-header__actions">
+
+    <!-- Account -->
+    <div class="tira-header__icon" aria-label="Compte">
+      <svg viewBox="0 0 22 22" aria-hidden="true">
+        <circle cx="11" cy="7" r="4"/>
+        <path d="M3 19c0-4 3.6-7 8-7s8 3 8 7"/>
+      </svg>
+    </div>
+
+    <!-- Locale chip + dropdown -->
+    <div class="tira-locale-chip" id="locale-chip" onclick="toggleLocaleDropdown()" aria-haspopup="listbox" aria-expanded="false">
+      <span class="tira-locale-chip__flag" id="locale-flag">🇫🇷</span>
+      <span class="tira-locale-chip__code" id="locale-code">EUR</span>
+      <span class="tira-locale-chip__caret">▾</span>
+
+      <div class="tira-locale-dropdown" id="locale-dropdown" role="listbox" aria-label="Sélectionner un marché">
+        <div class="tira-locale-dropdown__item active" onclick="switchMarket('fr'); event.stopPropagation();" data-market="fr" role="option">
+          <span class="tira-locale-dropdown__flag">🇫🇷</span>
+          <div class="tira-locale-dropdown__info">
+            <span class="tira-locale-dropdown__name">France</span>
+            <span class="tira-locale-dropdown__currency">EUR · Français</span>
+          </div>
+        </div>
+        <div class="tira-locale-dropdown__item" onclick="switchMarket('gb'); event.stopPropagation();" data-market="gb" role="option">
+          <span class="tira-locale-dropdown__flag">🇬🇧</span>
+          <div class="tira-locale-dropdown__info">
+            <span class="tira-locale-dropdown__name">Royaume-Uni</span>
+            <span class="tira-locale-dropdown__currency">GBP · English</span>
+          </div>
+        </div>
+        <div class="tira-locale-dropdown__item" onclick="switchMarket('us'); event.stopPropagation();" data-market="us" role="option">
+          <span class="tira-locale-dropdown__flag">🇺🇸</span>
+          <div class="tira-locale-dropdown__info">
+            <span class="tira-locale-dropdown__name">États-Unis</span>
+            <span class="tira-locale-dropdown__currency">USD · English</span>
+          </div>
+        </div>
+        <div class="tira-locale-dropdown__item" onclick="switchMarket('jp'); event.stopPropagation();" data-market="jp" role="option">
+          <span class="tira-locale-dropdown__flag">🇯🇵</span>
+          <div class="tira-locale-dropdown__info">
+            <span class="tira-locale-dropdown__name">日本</span>
+            <span class="tira-locale-dropdown__currency">JPY · 日本語</span>
+          </div>
+        </div>
+        <div class="tira-locale-dropdown__item" onclick="switchMarket('kr'); event.stopPropagation();" data-market="kr" role="option">
+          <span class="tira-locale-dropdown__flag">🇰🇷</span>
+          <div class="tira-locale-dropdown__info">
+            <span class="tira-locale-dropdown__name">대한민국</span>
+            <span class="tira-locale-dropdown__currency">KRW · 한국어</span>
+          </div>
+        </div>
+        <div class="tira-locale-dropdown__item" onclick="switchMarket('ar'); event.stopPropagation();" data-market="ar" role="option">
+          <span class="tira-locale-dropdown__flag">🇸🇦</span>
+          <div class="tira-locale-dropdown__info">
+            <span class="tira-locale-dropdown__name">الشرق الأوسط</span>
+            <span class="tira-locale-dropdown__currency">USD · العربية</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bag -->
+    <div class="tira-header__icon" aria-label="Panier">
+      <svg viewBox="0 0 22 22" aria-hidden="true">
+        <!-- V-shape bag icon -->
+        <path d="M4 7l3.5 10h7L18 7"/>
+        <path d="M8.5 7V5.5a2.5 2.5 0 015 0V7"/>
+      </svg>
+    </div>
+
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- MAIN CONTENT                                            -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<main class="tira-main">
+
+  <!-- ── EXPLAINER SECTION ─────────────────────────────── -->
+  <section class="tira-section">
+    <div class="demo-section-tag">Démo de validation · Internationalisation</div>
+
+    <p class="tira-section__label">Comment ça fonctionne</p>
+    <h1 class="tira-section__title">TIRABOSCHI Paris<br><em>à l'international</em></h1>
+    <p class="tira-section__body">
+      Cette page présente l'ensemble des composants d'internationalisation du site. Basculer entre les marchés avec les boutons en haut pour visualiser chaque contexte : devise, langue, bannière géolocalisation, notices fiscales et sélecteurs de locale.
+    </p>
+
+    <div class="tira-explainer-grid">
+      <div class="tira-explainer-card">
+        <div class="tira-explainer-card__num">01</div>
+        <div class="tira-explainer-card__title">Bannière Géo</div>
+        <div class="tira-explainer-card__body">Apparaît automatiquement quand l'IP détectée ne correspond pas au marché actif. Slide depuis le haut. Propose de basculer vers la bonne devise. Dismissable, mémorisé en session.</div>
+      </div>
+      <div class="tira-explainer-card">
+        <div class="tira-explainer-card__num">02</div>
+        <div class="tira-explainer-card__title">Sélecteur Header</div>
+        <div class="tira-explainer-card__body">Chip discret (drapeau + code devise) dans les actions header. Dropdown au clic avec tous les marchés. Sur mobile : dans le drawer navigation, en bas de liste.</div>
+      </div>
+      <div class="tira-explainer-card">
+        <div class="tira-explainer-card__num">03</div>
+        <div class="tira-explainer-card__title">Prix dynamiques</div>
+        <div class="tira-explainer-card__body">Tous les prix s'actualisent lors du changement de marché. Transition opacité 0→1 pour éviter un flash brutal. Code devise affiché après le montant.</div>
+      </div>
+      <div class="tira-explainer-card">
+        <div class="tira-explainer-card__num">04</div>
+        <div class="tira-explainer-card__title">Labels multilingues</div>
+        <div class="tira-explainer-card__body">FR · EN · JA · KO · AR. Tous les labels UI s'adaptent à la langue du marché. Support RTL complet pour l'arabe (dir="rtl" sur document).</div>
+      </div>
+      <div class="tira-explainer-card">
+        <div class="tira-explainer-card__num">05</div>
+        <div class="tira-explainer-card__title">Notices fiscales</div>
+        <div class="tira-explainer-card__body">FR/EU : Prix TTC. UK : excl. VAT. USA : excl. taxes. JP : 税込 (TTC). Mentions livraison offertes adaptées à chaque marché.</div>
+      </div>
+      <div class="tira-explainer-card">
+        <div class="tira-explainer-card__num">06</div>
+        <div class="tira-explainer-card__title">Sélecteur Footer</div>
+        <div class="tira-explainer-card__body">14 pays disponibles, 5 langues. Selects style underline (pas de boîte). Bouton valider → change de marché. Toujours visible en bas de chaque page.</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── COMPONENT 3 — PRODUCT CARDS ───────────────────── -->
+  <section class="tira-section">
+    <div class="demo-section-tag">Composant 3 — Prix dynamiques</div>
+
+    <div class="tira-products-header">
+      <div>
+        <p class="tira-section__label">Collection FW25</p>
+        <h2 class="tira-section__title" style="font-size:32px;">Nos Iconiques</h2>
+      </div>
+      <a href="#" class="tira-card__cta" id="label-see-all">Voir tout</a>
+    </div>
+
+    <div class="tira-products-grid">
+
+      <!-- Victoire -->
+      <div class="tira-card">
+        <div class="tira-card__img tira-card__img--victoire">
+          <span class="tira-card__img-label">Victoire</span>
+        </div>
+        <span class="tira-card__wishlist" aria-label="Wishlist">♡</span>
+        <div class="tira-card__info">
+          <div class="tira-card__name">Victoire</div>
+          <div class="tira-card__price-row">
+            <span class="tira-card__price" id="price-victoire">2 850 €</span>
+            <span class="tira-card__tax" id="tax-short">TTC</span>
+          </div>
+          <div class="tira-card__actions">
+            <button class="tira-card__cta" id="label-atc-1">Ajouter au panier</button>
+            <button class="tira-card__cta" id="label-discover-1">Voir le produit</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Colette -->
+      <div class="tira-card">
+        <div class="tira-card__img tira-card__img--colette">
+          <span class="tira-card__img-label">Colette</span>
+        </div>
+        <span class="tira-card__wishlist" aria-label="Wishlist">♡</span>
+        <div class="tira-card__info">
+          <div class="tira-card__name">Colette</div>
+          <div class="tira-card__price-row">
+            <span class="tira-card__price" id="price-colette">2 290 €</span>
+            <span class="tira-card__tax" id="tax-short-2">TTC</span>
+          </div>
+          <div class="tira-card__actions">
+            <button class="tira-card__cta" id="label-atc-2">Ajouter au panier</button>
+            <button class="tira-card__cta" id="label-discover-2">Voir le produit</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rafael -->
+      <div class="tira-card">
+        <div class="tira-card__img tira-card__img--rafael">
+          <span class="tira-card__img-label">Rafael</span>
+        </div>
+        <span class="tira-card__wishlist" aria-label="Wishlist">♡</span>
+        <div class="tira-card__info">
+          <div class="tira-card__name">Rafael</div>
+          <div class="tira-card__price-row">
+            <span class="tira-card__price" id="price-rafael">3 200 €</span>
+            <span class="tira-card__tax" id="tax-short-3">TTC</span>
+          </div>
+          <div class="tira-card__actions">
+            <button class="tira-card__cta" id="label-atc-3">Ajouter au panier</button>
+            <button class="tira-card__cta" id="label-discover-3">Voir le produit</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pochon -->
+      <div class="tira-card">
+        <div class="tira-card__img tira-card__img--pochon">
+          <span class="tira-card__img-label" style="color:var(--tira-black)">Pochon</span>
+        </div>
+        <span class="tira-card__wishlist" aria-label="Wishlist">♡</span>
+        <div class="tira-card__info">
+          <div class="tira-card__name">Pochon</div>
+          <div class="tira-card__price-row">
+            <span class="tira-card__price" id="price-pochon">490 €</span>
+            <span class="tira-card__tax" id="tax-short-4">TTC</span>
+          </div>
+          <div class="tira-card__actions">
+            <button class="tira-card__cta" id="label-atc-4">Ajouter au panier</button>
+            <button class="tira-card__cta" id="label-discover-4">Voir le produit</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── COMPONENT 5 — TAX & SHIPPING NOTICE ────────── -->
+    <div class="tira-tax-notice" id="tax-notice">
+      <svg class="tira-tax-notice__icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+        <circle cx="10" cy="10" r="9"/>
+        <path d="M10 9v5M10 6.5v.5"/>
+      </svg>
+      <div class="tira-tax-notice__text" id="tax-full-notice">
+        <strong id="tax-notice-label">Prix & Livraison</strong>
+        <span id="tax-notice-text">Prix TTC, toutes taxes françaises incluses. Livraison offerte en France métropolitaine.</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── COMPONENT 6 — LANGUAGE LABELS TABLE ───────────── -->
+  <section class="tira-section tira-section--grey tira-section--full">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div class="demo-section-tag">Composant 6 — Labels multilingues</div>
+
+      <p class="tira-section__label">Internationalisation UI</p>
+      <h2 class="tira-section__title" style="font-size:32px;">Labels par langue</h2>
+      <p class="tira-section__body" style="margin-bottom:40px;">
+        Le marché actif est surligné. Les labels s'adaptent automatiquement lors du changement de marché.
+      </p>
+
+      <div style="overflow-x:auto;">
+        <table class="tira-labels-table" id="labels-table">
+          <thead>
+            <tr>
+              <th style="min-width:200px;">Action</th>
+              <th class="col-fr" id="th-fr">
+                <div class="tira-col-header">
+                  <span class="tira-col-header__flag">🇫🇷</span>
+                  <span class="tira-col-header__name">Français</span>
+                </div>
+              </th>
+              <th class="col-en" id="th-en">
+                <div class="tira-col-header">
+                  <span class="tira-col-header__flag">🇬🇧🇺🇸</span>
+                  <span class="tira-col-header__name">English</span>
+                </div>
+              </th>
+              <th class="col-ja" id="th-ja">
+                <div class="tira-col-header">
+                  <span class="tira-col-header__flag">🇯🇵</span>
+                  <span class="tira-col-header__name">日本語</span>
+                </div>
+              </th>
+              <th class="col-ko" id="th-ko">
+                <div class="tira-col-header">
+                  <span class="tira-col-header__flag">🇰🇷</span>
+                  <span class="tira-col-header__name">한국어</span>
+                </div>
+              </th>
+              <th class="col-ar lang-ar" id="th-ar">
+                <div class="tira-col-header">
+                  <span class="tira-col-header__flag">🇸🇦</span>
+                  <span class="tira-col-header__name">العربية</span>
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="opacity:0.5;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;">Ajouter au panier</td>
+              <td class="col-fr">Ajouter au panier</td>
+              <td class="col-en">Add to bag</td>
+              <td class="col-ja">カートに追加</td>
+              <td class="col-ko">카트에 추가</td>
+              <td class="col-ar lang-ar">أضف إلى الحقيبة</td>
+            </tr>
+            <tr>
+              <td style="opacity:0.5;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;">Voir le produit</td>
+              <td class="col-fr">Voir le produit</td>
+              <td class="col-en">Discover</td>
+              <td class="col-ja">詳細を見る</td>
+              <td class="col-ko">자세히 보기</td>
+              <td class="col-ar lang-ar">اكتشف</td>
+            </tr>
+            <tr>
+              <td style="opacity:0.5;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;">Livraison offerte</td>
+              <td class="col-fr">Livraison offerte</td>
+              <td class="col-en">Complimentary shipping</td>
+              <td class="col-ja">送料無料</td>
+              <td class="col-ko">무료 배송</td>
+              <td class="col-ar lang-ar">شحن مجاني</td>
+            </tr>
+            <tr>
+              <td style="opacity:0.5;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;">Prendre rendez-vous</td>
+              <td class="col-fr">Prendre rendez-vous</td>
+              <td class="col-en">Book an appointment</td>
+              <td class="col-ja">予約する</td>
+              <td class="col-ko">예약하기</td>
+              <td class="col-ar lang-ar">احجز موعدًا</td>
+            </tr>
+            <tr>
+              <td style="opacity:0.5;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;">Sur mesure</td>
+              <td class="col-fr">Sur Mesure</td>
+              <td class="col-en">Bespoke</td>
+              <td class="col-ja">オーダーメイド</td>
+              <td class="col-ko">맞춤 제작</td>
+              <td class="col-ar lang-ar">حسب الطلب</td>
+            </tr>
+            <tr>
+              <td style="opacity:0.5;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;">Collection</td>
+              <td class="col-fr">Collections</td>
+              <td class="col-en">Collections</td>
+              <td class="col-ja">コレクション</td>
+              <td class="col-ko">컬렉션</td>
+              <td class="col-ar lang-ar">المجموعات</td>
+            </tr>
+            <tr>
+              <td style="opacity:0.5;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;">Notre histoire</td>
+              <td class="col-fr">Notre histoire</td>
+              <td class="col-en">Our story</td>
+              <td class="col-ja">私たちの物語</td>
+              <td class="col-ko">우리의 이야기</td>
+              <td class="col-ar lang-ar">قصتنا</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- COMPONENT 4 — FOOTER WITH LOCALE SELECTOR              -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<footer class="tira-footer">
+  <div class="tira-footer__grid">
+    <div>
+      <div class="tira-footer__brand-name">TIRABOSCHI</div>
+      <div class="tira-footer__brand-tagline">
+        Made in France, Only.<br>Since 1904.<br>
+        Maroquinerie de luxe française.
+      </div>
+      <div style="font-size:11px;letter-spacing:0.06em;opacity:0.3;">@boschi_paris</div>
+    </div>
+    <div>
+      <div class="tira-footer__col-title">Collections</div>
+      <ul class="tira-footer__links">
+        <li><a href="#">FW25</a></li>
+        <li><a href="#">Sacs</a></li>
+        <li><a href="#">Petite Maroquinerie</a></li>
+        <li><a href="#">Iconiques</a></li>
+        <li><a href="#">Sur Mesure</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="tira-footer__col-title">La Maison</div>
+      <ul class="tira-footer__links">
+        <li><a href="#">Notre Histoire</a></li>
+        <li><a href="#">Savoir-Faire</a></li>
+        <li><a href="#">Les Matières</a></li>
+        <li><a href="#">L'Atelier</a></li>
+        <li><a href="#">La Société</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="tira-footer__col-title">Service</div>
+      <ul class="tira-footer__links">
+        <li><a href="#">Prendre Rendez-vous</a></li>
+        <li><a href="#">Livraisons & Retours</a></li>
+        <li><a href="#">Entretien</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">FAQ</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Locale selector -->
+  <div class="tira-footer__locale">
+    <div class="tira-footer__locale-title">Pays / Région &amp; Langue</div>
+    <div class="tira-footer__locale-form">
+      <div class="tira-footer__locale-field">
+        <label class="tira-footer__locale-label" for="footer-country">Pays / Région</label>
+        <select class="tira-footer__locale-select" id="footer-country">
+          <option value="fr">🇫🇷 France (EUR)</option>
+          <option value="be">🇧🇪 Belgique (EUR)</option>
+          <option value="ch">🇨🇭 Suisse (CHF)</option>
+          <option value="de">🇩🇪 Allemagne (EUR)</option>
+          <option value="it">🇮🇹 Italie (EUR)</option>
+          <option value="es">🇪🇸 Espagne (EUR)</option>
+          <option value="gb">🇬🇧 Royaume-Uni (GBP)</option>
+          <option value="us">🇺🇸 États-Unis (USD)</option>
+          <option value="ca">🇨🇦 Canada (CAD)</option>
+          <option value="jp">🇯🇵 Japon (JPY)</option>
+          <option value="kr">🇰🇷 Corée du Sud (KRW)</option>
+          <option value="ae">🇦🇪 Émirats Arabes Unis (USD)</option>
+          <option value="sa">🇸🇦 Arabie Saoudite (USD)</option>
+          <option value="au">🇦🇺 Australie (AUD)</option>
+        </select>
+      </div>
+      <div class="tira-footer__locale-field">
+        <label class="tira-footer__locale-label" for="footer-lang">Langue</label>
+        <select class="tira-footer__locale-select" id="footer-lang">
+          <option value="fr">Français</option>
+          <option value="en">English</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="ar">العربية</option>
+        </select>
+      </div>
+      <button class="tira-footer__locale-submit" onclick="applyFooterLocale()">Valider →</button>
+    </div>
+  </div>
+
+  <div class="tira-footer__bottom">
+    <span class="tira-footer__copy">© 2025 TIRABOSCHI Paris. Tous droits réservés.</span>
+    <ul class="tira-footer__policy-links">
+      <li><a href="#">Mentions légales</a></li>
+      <li><a href="#">Confidentialité</a></li>
+      <li><a href="#">CGV</a></li>
+      <li><a href="#">Cookies</a></li>
+    </ul>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- STICKY DEMO NOTE                                        -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="demo-sticky-note" role="note">
+  <strong>Page de démo</strong>
+  Basculer entre les marchés avec les boutons en haut pour valider chaque contexte international.
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- JAVASCRIPT                                             -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<script>
+  /* ─── MARKET DATA ────────────────────────────────────── */
+  const markets = {
+    fr: {
+      currency: '€', code: 'EUR', lang: 'fr',
+      flag: '🇫🇷', countryName: 'France',
+      prices: { victoire: '2 850', colette: '2 290', rafael: '3 200', pochon: '490' },
+      priceFormat: (amount, currency) => `${amount} ${currency}`,
+      geo_text: null,
+      geo_cta: null,
+      geo_dismiss: null,
+      dir: 'ltr',
+      labels: {
+        atc: 'Ajouter au panier',
+        discover: 'Voir le produit',
+        seeAll: 'Voir tout',
+        tax_short: 'TTC',
+        tax_label: 'Prix & Livraison',
+        tax_full: 'Prix TTC, toutes taxes françaises incluses. Livraison offerte en France métropolitaine.',
+      }
+    },
+    gb: {
+      currency: '£', code: 'GBP', lang: 'en',
+      flag: '🇬🇧', countryName: 'United Kingdom',
+      prices: { victoire: '2 450', colette: '1 950', rafael: '2 750', pochon: '420' },
+      priceFormat: (amount, currency) => `${currency}${amount}`,
+      geo_text: 'You appear to be browsing from the United Kingdom.',
+      geo_cta: 'Continue in £ GBP →',
+      geo_dismiss: 'Stay in € EUR',
+      dir: 'ltr',
+      labels: {
+        atc: 'Add to bag',
+        discover: 'Discover',
+        seeAll: 'View all',
+        tax_short: 'excl. VAT',
+        tax_label: 'Pricing & Delivery',
+        tax_full: 'Prices exclude VAT. Complimentary shipping on orders over £500.',
+      }
+    },
+    us: {
+      currency: '$', code: 'USD', lang: 'en',
+      flag: '🇺🇸', countryName: 'United States',
+      prices: { victoire: '3 100', colette: '2 500', rafael: '3 450', pochon: '530' },
+      priceFormat: (amount, currency) => `${currency}${amount}`,
+      geo_text: 'You appear to be browsing from the United States.',
+      geo_cta: 'Continue in $ USD →',
+      geo_dismiss: 'Stay in € EUR',
+      dir: 'ltr',
+      labels: {
+        atc: 'Add to bag',
+        discover: 'Discover',
+        seeAll: 'View all',
+        tax_short: 'excl. taxes',
+        tax_label: 'Pricing & Shipping',
+        tax_full: 'Prices exclude local taxes. Complimentary worldwide shipping on all orders.',
+      }
+    },
+    jp: {
+      currency: '¥', code: 'JPY', lang: 'ja',
+      flag: '🇯🇵', countryName: '日本',
+      prices: { victoire: '415 000', colette: '330 000', rafael: '460 000', pochon: '72 000' },
+      priceFormat: (amount, currency) => `${currency}${amount}`,
+      geo_text: '日本からアクセスされているようです。',
+      geo_cta: '¥ JPYで続ける →',
+      geo_dismiss: '€ EURのまま続ける',
+      dir: 'ltr',
+      labels: {
+        atc: 'カートに追加',
+        discover: '詳細を見る',
+        seeAll: 'すべて見る',
+        tax_short: '税込',
+        tax_label: '価格・配送',
+        tax_full: '税込価格。全国送料無料。',
+      }
+    },
+    kr: {
+      currency: '₩', code: 'KRW', lang: 'ko',
+      flag: '🇰🇷', countryName: '대한민국',
+      prices: { victoire: '3 850 000', colette: '3 050 000', rafael: '4 250 000', pochon: '645 000' },
+      priceFormat: (amount, currency) => `${currency}${amount}`,
+      geo_text: '대한민국에서 접속하신 것 같습니다.',
+      geo_cta: '₩ KRW로 계속하기 →',
+      geo_dismiss: '€ EUR 유지',
+      dir: 'ltr',
+      labels: {
+        atc: '카트에 추가',
+        discover: '자세히 보기',
+        seeAll: '전체 보기',
+        tax_short: '부가세 포함',
+        tax_label: '가격 및 배송',
+        tax_full: '부가가치세 포함 가격. 전국 무료 배송.',
+      }
+    },
+    ar: {
+      currency: '$', code: 'USD', lang: 'ar',
+      flag: '🇸🇦', countryName: 'الشرق الأوسط',
+      prices: { victoire: '3 100', colette: '2 500', rafael: '3 450', pochon: '530' },
+      priceFormat: (amount, currency) => `${amount} ${currency}`,
+      geo_text: 'يبدو أنك تتصفح من منطقة الشرق الأوسط.',
+      geo_cta: 'متابعة بالدولار الأمريكي ←',
+      geo_dismiss: 'البقاء باليورو',
+      dir: 'rtl',
+      labels: {
+        atc: 'أضف إلى الحقيبة',
+        discover: 'اكتشف',
+        seeAll: 'عرض الكل',
+        tax_short: 'شامل الضريبة',
+        tax_label: 'الأسعار والشحن',
+        tax_full: 'الأسعار شاملة للضريبة. شحن مجاني على جميع الطلبات.',
+      }
+    }
+  };
+
+  /* ─── STATE ──────────────────────────────────────────── */
+  let currentMarket = 'fr';
+  let geoBannerDismissed = false;
+
+  /* ─── MAIN SWITCH FUNCTION ───────────────────────────── */
+  function switchMarket(marketKey) {
+    const market = markets[marketKey];
+    if (!market) return;
+
+    const prevMarket = currentMarket;
+    currentMarket = marketKey;
+
+    /* 1. Update demo bar buttons */
+    document.querySelectorAll('.demo-bar__btn').forEach(btn => btn.classList.remove('active'));
+    const activeBtn = document.getElementById('btn-' + marketKey);
+    if (activeBtn) activeBtn.classList.add('active');
+
+    /* 2. Update document direction (RTL for Arabic) */
+    document.documentElement.setAttribute('dir', market.dir);
+    document.documentElement.setAttribute('lang', market.lang);
+
+    /* 3. Update geo banner */
+    updateGeoBanner(market, marketKey);
+
+    /* 4. Update prices (with fade transition) */
+    updatePrices(market);
+
+    /* 5. Update locale chip in header */
+    updateLocaleChip(market, marketKey);
+
+    /* 6. Update locale dropdown active state */
+    document.querySelectorAll('.tira-locale-dropdown__item').forEach(item => {
+      item.classList.toggle('active', item.dataset.market === marketKey);
+    });
+
+    /* 7. Update tax/shipping notices */
+    updateTaxNotices(market);
+
+    /* 8. Update language labels in table */
+    updateLabelsTable(market);
+
+    /* 9. Update ATC / discover buttons */
+    updateLabels(market);
+
+    /* 10. Close dropdown if open */
+    document.getElementById('locale-chip').classList.remove('open');
+    document.getElementById('locale-chip').setAttribute('aria-expanded', 'false');
+
+    /* 11. Update footer selects to reflect market */
+    updateFooterSelects(marketKey, market.lang);
+  }
+
+  /* ─── GEO BANNER ─────────────────────────────────────── */
+  function updateGeoBanner(market, marketKey) {
+    const banner = document.getElementById('geo-banner');
+    if (!market.geo_text || geoBannerDismissed) {
+      banner.classList.remove('visible');
+      return;
+    }
+    document.getElementById('geo-text').textContent = market.geo_text;
+    document.getElementById('geo-cta').textContent = market.geo_cta;
+    document.getElementById('geo-dismiss').textContent = market.geo_dismiss;
+    banner.setAttribute('dir', market.dir);
+    banner.classList.remove('dismissed');
+    // Small delay for animation to be visible on switch
+    banner.classList.remove('visible');
+    setTimeout(() => banner.classList.add('visible'), 80);
+  }
+
+  function geoBannerAccept() {
+    geoBannerDismissed = true;
+    document.getElementById('geo-banner').classList.remove('visible');
+  }
+
+  function geoBannerDismiss() {
+    geoBannerDismissed = true;
+    document.getElementById('geo-banner').classList.remove('visible');
+    setTimeout(() => {
+      document.getElementById('geo-banner').classList.add('dismissed');
+    }, 400);
+  }
+
+  /* ─── PRICES ─────────────────────────────────────────── */
+  function updatePrices(market) {
+    const priceEls = {
+      victoire: document.getElementById('price-victoire'),
+      colette:  document.getElementById('price-colette'),
+      rafael:   document.getElementById('price-rafael'),
+      pochon:   document.getElementById('price-pochon'),
+    };
+
+    // Fade out
+    Object.values(priceEls).forEach(el => {
+      if (el) { el.style.opacity = '0'; el.style.transition = 'opacity 0.15s'; }
+    });
+
+    setTimeout(() => {
+      Object.entries(priceEls).forEach(([product, el]) => {
+        if (!el) return;
+        const amount = market.prices[product];
+        el.textContent = market.priceFormat(amount, market.currency);
+        el.style.opacity = '1';
+        el.style.transition = 'opacity 0.3s';
+      });
+    }, 180);
+  }
+
+  /* ─── LOCALE CHIP ────────────────────────────────────── */
+  function updateLocaleChip(market, marketKey) {
+    document.getElementById('locale-flag').textContent = market.flag;
+    document.getElementById('locale-code').textContent = market.code;
+  }
+
+  function toggleLocaleDropdown() {
+    const chip = document.getElementById('locale-chip');
+    const isOpen = chip.classList.toggle('open');
+    chip.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  }
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function(e) {
+    const chip = document.getElementById('locale-chip');
+    if (!chip.contains(e.target)) {
+      chip.classList.remove('open');
+      chip.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  /* ─── TAX NOTICES ────────────────────────────────────── */
+  function updateTaxNotices(market) {
+    const taxShortEls = ['tax-short', 'tax-short-2', 'tax-short-3', 'tax-short-4'];
+    taxShortEls.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = market.labels.tax_short;
+    });
+
+    const noticeLabel = document.getElementById('tax-notice-label');
+    const noticeText  = document.getElementById('tax-notice-text');
+    if (noticeLabel) noticeLabel.textContent = market.labels.tax_label;
+    if (noticeText)  noticeText.textContent  = market.labels.tax_full;
+
+    // RTL for notice
+    const notice = document.getElementById('tax-notice');
+    if (notice) notice.setAttribute('dir', market.dir);
+  }
+
+  /* ─── LABELS TABLE ───────────────────────────────────── */
+  function updateLabelsTable(market) {
+    // Map lang to column class
+    const langColMap = {
+      fr: 'col-fr',
+      en: 'col-en',
+      ja: 'col-ja',
+      ko: 'col-ko',
+      ar: 'col-ar'
+    };
+    const activeCol = langColMap[market.lang] || 'col-fr';
+
+    // Remove active from all columns
+    document.querySelectorAll('.tira-labels-table td, .tira-labels-table th').forEach(cell => {
+      cell.classList.remove('active-col');
+    });
+
+    // Add active to current language column
+    document.querySelectorAll('.' + activeCol).forEach(cell => {
+      cell.classList.add('active-col');
+    });
+  }
+
+  /* ─── LABELS (ATC, DISCOVER, SEE ALL) ────────────────── */
+  function updateLabels(market) {
+    const atcIds = ['label-atc-1', 'label-atc-2', 'label-atc-3', 'label-atc-4'];
+    const discoverIds = ['label-discover-1', 'label-discover-2', 'label-discover-3', 'label-discover-4'];
+
+    atcIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = market.labels.atc;
+    });
+    discoverIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = market.labels.discover;
+    });
+    const seeAll = document.getElementById('label-see-all');
+    if (seeAll) seeAll.textContent = market.labels.seeAll;
+  }
+
+  /* ─── FOOTER SELECTS ─────────────────────────────────── */
+  function updateFooterSelects(marketKey, lang) {
+    const countrySelect = document.getElementById('footer-country');
+    const langSelect    = document.getElementById('footer-lang');
+    if (countrySelect) {
+      // Map market keys to country codes
+      const marketToCountry = { fr: 'fr', gb: 'gb', us: 'us', jp: 'jp', kr: 'kr', ar: 'sa' };
+      const countryVal = marketToCountry[marketKey] || 'fr';
+      if ([...countrySelect.options].some(o => o.value === countryVal)) {
+        countrySelect.value = countryVal;
+      }
+    }
+    if (langSelect) {
+      if ([...langSelect.options].some(o => o.value === lang)) {
+        langSelect.value = lang;
+      }
+    }
+  }
+
+  /* ─── FOOTER LOCALE APPLY ────────────────────────────── */
+  function applyFooterLocale() {
+    const countrySelect = document.getElementById('footer-country');
+    const langSelect    = document.getElementById('footer-lang');
+    const countryVal = countrySelect ? countrySelect.value : 'fr';
+    const langVal    = langSelect    ? langSelect.value    : 'fr';
+
+    // Map country codes to market keys
+    const countryToMarket = {
+      fr: 'fr', be: 'fr', ch: 'fr', de: 'fr', it: 'fr', es: 'fr',
+      gb: 'gb',
+      us: 'us', ca: 'us',
+      jp: 'jp',
+      kr: 'kr',
+      ae: 'ar', sa: 'ar',
+      au: 'us'
+    };
+    const marketKey = countryToMarket[countryVal] || 'fr';
+    switchMarket(marketKey);
+
+    // Feedback
+    const submitBtn = document.querySelector('.tira-footer__locale-submit');
+    if (submitBtn) {
+      const orig = submitBtn.textContent;
+      submitBtn.textContent = langVal === 'ar' ? '✓ تم' : langVal === 'ja' ? '✓ 完了' : langVal === 'ko' ? '✓ 완료' : '✓ Appliqué';
+      setTimeout(() => { submitBtn.textContent = orig; }, 1800);
+    }
+  }
+
+  /* ─── INIT ───────────────────────────────────────────── */
+  (function init() {
+    // Start with France (no geo banner)
+    updateLabelsTable(markets['fr']);
+    updateTaxNotices(markets['fr']);
+    updateLocaleChip(markets['fr'], 'fr');
+
+    // Highlight FR column by default
+    document.querySelectorAll('.col-fr').forEach(cell => cell.classList.add('active-col'));
+  })();
+</script>
+
+</body>
+</html>

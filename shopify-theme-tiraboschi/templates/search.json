@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "tira-search": {
+      "type": "tira-search",
+      "settings": {}
+    }
+  },
+  "order": ["tira-search"]
+}

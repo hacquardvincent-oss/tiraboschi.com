@@ -1,0 +1,84 @@
+{% unless customer %}
+<div class='tira-popup' id='tira-newsletter-popup' aria-modal='true' role='dialog' aria-label='Join the Society'>
+  <div class='tira-popup__overlay' id='tira-popup-overlay'></div>
+  <div class='tira-popup__content'>
+    <button class='tira-popup__close' id='tira-popup-close' aria-label='Fermer'>
+      <svg width='16' height='16' viewBox='0 0 16 16' fill='none'>
+        <line x1='1' y1='1' x2='15' y2='15' stroke='currentColor' stroke-width='1'/>
+        <line x1='15' y1='1' x2='1' y2='15' stroke='currentColor' stroke-width='1'/>
+      </svg>
+    </button>
+    <p class='tira-popup__kicker'>La Société · TIRABOSCHI Paris</p>
+    <h3 class='tira-popup__title'>Join the Society</h3>
+    <p class='tira-popup__text'>Les coulisses de l'atelier, les nouvelles pièces en avant-première.</p>
+    {% form 'customer', id: 'tira-popup-form' %}
+      <input type='hidden' name='contact[tags]' value='newsletter-signup'>
+      <div class='tira-popup__field'>
+        <input type='email' name='contact[email]' id='tira-popup-email' placeholder='Adresse e-mail' autocomplete='email' required>
+        <button type='submit' aria-label="S'inscrire">
+          <svg width='20' height='20' viewBox='0 0 20 20' fill='none'>
+            <line x1='2' y1='10' x2='18' y2='10' stroke='currentColor' stroke-width='1'/>
+            <polyline points='12,4 18,10 12,16' fill='none' stroke='currentColor' stroke-width='1'/>
+          </svg>
+        </button>
+      </div>
+      <p class='tira-popup__rgpd'>En vous inscrivant, vous acceptez notre <a href='/policies/privacy-policy'>politique de confidentialité</a>.</p>
+    {% endform %}
+    <button class='tira-popup__skip' id='tira-popup-skip'>Non merci</button>
+  </div>
+</div>
+<style>
+.tira-popup { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+.tira-popup.is-open { opacity: 1; pointer-events: auto; }
+.tira-popup__overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(2px); }
+.tira-popup__content { position: relative; z-index: 1; background: #ffffff; padding: 56px 48px; max-width: 480px; width: calc(100% - 40px); text-align: center; }
+.tira-popup__close { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; padding: 8px; color: #0a0a0a; opacity: 0.4; }
+.tira-popup__kicker { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.4; margin: 0 0 16px; }
+.tira-popup__title { font-size: 28px; font-weight: 400; margin: 0 0 16px; letter-spacing: -0.01em; }
+.tira-popup__text { font-size: 14px; line-height: 1.6; opacity: 0.7; margin: 0 0 32px; }
+.tira-popup__field { display: flex; align-items: center; border-bottom: 1px solid #0a0a0a; margin-bottom: 16px; }
+.tira-popup__field input { flex: 1; border: none; outline: none; background: transparent; font-family: inherit; font-size: 14px; padding: 8px 0; }
+.tira-popup__field button { background: none; border: none; cursor: pointer; padding: 8px 0 8px 16px; color: #0a0a0a; }
+.tira-popup__rgpd { font-size: 11px; opacity: 0.4; margin: 0 0 24px; line-height: 1.5; }
+.tira-popup__rgpd a { color: inherit; }
+.tira-popup__skip { background: none; border: none; font-size: 11px; letter-spacing: 0.08em; opacity: 0.35; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; font-family: inherit; }
+@media (max-width: 749px) { .tira-popup__content { padding: 40px 24px; } .tira-popup__title { font-size: 22px; } }
+</style>
+<script>
+(function() {
+  var STORAGE_KEY = 'tira_popup_dismissed';
+  var DELAY_MS = 30 * 24 * 60 * 60 * 1000;
+  if (localStorage.getItem(STORAGE_KEY)) return;
+  var popup = document.getElementById('tira-newsletter-popup');
+  var overlay = document.getElementById('tira-popup-overlay');
+  var closeBtn = document.getElementById('tira-popup-close');
+  var skipBtn = document.getElementById('tira-popup-skip');
+  var form = document.getElementById('tira-popup-form');
+  if (!popup) return;
+  function openPopup() { popup.classList.add('is-open'); document.body.style.overflow = 'hidden'; }
+  function closePopup() { popup.classList.remove('is-open'); document.body.style.overflow = ''; localStorage.setItem(STORAGE_KEY, Date.now() + DELAY_MS); }
+  var triggered = false;
+  window.addEventListener('scroll', function() {
+    if (triggered) return;
+    var scrollPct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+    if (scrollPct >= 0.6) { triggered = true; setTimeout(openPopup, 500); }
+  }, { passive: true });
+  if (!('ontouchstart' in window)) {
+    document.addEventListener('mouseleave', function(e) {
+      if (triggered || e.clientY > 50) return;
+      triggered = true; openPopup();
+    });
+  }
+  closeBtn.addEventListener('click', closePopup);
+  skipBtn.addEventListener('click', closePopup);
+  overlay.addEventListener('click', closePopup);
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closePopup(); });
+  form.addEventListener('submit', function() {
+    setTimeout(function() {
+      popup.querySelector('.tira-popup__content').innerHTML = '<p style="font-size:14px;padding:40px 0;opacity:0.7;">Merci. Vous faites partie de La Société.</p>';
+      setTimeout(closePopup, 2500);
+    }, 500);
+  });
+})();
+</script>
+{% endunless %}

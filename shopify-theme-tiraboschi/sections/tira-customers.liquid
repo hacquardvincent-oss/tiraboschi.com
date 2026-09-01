@@ -1,0 +1,22 @@
+{% comment %}
+  TIRABOSCHI · Sections clients (login, register, account, order, addresses)
+  Ce fichier gère tous les états du compte client.
+  Le contenu Shopify natif est rendu via content_for_layout dans theme.liquid.
+  On applique ici uniquement un wrapper pour les styles.
+{% endcomment %}
+
+<div class="tira-customers">
+  <div class="tira-customers__inner">
+    {{ content_for_layout }}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Espace client",
+  "tag": "div",
+  "class": "tira-customers-page",
+  "settings": [],
+  "presets": [{ "name": "Espace client TIRABOSCHI" }]
+}
+{% endschema %}

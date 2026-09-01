@@ -1,0 +1,215 @@
+/* =============================================
+   tira-preorder.css — TIRABOSCHI Paris
+   Styles pour le bloc précommande / drop
+   Assets: assets/tira-preorder.css
+   ============================================= */
+
+/* === BADGE === */
+.tira-preorder__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--tira-black, #0a0a0a);
+  padding: 6px 12px;
+  margin-bottom: 16px;
+  font-family: 'Playfair Display', serif;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+@keyframes tira-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+.tira-preorder__dot {
+  animation: tira-pulse 1.5s ease-in-out infinite;
+  font-size: 8px;
+}
+
+/* === EDITION === */
+.tira-preorder__edition {
+  background: var(--tira-grey, #f7f5f2);
+  padding: 16px 20px;
+  margin: 24px 0;
+}
+.tira-preorder__edition-title {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  margin-bottom: 10px;
+  opacity: 0.8;
+}
+.tira-preorder__progress {
+  width: 100%;
+  height: 1px;
+  background: var(--tira-border, #e8e8e8);
+  margin-bottom: 8px;
+  position: relative;
+}
+.tira-preorder__progress-fill {
+  position: absolute;
+  top: 0; left: 0; height: 100%;
+  background: var(--tira-black, #0a0a0a);
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.tira-preorder__edition-count {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+/* === COUNTDOWN === */
+.tira-preorder__countdown-wrap {
+  margin: 24px 0;
+}
+.tira-preorder__countdown-label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.45;
+  margin-bottom: 12px;
+}
+.tira-preorder__countdown {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tira-countdown__unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 60px;
+  border: 1px solid var(--tira-border, #e8e8e8);
+  padding: 12px 8px;
+  background: var(--tira-grey, #f7f5f2);
+}
+.tira-countdown__number {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+.tira-countdown__label {
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  opacity: 0.45;
+}
+.tira-countdown__sep {
+  font-size: 24px;
+  opacity: 0.25;
+  margin-bottom: 20px;
+  font-family: 'Playfair Display', serif;
+}
+.tira-preorder__closed {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+/* === CTA === */
+.tira-preorder__cta-wrap {
+  margin: 28px 0 20px;
+}
+.tira-preorder__cta {
+  display: block;
+  width: 100%;
+  padding: 18px 24px;
+  border: 1px solid var(--tira-black, #0a0a0a);
+  background: var(--tira-white, #fff);
+  color: var(--tira-black, #0a0a0a);
+  font-family: 'Playfair Display', serif;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: center;
+}
+.tira-preorder__cta:hover:not(:disabled) {
+  background: var(--tira-black, #0a0a0a);
+  color: var(--tira-white, #fff);
+}
+.tira-preorder__cta:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.tira-preorder__cta-sub {
+  margin-top: 10px;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  opacity: 0.45;
+  text-align: center;
+}
+
+/* === TIMELINE === */
+.tira-preorder__timeline {
+  margin: 32px 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--tira-border, #e8e8e8);
+}
+.tira-preorder__timeline-intro {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  opacity: 0.6;
+  margin-bottom: 24px;
+  font-style: italic;
+}
+.tira-preorder__timeline-steps {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+}
+.tira-preorder__step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+  min-width: 80px;
+  text-align: center;
+}
+.tira-preorder__step-dot {
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--tira-black, #0a0a0a);
+  background: var(--tira-white, #fff);
+  flex-shrink: 0;
+}
+.tira-preorder__step-line {
+  flex: 1;
+  height: 1px;
+  background: var(--tira-border, #e8e8e8);
+  margin-top: 4px; /* align with dot center */
+  min-width: 24px;
+}
+.tira-preorder__step-date {
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+.tira-preorder__step-label {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.45;
+  line-height: 1.5;
+}
+.tira-preorder__artisan-note {
+  margin-top: 16px;
+  font-size: 11px;
+  opacity: 0.5;
+  text-align: center;
+  font-style: italic;
+}
+
+/* === MOBILE === */
+@media (max-width: 768px) {
+  .tira-countdown__unit { min-width: 50px; }
+  .tira-countdown__number { font-size: 22px; }
+  .tira-preorder__timeline-steps { gap: 0; }
+  .tira-preorder__step { min-width: 60px; }
+}

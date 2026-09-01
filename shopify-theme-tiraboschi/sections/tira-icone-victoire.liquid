@@ -1,0 +1,731 @@
+{% comment %}
+  ═══════════════════════════════════════════════════════════════
+  TIRABOSCHI · Icône Victoire — Page éditoriale modèle iconique
+  ═══════════════════════════════════════════════════════════════
+  Structure :
+  1. Hero 100vh — DSCF1828, Ken Burns, filigree, word reveal
+  2. L'Origine — blanc centré, texte éditorial, blockquote
+  3. La Silhouette — gris, 2-col (image + dims)
+  4. Les Matières — blanc, 4 swatches cuir
+  5. La Palette FW25 — gris, 8 couleurs
+  6. La Fabrication — fond noir, stats 2-col
+  7. Les Témoignages — blanc, 3 citations
+  8. Sur Mesure — gris centré, options + CTA
+  9. Découvrir aussi — blanc, 3 produits
+{% endcomment %}
+
+<style>
+  /* ── Variables locales ── */
+  .vic-page {
+    --tira-black: #0a0a0a;
+    --tira-white: #ffffff;
+    --tira-grey: #f7f5f2;
+    --tira-border: #e8e8e8;
+    --tira-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: 'Playfair Display', Georgia, serif;
+    color: var(--tira-black);
+  }
+
+  /* ── 1. Hero ── */
+  .vic-hero {
+    position: relative;
+    height: 100vh; min-height: 600px;
+    background: var(--tira-black);
+    overflow: hidden;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding-bottom: 64px;
+  }
+  .vic-hero__img {
+    position: absolute; inset: 0; overflow: hidden;
+  }
+  .vic-hero__img img {
+    width: 100%; height: 100%; object-fit: cover; opacity: .65;
+    animation: vic-kb 14s ease-in-out infinite alternate;
+  }
+  @keyframes vic-kb {
+    from { transform: scale(1); }
+    to   { transform: scale(1.07) translate(1.5%, -1%); }
+  }
+  .vic-hero::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(10,10,10,.75) 0%, rgba(10,10,10,.2) 50%, rgba(10,10,10,.1) 100%);
+    z-index: 1;
+  }
+  .vic-hero__filigree {
+    position: absolute; bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(120px, 18vw, 280px);
+    font-style: italic;
+    color: var(--tira-white);
+    opacity: .06;
+    white-space: nowrap;
+    z-index: 2;
+    pointer-events: none;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .vic-hero__content {
+    position: relative; z-index: 3;
+    text-align: center;
+    color: var(--tira-white);
+    padding: 0 40px;
+  }
+  .vic-hero__content h1 {
+    font-size: clamp(48px, 7vw, 88px);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    margin: 0 0 16px;
+    color: var(--tira-white);
+  }
+  .vic-hero__sub {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .15em;
+    font-style: italic; opacity: .7; margin-bottom: 0;
+  }
+  .vic-hero__cta {
+    position: absolute; bottom: 40px; right: 48px;
+    z-index: 3; text-align: right;
+    color: var(--tira-white);
+  }
+  .vic-hero__cta .vic-meta {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+    opacity: .6; display: block; margin-bottom: 6px;
+  }
+  .vic-hero__cta a {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .12em;
+    text-decoration: underline; text-underline-offset: 3px;
+    color: var(--tira-white); transition: opacity .2s;
+  }
+  .vic-hero__cta a:hover { opacity: .6; }
+
+  /* ── 2. L'Origine ── */
+  .vic-origine {
+    background: var(--tira-white);
+    padding: 120px 40px;
+    text-align: center;
+  }
+  .vic-origine__inner { max-width: 720px; margin: 0 auto; }
+  .vic-origine .vic-label {
+    display: block;
+    font-size: 11px; text-transform: uppercase; letter-spacing: .15em;
+    opacity: .5; margin-bottom: 28px;
+  }
+  .vic-origine p {
+    font-size: 18px; line-height: 1.75; margin-bottom: 48px; opacity: .85;
+  }
+  .vic-origine__quote {
+    font-size: clamp(22px, 3.5vw, 32px);
+    font-style: italic; line-height: 1.4; letter-spacing: -0.01em;
+    border-top: 1px solid var(--tira-border);
+    border-bottom: 1px solid var(--tira-border);
+    padding: 32px 0; margin-top: 48px;
+  }
+
+  /* ── 3. La Silhouette ── */
+  .vic-silhouette {
+    background: var(--tira-grey);
+    padding: 0;
+  }
+  .vic-silhouette__grid {
+    display: grid;
+    grid-template-columns: 60fr 40fr;
+    min-height: 700px;
+  }
+  .vic-silhouette__img {
+    position: relative; overflow: hidden;
+    background: #1a1a1a;
+  }
+  .vic-silhouette__img img {
+    width: 100%; height: 100%; object-fit: cover; opacity: .8;
+  }
+  .vic-silhouette__content {
+    padding: 80px 60px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .vic-silhouette__content h2 {
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 400; letter-spacing: -0.01em; line-height: 1.1;
+    margin-bottom: 28px;
+  }
+  .vic-silhouette__content > p {
+    font-size: 15px; line-height: 1.8; opacity: .8; margin-bottom: 32px;
+  }
+  .vic-silhouette__dims {
+    font-size: 12px; letter-spacing: .08em; opacity: .6; line-height: 2;
+    border-top: 1px solid var(--tira-border);
+    padding-top: 20px; margin-bottom: 20px;
+  }
+  .vic-silhouette__dims span { display: block; }
+  .vic-silhouette__content .vic-note {
+    font-size: 13px; opacity: .6; margin-bottom: 28px; line-height: 1.7;
+  }
+
+  /* ── 4. Les Matières ── */
+  .vic-matieres {
+    background: var(--tira-white);
+    padding: 100px 40px;
+  }
+  .vic-matieres__header { text-align: center; margin-bottom: 64px; }
+  .vic-matieres__title {
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 400; letter-spacing: -0.01em;
+  }
+  .vic-matieres__grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 2px; max-width: 1100px; margin: 0 auto;
+  }
+  .vic-mat-card {
+    padding: 40px 28px;
+    border: 1px solid var(--tira-border);
+    transition: background .3s;
+  }
+  .vic-mat-card:hover { background: var(--tira-grey); }
+  .vic-mat-card__swatch {
+    width: 80px; height: 100px; margin-bottom: 24px;
+  }
+  .vic-mat-card__name { font-size: 15px; margin-bottom: 10px; }
+  .vic-mat-card__desc { font-size: 12px; opacity: .6; line-height: 1.6; margin-bottom: 16px; }
+  .vic-mat-card__avail {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 10px; text-transform: uppercase; letter-spacing: .12em; opacity: .5;
+  }
+  .vic-mat-card__avail-dot {
+    width: 5px; height: 5px; background: var(--tira-black);
+    border-radius: 50%;
+  }
+  .vic-sw-pleine-fleur { background: linear-gradient(135deg, #8b6b4a 0%, #6b4f35 40%, #7d5f43 100%); }
+  .vic-sw-veau-gras    { background: linear-gradient(135deg, #c4a882 0%, #a8876a 40%, #b89872 100%); }
+  .vic-sw-veau-box     { background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 50%, #333 100%); }
+  .vic-sw-agneau-nappa { background: linear-gradient(135deg, #d4c4a8 0%, #c0ad90 40%, #ddd0b8 100%); }
+
+  /* ── 5. La Palette ── */
+  .vic-palette {
+    background: var(--tira-grey);
+    padding: 100px 40px; text-align: center;
+  }
+  .vic-palette__title {
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 400; letter-spacing: -0.01em; margin-bottom: 56px;
+  }
+  .vic-palette__grid {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 32px;
+    max-width: 700px; margin: 0 auto 48px;
+  }
+  .vic-cswatch { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .vic-cswatch__sq {
+    width: 48px; height: 48px;
+    transition: transform .3s var(--tira-ease);
+  }
+  .vic-cswatch:hover .vic-cswatch__sq { transform: scale(1.1); }
+  .vic-cswatch__name {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .1em; opacity: .6;
+  }
+  .vic-sw-noir     { background: #1a1a1a; }
+  .vic-sw-marine   { background: #1a2a3a; }
+  .vic-sw-chocolat { background: #3d2010; }
+  .vic-sw-bordeaux { background: #5c1a28; }
+  .vic-sw-cognac   { background: #8b5a2b; }
+  .vic-sw-sable    { background: #c4a882; }
+  .vic-sw-naturel  { background: #d4c4a8; }
+  .vic-sw-ivoire   { background: #f0e8d8; border: 1px solid var(--tira-border); }
+  .vic-palette__note {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+    opacity: .45; font-style: italic;
+  }
+
+  /* ── 6. La Fabrication ── */
+  .vic-fabrication {
+    background: var(--tira-black);
+    color: var(--tira-white); padding: 0;
+  }
+  .vic-fabrication__grid {
+    display: grid; grid-template-columns: 1fr 1fr; min-height: 640px;
+  }
+  .vic-fabrication__content {
+    padding: 100px 80px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .vic-fabrication__content .vic-label { color: rgba(255,255,255,.5); }
+  .vic-fabrication__content h2 {
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 400; letter-spacing: -0.01em; line-height: 1.1; margin-bottom: 28px;
+    color: var(--tira-white);
+  }
+  .vic-fabrication__content > p {
+    font-size: 15px; line-height: 1.85; opacity: .75; margin-bottom: 40px;
+  }
+  .vic-fab-stats {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    border-top: 1px solid rgba(255,255,255,.12); padding-top: 32px;
+  }
+  .vic-fab-stats__label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .12em;
+    opacity: .45; margin-bottom: 4px;
+  }
+  .vic-fab-stats__value { font-size: 14px; letter-spacing: .02em; }
+  .vic-fabrication__img {
+    background: linear-gradient(135deg, #1a1210 0%, #2d2018 30%, #1a1510 60%, #261c12 100%);
+    position: relative; overflow: hidden;
+  }
+  .vic-fabrication__img::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 60%, rgba(139,91,43,.15) 0%, transparent 70%);
+  }
+  .vic-fabrication__img img {
+    width: 100%; height: 100%; object-fit: cover; opacity: .6;
+    mix-blend-mode: luminosity;
+  }
+
+  /* ── 7. Témoignages ── */
+  .vic-temoignages {
+    background: var(--tira-white);
+    padding: 100px 40px;
+  }
+  .vic-temoignages__header { text-align: center; margin-bottom: 72px; }
+  .vic-temoignages__header h2 {
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 400; letter-spacing: -0.01em;
+  }
+  .vic-temoignages__grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 48px 64px; max-width: 1100px; margin: 0 auto;
+  }
+  .vic-temoignage {
+    border-top: 1px solid var(--tira-border);
+    padding-top: 32px;
+  }
+  .vic-temoignage__text {
+    font-size: 15px; font-style: italic; line-height: 1.75;
+    margin-bottom: 24px; opacity: .85;
+  }
+  .vic-temoignage__author {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .1em; opacity: .45;
+    font-style: normal;
+  }
+
+  /* ── 8. Sur Mesure ── */
+  .vic-sur-mesure {
+    background: var(--tira-grey);
+    padding: 100px 40px; text-align: center;
+  }
+  .vic-sur-mesure__inner { max-width: 680px; margin: 0 auto; }
+  .vic-sur-mesure__inner h2 {
+    font-size: clamp(32px, 4.5vw, 48px);
+    font-weight: 400; letter-spacing: -0.01em; margin-bottom: 24px;
+  }
+  .vic-sur-mesure__inner > p {
+    font-size: 16px; line-height: 1.8; opacity: .8; margin-bottom: 40px;
+  }
+  .vic-sur-mesure__options {
+    list-style: none; text-align: left;
+    margin: 0 auto 48px; max-width: 440px;
+    border-top: 1px solid var(--tira-border);
+  }
+  .vic-sur-mesure__options li {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--tira-border);
+    font-size: 14px; opacity: .75;
+  }
+  .vic-sur-mesure__options li::before { content: '— '; opacity: .4; }
+  .vic-sur-mesure__ctas {
+    display: flex; gap: 40px; justify-content: center; flex-wrap: wrap;
+  }
+  .vic-sur-mesure__ctas a {
+    font-size: 13px; letter-spacing: .1em; text-transform: uppercase;
+    text-decoration: underline; text-underline-offset: 3px;
+    transition: opacity .2s;
+  }
+  .vic-sur-mesure__ctas a:hover { opacity: .6; }
+
+  /* ── 9. Découvrir aussi ── */
+  .vic-decouvrir {
+    background: var(--tira-white);
+    padding: 100px 40px;
+  }
+  .vic-decouvrir__header { margin-bottom: 56px; }
+  .vic-decouvrir__header h2 {
+    font-size: 24px; font-weight: 400; letter-spacing: .02em;
+  }
+  .vic-decouvrir__grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 2px; max-width: 1100px;
+  }
+  .vic-prod-card { overflow: hidden; }
+  .vic-prod-card__img {
+    display: block; aspect-ratio: 3/4;
+    background: var(--tira-grey);
+    margin-bottom: 16px; overflow: hidden; position: relative;
+  }
+  .vic-prod-card__img img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform .6s var(--tira-ease);
+  }
+  .vic-prod-card:hover .vic-prod-card__img img { transform: scale(1.04); }
+  .vic-prod-card__name { font-size: 14px; margin-bottom: 4px; }
+  .vic-prod-card__price { font-size: 12px; opacity: .5; margin-bottom: 10px; letter-spacing: .04em; }
+  .vic-prod-card__cta {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .12em;
+    text-decoration: underline; text-underline-offset: 3px;
+    transition: opacity .2s;
+  }
+  .vic-prod-card__cta:hover { opacity: .6; }
+
+  /* ── Shared ── */
+  .vic-label {
+    display: block;
+    font-size: 11px; text-transform: uppercase; letter-spacing: .15em;
+    opacity: .5; margin-bottom: 28px;
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 768px) {
+    .vic-hero { padding-bottom: 48px; }
+    .vic-hero__content { padding: 0 20px; }
+    .vic-hero__cta { right: 20px; bottom: 24px; }
+    .vic-origine { padding: 80px 20px; }
+    .vic-origine p { font-size: 16px; }
+    .vic-silhouette__grid { grid-template-columns: 1fr; }
+    .vic-silhouette__img { min-height: 380px; }
+    .vic-silhouette__content { padding: 48px 24px; }
+    .vic-matieres { padding: 72px 0; }
+    .vic-matieres__header { padding: 0 20px; }
+    .vic-matieres__grid {
+      grid-template-columns: repeat(4, 260px);
+      overflow-x: auto; scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      gap: 1px; padding: 0 20px 24px;
+      scrollbar-width: none;
+    }
+    .vic-matieres__grid::-webkit-scrollbar { display: none; }
+    .vic-mat-card { scroll-snap-align: start; }
+    .vic-palette { padding: 72px 20px; }
+    .vic-fabrication__grid { grid-template-columns: 1fr; }
+    .vic-fabrication__img { min-height: 320px; order: -1; }
+    .vic-fabrication__content { padding: 64px 24px; }
+    .vic-fab-stats { grid-template-columns: 1fr 1fr; }
+    .vic-temoignages { padding: 72px 20px; }
+    .vic-temoignages__grid { grid-template-columns: 1fr; gap: 36px; }
+    .vic-sur-mesure { padding: 72px 20px; }
+    .vic-decouvrir { padding: 72px 20px; }
+    .vic-decouvrir__grid { grid-template-columns: 1fr; gap: 32px; }
+  }
+  @media (max-width: 480px) {
+    .vic-matieres__grid { grid-template-columns: repeat(4, 80vw); }
+  }
+</style>
+
+<div class="vic-page">
+
+  {%- comment -%} ── 1. HERO ── {%- endcomment -%}
+  <section class="vic-hero" aria-label="La Victoire — Icône TIRABOSCHI Paris">
+    <div class="vic-hero__img">
+      <img
+        src="{{ 'https://cdn.shopify.com/s/files/1/0927/5890/1079/files/28092025-DSCF1828.jpg' }}"
+        alt="La Victoire — Sac iconique TIRABOSCHI Paris"
+        loading="eager" fetchpriority="high"
+        width="1920" height="1080">
+    </div>
+
+    <div class="vic-hero__filigree" aria-hidden="true">Victoire</div>
+
+    <div class="vic-hero__content">
+      <h1 data-words>La Victoire</h1>
+      <p class="vic-hero__sub">Née en 1908. Faite pour durer une vie.</p>
+    </div>
+
+    <div class="vic-hero__cta" data-reveal>
+      <span class="vic-meta">FW25 · À partir de 2 850€</span>
+      <a href="{{ routes.root_url }}products/victoire">Découvrir la boutique →</a>
+    </div>
+  </section>
+
+  {%- comment -%} ── 2. L'ORIGINE ── {%- endcomment -%}
+  <section class="vic-origine">
+    <div class="vic-origine__inner">
+      <span class="vic-label" data-reveal>L'Icône</span>
+      <p data-reveal>
+        En 1908, Matteo Tiraboschi crée un sac pour sa fille, mariée à un diplomate vivant entre Paris et Rome.
+        Il lui faut quelque chose d'élégant le matin, discret le soir, solide pour voyager.
+        La forme en V, signature de la maison, structure le fond et allège la silhouette.
+        Ce sac, elle l'appelle "ma victoire personnelle". Le nom reste. La forme aussi.
+        Inchangée depuis plus d'un siècle.
+      </p>
+      <blockquote class="vic-origine__quote" data-reveal>
+        "Un sac qui n'a jamais eu besoin d'être réinventé."
+      </blockquote>
+    </div>
+  </section>
+
+  {%- comment -%} ── 3. LA SILHOUETTE ── {%- endcomment -%}
+  <section class="vic-silhouette" aria-label="La silhouette de la Victoire">
+    <div class="vic-silhouette__grid">
+      <div class="vic-silhouette__img">
+        {%- assign victoire = all_products['victoire'] -%}
+        {%- if victoire and victoire.featured_image -%}
+          <img
+            src="{{ victoire.featured_image | image_url: width: 900 }}"
+            alt="{{ victoire.title }} — TIRABOSCHI Paris"
+            loading="lazy" width="900" height="1200">
+        {%- else -%}
+          <img
+            src="{{ 'https://cdn.shopify.com/s/files/1/0927/5890/1079/files/28092025-DSCF1828.jpg' }}"
+            alt="La Victoire — TIRABOSCHI Paris"
+            loading="lazy" width="900" height="1200">
+        {%- endif -%}
+      </div>
+      <div class="vic-silhouette__content">
+        <span class="vic-label" data-reveal>La Forme</span>
+        <h2 data-words>La silhouette</h2>
+        <p data-reveal>
+          La forme en V du fond, la base structurée, l'anse unique en tête de cuir —
+          chaque choix est intentionnel. Rien de décoratif. La Victoire est conçue pour
+          s'affiner avec l'usage, non pour se fatiguer.
+        </p>
+        <div class="vic-silhouette__dims" data-reveal>
+          <span>Hauteur&nbsp;&nbsp;&nbsp;&nbsp;28 cm</span>
+          <span>Largeur&nbsp;&nbsp;&nbsp;&nbsp;35 cm</span>
+          <span>Profondeur&nbsp;12 cm</span>
+        </div>
+        <p class="vic-note" data-reveal>
+          Contient&nbsp;: carnet A5, portefeuille, téléphone, clés. Passe en cabine avion.
+        </p>
+        <a href="{{ routes.root_url }}products/victoire" class="tira-btn" data-reveal>
+          Voir le produit →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} ── 4. LES MATIÈRES ── {%- endcomment -%}
+  <section class="vic-matieres" aria-label="Les matières disponibles pour la Victoire">
+    <div class="vic-matieres__header">
+      <span class="vic-label" data-reveal>Le Choix</span>
+      <h2 class="vic-matieres__title" data-words>La Victoire selon votre matière</h2>
+    </div>
+
+    <div class="vic-matieres__grid">
+      <article class="vic-mat-card" data-reveal>
+        <div class="vic-mat-card__swatch vic-sw-pleine-fleur"></div>
+        <p class="vic-mat-card__name">Veau Pleine Fleur</p>
+        <p class="vic-mat-card__desc">La noblesse du cuir naturel — grain serré, tenue exceptionnelle, patine lumineuse.</p>
+        <div class="vic-mat-card__avail">
+          <span class="vic-mat-card__avail-dot"></span>
+          Disponible
+        </div>
+      </article>
+      <article class="vic-mat-card" data-reveal>
+        <div class="vic-mat-card__swatch vic-sw-veau-gras"></div>
+        <p class="vic-mat-card__name">Veau Gras</p>
+        <p class="vic-mat-card__desc">Souplesse absolue, toucher velouté. Le cuir qui s'assouplit dès le premier jour.</p>
+        <div class="vic-mat-card__avail">
+          <span class="vic-mat-card__avail-dot"></span>
+          Disponible
+        </div>
+      </article>
+      <article class="vic-mat-card" data-reveal>
+        <div class="vic-mat-card__swatch vic-sw-veau-box"></div>
+        <p class="vic-mat-card__name">Veau Box</p>
+        <p class="vic-mat-card__desc">Lisse, brillant, architectural. La matière des grandes maisons parisiennes.</p>
+        <div class="vic-mat-card__avail">
+          <span class="vic-mat-card__avail-dot"></span>
+          Disponible
+        </div>
+      </article>
+      <article class="vic-mat-card" data-reveal>
+        <div class="vic-mat-card__swatch vic-sw-agneau-nappa"></div>
+        <p class="vic-mat-card__name">Agneau Nappa</p>
+        <p class="vic-mat-card__desc">Légèreté, douceur intense, main inimitable. Le cuir des après-midis parisiens.</p>
+        <div class="vic-mat-card__avail">
+          <span class="vic-mat-card__avail-dot"></span>
+          Disponible
+        </div>
+      </article>
+    </div>
+  </section>
+
+  {%- comment -%} ── 5. LA PALETTE FW25 ── {%- endcomment -%}
+  <section class="vic-palette" aria-label="Palette de couleurs FW25">
+    <span class="vic-label" data-reveal>FW25</span>
+    <h2 class="vic-palette__title" data-words>La palette</h2>
+
+    <div class="vic-palette__grid" data-reveal>
+      <div class="vic-cswatch">
+        <div class="vic-cswatch__sq vic-sw-noir"></div>
+        <span class="vic-cswatch__name">Noir</span>
+      </div>
+      <div class="vic-cswatch">
+        <div class="vic-cswatch__sq vic-sw-marine"></div>
+        <span class="vic-cswatch__name">Marine</span>
+      </div>
+      <div class="vic-cswatch">
+        <div class="vic-cswatch__sq vic-sw-chocolat"></div>
+        <span class="vic-cswatch__name">Chocolat</span>
+      </div>
+      <div class="vic-cswatch">
+        <div class="vic-cswatch__sq vic-sw-bordeaux"></div>
+        <span class="vic-cswatch__name">Bordeaux</span>
+      </div>
+      <div class="vic-cswatch">
+        <div class="vic-cswatch__sq vic-sw-cognac"></div>
+        <span class="vic-cswatch__name">Cognac</span>
+      </div>
+      <div class="vic-cswatch">
+        <div class="vic-cswatch__sq vic-sw-sable"></div>
+        <span class="vic-cswatch__name">Sable</span>
+      </div>
+      <div class="vic-cswatch">
+        <div class="vic-cswatch__sq vic-sw-naturel"></div>
+        <span class="vic-cswatch__name">Naturel</span>
+      </div>
+      <div class="vic-cswatch">
+        <div class="vic-cswatch__sq vic-sw-ivoire"></div>
+        <span class="vic-cswatch__name">Ivoire</span>
+      </div>
+    </div>
+
+    <p class="vic-palette__note" data-reveal>
+      Toutes les teintes sont disponibles en commande — délai 4–6 semaines
+    </p>
+  </section>
+
+  {%- comment -%} ── 6. LA FABRICATION ── {%- endcomment -%}
+  <section class="vic-fabrication" aria-label="Fabrication artisanale de la Victoire">
+    <div class="vic-fabrication__grid">
+      <div class="vic-fabrication__content">
+        <span class="vic-label" data-reveal>Le Savoir-Faire</span>
+        <h2 data-words>48 à 72 heures<br>de travail</h2>
+        <p data-reveal>
+          Chaque Victoire est fabriquée par un seul artisan, de la première coupe à la dernière finition.
+          La couture sellier à deux aiguilles représente 14 heures du total.
+          Ni machine, ni chaîne. Un maroquinier, un sac. Il signe l'intérieur avant l'expédition.
+        </p>
+        <div class="vic-fab-stats" data-reveal>
+          <div>
+            <p class="vic-fab-stats__label">Artisans</p>
+            <p class="vic-fab-stats__value">1 par sac</p>
+          </div>
+          <div>
+            <p class="vic-fab-stats__label">Couture sellier</p>
+            <p class="vic-fab-stats__value">14 heures</p>
+          </div>
+          <div>
+            <p class="vic-fab-stats__label">Points de couture</p>
+            <p class="vic-fab-stats__value">3 400</p>
+          </div>
+          <div>
+            <p class="vic-fab-stats__label">Traçabilité</p>
+            <p class="vic-fab-stats__value">Certificat signé</p>
+          </div>
+        </div>
+      </div>
+      <div class="vic-fabrication__img" aria-hidden="true">
+        <img
+          src="{{ 'https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0154.jpg' }}"
+          alt="" loading="lazy" width="960" height="1280">
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} ── 7. LES TÉMOIGNAGES ── {%- endcomment -%}
+  <section class="vic-temoignages" aria-label="Témoignages clientes">
+    <div class="vic-temoignages__header">
+      <span class="vic-label" data-reveal>Elles le portent</span>
+      <h2 data-words>Quelques mots</h2>
+    </div>
+
+    <div class="vic-temoignages__grid">
+      <blockquote class="vic-temoignage" data-reveal>
+        <p class="vic-temoignage__text">
+          "Ma Victoire a 8 ans. Elle est encore plus belle qu'au premier jour.
+          Le cuir a pris une patine que je n'aurais jamais imaginée. Je ne l'échangerais pour rien."
+        </p>
+        <cite class="vic-temoignage__author">Sophie M. — Paris</cite>
+      </blockquote>
+      <blockquote class="vic-temoignage" data-reveal>
+        <p class="vic-temoignage__text">
+          "C'est le sac que mes amies me demandent en premier. Je réponds&nbsp;: Tiraboschi, 1904.
+          Et je laisse le nom faire son effet."
+        </p>
+        <cite class="vic-temoignage__author">Charlotte D. — Genève</cite>
+      </blockquote>
+      <blockquote class="vic-temoignage" data-reveal>
+        <p class="vic-temoignage__text">
+          "J'en ai commandé une deuxième pour ma fille, en Marine. La couture est identique,
+          6 ans après. C'est ce qu'on appelle une maison."
+        </p>
+        <cite class="vic-temoignage__author">Marie-Hélène B. — Lyon</cite>
+      </blockquote>
+    </div>
+  </section>
+
+  {%- comment -%} ── 8. SUR MESURE ── {%- endcomment -%}
+  <section class="vic-sur-mesure" aria-label="La Victoire sur mesure">
+    <div class="vic-sur-mesure__inner">
+      <span class="vic-label" data-reveal>Personnalisation</span>
+      <h2 data-words>La Victoire,<br>à votre façon</h2>
+      <p data-reveal>
+        Toutes les teintes de notre tannerie, votre couleur de couture,
+        vos initiales gravées sur la quincaillerie dorée ou argentée.
+      </p>
+      <ul class="vic-sur-mesure__options" data-reveal>
+        <li>Teinte au choix parmi les 48 couleurs de notre tannerie partenaire</li>
+        <li>Couleur de fil de couture sellier (naturel, ivoire, bordeaux, marine ou assorti)</li>
+        <li>Initiales gravées sur la quincaillerie — or, or vieilli ou argent</li>
+      </ul>
+      <div class="vic-sur-mesure__ctas" data-reveal>
+        <a href="{{ routes.root_url }}pages/sur-mesure">Configurer ma Victoire →</a>
+        <a href="{{ routes.root_url }}pages/prendrez-rendez-vous">Prendre rendez-vous →</a>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} ── 9. DÉCOUVRIR AUSSI ── {%- endcomment -%}
+  <section class="vic-decouvrir" aria-label="Dans la même famille">
+    <div class="vic-decouvrir__header" data-reveal>
+      <span class="vic-label">La Famille</span>
+      <h2>Dans la même famille</h2>
+    </div>
+
+    <div class="vic-decouvrir__grid">
+      {%- assign related = 'colette,colette-mini,jane' | split: ',' -%}
+      {%- for handle in related -%}
+        {%- assign prod = all_products[handle] -%}
+        {%- if prod -%}
+          <article class="vic-prod-card" data-reveal>
+            <a class="vic-prod-card__img" href="{{ prod.url }}">
+              {%- if prod.featured_image -%}
+                <img
+                  src="{{ prod.featured_image | image_url: width: 600 }}"
+                  alt="{{ prod.title }} — TIRABOSCHI Paris"
+                  loading="lazy" width="600" height="800">
+              {%- endif -%}
+            </a>
+            <div>
+              <p class="vic-prod-card__name">{{ prod.title }}</p>
+              <p class="vic-prod-card__price">À partir de {{ prod.price | money }}</p>
+              <a href="{{ prod.url }}" class="vic-prod-card__cta">Découvrir →</a>
+            </div>
+          </article>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </section>
+
+</div>
+
+{% schema %}
+{
+  "name": "Icône Victoire",
+  "tag": "section",
+  "class": "tira-section tira-section--icone-victoire",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Icône Victoire"
+    }
+  ]
+}
+{% endschema %}

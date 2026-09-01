@@ -1,0 +1,252 @@
+{
+  "_comment": "TIRABOSCHI Paris — English translations (UK + US markets)",
+  "_version": "1.0.0",
+  "_date": "2026-05-26",
+  "_note": "Human review required for all editorial content (Histoire, Savoir-Faire, Matières pages)",
+
+  "general": {
+    "accessibility": {
+      "close": "Close",
+      "open_menu": "Open menu",
+      "close_menu": "Close menu",
+      "skip_to_content": "Skip to content",
+      "loading": "Loading",
+      "next": "Next",
+      "previous": "Previous"
+    },
+    "currency": {
+      "includes_tax": "incl. VAT",
+      "excludes_tax": "excl. VAT"
+    }
+  },
+
+  "localization": {
+    "country_label": "Country / Region",
+    "language_label": "Language",
+    "submit": "Apply",
+    "switch_currency": "Switch currency"
+  },
+
+  "geo": {
+    "suggestion": "You appear to be browsing from another country.",
+    "switch": "Continue in {currency} {symbol}",
+    "stay": "Stay in € EUR",
+    "dismiss_label": "Dismiss suggestion"
+  },
+
+  "header": {
+    "search_placeholder": "Search a bag, a material...",
+    "cart_count": {
+      "one": "1 item",
+      "other": "{{ count }} items"
+    },
+    "menu": "Menu"
+  },
+
+  "products": {
+    "product": {
+      "add_to_cart": "Add to bag",
+      "sold_out": "Sold out",
+      "unavailable": "Unavailable",
+      "see_details": "View product",
+      "discover": "Discover",
+      "quantity_label": "Quantity",
+      "color_label": "Colour",
+      "size_label": "Size",
+      "material_label": "Material",
+      "share": "Share",
+      "add_to_wishlist": "Add to wishlist",
+      "remove_from_wishlist": "Remove from wishlist",
+      "recently_viewed": "Recently viewed"
+    },
+    "facets": {
+      "filter_by": "Filter by",
+      "sort_by": "Sort by",
+      "clear_all": "Clear all",
+      "filters_active": {
+        "one": "1 filter active",
+        "other": "{{ count }} filters active"
+      },
+      "sort_options": {
+        "manual": "Featured",
+        "best_selling": "Best selling",
+        "title_ascending": "A–Z",
+        "title_descending": "Z–A",
+        "price_ascending": "Price: low to high",
+        "price_descending": "Price: high to low",
+        "created_ascending": "Oldest first",
+        "created_descending": "Newest first"
+      }
+    }
+  },
+
+  "cart": {
+    "title": "My bag",
+    "empty": "Your bag is empty.",
+    "continue_shopping": "Continue shopping",
+    "checkout": "Proceed to checkout",
+    "subtotal": "Subtotal",
+    "taxes_notice": "Taxes and shipping calculated at checkout",
+    "remove_item": "Remove this item",
+    "item_count": {
+      "one": "1 item",
+      "other": "{{ count }} items"
+    }
+  },
+
+  "checkout": {
+    "contact": "Contact",
+    "email_placeholder": "Your email address",
+    "continue_to_shipping": "Continue to shipping",
+    "continue_to_payment": "Continue to payment",
+    "pay_now": "Complete order",
+    "shipping": "Shipping",
+    "payment": "Payment",
+    "summary": "Order summary",
+    "shipping_free": "Complimentary shipping",
+    "shipping_calculated": "Calculated at next step"
+  },
+
+  "shipping": {
+    "free": "Complimentary shipping",
+    "free_threshold": "Complimentary shipping on orders over {amount}",
+    "included": "Shipping included",
+    "worldwide": "International shipping available",
+    "signature": "Tracked delivery",
+    "express": "Express delivery",
+    "international": "DHL Express International"
+  },
+
+  "customer": {
+    "login": "Sign in",
+    "logout": "Sign out",
+    "register": "Create account",
+    "account": "My account",
+    "orders": "My orders",
+    "addresses": "My addresses",
+    "wishlist": "My wishlist",
+    "la_societe": "La Société",
+    "password_placeholder": "Password",
+    "email_placeholder": "Your email address",
+    "forgot_password": "Forgot your password?"
+  },
+
+  "la_societe": {
+    "title": "La Société",
+    "join": "Join La Société",
+    "cercle_1": "Circle I — Membre",
+    "cercle_2": "Circle II — Artisan",
+    "cercle_3": "Circle III — Maison",
+    "privileges": "Your privileges",
+    "welcome": "Welcome to La Société"
+  },
+
+  "newsletter": {
+    "title": "Enter the confidence",
+    "subtitle": "News, first access to launches and behind the scenes of our atelier.",
+    "email_placeholder": "Your email address",
+    "submit": "Join",
+    "success": "Thank you for your trust.",
+    "error": "An error occurred. Please try again.",
+    "legal": "Your data remains private. Unsubscribe in one click."
+  },
+
+  "sections": {
+    "marquee": {
+      "text": "Made in France, Only. · Since 1904 · Luxury Leather Goods · Paris · Handcrafted"
+    },
+    "hero": {
+      "scroll_cta": "Discover"
+    },
+    "collection": {
+      "view_all": "View the collection",
+      "products_count": {
+        "one": "1 piece",
+        "other": "{{ count }} pieces"
+      }
+    },
+    "savoir_faire": {
+      "discover": "Discover our craft"
+    },
+    "sur_mesure": {
+      "cta": "Book an appointment"
+    }
+  },
+
+  "pages": {
+    "histoire": {
+      "title": "Our Story",
+      "seo_title": "Our Story since 1904 | TIRABOSCHI Paris"
+    },
+    "savoir_faire": {
+      "title": "Craftsmanship",
+      "seo_title": "Artisanal Craftsmanship | TIRABOSCHI Paris"
+    },
+    "matieres": {
+      "title": "Materials & Leathers",
+      "seo_title": "Exceptional Materials & Leathers | TIRABOSCHI Paris"
+    },
+    "sur_mesure": {
+      "title": "Bespoke",
+      "seo_title": "Bespoke & Exotic | TIRABOSCHI Paris"
+    },
+    "contact": {
+      "title": "Contact",
+      "seo_title": "Contact & Appointments | TIRABOSCHI Paris"
+    },
+    "search": {
+      "title": "Search",
+      "placeholder": "Search...",
+      "no_results": "No results for \"{{ terms }}\"",
+      "results_count": {
+        "one": "1 result",
+        "other": "{{ count }} results"
+      }
+    },
+    "404": {
+      "title": "Page not found",
+      "message": "The page you are looking for does not exist or has been moved.",
+      "cta": "Return to home"
+    }
+  },
+
+  "preorder": {
+    "label": "Pre-order",
+    "drop_bar_label": "Active drop announcement",
+    "edition_limited": "Limited edition of {{ size }} pieces",
+    "reserved_count": "{{ reserved }} reserved · {{ available }} available",
+    "closes_in": "Pre-orders close in",
+    "closed": "Pre-orders closed",
+    "countdown": {
+      "days": "Days",
+      "hours": "Hours",
+      "mins": "Min",
+      "secs": "Sec"
+    },
+    "reserve_cta": "Reserve this piece",
+    "reserve_aria": "Pre-order {{ product }}",
+    "sold_out": "Sold out",
+    "payment_notice": "Payment charged now · Free cancellation before closing date",
+    "timeline_intro": "Your piece will be crafted after the order closes",
+    "step_close": "Order closes",
+    "step_craft": "Artisan crafting",
+    "step_delivery": "Estimated delivery",
+    "weeks": "weeks",
+    "artisan_note": "1 artisan · 48 hours of handwork · Fine leather goods",
+    "faq": {
+      "q1": "Why a pre-order?",
+      "a1": "We craft each bag after the campaign closes. This allows us to produce exactly what is ordered — no surplus, no compromise on quality.",
+      "q2": "Can I cancel?",
+      "a2": "Yes, free of charge until the closing date. After that, production begins and cancellation is no longer possible.",
+      "q3": "When will I receive my piece?",
+      "a3": "Delivery is estimated 4 to 6 weeks after closing. You will receive a tracking email as soon as your order ships."
+    }
+  },
+
+  "accessibility": {
+    "product_card_link": "View {{ title }}",
+    "collection_card_link": "View the {{ title }} collection",
+    "image_alt_product": "{{ title }} — {{ type }} TIRABOSCHI Paris",
+    "image_alt_lifestyle": "TIRABOSCHI Paris — {{ context }}"
+  }
+}

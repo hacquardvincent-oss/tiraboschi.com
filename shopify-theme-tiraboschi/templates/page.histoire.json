@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "tira-histoire": {
+      "type": "tira-histoire",
+      "settings": {}
+    }
+  },
+  "order": ["tira-histoire"]
+}

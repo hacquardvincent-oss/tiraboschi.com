@@ -1,0 +1,540 @@
+{% comment %}
+  ═══════════════════════════════════════════════════════════════
+  TIRABOSCHI · Sur Mesure — Page éditoriale
+  ═══════════════════════════════════════════════════════════════
+  Structure :
+  1. Hero fond --tira-black, texte blanc
+  2. Intro centré fond blanc
+  3. Process 3 étapes numérotées 01 02 03
+  4. Image pleine largeur avec overlay + citation
+  5. Grille modèles 3 colonnes
+  6. Formulaire RDV
+  7. Informations atelier
+{% endcomment %}
+
+<style>
+  /* ── Variables locales ── */
+  .surm-page {
+    --tira-black: #0a0a0a;
+    --tira-white: #ffffff;
+    --tira-grey: #f7f5f2;
+    --tira-border: #e8e8e8;
+    --tira-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: 'Playfair Display', Georgia, serif;
+    color: var(--tira-black);
+  }
+
+  /* ── 1. Hero ── */
+  .surm-hero {
+    background: var(--tira-black);
+    color: var(--tira-white);
+    padding: calc(var(--content-top) + 80px) 40px 80px;
+    text-align: center;
+  }
+  .surm-hero__eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin: 0 0 24px;
+    opacity: 0.4;
+  }
+  .surm-hero__title {
+    font-size: 56px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    margin: 0 0 20px;
+    line-height: 1.1;
+  }
+  .surm-hero__sub {
+    font-size: 16px;
+    font-style: italic;
+    margin: 0;
+    opacity: 0.65;
+  }
+
+  /* ── 2. Intro ── */
+  .surm-intro {
+    background: var(--tira-white);
+    padding: 100px 40px;
+    text-align: center;
+  }
+  .surm-intro__text {
+    max-width: 680px;
+    margin: 0 auto;
+    font-size: 18px;
+    line-height: 1.75;
+  }
+
+  /* ── 3. Process ── */
+  .surm-process {
+    background: var(--tira-grey);
+    padding: 100px 40px;
+  }
+  .surm-process__label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-align: center;
+    opacity: 0.4;
+    margin: 0 0 72px;
+  }
+  .surm-process__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    max-width: 1200px;
+    margin: 0 auto;
+    border: 1px solid var(--tira-border);
+    background: var(--tira-border);
+  }
+  .surm-process__step {
+    background: var(--tira-grey);
+    padding: 56px 48px;
+  }
+  .surm-process__num {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.35;
+    display: block;
+    margin: 0 0 32px;
+  }
+  .surm-process__title {
+    font-size: 24px;
+    font-weight: 400;
+    margin: 0 0 20px;
+    line-height: 1.2;
+  }
+  .surm-process__text {
+    font-size: 14px;
+    line-height: 1.8;
+    opacity: 0.65;
+    margin: 0;
+  }
+
+  /* ── 4. Image pleine largeur ── */
+  .surm-fullimg {
+    position: relative;
+    height: 560px;
+    overflow: hidden;
+  }
+  .surm-fullimg__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .surm-fullimg__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(10,10,10,0.55);
+  }
+  .surm-fullimg__content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+  }
+  .surm-fullimg__quote {
+    font-size: 28px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--tira-white);
+    max-width: 720px;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* ── 5. Modèles ── */
+  .surm-models {
+    background: var(--tira-white);
+    padding: 100px 40px;
+  }
+  .surm-models__label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-align: center;
+    opacity: 0.4;
+    margin: 0 0 16px;
+  }
+  .surm-models__title {
+    font-size: 40px;
+    font-weight: 400;
+    text-align: center;
+    margin: 0 0 64px;
+    letter-spacing: -0.01em;
+  }
+  .surm-models__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    max-width: 1200px;
+    margin: 0 auto;
+    border: 1px solid var(--tira-border);
+    background: var(--tira-border);
+  }
+  .surm-model-card {
+    background: var(--tira-white);
+    padding: 48px 40px;
+    text-align: center;
+  }
+  .surm-model-card__name {
+    font-size: 24px;
+    font-weight: 400;
+    margin: 0 0 12px;
+    letter-spacing: -0.01em;
+  }
+  .surm-model-card__price {
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.4;
+    margin: 0 0 32px;
+  }
+  .surm-model-card__link {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--tira-black);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transition: opacity 0.3s var(--tira-ease);
+  }
+  .surm-model-card__link:hover {
+    opacity: 0.5;
+  }
+
+  /* ── 6. Formulaire RDV ── */
+  .surm-form {
+    background: var(--tira-grey);
+    padding: 100px 40px;
+  }
+  .surm-form__inner {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  .surm-form__label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.4;
+    margin: 0 0 16px;
+    display: block;
+  }
+  .surm-form__title {
+    font-size: 40px;
+    font-weight: 400;
+    margin: 0 0 48px;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+  }
+  .surm-form__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .surm-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .surm-form__field-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.5;
+  }
+  .surm-form__input,
+  .surm-form__textarea {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 14px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--tira-border);
+    border-radius: 0;
+    padding: 10px 0;
+    color: var(--tira-black);
+    outline: none;
+    width: 100%;
+    transition: border-color 0.3s var(--tira-ease);
+  }
+  .surm-form__input:focus,
+  .surm-form__textarea:focus {
+    border-bottom-color: var(--tira-black);
+  }
+  .surm-form__textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+  .surm-form__full {
+    margin-bottom: 16px;
+  }
+  .surm-form__submit {
+    margin-top: 40px;
+    display: inline-block;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--tira-white);
+    background: var(--tira-black);
+    border: 1px solid var(--tira-black);
+    border-radius: 0;
+    padding: 16px 32px;
+    cursor: pointer;
+    transition: background 0.3s var(--tira-ease), color 0.3s var(--tira-ease);
+  }
+  .surm-form__submit:hover {
+    background: transparent;
+    color: var(--tira-black);
+  }
+
+  /* ── 7. Infos atelier ── */
+  .surm-atelier {
+    background: var(--tira-white);
+    border-top: 1px solid var(--tira-border);
+    padding: 64px 40px;
+    text-align: center;
+  }
+  .surm-atelier__text {
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin: 0;
+    line-height: 2;
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 768px) {
+    .surm-hero {
+      padding: calc(var(--content-top) + 48px) 24px 48px;
+    }
+    .surm-hero__title {
+      font-size: 36px;
+    }
+    .surm-hero__sub {
+      font-size: 14px;
+    }
+    .surm-intro {
+      padding: 64px 24px;
+    }
+    .surm-intro__text {
+      font-size: 16px;
+    }
+    .surm-process {
+      padding: 64px 24px;
+    }
+    .surm-process__grid {
+      grid-template-columns: 1fr;
+    }
+    .surm-process__step {
+      padding: 40px 24px;
+    }
+    .surm-fullimg {
+      height: 400px;
+    }
+    .surm-fullimg__quote {
+      font-size: 20px;
+    }
+    .surm-models {
+      padding: 64px 24px;
+    }
+    .surm-models__grid {
+      grid-template-columns: 1fr;
+    }
+    .surm-model-card {
+      padding: 40px 24px;
+    }
+    .surm-form {
+      padding: 64px 24px;
+    }
+    .surm-form__row {
+      grid-template-columns: 1fr;
+    }
+    .surm-form__title {
+      font-size: 28px;
+    }
+    .surm-atelier {
+      padding: 48px 24px;
+    }
+  }
+
+  /* ── Reveal animation ── */
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.9s var(--tira-ease), transform 0.9s var(--tira-ease);
+  }
+  [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+</style>
+
+<div class="surm-page">
+
+  {%- comment -%} ═══ 1. HERO ═══ {%- endcomment -%}
+  <section class="surm-hero">
+    <p class="surm-hero__eyebrow" data-reveal>Service exclusif</p>
+    <h1 class="surm-hero__title" data-reveal>Sur Mesure</h1>
+    <p class="surm-hero__sub" data-reveal>Votre sac. Votre cuir. Votre empreinte.</p>
+  </section>
+
+  {%- comment -%} ═══ 2. INTRO ═══ {%- endcomment -%}
+  <section class="surm-intro">
+    <p class="surm-intro__text" data-reveal>
+      Le programme sur mesure TIRABOSCHI vous ouvre les portes de notre atelier parisien. Choisissez votre modèle, votre cuir, vos couleurs — notre artisan réalise votre pièce unique en 6 à 8 semaines.
+    </p>
+  </section>
+
+  {%- comment -%} ═══ 3. PROCESS ═══ {%- endcomment -%}
+  <section class="surm-process" aria-label="Le processus sur mesure">
+    <p class="surm-process__label" data-reveal>Comment ça fonctionne</p>
+    <div class="surm-process__grid">
+      <div class="surm-process__step" data-reveal>
+        <span class="surm-process__num">01</span>
+        <h2 class="surm-process__title">Le Rendez-vous</h2>
+        <p class="surm-process__text">Rencontrez notre artisan dans notre atelier du 17ème arrondissement. Touchez les cuirs, choisissez votre modèle, définissez chaque détail.</p>
+      </div>
+      <div class="surm-process__step" data-reveal>
+        <span class="surm-process__num">02</span>
+        <h2 class="surm-process__title">La Création</h2>
+        <p class="surm-process__text">Votre pièce est façonnée à la main par un seul artisan, selon les mêmes gestes que depuis 1904. Délai&nbsp;: 6 à 8 semaines.</p>
+      </div>
+      <div class="surm-process__step" data-reveal>
+        <span class="surm-process__num">03</span>
+        <h2 class="surm-process__title">La Livraison</h2>
+        <p class="surm-process__text">Votre sac arrive dans son écrin TIRABOSCHI, accompagné d'un carnet de fabrication signé par l'artisan.</p>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} ═══ 4. IMAGE PLEINE LARGEUR ═══ {%- endcomment -%}
+  <div class="surm-fullimg" aria-hidden="true">
+    <img class="surm-fullimg__img"
+         src="https://cdn.shopify.com/s/files/1/0927/5890/1079/files/BOSCHI0154.jpg"
+         alt="Atelier TIRABOSCHI Paris"
+         width="1920" height="1080"
+         loading="lazy">
+    <div class="surm-fullimg__overlay"></div>
+    <div class="surm-fullimg__content">
+      <p class="surm-fullimg__quote" data-reveal>
+        Chaque pièce sur mesure est unique.<br>Elle ne sera jamais reproduite.
+      </p>
+    </div>
+  </div>
+
+  {%- comment -%} ═══ 5. MODÈLES DISPONIBLES ═══ {%- endcomment -%}
+  <section class="surm-models" aria-label="Modèles disponibles en sur mesure">
+    <p class="surm-models__label" data-reveal>Nos modèles</p>
+    <h2 class="surm-models__title" data-reveal>Choisissez votre modèle</h2>
+    <div class="surm-models__grid">
+      <div class="surm-model-card" data-reveal>
+        <h3 class="surm-model-card__name">Victoire</h3>
+        <p class="surm-model-card__price">À partir de 1&nbsp;850&nbsp;€</p>
+        <a class="surm-model-card__link" href="/products/victoire">Choisir ce modèle &rarr;</a>
+      </div>
+      <div class="surm-model-card" data-reveal>
+        <h3 class="surm-model-card__name">Colette</h3>
+        <p class="surm-model-card__price">À partir de 1&nbsp;650&nbsp;€</p>
+        <a class="surm-model-card__link" href="/products/colette">Choisir ce modèle &rarr;</a>
+      </div>
+      <div class="surm-model-card" data-reveal>
+        <h3 class="surm-model-card__name">Rafael</h3>
+        <p class="surm-model-card__price">À partir de 2&nbsp;100&nbsp;€</p>
+        <a class="surm-model-card__link" href="/products/rafael">Choisir ce modèle &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} ═══ 6. FORMULAIRE RDV ═══ {%- endcomment -%}
+  <section class="surm-form" aria-label="Demander un rendez-vous">
+    <div class="surm-form__inner">
+      <span class="surm-form__label" data-reveal>Prendre rendez-vous</span>
+      <h2 class="surm-form__title" data-reveal>Rencontrons-nous</h2>
+      <form action="/contact" method="POST" data-reveal>
+        {%- comment -%} Champ caché requis par Shopify Contact Form {%- endcomment -%}
+        <input type="hidden" name="form_type" value="contact">
+        <input type="hidden" name="utf8" value="✓">
+        <input type="hidden" name="contact[tags]" value="sur-mesure,rdv">
+
+        <div class="surm-form__row">
+          <div class="surm-form__field">
+            <label class="surm-form__field-label" for="surm-prenom">Prénom</label>
+            <input class="surm-form__input"
+                   id="surm-prenom"
+                   name="contact[prenom]"
+                   type="text"
+                   autocomplete="given-name"
+                   required>
+          </div>
+          <div class="surm-form__field">
+            <label class="surm-form__field-label" for="surm-nom">Nom</label>
+            <input class="surm-form__input"
+                   id="surm-nom"
+                   name="contact[nom]"
+                   type="text"
+                   autocomplete="family-name"
+                   required>
+          </div>
+        </div>
+
+        <div class="surm-form__row">
+          <div class="surm-form__field">
+            <label class="surm-form__field-label" for="surm-email">Email</label>
+            <input class="surm-form__input"
+                   id="surm-email"
+                   name="contact[email]"
+                   type="email"
+                   autocomplete="email"
+                   required>
+          </div>
+          <div class="surm-form__field">
+            <label class="surm-form__field-label" for="surm-tel">Téléphone</label>
+            <input class="surm-form__input"
+                   id="surm-tel"
+                   name="contact[telephone]"
+                   type="tel"
+                   autocomplete="tel">
+          </div>
+        </div>
+
+        <div class="surm-form__full surm-form__field">
+          <label class="surm-form__field-label" for="surm-message">Message</label>
+          <textarea class="surm-form__textarea"
+                    id="surm-message"
+                    name="contact[body]"
+                    rows="4"
+                    placeholder="Décrivez votre projet, le modèle souhaité, vos disponibilités..."></textarea>
+        </div>
+
+        <button class="surm-form__submit" type="submit">
+          Demander un rendez-vous
+        </button>
+      </form>
+    </div>
+  </section>
+
+  {%- comment -%} ═══ 7. INFOS ATELIER ═══ {%- endcomment -%}
+  <div class="surm-atelier" data-reveal>
+    <p class="surm-atelier__text">
+      Atelier TIRABOSCHI &middot; 96 avenue de Clichy, 75017 Paris<br>
+      Sur rendez-vous uniquement
+    </p>
+  </div>
+
+</div>
+
+{% schema %}
+{
+  "name": "Sur Mesure",
+  "tag": "section",
+  "presets": [{ "name": "Sur Mesure — Atelier" }]
+}
+{% endschema %}

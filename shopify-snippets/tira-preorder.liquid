@@ -1,0 +1,181 @@
+{%- comment -%}
+  snippets/tira-preorder.liquid
+  TIRABOSCHI Paris — Section précommande / drop
+
+  Affiche le bloc précommande sur la fiche produit quand le tag "preorder" est présent.
+  Remplace l'ATC standard par "Réserver ma pièce".
+
+  Prérequis métafields :
+  - custom.is_preorder         → Boolean : true si en précommande
+  - custom.drop_name           → Texte : "FW25" / "SS26" etc.
+  - custom.drop_end_date       → Date : date de clôture ISO 8601
+  - custom.drop_delivery_est   → Texte court : "août 2025"
+  - custom.drop_edition_size   → Entier : nombre total d'exemplaires
+  - custom.drop_reserved       → Entier : nombre déjà réservés (mis à jour via Flow)
+
+  Tags produit : preorder · drop · drop-fw25
+
+  Usage dans sections/product-tiraboschi.liquid :
+  {% if product.tags contains 'preorder' %}
+    {% render 'tira-preorder', product: product %}
+  {% endif %}
+{%- endcomment -%}
+
+{%- liquid
+  assign drop_name       = product.metafields.custom.drop_name | default: 'DROP'
+  assign drop_end_date   = product.metafields.custom.drop_end_date
+  assign drop_delivery   = product.metafields.custom.drop_delivery_est | default: 'à confirmer'
+  assign edition_size    = product.metafields.custom.drop_edition_size | plus: 0
+  assign reserved_count  = product.metafields.custom.drop_reserved | plus: 0
+  assign available_count = edition_size | minus: reserved_count
+  assign fill_percent    = reserved_count | times: 100 | divided_by: edition_size
+  if fill_percent > 100
+    assign fill_percent = 100
+  endif
+-%}
+
+<div class="tira-preorder" data-preorder data-drop-end="{{ drop_end_date }}">
+
+  {{- 'preorder.css' | asset_url | stylesheet_tag -}}
+
+  <!-- Badge précommande -->
+  <div class="tira-preorder__badge">
+    <span class="tira-preorder__dot" aria-hidden="true">◉</span>
+    <span>{{ drop_name }} · {{ 'preorder.label' | t }}</span>
+  </div>
+
+  <!-- Édition limitée + barre de progression -->
+  {%- if edition_size > 0 -%}
+  <div class="tira-preorder__edition">
+    <p class="tira-preorder__edition-title">
+      {{ 'preorder.edition_limited' | t: size: edition_size }}
+    </p>
+    <div class="tira-preorder__progress" role="progressbar" aria-valuenow="{{ fill_percent }}" aria-valuemin="0" aria-valuemax="100">
+      <div class="tira-preorder__progress-fill" style="width: {{ fill_percent }}%"></div>
+    </div>
+    <p class="tira-preorder__edition-count">
+      {{ 'preorder.reserved_count' | t: reserved: reserved_count, available: available_count }}
+    </p>
+  </div>
+  {%- endif -%}
+
+  <!-- Countdown -->
+  {%- if drop_end_date != blank -%}
+  <div class="tira-preorder__countdown-wrap">
+    <p class="tira-preorder__countdown-label">{{ 'preorder.closes_in' | t }}</p>
+    <div class="tira-preorder__countdown" id="tira-countdown-{{ product.id }}" data-target="{{ drop_end_date }}">
+      <div class="tira-countdown__unit">
+        <span class="tira-countdown__number" data-countdown="days">--</span>
+        <span class="tira-countdown__label">{{ 'preorder.countdown.days' | t }}</span>
+      </div>
+      <span class="tira-countdown__sep" aria-hidden="true">:</span>
+      <div class="tira-countdown__unit">
+        <span class="tira-countdown__number" data-countdown="hours">--</span>
+        <span class="tira-countdown__label">{{ 'preorder.countdown.hours' | t }}</span>
+      </div>
+      <span class="tira-countdown__sep" aria-hidden="true">:</span>
+      <div class="tira-countdown__unit">
+        <span class="tira-countdown__number" data-countdown="mins">--</span>
+        <span class="tira-countdown__label">{{ 'preorder.countdown.mins' | t }}</span>
+      </div>
+      <span class="tira-countdown__sep" aria-hidden="true">:</span>
+      <div class="tira-countdown__unit">
+        <span class="tira-countdown__number" data-countdown="secs">--</span>
+        <span class="tira-countdown__label">{{ 'preorder.countdown.secs' | t }}</span>
+      </div>
+    </div>
+  </div>
+  {%- endif -%}
+
+  <!-- CTA Réserver -->
+  <div class="tira-preorder__cta-wrap">
+    <button
+      type="submit"
+      name="add"
+      class="tira-preorder__cta btn btn-primary"
+      {%- if available_count <= 0 %} disabled aria-disabled="true"{%- endif -%}
+      aria-label="{{ 'preorder.reserve_aria' | t: product: product.title }}"
+    >
+      {%- if available_count > 0 -%}
+        {{ 'preorder.reserve_cta' | t }} →
+      {%- else -%}
+        {{ 'preorder.sold_out' | t }}
+      {%- endif -%}
+    </button>
+    <p class="tira-preorder__cta-sub">{{ 'preorder.payment_notice' | t }}</p>
+  </div>
+
+  <!-- Timeline livraison -->
+  {%- if drop_end_date != blank -%}
+  <div class="tira-preorder__timeline">
+    <p class="tira-preorder__timeline-intro">{{ 'preorder.timeline_intro' | t }}</p>
+    <div class="tira-preorder__timeline-steps">
+      <div class="tira-preorder__step">
+        <div class="tira-preorder__step-dot"></div>
+        <div>
+          <p class="tira-preorder__step-date">{{ drop_end_date | date: '%d %B' }}</p>
+          <p class="tira-preorder__step-label">{{ 'preorder.step_close' | t }}</p>
+        </div>
+      </div>
+      <div class="tira-preorder__step-line" aria-hidden="true"></div>
+      <div class="tira-preorder__step">
+        <div class="tira-preorder__step-dot"></div>
+        <div>
+          <p class="tira-preorder__step-date">4–6 {{ 'preorder.weeks' | t }}</p>
+          <p class="tira-preorder__step-label">{{ 'preorder.step_craft' | t }}</p>
+        </div>
+      </div>
+      <div class="tira-preorder__step-line" aria-hidden="true"></div>
+      <div class="tira-preorder__step">
+        <div class="tira-preorder__step-dot"></div>
+        <div>
+          <p class="tira-preorder__step-date">{{ drop_delivery }}</p>
+          <p class="tira-preorder__step-label">{{ 'preorder.step_delivery' | t }}</p>
+        </div>
+      </div>
+    </div>
+    <p class="tira-preorder__artisan-note">
+      <em>{{ 'preorder.artisan_note' | t }}</em>
+    </p>
+  </div>
+  {%- endif -%}
+
+</div>
+
+<!-- Countdown JS (scoped to this product) -->
+<script>
+(function() {
+  var el = document.getElementById('tira-countdown-{{ product.id }}');
+  if (!el) return;
+
+  var targetStr = el.getAttribute('data-target');
+  var target = targetStr ? new Date(targetStr) : null;
+  if (!target || isNaN(target.getTime())) return;
+
+  function update() {
+    var now = new Date();
+    var diff = target - now;
+
+    if (diff <= 0) {
+      el.closest('.tira-preorder__countdown-wrap').innerHTML =
+        '<p class="tira-preorder__closed">{{ 'preorder.closed' | t | escape }}</p>';
+      return;
+    }
+
+    var days  = Math.floor(diff / 86400000);
+    var hours = Math.floor((diff % 86400000) / 3600000);
+    var mins  = Math.floor((diff % 3600000)  / 60000);
+    var secs  = Math.floor((diff % 60000)    / 1000);
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    el.querySelector('[data-countdown="days"]').textContent  = pad(days);
+    el.querySelector('[data-countdown="hours"]').textContent = pad(hours);
+    el.querySelector('[data-countdown="mins"]').textContent  = pad(mins);
+    el.querySelector('[data-countdown="secs"]').textContent  = pad(secs);
+  }
+
+  update();
+  setInterval(update, 1000);
+})();
+</script>

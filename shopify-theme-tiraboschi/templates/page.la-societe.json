@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "tira-la-societe": {
+      "type": "tira-la-societe",
+      "settings": {}
+    }
+  },
+  "order": ["tira-la-societe"]
+}

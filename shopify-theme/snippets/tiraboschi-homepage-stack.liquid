@@ -1,0 +1,73 @@
+{% comment %}
+  Snippet : applique le scroll stack Miu Miu sur la homepage.
+  Le JS dans tiraboschi.js gère le micro-scale.
+{% endcomment %}
+{% if template == 'index' %}
+<style>
+  /* ---- SCROLL STACK — sections homepage ---- */
+  .content-for-layout > .shopify-section:nth-child(1) { position: sticky; top: 0; z-index: 1; }
+  .content-for-layout > .shopify-section:nth-child(2) { position: relative; z-index: 10; } /* marquee — sort du stack */
+  .content-for-layout > .shopify-section:nth-child(3) { position: sticky; top: 0; z-index: 3; }
+  .content-for-layout > .shopify-section:nth-child(4) { position: sticky; top: 0; z-index: 4; }
+  .content-for-layout > .shopify-section:nth-child(5) { position: sticky; top: 0; z-index: 5; }
+  .content-for-layout > .shopify-section:nth-child(6) { position: relative; z-index: 10; } /* grille produits — sort du stack */
+  .content-for-layout > .shopify-section:nth-child(7) { position: sticky; top: 0; z-index: 7; }
+
+  /* ---- will-change pour GPU ---- */
+  .content-for-layout > .shopify-section:nth-child(1),
+  .content-for-layout > .shopify-section:nth-child(3),
+  .content-for-layout > .shopify-section:nth-child(4),
+  .content-for-layout > .shopify-section:nth-child(5),
+  .content-for-layout > .shopify-section:nth-child(7) {
+    will-change: transform;
+    transition: transform 0.1s linear, opacity 0.1s linear;
+  }
+
+  /* ---- Ken Burns sur les sections à image fixe (héritage #4, savoir-faire #7) ---- */
+  .content-for-layout > .shopify-section:nth-child(4) img,
+  .content-for-layout > .shopify-section:nth-child(7) img {
+    animation: tira-kburn 20s ease-in-out infinite alternate;
+    transform-origin: center center;
+    will-change: transform;
+  }
+  @keyframes tira-kburn {
+    from { transform: scale(1.0); }
+    to   { transform: scale(1.04); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .content-for-layout > .shopify-section:nth-child(4) img,
+    .content-for-layout > .shopify-section:nth-child(7) img {
+      animation: none;
+    }
+  }
+
+  /* ---- VIDÉO MOBILE — recadrage section hero (desktop 16:9 → mobile) ---- */
+  /* object-position: center 20% montre le haut de la vidéo (produit / visage)
+     plutôt que le centre qui peut couper le sujet sur mobile */
+  @media screen and (max-width: 749px) {
+    .content-for-layout > .shopify-section:nth-child(1) video {
+      object-fit: cover !important;
+      object-position: center 20% !important;
+    }
+    /* Hauteur min pour le hero sur mobile */
+    .content-for-layout > .shopify-section:nth-child(1) .media,
+    .content-for-layout > .shopify-section:nth-child(1) [class*='hero'],
+    .content-for-layout > .shopify-section:nth-child(1) [class*='banner'] {
+      min-height: 100svh;
+    }
+  }
+
+  /* ---- Scroll snap mobile ---- */
+  @media screen and (max-width: 749px) {
+    .content-for-layout {
+      scroll-snap-type: y mandatory;
+    }
+    .content-for-layout > .shopify-section:nth-child(1),
+    .content-for-layout > .shopify-section:nth-child(3),
+    .content-for-layout > .shopify-section:nth-child(4),
+    .content-for-layout > .shopify-section:nth-child(5) {
+      scroll-snap-align: start;
+    }
+  }
+</style>
+{% endif %}
