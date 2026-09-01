@@ -105,11 +105,13 @@ async function glisser(p, x, y, dx, pas) {
       (ac.corpsTitre / ac.corpsLogo).toFixed(1) + ')');
   v('le menu se lit sans loupe', ac.corpsNav >= 11, ac.corpsNav + ' px');
   v('l\'en-tête a de la hauteur', ac.hauteurEnTete >= 80, ac.hauteurEnTete + ' px');
-  /* les MÊMES entrées partout, plus le compte et le rendez-vous */
-  v('les cinq lieux, le compte et le rendez-vous', ac.nav === 7, ac.nav);
-  v('et ce sont bien les cinq lieux',
-    ac.entrees.join('|') === "La Galerie|L'Atelier|La Maison|La Bibliothèque|Le Boudoir|" +
-      "Votre Cercle|Rendez-vous", ac.entrees.join('|'));
+  /* les MÊMES entrées partout : les cinq lieux, puis le rendez-vous.
+     Le Boudoir passe AVANT la Bibliothèque — c'est la porte que la
+     maison veut faire pousser. */
+  v('les cinq lieux et le rendez-vous', ac.nav === 6, ac.nav);
+  v('dans cet ordre, le Boudoir avant la Bibliothèque',
+    ac.entrees.join('|') === "La Galerie|L'Atelier|La Maison|Le Boudoir|La Bibliothèque|" +
+      "Rendez-vous", ac.entrees.join('|'));
   v('l\'en-tête est posé en haut', ac.enTete);
   v('il est transparent sur le hero', !ac.pose);
   v('le hero occupe la page entière', ac.hero);
@@ -192,6 +194,48 @@ async function glisser(p, x, y, dx, pas) {
     v('centré dans « ' + id + ' »', h.centre <= 2, Math.round(h.centre));
     v('les mêmes entrées dans « ' + id + ' »', h.entrees === signature, h.entrees);
   }
+  /* LE CERCLE NE SE NOMME PAS AU DEHORS : il se découvre en passant la
+     porte du Boudoir. Aucun menu, aucun lieu public ne doit l'annoncer. */
+  const dehors = await p.evaluate(async () => {
+    const t = [];
+    for (const id of ['accueil', 'galerie', 'atelier', 'maison', 'bibliotheque', 'rdv']) {
+      __lieu(id); await new Promise(r => setTimeout(r, 60));
+      t.push(document.getElementById(id).textContent);
+    }
+    t.push(document.getElementById('ent').textContent);
+    __plan(); await new Promise(r => setTimeout(r, 60));
+    t.push(document.getElementById('plan').textContent);
+    for (const k of ['galerie', 'atelier', 'maison', 'bibliotheque', 'boudoir']) {
+      __volets(k); await new Promise(r => setTimeout(r, 40));
+      t.push(document.getElementById('volet').textContent);
+    }
+    return t.join(' ').replace(/\s+/g, ' ');
+  });
+  v('« Votre Cercle » n\'est nommé nulle part au dehors',
+    !/votre cercle/i.test(dehors),
+    (dehors.match(/.{0,40}votre cercle.{0,30}/i) || [])[0]);
+  v('ni « fidélité », ni « privilèges » sur le mur',
+    !/fidélit|programme/i.test(dehors),
+    (dehors.match(/.{0,30}(fidélit|programme).{0,30}/i) || [])[0]);
+  await p.evaluate(() => { __volet.fermer(); __lieu('accueil'); });
+  await p.keyboard.press('Escape'); await p.waitForTimeout(500);
+  await p.evaluate(() => { document.getElementById('accueil').scrollTop = 0; });
+  await p.waitForTimeout(400);
+
+  /* mais derrière la porte, il se dit — c'est là et nulle part ailleurs */
+  await p.evaluate(() => __serrure()); await p.waitForTimeout(700);
+  const pr = await p.evaluate(() => ({
+    n: document.querySelectorAll('.se__pr li').length,
+    t: document.querySelector('.se__pr').textContent.replace(/\s+/g, ' ') }));
+  v('la porte du Boudoir dit ce qu\'elle ouvre', pr.n === 4, pr.n + ' privilèges');
+  v('en avant-première, en exclusivité, en matières réservées, en pièce d\'exception',
+    /avant qu'elles ne soient accrochées/.test(pr.t) && /ne sont proposées qu'ici/.test(pr.t) &&
+    /réservées/.test(pr.t) && /pièce d'exception/.test(pr.t), pr.t.slice(0, 60));
+  v('sans jamais dire « points » ni « remise »',
+    !/\bpoints?\b|remise|réduction/i.test(pr.t));
+  await p.evaluate(() => { document.getElementById('seX').click(); });
+  await p.waitForTimeout(500);
+
   /* LE V A QUITTÉ LE NOM : il est la signature des pièces, pas du mot */
   v('le nom ne porte plus de V',
     await p.evaluate(() => document.querySelectorAll('.ent__logo svg').length) === 0);
@@ -202,7 +246,7 @@ async function glisser(p, x, y, dx, pas) {
     entrees: [...document.querySelectorAll('.ent__n .lien')]
       .filter(b => getComputedStyle(b).display !== 'none').length }));
   v('sur desktop, le menu est visible et le burger absent',
-    !burger.visible && burger.entrees === 7,
+    !burger.visible && burger.entrees === 6,
     'burger=' + burger.visible + ' · ' + burger.entrees + ' entrées');
 
   /* LES SOUS-ENTRÉES SE DÉPLIENT SOUS LEUR ENTRÉE — plus en tout petit
@@ -288,11 +332,18 @@ async function glisser(p, x, y, dx, pas) {
   v('le fond de la galerie est blanc',
     rgb(await p.evaluate(() => getComputedStyle(document.getElementById('galerie'))
       .backgroundColor)).join() === '255,255,255');
-  v('cinq modèles accrochés', e.oeuvres === 5, e.oeuvres);
+  /* CINQ MODÈLES, HUIT ACCROCHAGES : chaque modèle filmé va par deux —
+     la photographie, puis le film, côte à côte. */
   const modeles = await p.evaluate(() =>
-    [...document.querySelectorAll('.tuile')].map(t => t.dataset.oe));
-  v('la collection au complet, Rafaël compris',
-    modeles.join() === 'victoire,jane,colette,rafael,olympe', modeles.join());
+    [...document.querySelectorAll('.tuile')].map(t =>
+      t.dataset.oe + (t.classList.contains('tuile--film') ? '·film' : '')));
+  v('huit accrochages sur le mur', e.oeuvres === 8, e.oeuvres);
+  v('cinq modèles, chacun filmé à côté de sa photographie',
+    modeles.join(' ') === 'victoire victoire·film jane jane·film colette colette·film ' +
+      'rafael olympe', modeles.join(' '));
+  v('la photographie précède toujours son film',
+    modeles.every((m, i) => !m.endsWith('·film') ||
+      modeles[i - 1] === m.replace('·film', '')), modeles.join(' '));
   const hero = await p.evaluate(() => {
     const h = document.querySelector('.hero');
     if (!h) return null;
@@ -318,8 +369,17 @@ async function glisser(p, x, y, dx, pas) {
   v('quatre ouvertures dans le mur', e.ouvertures === 4, e.ouvertures);
   const ouv = await p.evaluate(() =>
     [...document.querySelectorAll('.ouv')].map(o => o.dataset.ouv).join());
-  v('les quatre autres lieux se rencontrent en marchant',
-    ouv === 'atelier,maison,bibliotheque,serrure', ouv);
+  /* le Boudoir s'ouvre EN PREMIER sur le mur ; la Bibliothèque, en
+     dernier et sans image */
+  v('le Boudoir est la première porte du mur',
+    ouv === 'serrure,atelier,maison,bibliotheque', ouv);
+  v('la Bibliothèque s\'ouvre sans image, discrètement',
+    await p.evaluate(() => {
+      const b = document.querySelector('.ouv[data-ouv="bibliotheque"]');
+      const s = document.querySelector('.ouv[data-ouv="serrure"]');
+      return b.classList.contains('ouv--mot') && !b.querySelector('img') &&
+        s.getBoundingClientRect().width > b.getBoundingClientRect().width * 1.6;
+    }));
 
   /* ── LES CADRAGES : une pièce se montre ENTIÈRE, jamais rognée ──
      (le reproche tenait en une capture : la Victoire coupée en haut
@@ -374,8 +434,9 @@ async function glisser(p, x, y, dx, pas) {
   /* et chaque modèle se reconnaît : il est NOMMÉ sous sa silhouette */
   const nommes = await p.evaluate(() =>
     [...document.querySelectorAll('.tuile .tuile__n')].map(n => n.textContent.trim()));
-  v('chaque modèle est nommé sous sa silhouette',
-    nommes.join('|') === 'Victoire|Jane|Colette|Rafaël|Olympe', nommes.join(' · '));
+  v('chaque accrochage est nommé',
+    nommes.join('|') === 'Victoire|Victoire|Jane|Jane|Colette|Colette|Rafaël|Olympe',
+    nommes.join(' · '));
 
   const patch = await p.evaluate(() => {
     const m = document.getElementById('mur');
@@ -397,7 +458,10 @@ async function glisser(p, x, y, dx, pas) {
     x: document.getElementById('mur').scrollLeft,
     n: document.getElementById('marcheN').textContent }));
   v('la molette fait marcher le long du mur', marche.x > 150, marche.x);
-  v('le repère nomme la pièce courante', /Pièce \d+ sur 5/.test(marche.n), marche.n);
+  /* le repère nomme la PIÈCE, pas l'accrochage : un modèle a une
+     photographie ET un film, ce n'est pas deux pièces */
+  v('le repère nomme la pièce courante',
+    /\w+ · pièce \d sur 5/.test(marche.n), marche.n);
 
   /* ── LA PAGE D'UNE PIÈCE ──
      Ce n'est plus une vue en grand : c'est une page qui se descend,
@@ -433,6 +497,58 @@ async function glisser(p, x, y, dx, pas) {
   const source = await p.evaluate(() =>
     document.querySelector('.tuile[data-oe="victoire"] .tuile__m').style.visibility);
   v('la tuile d\'origine s\'efface pendant l\'ouverture', source === 'hidden', source);
+
+  /* ── L'EN-TÊTE RESTE SUR LA FICHE ──
+     Le reproche : sur une fiche, l'en-tête s'effaçait au profit d'un
+     menu produit, et l'on ne pouvait plus revenir à l'accueil ni à la
+     galerie sans « fermer ». La page s'ouvre désormais SOUS l'en-tête. */
+  const surFiche = await p.evaluate(() => {
+    const e = document.getElementById('ent');
+    const r = e.getBoundingClientRect();
+    const pl = document.getElementById('plein').getBoundingClientRect();
+    return { visible: getComputedStyle(e).visibility === 'visible' &&
+               e.classList.contains('on'),
+             dessus: Math.round(pl.top) === Math.round(r.bottom),
+             entrees: [...document.querySelectorAll('.ent__n .lien')]
+               .filter(b => getComputedStyle(b).display !== 'none').length,
+             fil: [...document.querySelectorAll('#pleinFil button')].map(b =>
+               b.textContent.trim()),
+             pieceDite: document.querySelector('#pleinFil b').textContent.trim(),
+             sommaire: document.getElementById('pleinSomI').textContent.trim(),
+             replie: getComputedStyle(document.getElementById('pleinNav')).visibility };
+  });
+  v('l\'en-tête reste en place sur une fiche', surFiche.visible && surFiche.entrees === 6);
+  v('la page s\'ouvre juste sous lui', surFiche.dessus);
+  v('un fil d\'Ariane ramène à l\'accueil et à la galerie',
+    surFiche.fil.join('|') === 'Tiraboschi|La Galerie', surFiche.fil.join('|'));
+  v('et nomme la pièce', surFiche.pieceDite.length > 3, surFiche.pieceDite);
+  /* le sommaire de la pièce : un seul mot au repos, la liste à la demande */
+  v('le sommaire est replié au repos', surFiche.replie === 'hidden', surFiche.replie);
+  v('il dit où l\'on est', surFiche.sommaire.length > 3, surFiche.sommaire);
+  await p.hover('#pleinSomB'); await p.waitForTimeout(700);
+  v('il se déplie quand on le désigne',
+    await p.evaluate(() =>
+      getComputedStyle(document.getElementById('pleinNav')).visibility === 'visible'));
+  await p.mouse.move(300, 600); await p.waitForTimeout(600);
+  /* et l'en-tête reste ATTEIGNABLE : rien ne le recouvre. On le vérifie
+     au point plutôt qu'au clic, pour que l'échec se lise au lieu de
+     bloquer trente secondes. */
+  const atteignable = await p.evaluate(() => {
+    const b = document.querySelector('.ent__n .lien[data-va="atelier"]');
+    const r = b.getBoundingClientRect();
+    const sous = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+    return { ok: b.contains(sous) || sous === b,
+             quoi: sous ? (sous.id || sous.className || sous.tagName) : 'rien' };
+  });
+  v('l\'en-tête n\'est recouvert par rien', atteignable.ok, atteignable.quoi);
+  if (atteignable.ok) {
+    await p.click('.ent__n .lien[data-va="atelier"]'); await p.waitForTimeout(1000);
+    e = await p.evaluate(() => __etat());
+  } else { await p.evaluate(() => __lieu('atelier')); await p.waitForTimeout(700);
+    e = await p.evaluate(() => __etat()); }
+  v('depuis une fiche, l\'en-tête mène ailleurs sans passer par « fermer »',
+    e.lieu === 'atelier' && !e.plein, e.lieu + ' · fiche=' + e.plein);
+  await p.evaluate(() => { __lieu('galerie'); __plein(0); }); await p.waitForTimeout(1300);
 
   /* les vues, en haut de la page */
   const vues0 = await p.evaluate(() => ({
@@ -510,10 +626,16 @@ async function glisser(p, x, y, dx, pas) {
   });
   await p.waitForTimeout(900);
   v('le sommaire mène à sa section',
-    await p.evaluate(() => Math.abs(document.querySelector(
-      '#pleinSuite [data-sp="fabrication"]').getBoundingClientRect().top) < 90),
-    await p.evaluate(() => Math.round(document.querySelector(
-      '#pleinSuite [data-sp="fabrication"]').getBoundingClientRect().top)));
+    await p.evaluate(() => {
+      const s = document.querySelector('#pleinSuite [data-sp="fabrication"]');
+      const d = document.getElementById('pleinDoc');
+      return Math.abs(s.getBoundingClientRect().top - d.getBoundingClientRect().top) < 40;
+    }),
+    await p.evaluate(() => {
+      const s = document.querySelector('#pleinSuite [data-sp="fabrication"]');
+      const d = document.getElementById('pleinDoc');
+      return Math.round(s.getBoundingClientRect().top - d.getBoundingClientRect().top);
+    }));
 
   /* LE FILM DE LA PIÈCE : il ne se charge qu'à l'approche, et s'arrête
      dès qu'il sort de l'écran. */
@@ -607,6 +729,59 @@ async function glisser(p, x, y, dx, pas) {
     new Set(nuan.noms).size === nuan.noms.length,
     nuan.noms.length + ' noms, ' + new Set(nuan.noms).size + ' distincts');
   v('la peau désignée est commentée', nuan.mot.length > 60, nuan.mot.slice(0, 50));
+
+  /* ── UNE PIÈCE NE S'ACCROCHE PAS OUVERTE ──
+     Le nuancier montre la face FERMÉE ; l'ouverture ne se révèle qu'au
+     passage de la souris. */
+  const ferme = await p.evaluate(() => {
+    const OUV = ['nu-01-1','nu-02-3','nu-03-1','nu-04-1','nu-07-1','nu-09-1','nu-10-1',
+      'nu-11-1','nu-13-1','nu-17-1','nu-18-1','nu-20-1','nu-22-1','nu-24-1','nu-25-1',
+      'nu-27-1','nu-29-1','nu-31-3','nu-32-1'];
+    /* on retrouve la vue par sa source : chaque image est unique */
+    const cle = src => Object.keys(VIS).find(k => VIS[k] === src) || '';
+    const nus = [...document.querySelectorAll('#pleinSuite .nu')];
+    const posees = nus.map(n => cle(n.querySelector('.nu__f').src));
+    return { total: nus.length,
+             ouvertesPosees: posees.filter(k => OUV.includes(k)),
+             avecRevers: nus.filter(n => n.classList.contains('nu--ouvre')).length,
+             /* la fiche elle-même part d'une vue fermée */
+             premiereVue: cle(document.querySelector('.plein__ph img').src) };
+  });
+  v('le nuancier ne montre que des pièces fermées…',
+    ferme.ouvertesPosees.length <= 9,
+    ferme.ouvertesPosees.length + ' encore ouvertes : ' + ferme.ouvertesPosees.join(', '));
+  v('…et les seules qui restent ouvertes sont celles qui n\'ont pas d\'autre vue',
+    ferme.ouvertesPosees.every(k =>
+      ['nu-03-1','nu-04-1','nu-11-1','nu-17-1','nu-18-1','nu-25-1','nu-27-1','nu-29-1',
+       'nu-32-1'].includes(k)), ferme.ouvertesPosees.join(', '));
+  v('la moitié des peaux s\'entrouvrent au survol', ferme.avecRevers >= 16,
+    ferme.avecRevers + '/' + ferme.total);
+  v('la fiche s\'ouvre sur une vue fermée',
+    !['nu-01-1','nu-10-1','nu-22-1'].includes(ferme.premiereVue), ferme.premiereVue);
+  /* le survol ouvre la pièce */
+  /* on amène le nuancier à l'écran : on ne survole pas ce qui n'y est pas */
+  await p.evaluate(() => {
+    const n = document.querySelector('#pleinSuite .nu--ouvre');
+    const d = document.getElementById('pleinDoc');
+    d.scrollTo({ top: d.scrollTop + n.getBoundingClientRect().top - 260,
+                 behavior: 'instant' });
+  });
+  await p.waitForTimeout(500);
+  const swatch = await p.locator('#pleinSuite .nu--ouvre').first().boundingBox();
+  await p.mouse.move(swatch.x + swatch.width / 2, swatch.y + swatch.height / 2);
+  await p.waitForTimeout(800);
+  const ouverture = await p.evaluate(() => {
+    const n = document.querySelector('#pleinSuite .nu--ouvre');
+    return { f: +getComputedStyle(n.querySelector('.nu__f')).opacity,
+             o: +getComputedStyle(n.querySelector('.nu__o')).opacity };
+  });
+  v('la pièce s\'entrouvre au passage de la souris',
+    ouverture.o > .9 && ouverture.f < .1,
+    'fermée ' + ouverture.f + ' · ouverte ' + ouverture.o);
+  await p.mouse.move(20, 700); await p.waitForTimeout(800);
+  v('et se referme quand on s\'en va',
+    await p.evaluate(() => +getComputedStyle(
+      document.querySelector('#pleinSuite .nu--ouvre .nu__o')).opacity) < .1);
   /* désigner une peau change les vues du haut */
   const avantNu = await p.evaluate(() =>
     document.querySelector('.plein__ph img').getAttribute('src').slice(-40));
@@ -781,15 +956,20 @@ async function glisser(p, x, y, dx, pas) {
     const c = document.querySelector('#sePoints circle');
     const st = h.length ? getComputedStyle(h[0]) : null;
     return { n: h.length, anime: st && st.animationName !== 'none',
+             lesquels: h.map(x => +x.dataset.i).sort((a, b) => a - b),
              duree: st && st.animationDuration,
              decale: h.map(x => getComputedStyle(x).animationDelay).filter(
                (d, i, a) => a.indexOf(d) === i).length,
              /* et les points eux-mêmes sont assez clairs pour se voir */
              trait: c ? getComputedStyle(c).stroke : '' };
   });
-  v('chaque point porte un halo qui bat', halos.n === 9 && halos.anime,
-    halos.n + ' halos · ' + halos.duree);
-  v('ils battent en cascade, pas ensemble', halos.decale === 9, halos.decale);
+  /* SEULS LES CINQ POINTS DE LA FIGURE battent : faire battre les neuf
+     ne dit rien d'autre que « il y a neuf points ». Ce qu'il faut
+     montrer, c'est le chemin. */
+  v('seuls les cinq points de la figure portent un halo',
+    halos.n === 5 && halos.anime, halos.n + ' halos · ' + halos.duree);
+  v('et ce sont bien ceux du T', halos.lesquels.join() === '0,1,2,4,7', halos.lesquels.join());
+  v('ils battent en cascade, pas ensemble', halos.decale === 5, halos.decale);
   v('les points se voient sur le fond sombre',
     contraste(rgb(halos.trait), [12, 12, 13]) >= 3.5,
     contraste(rgb(halos.trait), [12, 12, 13]).toFixed(1) + ':1');
@@ -1090,9 +1270,13 @@ async function glisser(p, x, y, dx, pas) {
              num: (i.top + i.height / 2) >= n.top && (i.top + i.height / 2) <= n.bottom,
              large: Math.round(l.querySelector('.pl__n').getBoundingClientRect().width) };
   }));
-  const H = lignes.filter(l => !l.ouverte).map(l => l.h);
+  /* les entrées au repos ont la même hauteur — sauf la Bibliothèque,
+     volontairement plus discrète */
+  const H = lignes.filter((l, i) => !l.ouverte && i < 4).map(l => l.h);
   v('les entrées au repos ont la même hauteur', Math.max(...H) - Math.min(...H) <= 1,
     lignes.map(l => l.h + (l.ouverte ? '*' : '')).join('/'));
+  v('la Bibliothèque y est plus discrète',
+    lignes[4].h < Math.min(...H) - 6, lignes[4].h + ' contre ' + Math.min(...H));
   v('une seule entrée est déployée', lignes.filter(l => l.ouverte).length === 1);
   v('l\'entrée déployée est la plus haute',
     Math.max(...lignes.map(l => l.h)) === lignes.find(l => l.ouverte).h);
@@ -1101,7 +1285,7 @@ async function glisser(p, x, y, dx, pas) {
     [...document.querySelectorAll('.pl__n')].map(n =>
       n.firstChild.textContent + (n.querySelector('em') ? n.querySelector('em').textContent : '')));
   v('les noms du plan n\'ont pas d\'espace parasite',
-    noms.join('|') === "La Galerie|L'Atelier|La Maison|La Bibliothèque|Le Boudoir",
+    noms.join('|') === "La Galerie|L'Atelier|La Maison|Le Boudoir|La Bibliothèque",
     noms.join('|'));
 
   /* le méga-menu : une image éditoriale suit l'entrée survolée, et
@@ -1116,7 +1300,7 @@ async function glisser(p, x, y, dx, pas) {
                b.textContent.trim()) };
   });
   v('chaque entrée porte son visuel', mega.visuels === 5, mega.visuels);
-  v('un visuel est montré', mega.montre === 0 && mega.natif >= 800,
+  v('un visuel est montré', mega.montre >= 0 && mega.natif >= 800,
     mega.montre + ' · ' + mega.natif + ' px');
   await p.hover('#planL .pl:nth-child(4)'); await p.waitForTimeout(900);
   v('le visuel suit l\'entrée désignée',

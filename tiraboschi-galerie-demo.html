@@ -131,6 +131,15 @@ img{display:block;max-width:100%}
   flex:1 1 0;min-width:0}
 .ent__n--d{justify-content:flex-end}
 .ent__sep{width:1px;height:14px;background:currentColor;opacity:.22;flex-shrink:0}
+/* Le Boudoir porte une marque : c'est la porte qu'on veut voir pousser.
+   La Bibliothèque, elle, s'efface — elle se trouve, elle ne se crie pas. */
+.ent__n .lien--clos{opacity:1;display:flex;align-items:center;gap:8px}
+.ent__n .lien--clos::before{content:'';width:5px;height:5px;flex-shrink:0;
+  border:1px solid currentColor;transform:rotate(45deg);
+  transition:background .4s var(--e)}
+.ent__n .lien--clos:hover::before{background:currentColor}
+.ent__n .lien--discret{opacity:.42;font-size:10.5px;letter-spacing:.16em}
+.ent__n .lien--discret:hover{opacity:.85}
 .ent__n .lien{opacity:.7;font-size:11.5px;letter-spacing:.2em;white-space:nowrap}
 .ent__n .lien:hover,.ent__n .lien.ouvre{opacity:1}
 /* le burger et le menu visible seraient deux fois la même chose :
@@ -200,11 +209,18 @@ img{display:block;max-width:100%}
 
 /* les cinq pièces : des bandes qu'on entrebâille */
 .quatre{display:flex;height:100svh;background:var(--nuit)}
-.q{position:relative;flex:1 1 0;min-width:0;overflow:hidden;text-align:left;color:#f2efe9;
-  border-left:1px solid rgba(242,239,233,.14);
+.q{position:relative;flex:var(--poids,1) 1 0;min-width:0;overflow:hidden;text-align:left;
+  color:#f2efe9;border-left:1px solid rgba(242,239,233,.14);
   transition:flex-grow 1.1s var(--e)}
 .q:first-child{border-left:none}
-.q:hover,.q:focus-visible{flex-grow:2.4}
+.q:hover,.q:focus-visible{flex-grow:2.6}
+/* Le Boudoir prend plus de mur ; la Bibliothèque s'efface. */
+.q--fort .q__n{font-size:clamp(24px,2.9vw,42px)}
+.q--fort img{filter:grayscale(.3) brightness(.66)}
+.q--discret .q__n{font-size:clamp(13px,1.35vw,19px);line-height:1.2}
+.q--discret .q__d{display:none}
+.q--discret img{filter:grayscale(.85) brightness(.5)}
+.q--discret:hover img{filter:grayscale(.2) brightness(.72)}
 .q img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
   filter:grayscale(.55) brightness(.62);transition:filter 1s var(--e),transform 1.6s var(--e)}
 .q:hover img,.q:focus-visible img{filter:none;transform:scale(1.05)}
@@ -373,6 +389,8 @@ img{display:block;max-width:100%}
   opacity:0;max-height:0;overflow:hidden;
   transition:opacity .5s var(--e),max-height .7s var(--e),margin-top .5s var(--e)}
 .pl:hover .pl__d,.pl.vise .pl__d{opacity:.6;max-height:6em;margin-top:9px}
+.pl--discret .pl__n{font-size:clamp(16px,2.1vw,27px);opacity:.5}
+.pl--discret:hover .pl__n,.pl--discret.vise .pl__n{opacity:.9}
 .pl__t{display:inline-block;vertical-align:middle;margin-left:14px;
   font-family:system-ui,sans-serif;font-size:8px;letter-spacing:.2em;text-transform:uppercase;
   opacity:.5;border:1px solid rgba(242,239,233,.3);padding:3px 8px;white-space:nowrap}
@@ -491,6 +509,15 @@ img{display:block;max-width:100%}
 .ouv__s{position:absolute;inset:clamp(12px,1.6vw,22px);border:1px solid rgba(255,255,255,.8);
   pointer-events:none;transition:inset .85s var(--e),border-color .6s}
 .ouv:hover .ouv__s{inset:clamp(6px,.8vw,11px);border-color:#fff}
+/* une ouverture DISCRÈTE : la Bibliothèque ne réclame pas le regard
+   comme le Boudoir. Un mot sur le mur, un filet, rien de plus. */
+.ouv--mot{justify-content:flex-end;border-left:1px solid var(--trait);
+  padding:0 0 clamp(10px,1.6vh,18px) clamp(12px,1.4vw,20px)}
+.ouv--mot .ouv__n{font-size:clamp(15px,1.5vw,21px);font-style:italic;line-height:1.2;
+  margin-bottom:8px}
+.ouv--mot .ouv__d{font-family:system-ui,sans-serif;font-size:10.5px;line-height:1.7;
+  color:var(--gris)}
+.ouv--mot .ouv__go{margin-top:12px}
 .ouv__x{flex-shrink:0;padding-top:9px}
 .ouv__k{color:var(--gris);margin-bottom:6px}
 .ouv__n{font-size:clamp(17px,1.9vw,26px);letter-spacing:-.02em;line-height:1.1}
@@ -535,7 +562,12 @@ img{display:block;max-width:100%}
 }
 
 /* ═══════════ LE PLEIN ÉCRAN ═══════════ */
-.plein{position:fixed;inset:0;z-index:88;opacity:0;visibility:hidden;background:var(--blanc);
+/* LA PAGE D'UNE PIÈCE NE PREND PAS TOUT L'ÉCRAN : elle s'ouvre SOUS
+   l'en-tête, qui reste en place. On peut donc revenir à l'accueil, à la
+   galerie ou à n'importe quel lieu sans avoir à « fermer » d'abord —
+   c'était le reproche, et il était juste. */
+.plein{position:fixed;top:var(--ent);left:0;right:0;bottom:0;z-index:68;
+  opacity:0;visibility:hidden;background:var(--blanc);
   transition:opacity .5s var(--e),visibility .5s;display:flex;flex-direction:column}
 .plein.on{opacity:1;visibility:visible}
 .plein__t{flex-shrink:0;height:var(--barre);display:flex;align-items:center;
@@ -546,14 +578,49 @@ img{display:block;max-width:100%}
 .plein__x{font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.2em;
   font-size:9px;opacity:.55;transition:opacity .3s;display:flex;align-items:center;gap:10px}
 .plein__x:hover{opacity:1}
-.plein__nav{margin-left:auto;margin-right:clamp(14px,2.6vw,32px);display:flex;
-  align-items:center;gap:clamp(10px,1.6vw,22px)}
-.plein__nav button{font-family:system-ui,sans-serif;font-size:9px;letter-spacing:.2em;
-  text-transform:uppercase;opacity:.4;transition:opacity .3s;padding-bottom:3px;
-  border-bottom:1px solid transparent;white-space:nowrap}
-.plein__nav button:hover{opacity:.85}
-.plein__nav button.ici{opacity:1;border-bottom-color:currentColor}
-@media(max-width:900px){.plein__nav{display:none}}
+/* LE FIL D'ARIANE DE LA PIÈCE : on sait toujours d'où l'on vient, et
+   chaque marche est cliquable. */
+.plein__fil{display:flex;align-items:center;gap:9px;min-width:0;flex-shrink:1;
+  font-family:system-ui,sans-serif;font-size:10px;letter-spacing:.16em;
+  text-transform:uppercase;overflow:hidden}
+.plein__fil button{font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  opacity:.42;transition:opacity .3s;white-space:nowrap}
+.plein__fil button:hover{opacity:1}
+.plein__fil span{opacity:.24;flex-shrink:0}
+.plein__fil b{font-weight:400;opacity:.9;white-space:nowrap}
+
+/* LE SOMMAIRE DE LA PIÈCE : un seul mot — l'endroit où l'on est — qui
+   se déplie en liste au survol. Discret au repos, complet à la demande. */
+.plein__som{position:relative;margin-left:auto;margin-right:clamp(12px,2vw,26px)}
+.plein__somb{display:flex;align-items:center;gap:10px;padding:7px 0;
+  font-family:system-ui,sans-serif;font-size:9.5px;letter-spacing:.2em;
+  text-transform:uppercase;opacity:.75;transition:opacity .3s;white-space:nowrap}
+.plein__somb:hover,.plein__som:hover .plein__somb{opacity:1}
+.plein__somb i{width:7px;height:7px;border-right:1px solid currentColor;
+  border-bottom:1px solid currentColor;transform:rotate(45deg) translate(-2px,-2px);
+  transition:transform .4s var(--e)}
+.plein__som:hover .plein__somb i{transform:rotate(225deg) translate(-1px,-1px)}
+.plein__nav{position:absolute;right:0;top:100%;z-index:5;min-width:210px;
+  background:rgba(255,255,255,.985);backdrop-filter:blur(16px) saturate(1.2);
+  border:1px solid var(--trait);border-top:none;padding:8px 0;
+  display:flex;flex-direction:column;
+  opacity:0;visibility:hidden;transform:translateY(-6px);pointer-events:none;
+  transition:opacity .35s var(--e),transform .4s var(--e),visibility .35s}
+.plein__som:hover .plein__nav,.plein__som:focus-within .plein__nav{
+  opacity:1;visibility:visible;transform:none;pointer-events:auto}
+.plein__nav button{font-family:system-ui,sans-serif;font-size:11.5px;letter-spacing:.02em;
+  text-align:left;padding:9px clamp(14px,1.6vw,20px);opacity:.7;
+  transition:opacity .25s,padding-left .35s var(--e);white-space:nowrap;
+  display:flex;align-items:center;gap:11px}
+.plein__nav button::before{content:'';width:0;height:1px;background:currentColor;
+  transition:width .35s var(--e);flex-shrink:0}
+.plein__nav button:hover{opacity:1;padding-left:calc(clamp(14px,1.6vw,20px) + 3px)}
+.plein__nav button.ici{opacity:1}
+.plein__nav button.ici::before{width:14px}
+/* la jauge : où l'on en est dans la page, d'un trait */
+.plein__jauge{flex-shrink:0;height:1px;background:var(--trait);position:relative}
+.plein__jauge i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--encre);
+  transition:width .18s linear}
 /* la PAGE de la pièce : elle se descend */
 .plein__doc{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;
   scroll-behavior:smooth}
@@ -647,7 +714,8 @@ img{display:block;max-width:100%}
    L'origine, la silhouette, les matières, le nuancier, la fabrication,
    un mot de la maison, le sur-mesure. Ce que la fiche Shopify raconte,
    raconté ici. */
-.sp{padding:clamp(48px,9vh,120px) clamp(20px,6vw,110px);border-top:1px solid var(--trait)}
+.sp{padding:clamp(48px,9vh,120px) clamp(20px,6vw,110px);border-top:1px solid var(--trait);
+  scroll-margin-top:6px}
 .sp--noir{background:var(--nuit);color:#f2efe9;border-top-color:transparent}
 .sp--papier{background:var(--papier)}
 .sp__k{font-family:system-ui,sans-serif;font-size:9px;letter-spacing:.28em;
@@ -692,8 +760,17 @@ img{display:block;max-width:100%}
 .nu__m{position:relative;width:100%;height:0;padding-top:76%;overflow:hidden;
   background:var(--blanc);border:1px solid var(--trait)}
 .nu__m img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
-  padding:7px;transition:transform 1.1s var(--e)}
-.nu:hover .nu__m img{transform:scale(1.05)}
+  padding:7px;transition:opacity .55s var(--e),transform 1.1s var(--e)}
+/* la pièce s'entrouvre au passage de la souris, elle ne s'expose pas */
+.nu__o{opacity:0;transform:scale(.97)}
+.nu--ouvre:hover .nu__f,.nu--ouvre:focus-visible .nu__f{opacity:0;transform:scale(1.03)}
+.nu--ouvre:hover .nu__o,.nu--ouvre:focus-visible .nu__o{opacity:1;transform:none}
+.nu:not(.nu--ouvre):hover .nu__f{transform:scale(1.05)}
+/* on annonce, discrètement, que la pièce peut s'ouvrir */
+.nu--ouvre .nu__m::after{content:'';position:absolute;right:8px;bottom:8px;z-index:2;
+  width:14px;height:1px;background:var(--gris);opacity:.5;
+  transition:width .5s var(--e),opacity .4s}
+.nu--ouvre:hover .nu__m::after{width:26px;opacity:1}
 .nu.ici .nu__m{border-color:var(--encre)}
 .nu__n{font-size:13px;font-style:italic;line-height:1.25}
 .nu__k{display:block;font-family:system-ui,sans-serif;font-size:8.5px;letter-spacing:.16em;
@@ -1029,6 +1106,15 @@ img{display:block;max-width:100%}
 .se__t em{font-style:italic}
 .se__d{margin-top:14px;font-family:system-ui,sans-serif;font-size:11.5px;line-height:1.95;
   opacity:.5}
+/* Ce que la porte ouvre — dit ici, et nulle part ailleurs : le cercle
+   ne se nomme pas au dehors, il se découvre en le passant. */
+.se__pr{list-style:none;margin:clamp(18px,3vh,28px) auto 0;max-width:44ch;text-align:left;
+  border-top:1px solid rgba(242,239,233,.16)}
+.se__pr li{font-family:system-ui,sans-serif;font-size:11px;line-height:1.6;opacity:.55;
+  padding:10px 0 10px 22px;position:relative;
+  border-bottom:1px solid rgba(242,239,233,.1)}
+.se__pr li::before{content:'';position:absolute;left:0;top:17px;width:5px;height:5px;
+  border:1px solid var(--or);transform:rotate(45deg)}
 .se__g{width:min(268px,72vw);aspect-ratio:1;margin:clamp(24px,5vh,44px) auto 0;
   touch-action:none;cursor:pointer;position:relative}
 .se__g svg{width:100%;height:100%;overflow:visible}
@@ -1040,7 +1126,7 @@ img{display:block;max-width:100%}
    l'un après l'autre au bout de quelques secondes d'hésitation. */
 .se__g .halo{fill:none;stroke:rgba(242,239,233,.4);stroke-width:1;transform-origin:center;
   transform-box:fill-box;animation:souffle 3.1s var(--e) infinite;
-  animation-delay:calc(var(--i) * .13s)}
+  animation-delay:calc(var(--i) * .17s)}
 @keyframes souffle{
   0%,72%,100%{transform:scale(1);opacity:0}
   20%{transform:scale(2.1);opacity:.5}
@@ -1466,15 +1552,14 @@ img{display:block;max-width:100%}
     <button class="lien" data-va="galerie" data-sous="galerie">La Galerie</button>
     <button class="lien" data-va="atelier" data-sous="atelier">L'Atelier</button>
     <button class="lien" data-va="maison" data-sous="maison">La Maison</button>
-    <button class="lien" data-va="bibliotheque" data-sous="bibliotheque">La Bibliothèque</button>
   </nav>
   <button class="ent__logo" id="entLogo" aria-label="Retour à l'accueil">
     Tiraboschi <small>Paris · 1904</small>
   </button>
   <nav class="ent__n ent__n--d">
-    <button class="lien" data-va="serrure" data-sous="boudoir">Le Boudoir</button>
+    <button class="lien lien--clos" data-va="serrure" data-sous="boudoir">Le Boudoir</button>
+    <button class="lien lien--discret" data-va="bibliotheque" data-sous="bibliotheque">La Bibliothèque</button>
     <span class="ent__sep" aria-hidden="true"></span>
-    <button class="lien" data-va="cercle" data-sous="cercle">Votre Cercle</button>
     <button class="lien fort lien--rdv" data-va="rdv">Rendez-vous</button>
   </nav>
 </header>
@@ -1630,10 +1715,15 @@ img{display:block;max-width:100%}
      le sur-mesure, et les autres modèles. -->
 <div class="plein" id="plein" role="dialog" aria-modal="true" aria-labelledby="pleinN2">
   <div class="plein__t">
-    <span class="plein__i" id="pleinI"></span>
-    <span class="plein__nav" id="pleinNav"></span>
+    <nav class="plein__fil" id="pleinFil"></nav>
+    <div class="plein__som">
+      <button class="plein__somb" id="pleinSomB" aria-expanded="false">
+        <span id="pleinSomI">L'origine</span><i aria-hidden="true"></i></button>
+      <div class="plein__nav" id="pleinNav"></div>
+    </div>
     <button class="plein__x" id="pleinX">Fermer <span aria-hidden="true">✕</span></button>
   </div>
+  <div class="plein__jauge"><i id="pleinJauge"></i></div>
   <div class="plein__doc" id="pleinDoc">
     <section class="plein__b">
       <div class="plein__s">
@@ -1755,6 +1845,12 @@ img{display:block;max-width:100%}
     <p class="se__d">On n'entre pas ici par une adresse. Reliez les points de façon à
       tracer la lettre de la maison — au doigt d'un seul trait, ou point par point
       au clic.</p>
+    <ul class="se__pr">
+      <li>Les collections vous sont montrées avant qu'elles ne soient accrochées.</li>
+      <li>Certaines pièces ne sont proposées qu'ici, et ne rejoignent jamais le mur.</li>
+      <li>Des peausseries réservées, que l'atelier ne met pas en vue.</li>
+      <li>Et, le moment venu, une pièce d'exception dessinée pour vous seule.</li>
+    </ul>
     <div class="se__g" id="seG">
       <svg viewBox="0 0 100 100" id="seSvg" aria-hidden="true">
         <path class="indice" id="seIndice" d="M10 12 H90 M50 12 V90"/>
@@ -2005,6 +2101,35 @@ const VICT = [
    ═══════════════════════════════════════════════════════════════ */
 const OEUVRES = [];
 
+
+/* ═══════════ FERMÉ / OUVERT ═══════════
+   Sur les cinquante-sept prises de vue du Rafaël, dix-neuf le montrent
+   RABAT LEVÉ. Une pièce ne s'accroche pas ouverte : le nuancier et la
+   fiche montrent la face fermée, et l'ouverture ne se révèle qu'au
+   passage de la souris. Classement fait à l'œil, planche contact à
+   l'appui.
+
+   Neuf pièces n'existent QU'ouvertes (03, 04, 11, 17, 18, 25, 27, 29,
+   32) : elles gardent leur vue ouverte faute de mieux, et attendent une
+   prise de vue fermée. */
+const VUES_OUVERTES = new Set(['nu-01-1','nu-02-3','nu-03-1','nu-04-1','nu-07-1',
+  'nu-09-1','nu-10-1','nu-11-1','nu-13-1','nu-17-1','nu-18-1','nu-20-1','nu-22-1',
+  'nu-24-1','nu-25-1','nu-27-1','nu-29-1','nu-31-3','nu-32-1']);
+/* parmi les vues fermées, celles qui montrent la FACE (anneau en D au
+   centre) plutôt que le dos */
+const VUES_FACE = new Set(['nu-01-2','nu-02-2','nu-05-1','nu-06-1','nu-07-2','nu-09-2',
+  'nu-10-2','nu-12-1','nu-14-1','nu-16-1','nu-19-1','nu-20-2','nu-21-1','nu-22-2',
+  'nu-24-2','nu-26-1','nu-28-1','nu-30-1','nu-31-2']);
+/* pour une pièce : la vue fermée à montrer, et l'ouverte à révéler */
+const fermeeDe = vues => vues.find(v => VUES_FACE.has(v))
+  || vues.find(v => !VUES_OUVERTES.has(v)) || vues[0];
+const ouverteDe = vues => vues.find(v => VUES_OUVERTES.has(v)) || null;
+/* les vues d'une pièce, rangées : la face fermée d'abord, l'ouverte en
+   dernier — on ne présente pas une pièce par son intérieur */
+const rangerVues = vues => [...vues].sort((x, y) =>
+  (VUES_FACE.has(y) ? 2 : VUES_OUVERTES.has(y) ? 0 : 1) -
+  (VUES_FACE.has(x) ? 2 : VUES_OUVERTES.has(x) ? 0 : 1));
+
 const PALETTE_FW25 = ['Noir', 'Marine', 'Chocolat', 'Bordeaux',
                       'Cognac', 'Sable', 'Naturel', 'Ivoire'];
 
@@ -2052,7 +2177,7 @@ const MODELES = [
     vues:['ed-silhouette','jane-3q','jane-profil','ed-portee'],
     zoom:'ed-anneau', zk:"L'anneau, serti à la main",
     film:'f-matiere', filmK:'Le grain, la couture, la ferrure',
-    g:[35,6,3,10], m:2,
+    g:[39,6,1,10], m:2,
     d:"Un seau que rien ne ferme : la Jane s'ouvre d'un seul geste, et c'est l'épaisseur du cuir qui lui donne sa tenue. Les deux anneaux de laiton massif sont sertis à la main, à l'œil et au toucher — jamais à la machine. Ils sont posés en dernier, quand la pièce est déjà montée : ils ne se recentrent plus.",
     q:["Fermoirs, passants, anneaux — la précision au dixième de millimètre, à l'œil et au toucher.", 'Savoir-faire de la maison'],
     silT:'La silhouette',
@@ -2074,7 +2199,7 @@ const MODELES = [
     vues:['victoire-1-1','victoire-1-2'],
     zoom:'ed-grain', zk:'Le grain du veau pleine fleur',
     film:'f-duo', filmK:'La Colette et la Victoire, ensemble',
-    g:[43,6,2,9], m:2,
+    g:[55,6,2,9], m:2,
     d:"La signature de la maison, poussée à son extrême : un V taillé dans la masse qui ouvre le sac sans fermoir. Sa tenue ne doit rien à une armature — seulement à l'épaisseur du cuir et à la façon dont la peau a été placée sur le gabarit.",
     q:["Chaque peau est lue avant d'être taillée — aucune coupe n'est identique.", 'Coupe & gabarit'],
     silT:'La silhouette',
@@ -2109,7 +2234,7 @@ const MODELES = [
        (32 × 38 × 10, ordinateur 13 pouces) décrivent un autre volume —
        elles ne sont donc pas reprises ici, à trancher avec la maison. */
     id:'rafael', t:'Rafaël', an:'1952', k:'La forme du mouvement · trente-deux peaux',
-    vues:['nu-10-1','nu-22-1','nu-01-1'],
+    vues:['nu-22-2','nu-10-2','nu-07-2','nu-24-2'],
     film:'f-rafael', filmK:'Le Rafaël, porté à la chaîne', filmV:true,
     /* Sur le mur, le Rafaël est le seul modèle dont TOUTES les prises de
        vue le montrent rabat ouvert : à sa place, on accroche le film
@@ -2117,7 +2242,7 @@ const MODELES = [
        le format du film (16:9) plutôt que celui d'un packshot. */
     tuileFilm:'f-croco', tuileFilmK:'Le film',
     zoom:'ed-tranche', zk:'La tranche, teinte et polie',
-    g:[51,7,3,6], m:2,
+    g:[71,11,2,9], m:2,
     d:"En 1952, la maison crée une pièce pour les femmes actives de l'après-guerre — celles qui travaillent, qui voyagent, qui ne ralentissent pas. Un rabat en pointe, un anneau en D pour toute fermeture, une chaîne de laiton : rien qui retienne, rien qui encombre. La forme du mouvement.",
     q:["Conçu pour accompagner une vie en mouvement perpétuel.", 'La maison'],
     silT:'La silhouette',
@@ -2137,7 +2262,8 @@ const MODELES = [
     mot:"Le Rafaël se configure entièrement : la teinte parmi les quarante-huit couleurs de la tannerie partenaire, la couleur du fil de couture sellier, les initiales gravées sur la quincaillerie — or, or vieilli ou argent.",
     /* LE NUANCIER VIT ICI, dans la fiche de la pièce qu'il habille */
     nuT:'Le nuancier', nuK:'Trente-deux peaux, rangées par famille de couleur',
-    nu:RAFAEL.map(([n, peau, vues]) => [n, peau, vues, null]),
+    nu:RAFAEL.map(([n, peau, vues]) =>
+      [n, peau, rangerVues(vues), null, fermeeDe(vues), ouverteDe(vues)]),
     nuFilm:'f-croco', nuFilmK:"L'alligator, en lumière",
   },
   {
@@ -2147,7 +2273,7 @@ const MODELES = [
     id:'olympe', t:'Olympe', an:'Le volume', k:'Prises de vue à venir',
     vues:['volume-socle','volume-anneau'], attente:true,
     zoom:'ed-grain', zk:'Le grain du veau pleine fleur',
-    g:[59,6,3,10], m:2,
+    g:[91,6,3,10], m:2,
     d:"L'Olympe n'a pas encore été photographiée. Ce que l'on montre ici, ce sont les volumes d'étude : la forme travaillée en plâtre, agrandie jusqu'à ce qu'on puisse en faire le tour, avant qu'un carton ne soit taillé. C'est à ce stade que se décide le pli du rabat — le gabarit ne vient qu'après.",
     q:["On ne peut pas faire plus de pièces qu'il n'y a de mains pour les faire.", 'Laurène'],
     silT:'La silhouette',
@@ -2176,19 +2302,27 @@ const PARCOURS = [
     d:"Un seul artisan fabrique chaque pièce, de la première coupe au polissage de la dernière ferrure. Cette règle, posée par le fondateur en 1904, est la seule promesse de la maison — et son seul secret. Longez le mur : une pièce s'ouvre en grand, et sa page se descend.",
     go:'Rencontrer la maison', va:'rdv' },
   { type:'sect', g:[24,2,4,6], n:'La Collection', k:'Cinq modèles' },
-  { type:'oe', i:0 }, { type:'oe', i:1 }, { type:'oe', i:2 },
-  { type:'oe', i:3 }, { type:'oe', i:4 },
-  { type:'ouv', g:[67,8,2,10], va:'atelier', k:'Porte · à gauche', n:"L'<em>Atelier</em>",
-    vis:'ed-grain', m:2, d:"Six gestes, du tri des peaux à la marque au fer." },
-  { type:'ouv', g:[76,8,4,9], va:'maison', k:'Porte · à droite', n:'La <em>Maison</em>',
-    vis:'ed-main', m:2, d:"1904, quatre générations, une seule règle." },
-  { type:'ouv', g:[85,8,2,10], va:'bibliotheque', k:'Porte · au fond',
-    n:'La <em>Bibliothèque</em>', vis:'ed-duo', m:2,
-    d:"Ce qu'il faut savoir du cuir, du geste et du Made in France." },
-  { type:'ouv', g:[94,8,3,10], va:'serrure', prive:true, k:'Porte · dérobée',
+  /* CHAQUE MODÈLE VA PAR DEUX : la photographie, puis le film. On
+     alterne l'arrêt et le mouvement tout le long du mur. */
+  { type:'oe', i:0 },
+  { type:'film', oe:'victoire', f:'f-accueil-916', g:[33,4,3,10], m:2 },
+  { type:'oe', i:1 },
+  { type:'film', oe:'jane', f:'f-matiere', g:[46,7,4,6], m:2 },
+  { type:'oe', i:2 },
+  { type:'film', oe:'colette', f:'f-duo', g:[62,7,1,6], m:2 },
+  { type:'oe', i:3 },
+  { type:'oe', i:4 },
+  { type:'ouv', g:[103,9,2,11], va:'serrure', prive:true, k:'Porte · dérobée',
     n:'Le <em>Boudoir</em>', vis:'ed-interieur', m:2,
-    d:"Là où une pièce se dessine pour une seule personne." },
-  { type:'pan', g:[103,8,2,10], k:'Fin du mur', t:'La suite se voit<br><em>en atelier</em>',
+    d:"Là où une pièce se dessine pour une seule personne. On y entre sur figure — et ce qui s'y ouvre ne se raconte pas au dehors." },
+  { type:'ouv', g:[113,8,2,10], va:'atelier', k:'Porte · à gauche', n:"L'<em>Atelier</em>",
+    vis:'ed-grain', m:2, d:"Six gestes, du tri des peaux à la marque au fer." },
+  { type:'ouv', g:[122,8,4,9], va:'maison', k:'Porte · à droite', n:'La <em>Maison</em>',
+    vis:'ed-main', m:2, d:"1904, quatre générations, une seule règle." },
+  { type:'ouvp', g:[131,4,5,4], va:'bibliotheque', k:'Au fond, à droite',
+    n:'La Bibliothèque',
+    d:"Six cahiers, pour qui veut savoir." },
+  { type:'pan', g:[137,8,2,10], k:'Fin du mur', t:'La suite se voit<br><em>en atelier</em>',
     d:"Une peausserie ne se juge pas sur un écran. Il faut la tourner vers la fenêtre, suivre l'écaille du doigt, sentir où la peau est ferme. C'est ce que l'on fait ensemble, avenue de Clichy. Les noms de nuances et les peausseries portés ici sont des propositions, à arrêter avec la maison.",
     go:'Venir la voir', va:'rdv' },
 ];
@@ -2321,14 +2455,20 @@ const PIECES = [
     d:"Six plans, du tri des peaux à la marque au fer. On y entre, on ne le regarde pas." },
   { i:'III', n:'La <em>Maison</em>', v:'volume-socle', va:'maison',
     d:"1904, quatre générations, une seule règle : un artisan, un sac." },
-  { i:'IV', n:'La <em>Bibliothèque</em>', v:'ed-duo', va:'bibliotheque',
-    d:"Six cahiers : lire une peau, le point sellier, ce que veut dire Made in France." },
-  { i:'V', n:'Le <em>Boudoir</em>', v:'ed-interieur', va:'serrure', clos:'Sur figure',
-    d:"Là où une pièce se dessine pour une seule personne." },
+  /* Le Boudoir tient la place la plus large : c'est la porte que la
+     maison veut faire pousser. La Bibliothèque se range en dernier, et
+     ne prend qu'une bande étroite — elle se trouve, elle ne se crie pas. */
+  { i:'IV', n:'Le <em>Boudoir</em>', v:'ed-interieur', va:'serrure', clos:'Sur figure',
+    poids:1.9,
+    d:"Là où une pièce se dessine pour une seule personne — et où s'ouvre ce qui ne se raconte pas au dehors." },
+  { i:'V', n:'La <em>Bibliothèque</em>', v:'ed-duo', va:'bibliotheque', poids:.66,
+    d:"Six cahiers, pour qui veut savoir." },
 ];
 PIECES.forEach(x => {
   const b = document.createElement('button');
-  b.className = 'q'; b.dataset.va = x.va;
+  b.className = 'q' + (x.poids > 1 ? ' q--fort' : x.poids < 1 ? ' q--discret' : '');
+  b.dataset.va = x.va;
+  if (x.poids) b.style.setProperty('--poids', x.poids);
   poser(b, VIS[x.v]);
   b.insertAdjacentHTML('beforeend',
     '<div class="q__x"><p class="q__i">' + x.i + '</p><p class="q__n">' + x.n +
@@ -2386,7 +2526,7 @@ function aller(va) {
     return;
   }
   if (va === 'creatrice') return aller('chap:3');
-  if (va === 'cercle') return ouvrirSerrure();
+  if (va === 'cercle') return ouvrirSerrure();   /* héritage : mène à la porte */
   /* un chapitre précis de la chronique */
   if (va.startsWith('chap:')) {
     const i = +va.slice(5);
@@ -2474,19 +2614,11 @@ const SOUS = {
   boudoir: { k:'Le Boudoir · sur figure', v:'ed-interieur', vk:'Le salon privé',
     c:[['Y entrer', [
         ['Tracer la figure', 'Neuf points, on trace un T', 'serrure'],
-        ['Votre Cercle', 'Vos pièces, vos rendez-vous', 'cercle']]],
+        ['Ce qui s’y ouvre', 'On le découvre en passant la porte', 'serrure']]],
        ['Ce qu’on y fait', [
         ['Le sur-mesure', 'Une pièce dessinée pour une seule personne', 'serrure'],
         ['Le volume, au doigt', 'La pièce se tourne à la main', 'serrure'],
         ['Prendre rendez-vous', 'Une visite à la fois', 'rdv']]]] },
-  cercle: { k:'Votre Cercle · votre compte', v:'ed-portee', vk:'Vous êtes attendue',
-    c:[['Votre espace', [
-        ['Vos pièces', 'Celles que vous avez déjà', 'cercle'],
-        ['Vos rendez-vous', 'Passés et à venir', 'cercle'],
-        ['Vos privilèges', 'The Society · quatre paliers', 'cercle']]],
-       ['Aller plus loin', [
-        ['Le Boudoir', 'Faire naître une pièce', 'serrure'],
-        ['Prendre rendez-vous', "À l'atelier, avenue de Clichy", 'rdv']]]] },
 };
 (function () {
   const vo = $('volet');
@@ -2544,15 +2676,16 @@ const PLAN = [
     va:'atelier' },
   { i:'03', n:'La <em>Maison</em>', v:'volume-socle',
     d:"1904, quatre générations, une seule règle : un artisan, un sac.", va:'maison' },
-  { i:'04', n:'La <em>Bibliothèque</em>', v:'ed-duo',
-    d:"Ce qu'il faut savoir du cuir, du point sellier et du Made in France.",
-    va:'bibliotheque' },
-  { i:'05', n:'Le <em>Boudoir</em>', v:'ed-interieur', clos:'Sur figure',
-    d:"Là où une pièce se dessine pour une seule personne.", va:'serrure' },
+  { i:'04', n:'Le <em>Boudoir</em>', v:'ed-interieur', clos:'Sur figure',
+    d:"Là où une pièce se dessine pour une seule personne — et où s'ouvre ce qui ne se raconte pas au dehors.",
+    va:'serrure' },
+  { i:'05', n:'La <em>Bibliothèque</em>', v:'ed-duo', discret:true,
+    d:"Six cahiers, pour qui veut savoir.", va:'bibliotheque' },
 ];
 PLAN.forEach((x, k) => {
   const b = document.createElement('button');
-  b.className = 'pl' + (k === 0 ? ' vise' : ''); if (x.clos) b.dataset.clos = '1';
+  b.className = 'pl' + (k === 0 ? ' vise' : '') + (x.discret ? ' pl--discret' : '');
+  if (x.clos) b.dataset.clos = '1';
   b.innerHTML = '<span class="pl__i">' + x.i + '</span>' +
     '<span class="pl__n">' + x.n +
       (x.clos ? '<span class="pl__t">' + x.clos + '</span>' : '') + '</span>' +
@@ -2648,6 +2781,41 @@ PARCOURS.forEach(item => {
     mur.appendChild(b);
     return;
   }
+  /* le film d'un modèle, accroché À CÔTÉ de sa photographie */
+  if (item.type === 'film') {
+    const m = OEUVRES.find(x => x.id === item.oe);
+    const b = document.createElement('button');
+    b.className = 'tuile tuile--film'; b.dataset.oe = m.id; b.dataset.sect = m.s;
+    b.dataset.film = item.f;
+    caler(b, item.g, item.m);
+    const c = document.createElement('div');
+    c.className = 'tuile__m tuile__m--film';
+    const v = document.createElement('video');
+    v.muted = true; v.loop = true; v.playsInline = true;
+    v.setAttribute('playsinline', ''); v.setAttribute('aria-label', m.t + ' — le film');
+    v.preload = 'none'; v.poster = AFFICHES[item.f] || '';
+    c.appendChild(v);
+    c.insertAdjacentHTML('beforeend', '<span class="tuile__film">Le film</span>');
+    b.appendChild(c);
+    b.insertAdjacentHTML('beforeend',
+      '<div class="tuile__c"><p class="tuile__n">' + esc(m.t) + '</p>' +
+      '<p class="tuile__k">En mouvement</p><span class="tuile__r"></span></div>');
+    b.onclick = () => { if (!mur.dataset.glisse) ouvrirPlein(m.id, c); };
+    mur.appendChild(b);
+    return;
+  }
+  /* une ouverture DISCRÈTE : un mot posé sur le mur, sans image */
+  if (item.type === 'ouvp') {
+    const b = document.createElement('button');
+    b.className = 'ouv ouv--mot'; b.dataset.ouv = item.va;
+    caler(b, item.g, item.m || 1);
+    b.innerHTML = '<p class="ouv__k cap">' + item.k + '</p>' +
+      '<p class="ouv__n">' + item.n + '</p><p class="ouv__d">' + item.d + '</p>' +
+      '<span class="ouv__go"><i></i>Entrer</span>';
+    b.onclick = () => { if (!mur.dataset.glisse) versLieu(item.va); };
+    mur.appendChild(b);
+    return;
+  }
   const o = OEUVRES[item.i];
   const a = document.createElement('button');
   a.className = 'tuile';
@@ -2685,7 +2853,7 @@ PARCOURS.forEach(item => {
    dans la salle, et s'arrête quand elle en sort. Au survol on le
    redémarre du début — c'est le geste d'une vitrine. */
 (function () {
-  const tuiles = [...mur.querySelectorAll('.tuile[data-film]')];
+  const tuiles = [...mur.querySelectorAll('[data-film]')];
   if (!tuiles.length) return;
   const oeil = new IntersectionObserver(es => es.forEach(e => {
     const v = e.target.querySelector('video'); if (!v) return;
@@ -2771,9 +2939,9 @@ function revelerMur() {
     /* une ouverture ou un panneau ne porte pas de section : on conserve
        la dernière traversée plutôt que de vider le fil d'Ariane */
     const s = it && it.dataset.sect ? it.dataset.sect : sectCourante;
-    const tuiles = [...mur.querySelectorAll('.tuile')];
-    const i = tuiles.indexOf(it);
-    $('marcheN').textContent = i >= 0 ? 'Pièce ' + (i + 1) + ' sur ' + tuiles.length
+    const oe = it && it.dataset.oe ? OEUVRES.findIndex(x => x.id === it.dataset.oe) : -1;
+    $('marcheN').textContent = oe >= 0
+      ? OEUVRES[oe].t + ' · pièce ' + (oe + 1) + ' sur ' + OEUVRES.length
       : (it && it.dataset.ouv ? 'Une ouverture' : '');
     if (s !== sectCourante) { sectCourante = s; ariane(); }
   }
@@ -2876,10 +3044,18 @@ function sectionSuite(o) {
     (o.nuFilm && FILMS[o.nuFilm]
       ? '<div class="sp__nuf">' + filmHTML(o.nuFilm, o.nuFilmK || '', '') + '</div>' : '') +
     '<p class="sp__nud" id="nuD"></p>' +
-    '<div class="sp__nu">' + o.nu.map(([n, peau, vs], i) =>
-      '<button class="nu' + (i === 0 ? ' ici' : '') + '" data-nu="' + i + '">' +
-      '<span class="nu__m"><img alt="' + esc(o.t + ' · ' + n) + '" decoding="async" src="' +
-        VIS[vs[0]] + '"></span>' +
+    '<div class="sp__nu">' + o.nu.map(([n, peau, vs, mot, ferme, ouvert], i) =>
+      /* LE NUANCIER MONTRE LA FACE FERMÉE. L'ouverture se révèle au
+         passage de la souris — la pièce s'entrouvre, elle ne s'expose
+         pas d'emblée. */
+      '<button class="nu' + (i === 0 ? ' ici' : '') + (ouvert ? ' nu--ouvre' : '') +
+        '" data-nu="' + i + '">' +
+      '<span class="nu__m">' +
+        '<img class="nu__f" alt="' + esc(o.t + ' · ' + n) + '" decoding="async" src="' +
+          VIS[ferme || vs[0]] + '">' +
+        (ouvert ? '<img class="nu__o" alt="" aria-hidden="true" decoding="async" src="' +
+          VIS[ouvert] + '">' : '') +
+      '</span>' +
       '<span class="nu__n">' + esc(n) + '<span class="nu__k">' + esc(peau) + '</span></span>' +
       '</button>').join('') + '</div>');
 
@@ -3027,7 +3203,16 @@ const SP_NOMS = { origine:"L'origine", silhouette:'La forme', matieres:'Les mati
 
 function habiller(o) {
   poserVues(o);
-  $('pleinI').textContent = o.s + ' · ' + (idxPlein + 1) + ' sur ' + OEUVRES.length;
+  /* le fil d'Ariane de la pièce : chaque marche ramène quelque part */
+  const fil = $('pleinFil');
+  fil.innerHTML = '';
+  [['Tiraboschi', () => { fermerPlein(true); versLieu('accueil'); }],
+   ['La Galerie', () => fermerPlein()]].forEach(([n, f]) => {
+    const b = document.createElement('button'); b.textContent = n; b.onclick = f;
+    fil.appendChild(b);
+    fil.insertAdjacentHTML('beforeend', '<span>/</span>');
+  });
+  fil.insertAdjacentHTML('beforeend', '<b>' + esc(o.t) + '</b>');
   $('pleinK').textContent = o.k;
   $('pleinN2').textContent = o.t;
   $('pleinD').textContent = o.d;
@@ -3100,9 +3285,16 @@ $('pleinDoc').addEventListener('scroll', () => {
     const secs = [...$('pleinSuite').querySelectorAll('.sp')];
     let ici = '';
     secs.forEach(s => { if (s.getBoundingClientRect().top < innerHeight * .45) ici = s.dataset.sp; });
-    $('pleinNav').querySelectorAll('button').forEach(b =>
-      b.classList.toggle('ici', b.dataset.vers === ici));
-    $('pleinDesc').style.opacity = $('pleinDoc').scrollTop > 60 ? '0' : '';
+    let nom = '';
+    $('pleinNav').querySelectorAll('button').forEach(b => {
+      const est = b.dataset.vers === ici;
+      b.classList.toggle('ici', est);
+      if (est) nom = b.textContent;
+    });
+    $('pleinSomI').textContent = nom || SP_NOMS.origine;
+    const d = $('pleinDoc'), t = Math.max(1, d.scrollHeight - d.clientHeight);
+    $('pleinJauge').style.width = Math.min(100, d.scrollTop / t * 100).toFixed(1) + '%';
+    $('pleinDesc').style.opacity = d.scrollTop > 60 ? '0' : '';
   });
 }, { passive: true });
 const premierCadre = () => $('pleinVues').querySelector('.plein__ph');
@@ -3437,11 +3629,16 @@ P9.forEach(([x, y], i) => {
   /* un halo derrière chaque point : c'est lui qui bat, pas le point.
      Sans ce battement, personne ne comprend qu'il y a quelque chose
      à saisir — la porte reste fermée faute d'être vue. */
-  const h = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-  h.setAttribute('cx', x); h.setAttribute('cy', y); h.setAttribute('r', 3.2);
-  h.setAttribute('class', 'halo'); h.style.setProperty('--i', i);
-  h.dataset.i = i;
-  $('seHalos').appendChild(h);
+  /* SEULS LES POINTS DE LA FIGURE se signalent : faire battre les neuf
+     ne montre rien — cela dit juste « il y a neuf points ». Ce qu'il
+     faut montrer, c'est le chemin. */
+  if (T.includes(i)) {
+    const h = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    h.setAttribute('cx', x); h.setAttribute('cy', y); h.setAttribute('r', 3.2);
+    h.setAttribute('class', 'halo'); h.style.setProperty('--i', T.indexOf(i));
+    h.dataset.i = i;
+    $('seHalos').appendChild(h);
+  }
   const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
   c.setAttribute('cx', x); c.setAttribute('cy', y); c.setAttribute('r', 3.2);
   c.dataset.i = i;
@@ -3464,7 +3661,10 @@ function armerDemo(delai) {
     let k = 0;
     const jouer = () => {
       [...$('seHalos').children].forEach(h => h.classList.remove('appel'));
-      if (k < T.length) $('seHalos').children[T[k]].classList.add('appel');
+      if (k < T.length) {
+        const h = [...$('seHalos').children].find(x => +x.dataset.i === T[k]);
+        if (h) h.classList.add('appel');
+      }
       k = (k + 1) % (T.length + 2);
     };
     jouer(); demoPas = setInterval(jouer, 620);

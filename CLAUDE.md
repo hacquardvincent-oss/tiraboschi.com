@@ -493,57 +493,55 @@ python3 tools/demo/assembler.py tools/demo/gabarit-galerie.html tiraboschi-galer
 NODE_PATH=/opt/node22/lib/node_modules node tests/galerie/recette.js
 ```
 
-**Démo Galerie — les huit règles à ne pas casser**
+**Démo Galerie — les dix règles à ne pas casser**
 
-1. **Aucun prix hors du boudoir**, et aucun mot de commerce nulle part.
-   Le mot « prix » lui-même est banni des lieux publics, jusque dans un
-   emploi figuré.
-2. **UN SEUL EN-TÊTE, LE MÊME PARTOUT** — il ne s'absente qu'au seuil.
-   Le nom (sans le V : le V est la signature des pièces, pas du mot) est
-   DANS LE FLUX entre deux moitiés de menu en `flex:1 1 0` : il est donc
-   exactement centré et aucune entrée ne peut lui passer dessus — la
-   géométrie l'interdit, ce n'est plus un réglage. Les sept entrées sont
-   identiques dans chaque lieu : les cinq lieux, Votre Cercle (le compte
-   client), le rendez-vous. **Jamais un burger ET un menu visible** :
-   au-dessus de 1340 px le menu, en dessous le burger. Le fil d'Ariane
-   est une bande de 38 px SOUS l'en-tête ; `--haut` vaut la somme des
-   deux et tout lieu s'y cale (un en-tête qui grandit sans cela pousse
-   le rail du boudoir hors de l'écran — bug réel).
-3. **Les sous-entrées se déplient SOUS leur entrée** (le volet : deux
-   colonnes de liens + un visuel), jamais rangées en tout petit au bas
-   d'un tiroir — « les clients n'iront jamais ». C'est là que vivent le
-   cabinet des matières, les cinq modèles, les six gestes, les cahiers,
-   les chapitres de la maison, la créatrice.
-4. **Cinq lieux, cinq façons de se déplacer** — la galerie se parcourt à
-   l'horizontale (LA COLLECTION : cinq modèles en ascenseur), l'atelier
-   s'EMPILE en six plans (`position:sticky`), la maison se lit en plein
-   écran avec l'année en filigrane, la bibliothèque se déplie en six
-   cahiers, le boudoir ne se parcourt pas.
-5. **Une pièce ouvre une PAGE, pas une vue** — depuis sa tuile (FLIP),
-   puis l'on DESCEND : les vues, l'origine, la silhouette et ses cotes,
-   les matières et la palette, LE NUANCIER, un gros plan de matière,
-   la fabrication et les six gestes, l'entretien, un mot de la maison,
-   le sur-mesure, les autres modèles. Un sommaire en haut. Plus de 700
-   mots par page. **Le nuancier vit DANS la fiche de la pièce qu'il
-   habille**, jamais sur le mur : désigner une peau change les vues du
-   haut et le mot qui l'accompagne.
-6. **Une pièce se montre ENTIÈRE** — `object-fit:contain`, jamais
-   `cover`. Corollaire : l'emplacement d'une silhouette doit suivre SES
-   proportions (un portrait 2:3 dans une case en paysage laisse 49 % de
-   blanc). La recette mesure les deux, sur le mur et au nuancier.
-7. **Le boudoir est un PARCOURS** : antichambre → silhouette → volume →
-   pièce achevée. Il s'ouvre sur une FIGURE, pas un code : neuf points,
-   on trace un T. **Les points SE SIGNALENT** — un halo bat derrière
-   chacun, en cascade, et après quelques secondes d'hésitation les cinq
-   points de la figure s'allument l'un après l'autre. Sans cela on ne
-   voit pas qu'il y a quelque chose à saisir, et la porte reste fermée
-   faute d'être vue. La pièce s'y tourne au doigt, à la souris, et **au
-   balayage à deux doigts** (un `wheel`, pas un `pointermove`).
-8. **On ne perd pas le visiteur** — fil d'Ariane cliquable, volets,
-   plan complet au burger, rendez-vous toujours à portée, fil de visite.
-   Les quatre ouvertures se rencontrent EN MARCHANT. **Le rendez-vous
-   tient EN ENTIER au-dessus de la ligne de flottaison** en desktop ;
-   il ne redescend qu'en dessous de 960 px.
+1. **Aucun prix hors du boudoir**, et aucun mot de commerce nulle part —
+   « prix » compris, jusque dans un emploi figuré.
+2. **UN SEUL EN-TÊTE, LE MÊME PARTOUT, Y COMPRIS SUR UNE FICHE.** Il ne
+   s'absente qu'au seuil. Une fiche de pièce s'ouvre SOUS lui
+   (`.plein{top:var(--ent)}`, z-index 68 contre 70) : sinon on ne peut
+   plus revenir à l'accueil ni à la galerie sans « fermer » — reproche
+   client, et il était juste. Le nom est DANS LE FLUX entre deux
+   moitiés de menu en `flex:1 1 0` : il est donc exactement centré et
+   aucune entrée ne peut lui passer dessus. Six entrées identiques
+   partout : les cinq lieux, puis le rendez-vous. **Jamais un burger ET
+   un menu visible** : au-dessus de 1340 px le menu, en dessous le
+   burger.
+3. **Le CERCLE NE SE NOMME PAS AU DEHORS.** Aucun menu, aucun lieu
+   public ne dit « Votre Cercle », ni « fidélité », ni « programme ».
+   Ce que la porte ouvre se dit UNIQUEMENT sur la serrure du Boudoir,
+   en quatre lignes — et jamais en points ni en remises.
+4. **Le Boudoir passe avant la Bibliothèque**, partout : dans le menu
+   (avec sa marque en losange), sur l'accueil (bande large et claire
+   contre bande étroite et sourde), dans le méga-menu, et sur le mur
+   (première porte, grande image, contre un simple mot sans image).
+5. **Les sous-entrées se déplient SOUS leur entrée** (le volet), jamais
+   rangées en tout petit au bas d'un tiroir.
+6. **Cinq lieux, cinq façons de se déplacer.** La galerie alterne PHOTO
+   et FILM : chaque modèle filmé est accroché deux fois, sa
+   photographie puis son film, côte à côte.
+7. **Une pièce ouvre une PAGE, pas une vue** — et cette page garde
+   l'en-tête, plus un fil d'Ariane cliquable (Tiraboschi / La Galerie /
+   la pièce), un SOMMAIRE replié en un seul mot qui se déplie au survol,
+   et une jauge de progression d'un trait. On y descend : vues, origine,
+   forme et cotes, matières et palette, NUANCIER, film, gros plan de
+   matière, fabrication et six gestes, entretien, mot de la maison,
+   sur-mesure, les autres modèles. Plus de 700 mots.
+8. **UNE PIÈCE NE S'ACCROCHE PAS OUVERTE.** Sur les 57 prises de vue du
+   Rafaël, 19 le montrent rabat levé : elles ne servent ni de tuile, ni
+   de première vue de fiche, ni de pastille de nuancier. Le nuancier
+   montre la FACE FERMÉE, et l'ouverture se révèle au survol (crossfade
+   `.nu__f` → `.nu__o`). Neuf pièces n'existent qu'ouvertes (03, 04, 11,
+   17, 18, 25, 27, 29, 32) : elles attendent une prise de vue fermée.
+   Classement dans `VUES_OUVERTES` / `VUES_FACE`.
+9. **Une pièce se montre ENTIÈRE** — `object-fit:contain`, jamais
+   `cover`, et l'emplacement suit les proportions du contenu, film
+   compris.
+10. **Le boudoir s'ouvre sur une FIGURE**, et **seuls les cinq points du
+    T portent un halo** : faire battre les neuf ne dit rien d'autre que
+    « il y a neuf points ». Après quelques secondes d'hésitation, les
+    cinq s'allument dans l'ordre du tracé. La pièce s'y tourne au doigt,
+    à la souris et au balayage à deux doigts.
 
 **Les visuels** — `tools/demo/visuels/*.webp` (~5 Mo, 92 fichiers),
 tirés des originaux déposés sur `main` : `Photoshoot - December 25 -
@@ -637,6 +635,10 @@ trapèze à V et anse haute · **RAFAËL = la pochette à rabat portée à la
 chaîne, et ses 32 peaux** (le film `TEST 9-16_1 RAFAEL.mp4` le
 confirme) · **OLYMPE = le modèle qui attend sa séance photo**, montré
 par ses volumes d'étude, ce qui est dit en clair dans sa fiche.
+
+**Ce qui manque encore en prises de vue :** l'Olympe en entier, et une
+vue FERMÉE pour neuf peaux du Rafaël (03, 04, 11, 17, 18, 25, 27, 29,
+32) — elles n'existent qu'ouvertes et c'est visible au nuancier.
 
 **Attention aux cotes du Rafaël** : la page `tira-icone-rafael.liquid`
 donne H32 × L38 × P10 et « ordinateur 13 pouces », ce qui décrit un
