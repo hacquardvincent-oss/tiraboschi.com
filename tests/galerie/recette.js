@@ -139,6 +139,36 @@ async function glisser(p, x, y, dx, pas) {
     contraste(rgb(pose.texte), [255, 255, 255]) >= 4.5,
     contraste(rgb(pose.texte), [255, 255, 255]).toFixed(1) + ':1');
 
+  /* ── LES FILMS DE LA MAISON ──
+     Le hero de l'accueil est un film : muet, en boucle, `playsinline`,
+     et il s'arrête dès qu'on quitte le lieu. */
+  await p.waitForTimeout(1200);
+  const hf = await p.evaluate(() => {
+    const v = document.querySelector('#accF video');
+    if (!v) return null;
+    const src = [...v.querySelectorAll('source')].map(s => s.type);
+    return { muet: v.muted, boucle: v.loop, enligne: v.playsInline,
+             joue: !v.paused, avance: v.currentTime > 0,
+             formats: src, affiche: (v.poster || '').startsWith('data:image/webp'),
+             large: v.videoWidth, embarque: src.length > 0 &&
+               [...v.querySelectorAll('source')].every(s => s.src.startsWith('data:')) };
+  });
+  v('le hero de l\'accueil est un film', !!hf && hf.large > 0,
+    hf && hf.large + ' px');
+  v('il est muet et en boucle', hf && hf.muet && hf.boucle && hf.enligne);
+  v('il tourne', hf && hf.joue && hf.avance);
+  v('il est proposé en deux formats', hf && hf.formats.join() === 'video/webm,video/mp4',
+    hf && hf.formats.join());
+  v('les films sont embarqués comme le reste', hf && hf.embarque);
+  v('il a une affiche, pour éviter le flash blanc', hf && hf.affiche);
+  /* et il ne tourne pas quand on est ailleurs — batterie */
+  await p.evaluate(() => __lieu('galerie')); await p.waitForTimeout(700);
+  v('il s\'arrête quand on quitte l\'accueil',
+    await p.evaluate(() => document.querySelector('#accF video').paused));
+  await p.evaluate(() => __lieu('accueil')); await p.waitForTimeout(700);
+  v('et repart quand on revient',
+    await p.evaluate(() => !document.querySelector('#accF video').paused));
+
   /* ── L'EN-TÊTE EST LE MÊME PARTOUT ──
      Le reproche : un logo différent d'un lieu à l'autre, et des entrées
      qui changeaient. On vérifie que le nom et les sept entrées sont
@@ -262,7 +292,7 @@ async function glisser(p, x, y, dx, pas) {
   const modeles = await p.evaluate(() =>
     [...document.querySelectorAll('.tuile')].map(t => t.dataset.oe));
   v('la collection au complet, Rafaël compris',
-    modeles.join() === 'victoire,jane,colette,rafael,pochon', modeles.join());
+    modeles.join() === 'victoire,jane,colette,rafael,olympe', modeles.join());
   const hero = await p.evaluate(() => {
     const h = document.querySelector('.hero');
     if (!h) return null;
@@ -319,7 +349,7 @@ async function glisser(p, x, y, dx, pas) {
   const nommes = await p.evaluate(() =>
     [...document.querySelectorAll('.tuile .tuile__n')].map(n => n.textContent.trim()));
   v('chaque modèle est nommé sous sa silhouette',
-    nommes.join('|') === 'Victoire|Jane|Colette|Rafaël|Pochon', nommes.join(' · '));
+    nommes.join('|') === 'Victoire|Jane|Colette|Rafaël|Olympe', nommes.join(' · '));
 
   const patch = await p.evaluate(() => {
     const m = document.getElementById('mur');
@@ -459,18 +489,71 @@ async function glisser(p, x, y, dx, pas) {
     await p.evaluate(() => Math.round(document.querySelector(
       '#pleinSuite [data-sp="fabrication"]').getBoundingClientRect().top)));
 
-  /* LE RAFAËL EST LÀ, avec son contenu réel */
-  await p.evaluate(() => __plein(3)); await p.waitForTimeout(1200);
+  /* LE FILM DE LA PIÈCE : il ne se charge qu'à l'approche, et s'arrête
+     dès qu'il sort de l'écran. */
+  /* on rouvre la pièce pour repartir du haut : le sommaire nous avait
+     fait passer devant le film */
+  await p.evaluate(() => __plein(0)); await p.waitForTimeout(1200);
+  const avantFilm = await p.evaluate(() => {
+    const v = document.querySelector('#pleinSuite [data-sp="film"] video');
+    return v ? { charge: v.querySelectorAll('source').length, joue: !v.paused } : null;
+  });
+  v('le film de la pièce attend qu\'on l\'approche',
+    avantFilm && avantFilm.charge === 0 && !avantFilm.joue,
+    avantFilm && avantFilm.charge + ' source(s)');
+  await p.evaluate(() => {
+    const s = document.querySelector('#pleinSuite [data-sp="film"]');
+    const d = document.getElementById('pleinDoc');
+    d.scrollTo({ top: d.scrollTop + s.getBoundingClientRect().top, behavior: 'instant' });
+  });
+  await p.waitForTimeout(2200);
+  const surFilm = await p.evaluate(() => {
+    const f = document.querySelector('#pleinSuite [data-sp="film"]');
+    const v = f.querySelector('video');
+    const r = f.querySelector('.film').getBoundingClientRect();
+    return { joue: !v.paused, avance: v.currentTime > .4, large: v.videoWidth,
+             pleine: r.width >= innerWidth - 2 && r.height > 400,
+             legende: f.querySelector('.film__c strong').textContent.trim(),
+             bouton: !!f.querySelector('.film__b') };
+  });
+  v('il se met à tourner quand on arrive dessus',
+    surFilm.joue && surFilm.avance && surFilm.large > 0,
+    surFilm.large + ' px · t=' + surFilm.avance);
+  v('il occupe la page', surFilm.pleine);
+  v('il est légendé', surFilm.legende.length > 8, surFilm.legende);
+  v('on peut l\'arrêter à la main', surFilm.bouton);
+  await p.evaluate(() => { document.getElementById('pleinDoc').scrollTop = 0; });
+  await p.waitForTimeout(900);
+  v('et il s\'arrête quand il sort de l\'écran',
+    await p.evaluate(() =>
+      document.querySelector('#pleinSuite [data-sp="film"] video').paused));
+
+  /* L'OLYMPE ATTEND SA SÉANCE : on le dit, on ne le maquille pas */
+  await p.evaluate(() => __plein(4)); await p.waitForTimeout(1200);
+  const oly = await p.evaluate(() => ({
+    titre: document.getElementById('pleinN2').textContent,
+    kicker: document.getElementById('pleinK').textContent,
+    texte: document.getElementById('pleinSuite').textContent.replace(/\s+/g, ' ') }));
+  v('l\'Olympe a sa page', /Olympe/.test(oly.titre), oly.titre);
+  v('et l\'absence de prises de vue est dite en clair',
+    /prises de vue/i.test(oly.kicker) && /volumes d’étude|volume d’étude/i.test(oly.texte),
+    oly.kicker);
+
+  /* LE RAFAËL, ET SON NUANCIER DANS SA FICHE — plus sur le mur */
+  await p.evaluate(() => __plein(3)); await p.waitForTimeout(1400);
   const raf = await p.evaluate(() => ({
     titre: document.getElementById('pleinN2').textContent,
     texte: document.getElementById('pleinSuite').textContent.replace(/\s+/g, ' ') }));
   v('le Rafaël a sa page', /Rafaël/.test(raf.titre), raf.titre);
-  v('avec sa date, ses cotes et ses points',
-    /1952/.test(raf.texte) && /32 cm/.test(raf.texte) && /38 cm/.test(raf.texte) &&
-    /3 800/.test(raf.texte), raf.texte.slice(0, 60));
+  v('avec sa date et ses chiffres',
+    /1952/.test(raf.texte) && /3 800/.test(raf.texte) && /16 heures/.test(raf.texte),
+    raf.texte.slice(0, 60));
+  /* les cotes de la page Shopify décrivent un autre volume : on ne les
+     affirme pas par-dessus les photographies */
+  v('les cotes restent à confirmer, pas inventées',
+    /à confirmer/i.test(raf.texte) && !/38 cm/.test(raf.texte),
+    (raf.texte.match(/.{0,30}(38 cm|à confirmer).{0,20}/i) || [])[0]);
 
-  /* LE NUANCIER EST DANS LA FICHE, plus sur le mur */
-  await p.evaluate(() => __plein(4)); await p.waitForTimeout(1400);
   const nuan = await p.evaluate(() => {
     const sec = document.querySelector('#pleinSuite [data-sp="nuancier"]');
     const nus = [...document.querySelectorAll('#pleinSuite .nu')];
@@ -488,6 +571,10 @@ async function glisser(p, x, y, dx, pas) {
   v('aucune peau n\'y est rognée', nuan.rogne === 0, nuan.rogne);
   v('la carte commence par les neutres',
     /Gris Sauge/.test(nuan.noms.slice(0, 7).join()), nuan.noms.slice(0, 5).join(', '));
+  /* le film du nuancier accompagne la carte */
+  v('un film accompagne le nuancier',
+    await p.evaluate(() => !!document.querySelector(
+      '#pleinSuite [data-sp="nuancier"] .film')));
   v('elle se termine par les bleus', /Bleu/.test(nuan.noms.slice(-2).join()),
     nuan.noms.slice(-2).join(', '));
   v('aucune nuance n\'est répétée',

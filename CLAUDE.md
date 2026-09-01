@@ -555,6 +555,36 @@ couleur ; l'ordre du nuancier est un rangement par famille (neutres,
 beiges, bruns, ambre, roses, rouges, magentas, bleus), pas l'ordre des
 fichiers.
 
+**LES FILMS** — sept boucles muettes tirées de `Vidéos/` sur `main`
+(rushes de 12 à 37 Mo), ré-encodées à 660–1080 px en **deux formats** :
+VP9/WebM d'abord, H.264/MP4 ensuite. Le WebM est le seul qu'un Chromium
+sans codecs propriétaires sait décoder — donc le seul que la recette
+peut vérifier ; le MP4 couvre les navigateurs qui ne lisent pas le VP9.
+7 Mo pour les sept, affiches comprises ; le fichier assemblé passe de
+11 à 20 Mo.
+
+```bash
+# ffmpeg n'est pas installé : on prend celui d'imageio-ffmpeg
+pip install imageio-ffmpeg
+python3 -c "import imageio_ffmpeg;print(imageio_ffmpeg.get_ffmpeg_exe())"
+```
+
+Trois règles, chacune née d'un vrai défaut :
+1. **Un film ne tourne que lorsqu'il est à l'écran** (IntersectionObserver),
+   et ses `<source>` ne sont posées qu'à l'approche. Sinon 7 Mo se
+   décodent pour une page qu'on ne regarde pas.
+2. **On remonte la page D'UN COUP avant de la bâtir**
+   (`scrollTo({behavior:'instant'})`) : `.plein__doc` porte
+   `scroll-behavior:smooth`, donc un `scrollTop = 0` s'anime, et
+   l'observateur armé une image plus tard voit encore le bas de la page
+   — il charge alors des films qu'on ne regarde pas. Bug réel.
+3. **Un film VERTICAL ne se recadre pas dans une bande 16:9** : en
+   `cover` on voyait un pantalon et pas la pièce. `.film--v` le montre
+   entier sur son fond.
+
+Chaque film porte son affiche `.webp` — sans elle, un flash blanc le
+temps du premier décodage. Tous sont muets, en boucle, `playsinline`.
+
 **Le discours** — aucun mot de commerce dans les lieux publics : ni
 « s'achète », ni « se vend », ni « vente », ni « panier ». On ne dit pas
 ce qui ne se fait pas ici, on raconte la main, la peau et le temps. La
@@ -596,13 +626,18 @@ né en 1952, H32 × L38 × P10, ouverture à glissière cousue sellier,
 16 heures de couture, 3 800 points, « conçu pour accompagner une vie en
 mouvement perpétuel ».
 
-**Les noms des modèles** : les dossiers de prises de vue tranchent —
-VICTOIRE = le hobo triangle, JANE = le seau à anneaux. Le trapèze à V et
-anse haute est appelé **Colette** (à confirmer). Les 32 peaux sont
-celles du **POCHON** (pochette à rabat portée à la chaîne), et non du
-Rafaël comme écrit un temps : le Rafaël est un sac de travail de 38 cm,
-il n'en existe encore aucune prise de vue — sa fiche affiche les volumes
-d'étude en attendant.
+**Les noms des modèles — tranché par la maison le 01/09/2026 :**
+VICTOIRE = le hobo triangle · JANE = le seau à anneaux · COLETTE = le
+trapèze à V et anse haute · **RAFAËL = la pochette à rabat portée à la
+chaîne, et ses 32 peaux** (le film `TEST 9-16_1 RAFAEL.mp4` le
+confirme) · **OLYMPE = le modèle qui attend sa séance photo**, montré
+par ses volumes d'étude, ce qui est dit en clair dans sa fiche.
+
+**Attention aux cotes du Rafaël** : la page `tira-icone-rafael.liquid`
+donne H32 × L38 × P10 et « ordinateur 13 pouces », ce qui décrit un
+autre volume que la pochette photographiée. Ces cotes ne sont PAS
+reprises dans la démo — la ligne affiche « à confirmer avec la maison ».
+La recette vérifie qu'on ne les réintroduit pas.
 
 **La Bibliothèque est une pièce SEO/GEO** : six cahiers de 180 à 245 mots
 (le point sellier, lire une peau, les cuirs de la maison, les peausseries

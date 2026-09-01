@@ -28,6 +28,26 @@ VISUELS = {}
 if os.path.isdir('tools/demo/visuels'):
     VISUELS = {f[:-5]: b64('tools/demo/visuels/' + f)
                for f in sorted(os.listdir('tools/demo/visuels')) if f.endswith('.webp')}
+# Les films de la maison. Les rushes (jusqu'à 37 Mo) vivent sur `main`,
+# dans `Vidéos/` ; ici on embarque des boucles MUETTES de 9 à 16 s,
+# ré-encodées à 660–1080 px — 7 Mo pour les sept, dans les deux formats.
+# Chaque film a son affiche `.webp` : sans elle, un flash blanc le temps
+# du premier décodage.
+# Deux encodages par film : VP9/WebM d'abord (plus léger sur les plans
+# clairs, et le seul que sait décoder un Chromium sans codecs
+# propriétaires — donc le seul que la recette peut vérifier), H.264/MP4
+# ensuite, pour les navigateurs qui ne lisent pas le VP9.
+FILMS, AFFICHES = {}, {}
+if os.path.isdir('tools/demo/films'):
+    for f in sorted(os.listdir('tools/demo/films')):
+        n = f.rsplit('.', 1)[0]
+        if f.endswith('.mp4'):
+            FILMS.setdefault(n, {})['mp4'] = b64('tools/demo/films/' + f, 'video/mp4')
+        elif f.endswith('.webm'):
+            FILMS.setdefault(n, {})['webm'] = b64('tools/demo/films/' + f, 'video/webm')
+        elif f.endswith('.webp'):
+            AFFICHES[n] = b64('tools/demo/films/' + f)
+
 # position 0 en haute définition — même studio et même cadrage que la série 360°,
 # pour que la pièce au repos ne saute pas quand on la fait tourner
 RENDUS = {m: b64('tools/rot360/hd-%s.webp' % m)
@@ -73,6 +93,8 @@ s = (s.replace('"__VISUELS__"', json.dumps(VISUELS))
       .replace('"__TUILES__"', json.dumps(TUILES))
       .replace('"__RENDUS__"', json.dumps(RENDUS))
       .replace('"__ROT__"', json.dumps(ROT))
-      .replace('"__NUANCES__"', json.dumps(NUANCES, ensure_ascii=False)))
+      .replace('"__NUANCES__"', json.dumps(NUANCES, ensure_ascii=False))
+      .replace('"__FILMS__"', json.dumps(FILMS))
+      .replace('"__AFFICHES__"', json.dumps(AFFICHES)))
 open(SORTIE, 'w', encoding='utf-8').write(s)
 print('%s : %d Ko' % (SORTIE, len(s) // 1024))

@@ -183,6 +183,7 @@ img{display:block;max-width:100%}
 .acc__h .fond{position:absolute;inset:0}
 .acc__h .fond img{width:100%;height:100%;object-fit:cover;
   animation:respirer 28s ease-in-out infinite alternate}
+.acc__h .fond video{width:100%;height:100%;object-fit:cover;display:block}
 .acc__h::after{content:'';position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(0deg,rgba(12,12,13,.86) 0%,rgba(12,12,13,.18) 46%,
     rgba(12,12,13,.62) 100%)}
@@ -697,6 +698,34 @@ img{display:block;max-width:100%}
   font-size:clamp(22px,2.6vw,34px);letter-spacing:-.02em;line-height:1}
 .sp__f span{display:block;margin-top:8px;font-family:system-ui,sans-serif;font-size:9px;
   letter-spacing:.2em;text-transform:uppercase;color:rgba(242,239,233,.5)}
+/* ═══════════ LES FILMS ═══════════ */
+.film{position:relative;width:100%;height:min(80svh,780px);overflow:hidden;
+  background:var(--nuit)}
+.film video{width:100%;height:100%;object-fit:cover;display:block}
+.film__c{position:absolute;left:0;right:0;bottom:0;z-index:2;color:#fff;
+  padding:clamp(18px,4vh,44px) clamp(18px,3vw,44px);pointer-events:none;
+  background:linear-gradient(to top,rgba(10,10,10,.6),rgba(10,10,10,0));
+  display:flex;flex-direction:column;gap:7px}
+.film__c .cap{color:rgba(255,255,255,.7)}
+.film__c strong{font-family:'Playfair Display',Georgia,serif;font-weight:400;
+  font-size:clamp(19px,2.4vw,30px);letter-spacing:-.02em;line-height:1.15}
+.film__b{position:absolute;right:clamp(16px,2.4vw,32px);bottom:clamp(16px,2.4vh,30px);z-index:3;
+  width:46px;height:46px;border:1px solid rgba(255,255,255,.5);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .4s var(--e),border-color .4s,opacity .4s}
+.film__b:hover{background:rgba(255,255,255,.16)}
+.film__b svg{width:15px;height:15px;fill:currentColor;margin-left:2px}
+.film.joue .film__b{opacity:.28}
+.film.joue .film__b svg{margin-left:0}
+.film.joue .film__b polygon{display:none}
+.film.joue .film__b::after{content:'';width:11px;height:12px;
+  border-left:2px solid currentColor;border-right:2px solid currentColor}
+/* Un film VERTICAL ne se recadre pas dans une bande 16:9 — on y verrait
+   un pantalon et pas la pièce. Il se montre entier, sur son fond. */
+.film--v{background:#1a0b0c}
+.film--v video{object-fit:contain}
+/* le film du nuancier : une bande, pas une page */
+.sp__nuf .film{height:min(46svh,380px);margin-top:clamp(18px,2.6vh,26px)}
 /* les six gestes, sous les chiffres */
 .sp__ge{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
   gap:clamp(20px,3vw,44px);margin-top:clamp(30px,5vh,58px)}
@@ -1889,7 +1918,9 @@ const doux = { behavior: RM ? 'auto' : 'smooth' };
 const petit = () => matchMedia('(max-width: 860px)').matches;
 
 /* ═══ Les assets embarqués ═══ */
-const VIS = "__VISUELS__";      /* les photographies de la maison */
+const VIS = "__VISUELS__";   /* les photographies de la maison */
+const FILMS = "__FILMS__";
+const AFFICHES = "__AFFICHES__";
 const TX = "__TUILES__";        /* tuiles de cuir */
 const RENDUS = "__RENDUS__";    /* rendus Cycles, position 0 */
 const ROT = "__ROT__";          /* la série 360° */
@@ -1988,6 +2019,7 @@ const MODELES = [
     id:'victoire', t:'Victoire', an:'1908', k:'Née en 1908 · veau pleine fleur',
     vues:['ed-victoire','ed-main','victoire-portee','ed-tranche'],
     zoom:'victoire-v', zk:'Le V, taillé dans la masse',
+    film:'f-accueil-916', filmK:'La Victoire, tenue à hauteur de regard', filmV:true,
     g:[26,6,1,11], m:2,
     d:"En 1908, Matteo Tiraboschi crée un sac pour sa fille, mariée à un diplomate vivant entre Paris et Rome. Il lui faut quelque chose d'élégant le matin, discret le soir, solide pour voyager. La forme en V, signature de la maison, structure le fond et allège la silhouette. Ce sac, elle l'appelle « ma victoire personnelle ». Le nom reste. La forme aussi.",
     q:["Un sac qui n'a jamais eu besoin d'être réinventé.", 'La maison'],
@@ -2008,6 +2040,7 @@ const MODELES = [
     id:'jane', t:'Jane', an:'Le seau', k:'Anneaux de laiton massif',
     vues:['ed-silhouette','jane-3q','jane-profil','ed-portee'],
     zoom:'ed-anneau', zk:"L'anneau, serti à la main",
+    film:'f-matiere', filmK:'Le grain, la couture, la ferrure',
     g:[35,6,3,10], m:2,
     d:"Un seau que rien ne ferme : la Jane s'ouvre d'un seul geste, et c'est l'épaisseur du cuir qui lui donne sa tenue. Les deux anneaux de laiton massif sont sertis à la main, à l'œil et au toucher — jamais à la machine. Ils sont posés en dernier, quand la pièce est déjà montée : ils ne se recentrent plus.",
     q:["Fermoirs, passants, anneaux — la précision au dixième de millimètre, à l'œil et au toucher.", 'Savoir-faire de la maison'],
@@ -2029,6 +2062,7 @@ const MODELES = [
     id:'colette', t:'Colette', an:'Le V', k:'Taillé dans la masse',
     vues:['victoire-1-1','victoire-1-2'],
     zoom:'ed-grain', zk:'Le grain du veau pleine fleur',
+    film:'f-duo', filmK:'La Colette et la Victoire, ensemble',
     g:[43,6,2,9], m:2,
     d:"La signature de la maison, poussée à son extrême : un V taillé dans la masse qui ouvre le sac sans fermoir. Sa tenue ne doit rien à une armature — seulement à l'épaisseur du cuir et à la façon dont la peau a été placée sur le gabarit.",
     q:["Chaque peau est lue avant d'être taillée — aucune coupe n'est identique.", 'Coupe & gabarit'],
@@ -2058,53 +2092,60 @@ const MODELES = [
          "Le même rouge sur deux matières : le veau le renvoie, le daim l'absorbe. Vu de face, la pièce paraît d'une seule couleur ; de trois quarts, elle en a deux."]],
   },
   {
-    id:'rafael', t:'Rafaël', an:'1952', k:'La forme du mouvement',
-    vues:['volume-socle','volume-anneau'], attente:true,
+    /* LE RAFAËL, ET SES TRENTE-DEUX PEAUX. Les prises de vue et le film
+       « TEST 9-16_1 RAFAEL » montrent la même pièce : rabat en pointe,
+       anneau en D, portée à la chaîne. Les cotes de la page Shopify
+       (32 × 38 × 10, ordinateur 13 pouces) décrivent un autre volume —
+       elles ne sont donc pas reprises ici, à trancher avec la maison. */
+    id:'rafael', t:'Rafaël', an:'1952', k:'La forme du mouvement · trente-deux peaux',
+    vues:['nu-10-1','nu-22-1','nu-01-1'],
+    film:'f-rafael', filmK:'Le Rafaël, porté à la chaîne', filmV:true,
     zoom:'ed-tranche', zk:'La tranche, teinte et polie',
     g:[51,6,1,10], m:2,
-    d:"En 1952, la maison crée un sac pour les femmes actives de l'après-guerre — celles qui travaillent, qui voyagent, qui ne ralentissent pas. Le Rafaël porte à l'épaule ou à la main, selon l'heure. La forme en V s'impose au dos, structurant l'arrière comme une colonne vertébrale. Un sac d'architecte.",
+    d:"En 1952, la maison crée une pièce pour les femmes actives de l'après-guerre — celles qui travaillent, qui voyagent, qui ne ralentissent pas. Un rabat en pointe, un anneau en D pour toute fermeture, une chaîne de laiton : rien qui retienne, rien qui encombre. La forme du mouvement.",
     q:["Conçu pour accompagner une vie en mouvement perpétuel.", 'La maison'],
     silT:'La silhouette',
-    sil:"Plus long, plus plat, à ouverture zippée. Le Rafaël porte les codes de la maison dans un volume pensé pour le travail — ordinateur 13 pouces, dossiers, le tout accessible sans poser le sac. Sophistication fonctionnelle.",
-    silV:'volume-anneau',
-    l:[['Hauteur','32 cm'],['Largeur','38 cm'],['Profondeur','10 cm'],
-       ['Port','Épaule ou main'],['Ouverture','Glissière, cousue sellier'],
-       ['Contient','Un ordinateur 13 pouces, un portefeuille, un téléphone, un agenda, des clés. Passe en cabine avion.']],
-    mat:[['Veau pleine fleur', "La noblesse du cuir naturel — grain serré, tenue exceptionnelle, patine lumineuse."],
-         ['Veau gras', "Souplesse absolue, toucher velouté. Le cuir qui s'assouplit dès le premier jour."],
-         ['Veau box', "Lisse, brillant, architectural. La matière des grandes maisons parisiennes."],
-         ['Veau chocolat', "Teinte chaude, profonde. La finition la plus portée sur le Rafaël depuis 1952."]],
-    pal:PALETTE_FW25,
-    fab:[['Artisans','1 par sac'],['Couture sellier','16 heures'],
-         ['Points de couture','3 800'],['Traçabilité','Certificat signé']],
-    fabD:"Quarante-huit à soixante-douze heures de travail. Un seul maroquinier, de la découpe à la finition. La fermeture à glissière — posée à la main, cousue sellier — est la pièce la plus longue du Rafaël. Un détail que l'on sent à chaque ouverture.",
-    mot:"Le Rafaël se configure entièrement : teinte au choix parmi les quarante-huit couleurs de la tannerie partenaire, couleur du fil de couture sellier, initiales gravées sur la quincaillerie — or, or vieilli ou argent.",
-  },
-  {
-    id:'pochon', t:'Pochon', an:'La chaîne', k:'Porté à la chaîne · trente-deux peaux',
-    vues:['nu-10-1','nu-22-1','nu-01-1'],
-    zoom:'ed-tranche', zk:'La tranche, teinte et polie',
-    g:[59,6,3,10], m:2,
-    d:"Une pochette d'un seul tenant, rabat en pointe, fermée par un anneau en D et portée à la chaîne de laiton. C'est la pièce la plus courte à faire et la plus difficile à réussir : il n'y a rien pour se rattraper — pas de doublure épaisse, pas d'armature, deux plis et une tranche.",
-    q:["Seulement deux pour cent des peaux inspectées satisfont nos critères.", 'Le tri des peaux'],
-    silT:'La silhouette',
-    sil:"La peau décide de tout : sur une écaille large la pièce paraît plus longue, sur une écaille serrée elle paraît plus haute. On ne coupe jamais deux pièces au même endroit d'une peau — c'est pourquoi il n'y en a pas deux pareilles.",
+    sil:"D'un seul tenant, sans armature et sans doublure épaisse : c'est la pièce la plus courte à faire et la plus difficile à réussir, parce qu'il n'y a rien pour se rattraper. Deux plis, une tranche, et la peau décide du reste — sur une écaille large elle paraît plus longue, sur une écaille serrée plus haute.",
     silV:'nu-22-1',
-    l:[['Port','Chaîne de laiton, ou main'],['Fermeture','Anneau en D'],
+    l:[['Port','Chaîne de laiton, ou main'],['Fermeture','Anneau en D, laiton massif'],
        ['Marquage','Tiraboschi · Made in France, à chaud'],
        ['Peausseries','Alligator, lézard, autruche, veau lisse'],
-       ['Contient','Un téléphone, une carte, un rouge à lèvres.']],
+       ['Cotes','À confirmer avec la maison']],
     mat:[['Alligator', "Écailles régulières, reflets changeants selon la lumière : aucune peau ne ressemble à une autre. Élevages certifiés CITES."],
          ['Lézard', "Écailles carrées et uniformes, toucher sec et précis, structure géométrique naturellement parfaite. Élevages certifiés CITES."],
          ['Autruche', "Rondeurs caractéristiques et reconnaissables, ultra-souple, rarissime — la production mondiale est limitée. Élevages certifiés CITES."],
          ['Veau lisse', "Lisse, brillant, architectural. Acquiert avec l'âge le lustre d'un miroir patiné. Tannerie Rémy Carriat, Normandie."]],
-    fab:[['Artisans','1 par pièce'],['Peaux retenues','2 %'],
-         ['Façonnage','48 à 72 heures'],['Traçabilité','Certificat signé']],
+    fab:[['Artisans','1 par pièce'],['Couture sellier','16 heures'],
+         ['Points de couture','3 800'],['Peaux retenues','2 %']],
     fabD:"Sur cent peaux reçues, une dizaine entre à l'atelier ; seulement deux pour cent des peaux inspectées satisfont les critères de la maison. Ce que vous touchez, c'est la peau dans son état le plus noble.",
-    mot:"Toutes les peausseries précieuses proviennent d'élevages certifiés CITES et ne sont proposées qu'en sur-mesure. Sur une écaille large, la pièce paraît plus longue ; sur une écaille serrée, plus haute.",
+    mot:"Le Rafaël se configure entièrement : la teinte parmi les quarante-huit couleurs de la tannerie partenaire, la couleur du fil de couture sellier, les initiales gravées sur la quincaillerie — or, or vieilli ou argent.",
     /* LE NUANCIER VIT ICI, dans la fiche de la pièce qu'il habille */
     nuT:'Le nuancier', nuK:'Trente-deux peaux, rangées par famille de couleur',
     nu:RAFAEL.map(([n, peau, vues]) => [n, peau, vues, null]),
+    nuFilm:'f-croco', nuFilmK:"L'alligator, en lumière",
+  },
+  {
+    /* L'OLYMPE attend sa séance : aucune prise de vue n'existe encore.
+       On montre les volumes d'étude et on le dit en clair, plutôt que
+       de la faire passer pour photographiée. */
+    id:'olympe', t:'Olympe', an:'Le volume', k:'Prises de vue à venir',
+    vues:['volume-socle','volume-anneau'], attente:true,
+    zoom:'ed-grain', zk:'Le grain du veau pleine fleur',
+    g:[59,6,3,10], m:2,
+    d:"L'Olympe n'a pas encore été photographiée. Ce que l'on montre ici, ce sont les volumes d'étude : la forme travaillée en plâtre, agrandie jusqu'à ce qu'on puisse en faire le tour, avant qu'un carton ne soit taillé. C'est à ce stade que se décide le pli du rabat — le gabarit ne vient qu'après.",
+    q:["On ne peut pas faire plus de pièces qu'il n'y a de mains pour les faire.", 'Laurène'],
+    silT:'La silhouette',
+    sil:"Le volume d'étude tient lieu de dessin : on le tourne, on le pose, on regarde comment la lumière prend l'arête. Une fois la forme arrêtée, elle passe au gabarit, puis à la peau. La séance de prises de vue viendra ensuite.",
+    silV:'volume-anneau',
+    l:[['État','Volume d’étude · plâtre'],['Prises de vue','À programmer'],
+       ['Matières','Les quatre cuirs de la maison'],
+       ['Façonnage','48 à 72 heures · un seul artisan']],
+    mat:MATIERES_MAISON,
+    pal:PALETTE_FW25,
+    fab:[['Artisans','1 par sac'],['Façonnage','48 à 72 h'],
+         ['Points de couture','3 400'],['Traçabilité','Certificat signé']],
+    fabD:"Avant de tailler un carton, l'atelier travaille la forme en plâtre. C'est une étape que l'on ne montre presque jamais : elle dit pourtant tout du métier, parce que c'est là que la pièce existe pour la première fois.",
+    mot:"Une pièce commence toujours par un volume que l'on peut tenir. Le reste — la coupe, la couture, la tranche — ne fait que la traduire dans une peau.",
   },
 ];
 MODELES.forEach(o => OEUVRES.push(Object.assign({ s:'La Collection' }, o)));
@@ -2230,6 +2271,7 @@ function versLieu(id) {
   document.querySelector('meta[name=theme-color]').setAttribute('content',
     id === 'atelier' || id === 'seuil' || id === 'erreur' ? '#0c0c0d' : '#ffffff');
   ariane(); majVisite();
+  dispatchEvent(new CustomEvent('tira:lieu'));
   if (id === 'galerie') revelerMur();
   if (id === 'atelier') auFil();
   if (id === 'maison') auFilMa();
@@ -2287,7 +2329,26 @@ PIECES.forEach(x => {
   e.onclick = () => aller(x.va);
   $('erL').appendChild(e);
 });
-poser($('accF'), VIS['ed-contre-jour']);
+/* LE HERO DE L'ACCUEIL EST UN FILM — 9:16 en dessous de 768 px, 16:9
+   au-dessus, comme le veut la règle de la maison. L'affiche évite le
+   flash blanc, et la photographie reste en dernier recours. */
+(function () {
+  const f = $('accF');
+  const cle = matchMedia('(max-width:767px)').matches ? 'f-accueil-916' : 'f-accueil-169';
+  if (!FILMS[cle] || RM) { poser(f, VIS['ed-contre-jour']); return; }
+  const v = document.createElement('video');
+  v.muted = true; v.loop = true; v.autoplay = true; v.playsInline = true;
+  v.setAttribute('playsinline', ''); v.setAttribute('aria-hidden', 'true');
+  v.poster = AFFICHES[cle] || '';
+  poserFilm(v, cle);
+  f.appendChild(v);
+  v.play().catch(() => {});
+  /* il ne tourne pas quand on est ailleurs */
+  const veiller = () => { if (lieuCourant === 'accueil') v.play().catch(() => {}); else v.pause(); };
+  addEventListener('tira:lieu', veiller);
+  document.addEventListener('visibilitychange', () =>
+    document.hidden ? v.pause() : veiller());
+})();
 poser($('erF'), VIS['ed-courbe']);
 /* sur l'accueil seulement, il se pose dès qu'on quitte le hero */
 $('accueil').addEventListener('scroll', () => {
@@ -2758,6 +2819,8 @@ function sectionSuite(o) {
   /* 4 — LE NUANCIER, dans la fiche de la pièce qu'il habille */
   if (o.nu) bloc('nuancier', esc(o.nuK || ''),
     '<h3 class="sp__t">' + esc(o.nuT || 'Le nuancier') + '</h3>' +
+    (o.nuFilm && FILMS[o.nuFilm]
+      ? '<div class="sp__nuf">' + filmHTML(o.nuFilm, o.nuFilmK || '', '') + '</div>' : '') +
     '<p class="sp__nud" id="nuD"></p>' +
     '<div class="sp__nu">' + o.nu.map(([n, peau, vs], i) =>
       '<button class="nu' + (i === 0 ? ' ici' : '') + '" data-nu="' + i + '">' +
@@ -2765,6 +2828,11 @@ function sectionSuite(o) {
         VIS[vs[0]] + '"></span>' +
       '<span class="nu__n">' + esc(n) + '<span class="nu__k">' + esc(peau) + '</span></span>' +
       '</button>').join('') + '</div>');
+
+  /* 4 bis — le film de la pièce, en pleine page */
+  if (o.film && FILMS[o.film]) S.push(
+    '<section class="sp" data-sp="film" style="padding:0">' +
+    filmHTML(o.film, o.filmK || 'En mouvement', 'Le film', o.filmV) + '</section>');
 
   /* 5 — le gros plan de matière */
   if (o.zoom && VIS[o.zoom]) S.push(
@@ -2831,6 +2899,63 @@ function sectionSuite(o) {
   return S.join('');
 }
 
+/* ═══════════ LES FILMS ═══════════
+   Muets, en boucle, `playsinline` (sans quoi iOS ouvre en plein écran),
+   et surtout : ils ne tournent QUE lorsqu'ils sont à l'écran. Un film
+   qui tourne dans une page qu'on ne regarde pas, c'est de la batterie
+   pour rien. Chaque film porte son affiche : sans elle, un flash blanc
+   le temps du premier décodage. */
+function filmHTML(cle, legende, sur, vertical) {
+  return '<figure class="film' + (vertical ? ' film--v' : '') +
+    '" data-film="' + esc(cle) + '">' +
+    '<video muted loop playsinline preload="none" poster="' + (AFFICHES[cle] || '') + '"' +
+    ' aria-label="' + esc(legende) + '"></video>' +
+    (legende ? '<figcaption class="film__c">' +
+      (sur ? '<span class="cap">' + esc(sur) + '</span>' : '') +
+      '<strong>' + esc(legende) + '</strong></figcaption>' : '') +
+    '<button class="film__b" aria-label="Lecture"><svg viewBox="0 0 24 24">' +
+    '<polygon points="9,7 18,12 9,17"/></svg></button></figure>';
+}
+/* VP9/WebM d'abord, H.264/MP4 ensuite : le navigateur prend le premier
+   qu'il sait lire. On ne pose les sources qu'à l'approche — 7 Mo de
+   films n'ont pas à être décodés tant qu'on ne les regarde pas. */
+function poserFilm(v, cle) {
+  if (v.dataset.pose) return;
+  const f = FILMS[cle]; if (!f) return;
+  v.dataset.pose = '1';
+  [['webm', 'video/webm'], ['mp4', 'video/mp4']].forEach(([k, mime]) => {
+    if (!f[k]) return;
+    const s = document.createElement('source');
+    s.type = mime; s.src = f[k];
+    v.appendChild(s);
+  });
+  v.load();
+}
+/* on ne charge la vidéo qu'à l'approche, et on l'arrête dès qu'elle sort */
+const oeilFilm = new IntersectionObserver(es => es.forEach(e => {
+  const v = e.target.querySelector('video');
+  if (!v) return;
+  if (e.isIntersecting) {
+    poserFilm(v, e.target.dataset.film);
+    if (!RM) v.play().catch(() => {});
+  } else v.pause();
+}), { threshold: .25 });
+function armerFilms(racine) {
+  (racine || document).querySelectorAll('.film').forEach(f => {
+    if (f.dataset.arme) return;
+    f.dataset.arme = '1';
+    oeilFilm.observe(f);
+    const v = f.querySelector('video');
+    f.querySelector('.film__b').onclick = () => {
+      if (v.paused) { poserFilm(v, f.dataset.film); v.play(); }
+      else v.pause();
+      f.classList.toggle('joue', !v.paused);
+    };
+    v.addEventListener('play', () => f.classList.add('joue'));
+    v.addEventListener('pause', () => f.classList.remove('joue'));
+  });
+}
+
 /* les six gestes, tels que la page Savoir-Faire du thème les nomme */
 const GESTES = [
   ['Le tri des peaux', "Sur cent peaux reçues, une dizaine entre à l'atelier. Deux pour cent des peaux inspectées satisfont les critères de la maison."],
@@ -2842,7 +2967,7 @@ const GESTES = [
 ];
 
 const SP_NOMS = { origine:"L'origine", silhouette:'La forme', matieres:'Les matières',
-  nuancier:'Le nuancier', matiere:'La matière', fabrication:'La fabrication',
+  nuancier:'Le nuancier', film:'Le film', matiere:'La matière', fabrication:'La fabrication',
   entretien:'La durée', mot:'La maison', surmesure:'Sur mesure',
   autres:'La collection' };
 
@@ -2856,6 +2981,11 @@ function habiller(o) {
   $('pleinN').disabled = idxPlein >= OEUVRES.length - 1;
 
   const suite = $('pleinSuite');
+  /* on remonte AVANT de bâtir, et D'UN COUP : la page porte
+     `scroll-behavior:smooth`, donc un `scrollTop = 0` s'anime — et
+     l'observateur, armé une image plus tard, verrait encore le bas de
+     la page et chargerait des films qu'on ne regarde pas. */
+  $('pleinDoc').scrollTo({ top: 0, behavior: 'instant' });
   suite.innerHTML = sectionSuite(o);
 
   /* le sommaire, en haut : on ne descend pas à l'aveugle */
@@ -2890,6 +3020,7 @@ function habiller(o) {
     b.onclick = () => { fermerPlein(true); aller(b.dataset.spVa); });
   suite.querySelectorAll('[data-sp-oe]').forEach(b =>
     b.onclick = () => pleinVers(oeIdx(b.dataset.spOe)));
+  requestAnimationFrame(() => armerFilms(suite));
 
   vues.add(o.id);
 }
