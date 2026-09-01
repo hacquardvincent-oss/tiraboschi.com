@@ -420,6 +420,17 @@ img{display:block;max-width:100%}
 .tuile__m img{width:100%;height:100%;object-fit:contain;
   transition:transform 1.5s var(--e)}
 .tuile:hover .tuile__m img{transform:scale(1.035)}
+/* la tuile qui porte un film : elle se remplit, elle ne se contient pas */
+.tuile__m--film{background:var(--nuit)}
+.tuile__m--film video{width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform 1.6s var(--e)}
+.tuile:hover .tuile__m--film video{transform:scale(1.03)}
+.tuile__film{position:absolute;right:10px;bottom:9px;z-index:2;color:#fff;
+  font-family:system-ui,sans-serif;font-size:8.5px;letter-spacing:.24em;
+  text-transform:uppercase;opacity:.72;display:flex;align-items:center;gap:7px}
+.tuile__film::before{content:'';width:5px;height:5px;background:currentColor;
+  border-radius:50%!important;animation:bat 2.2s ease-in-out infinite}
+@keyframes bat{0%,100%{opacity:.35}50%{opacity:1}}
 .tuile__i{position:absolute;left:9px;top:8px;z-index:2;font-family:system-ui,sans-serif;
   font-size:9px;letter-spacing:.18em;color:var(--gris);pointer-events:none}
 .tuile__c{flex-shrink:0;padding-top:8px;overflow:hidden}
@@ -2100,8 +2111,13 @@ const MODELES = [
     id:'rafael', t:'Rafaël', an:'1952', k:'La forme du mouvement · trente-deux peaux',
     vues:['nu-10-1','nu-22-1','nu-01-1'],
     film:'f-rafael', filmK:'Le Rafaël, porté à la chaîne', filmV:true,
+    /* Sur le mur, le Rafaël est le seul modèle dont TOUTES les prises de
+       vue le montrent rabat ouvert : à sa place, on accroche le film
+       produit — la pièce fermée, seule, qui tourne. L'emplacement suit
+       le format du film (16:9) plutôt que celui d'un packshot. */
+    tuileFilm:'f-croco', tuileFilmK:'Le film',
     zoom:'ed-tranche', zk:'La tranche, teinte et polie',
-    g:[51,6,1,10], m:2,
+    g:[51,7,3,6], m:2,
     d:"En 1952, la maison crée une pièce pour les femmes actives de l'après-guerre — celles qui travaillent, qui voyagent, qui ne ralentissent pas. Un rabat en pointe, un anneau en D pour toute fermeture, une chaîne de laiton : rien qui retienne, rien qui encombre. La forme du mouvement.",
     q:["Conçu pour accompagner une vie en mouvement perpétuel.", 'La maison'],
     silT:'La silhouette',
@@ -2639,7 +2655,21 @@ PARCOURS.forEach(item => {
   caler(a, o.g, o.m);
   const m = document.createElement('div');
   m.className = 'tuile__m';
-  const im = poser(m, srcDe(o)); im.alt = o.t;
+  if (o.tuileFilm && FILMS[o.tuileFilm]) {
+    /* une pièce dont toutes les prises de vue la montrent ouverte
+       s'accroche en MOUVEMENT : le film produit tient lieu de vue */
+    m.classList.add('tuile__m--film');
+    a.dataset.film = o.tuileFilm;
+    const v = document.createElement('video');
+    v.muted = true; v.loop = true; v.playsInline = true;
+    v.setAttribute('playsinline', ''); v.setAttribute('aria-label', o.t);
+    v.preload = 'none'; v.poster = AFFICHES[o.tuileFilm] || '';
+    m.appendChild(v);
+    m.insertAdjacentHTML('beforeend',
+      '<span class="tuile__film">' + esc(o.tuileFilmK || 'Le film') + '</span>');
+  } else {
+    const im = poser(m, srcDe(o)); im.alt = o.t;
+  }
   a.appendChild(m);
   a.insertAdjacentHTML('beforeend',
     '<div class="tuile__c"><p class="tuile__n">' + o.t + '</p>' +
@@ -2650,6 +2680,30 @@ PARCOURS.forEach(item => {
 [...mur.querySelectorAll('.tuile')].forEach((a, i) =>
   a.querySelector('.tuile__m').insertAdjacentHTML('afterbegin',
     '<span class="tuile__i">' + ('0' + (i + 1)).slice(-2) + '</span>'));
+
+/* Le film accroché au mur : il se pose et se lance quand la tuile entre
+   dans la salle, et s'arrête quand elle en sort. Au survol on le
+   redémarre du début — c'est le geste d'une vitrine. */
+(function () {
+  const tuiles = [...mur.querySelectorAll('.tuile[data-film]')];
+  if (!tuiles.length) return;
+  const oeil = new IntersectionObserver(es => es.forEach(e => {
+    const v = e.target.querySelector('video'); if (!v) return;
+    if (e.isIntersecting) {
+      poserFilm(v, e.target.dataset.film);
+      if (!RM) v.play().catch(() => {});
+    } else v.pause();
+  }), { root: mur, threshold: .3 });
+  tuiles.forEach(t => {
+    oeil.observe(t);
+    const v = t.querySelector('video');
+    t.addEventListener('pointerenter', () => {
+      if (RM) return;
+      poserFilm(v, t.dataset.film);
+      v.currentTime = 0; v.play().catch(() => {});
+    });
+  });
+})();
 
 const oeilMur = new IntersectionObserver(es => es.forEach(e => {
   if (e.isIntersecting) { e.target.classList.add('vu'); oeilMur.unobserve(e.target); }

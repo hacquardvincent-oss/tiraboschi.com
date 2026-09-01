@@ -325,7 +325,8 @@ async function glisser(p, x, y, dx, pas) {
      (le reproche tenait en une capture : la Victoire coupée en haut
      et en bas par un `object-fit:cover`) */
   const cadres = await p.evaluate(() => {
-    const t = [...document.querySelectorAll('.tuile')];
+    const t = [...document.querySelectorAll('.tuile')].filter(x =>
+      x.querySelector('.tuile__m img'));
     const rogne = t.filter(x =>
       getComputedStyle(x.querySelector('.tuile__m img')).objectFit !== 'contain');
     return { total: t.length, rogne: rogne.length,
@@ -336,7 +337,8 @@ async function glisser(p, x, y, dx, pas) {
   /* montrer entier ne doit pas vouloir dire noyer la pièce dans du blanc :
      l'emplacement d'une silhouette suit ses proportions */
   const emprise = await p.evaluate(() =>
-    [...document.querySelectorAll('.tuile')].map(t => {
+    [...document.querySelectorAll('.tuile')].filter(t =>
+      t.querySelector('.tuile__m img')).map(t => {
       const m = t.querySelector('.tuile__m').getBoundingClientRect();
       const im = t.querySelector('img');
       const r = im.naturalWidth / im.naturalHeight;
@@ -345,6 +347,30 @@ async function glisser(p, x, y, dx, pas) {
     }).sort((a, b) => a.p - b.p)[0]);
   v('une silhouette occupe son emplacement', emprise.p >= .68,
     emprise.id + ' à ' + Math.round(emprise.p * 100) + ' %');
+  /* LE RAFAËL S'ACCROCHE EN MOUVEMENT : toutes ses prises de vue le
+     montrent rabat ouvert, alors c'est le film produit qui tient lieu
+     de vue — la pièce fermée, seule, qui tourne. */
+  const tf = await p.evaluate(() => {
+    const t = document.querySelector('.tuile[data-oe="rafael"]');
+    const v = t.querySelector('video');
+    const r = t.getBoundingClientRect();
+    return { film: t.dataset.film, aImage: !!t.querySelector('.tuile__m img'),
+             affiche: (v.poster || '').startsWith('data:image/webp'),
+             muet: v.muted, boucle: v.loop, enligne: v.playsInline,
+             dit: (t.querySelector('.tuile__film') || {}).textContent,
+             ratio: r.width / r.height,
+             ratioFilm: v.videoWidth ? v.videoWidth / v.videoHeight : 0 };
+  });
+  v('le Rafaël s\'accroche en mouvement', tf.film === 'f-croco' && !tf.aImage, tf.film);
+  v('le film y est muet, en boucle, en ligne', tf.muet && tf.boucle && tf.enligne);
+  v('il porte une affiche', tf.affiche);
+  v('et se signale comme un film', /film/i.test(tf.dit || ''), tf.dit);
+  /* l'emplacement suit le format du film, comme il suit celui d'une
+     photographie : sinon on recadre la pièce */
+  v('son emplacement suit le format du film',
+    Math.abs(tf.ratio - 1.78) < .18,
+    'tuile ' + tf.ratio.toFixed(2) + ' · film ' + (tf.ratioFilm || 1.78).toFixed(2));
+
   /* et chaque modèle se reconnaît : il est NOMMÉ sous sa silhouette */
   const nommes = await p.evaluate(() =>
     [...document.querySelectorAll('.tuile .tuile__n')].map(n => n.textContent.trim()));

@@ -581,6 +581,11 @@ Trois règles, chacune née d'un vrai défaut :
 3. **Un film VERTICAL ne se recadre pas dans une bande 16:9** : en
    `cover` on voyait un pantalon et pas la pièce. `.film--v` le montre
    entier sur son fond.
+4. **Une pièce dont TOUTES les prises de vue la montrent ouverte
+   s'accroche en mouvement** : le Rafaël n'existe en packshot que rabat
+   ouvert, alors sa tuile porte le film produit — la pièce fermée,
+   seule, qui tourne. L'emplacement suit le format du film (16:9)
+   exactement comme il suivrait celui d'une photographie.
 
 Chaque film porte son affiche `.webp` — sans elle, un flash blanc le
 temps du premier décodage. Tous sont muets, en boucle, `playsinline`.
