@@ -56,9 +56,37 @@ async function glisser(p, x, y, dx, pas) {
   const p = await page(1440, 900);
   let e = await p.evaluate(() => __etat());
   v('le seuil ouvre la démonstration', e.lieu === 'seuil', e.lieu);
-  await p.click('#entrer'); await p.waitForTimeout(1000);
+  await p.click('#entrer'); await p.waitForTimeout(1100);
   e = await p.evaluate(() => __etat());
-  v('« Entrer » mène dans la galerie', e.lieu === 'galerie', e.lieu);
+  v('« Entrer » mène à l\'accueil', e.lieu === 'accueil', e.lieu);
+
+  /* ── L'ACCUEIL : quatre pièces, un grand visuel qui suit ── */
+  const ac = await p.evaluate(() => {
+    const a = document.getElementById('accueil');
+    const v = document.querySelector('.ac__v.on img').getBoundingClientRect();
+    return { pieces: document.querySelectorAll('.ap').length,
+             visuels: document.querySelectorAll('.ac__v').length,
+             pleinEcran: Math.round(v.width) >= innerWidth && Math.round(v.height) >= innerHeight,
+             fond: getComputedStyle(a).backgroundColor,
+             barre: document.getElementById('barre').classList.contains('on'),
+             texte: getComputedStyle(document.querySelector('.ac__t')).color };
+  });
+  v('l\'accueil propose les quatre pièces', ac.pieces === 4, ac.pieces);
+  v('chacune a son grand visuel', ac.visuels === 4, ac.visuels);
+  v('le visuel occupe tout l\'écran', ac.pleinEcran);
+  v('l\'accueil est sombre', lum(rgb(ac.fond)) < .04, ac.fond);
+  v('le texte y est lisible', contraste(rgb(ac.texte), rgb(ac.fond)) >= 7,
+    contraste(rgb(ac.texte), rgb(ac.fond)).toFixed(1) + ':1');
+  v('la barre ne s\'impose pas sur l\'accueil', !ac.barre);
+  v('aucun prix sur l\'accueil',
+    !/€/.test(await p.locator('#accueil').innerText()));
+  /* désigner une pièce change le visuel */
+  await p.hover('.ap[data-i="2"]'); await p.waitForTimeout(900);
+  v('désigner une pièce change le visuel',
+    await p.evaluate(() => document.querySelectorAll('.ac__v')[2].classList.contains('on')));
+  await p.click('.ap[data-i="0"]'); await p.waitForTimeout(1100);
+  e = await p.evaluate(() => __etat());
+  v('la première pièce mène à la galerie', e.lieu === 'galerie', e.lieu);
 
   /* ── plus une seule image d'emprunt : tout vient de la maison ── */
   const sources = await p.evaluate(() => {
@@ -80,8 +108,25 @@ async function glisser(p, x, y, dx, pas) {
   v('le fond de la galerie est blanc',
     rgb(await p.evaluate(() => getComputedStyle(document.getElementById('galerie'))
       .backgroundColor)).join() === '255,255,255');
-  v('trente-deux pièces accrochées', e.oeuvres === 32, e.oeuvres);
-  v('dont vingt-six au nuancier', e.nuancier === 26, e.nuancier);
+  v('trente-sept pièces accrochées', e.oeuvres === 37, e.oeuvres);
+  v('dont trente-deux au nuancier', e.nuancier === 32, e.nuancier);
+  const hero = await p.evaluate(() => {
+    const h = document.querySelector('.hero');
+    if (!h) return null;
+    const r = h.getBoundingClientRect();
+    return { large: Math.round(r.width), haut: Math.round(r.height),
+             part: r.width / innerWidth };
+  });
+  v('la galerie s\'ouvre sur un grand visuel', hero && hero.part > .55,
+    hero && hero.part.toFixed(2));
+  /* les tuiles ont grandi */
+  const taille = await p.evaluate(() => {
+    const t = [...document.querySelectorAll('.tuile')].map(x => x.getBoundingClientRect().width);
+    const n = [...document.querySelectorAll('.tuile--nu')].map(x => x.getBoundingClientRect().width);
+    return { max: Math.round(Math.max(...t)), nu: Math.round(n[0]) };
+  });
+  v('les silhouettes sont grandes', taille.max >= 550, taille.max + ' px');
+  v('les pièces du nuancier aussi', taille.nu >= 280, taille.nu + ' px');
   v('trois ouvertures dans le mur', e.ouvertures === 3, e.ouvertures);
   const ouv = await p.evaluate(() =>
     [...document.querySelectorAll('.ouv')].map(o => o.dataset.ouv).join());
@@ -105,12 +150,24 @@ async function glisser(p, x, y, dx, pas) {
   v('le mur se parcourt à l\'horizontale', patch.debordeX > 2500, patch.debordeX);
   v('le mur ne déborde pas à la verticale', patch.debordeY <= 1, patch.debordeY);
   /* les silhouettes sont accrochées librement… */
-  v('les silhouettes ont des formats inégaux', patch.ecartL >= 1.4, patch.ecartL.toFixed(2));
+  v('les silhouettes ont des formats inégaux', patch.ecartL >= 1.5, patch.ecartL.toFixed(2));
   v('elles ne sont pas à la même hauteur', patch.niveaux >= 4, patch.niveaux);
   /* …le nuancier, lui, est une grille stricte */
   v('le nuancier est une grille régulière',
     patch.nuLarg === 1 && patch.nuBandes === 3,
     patch.nuLarg + ' largeur(s) · ' + patch.nuBandes + ' bande(s)');
+  /* il est MERCHANDISÉ : la carte va du clair au foncé par famille,
+     elle ne suit pas l'ordre des prises de vue */
+  const rangement = await p.evaluate(() => {
+    const noms = [...document.querySelectorAll('.tuile--nu .tuile__n')].map(n => n.textContent);
+    return { noms, tete: noms.slice(0, 7).join(', '), queue: noms.slice(-2).join(', ') };
+  });
+  v('la carte commence par les neutres',
+    /Gris Sauge/.test(rangement.tete) && /Graphite/.test(rangement.tete), rangement.tete);
+  v('elle se termine par les bleus', /Bleu/.test(rangement.queue), rangement.queue);
+  v('aucune nuance n\'est répétée',
+    new Set(rangement.noms).size === rangement.noms.length,
+    rangement.noms.length + ' noms, ' + new Set(rangement.noms).size + ' distincts');
 
   await p.hover('.tuile');
   await p.mouse.wheel(0, 700); await p.waitForTimeout(600);
@@ -118,7 +175,7 @@ async function glisser(p, x, y, dx, pas) {
     x: document.getElementById('mur').scrollLeft,
     n: document.getElementById('marcheN').textContent }));
   v('la molette fait marcher le long du mur', marche.x > 150, marche.x);
-  v('le repère nomme la pièce courante', /Pièce \d+ sur 32/.test(marche.n), marche.n);
+  v('le repère nomme la pièce courante', /Pièce \d+ sur 37/.test(marche.n), marche.n);
 
   /* ── le plein écran ── */
   await p.evaluate(() => __lieu('galerie')); await p.waitForTimeout(400);
@@ -126,14 +183,14 @@ async function glisser(p, x, y, dx, pas) {
   e = await p.evaluate(() => __etat());
   v('la pièce s\'ouvre en plein écran', e.plein && e.pleinIdx === 0);
   const grand = await p.evaluate(() => {
-    const ph = document.getElementById('pleinPh').getBoundingClientRect();
+    const ph = document.querySelector('.plein__ph').getBoundingClientRect();
     const c = document.querySelector('.plein__c').getBoundingClientRect();
     const st = document.querySelector('.plein__s'), cs = getComputedStyle(st);
     const W = st.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
     const H = st.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
     return { part: Math.max(ph.width / W, ph.height / H), aCote: ph.right <= c.left + 1,
-             src: document.getElementById('pleinImg').getAttribute('src').slice(0, 22),
-             large: document.getElementById('pleinImg').naturalWidth };
+             src: document.querySelector('.plein__ph img').getAttribute('src').slice(0, 22),
+             large: document.querySelector('.plein__ph img').naturalWidth };
   });
   v('l\'image remplit la bande qui lui est donnée', grand.part > .96,
     (grand.part * 100).toFixed(0) + ' %');
@@ -146,13 +203,37 @@ async function glisser(p, x, y, dx, pas) {
   const source = await p.evaluate(() =>
     document.querySelector('.tuile[data-oe="v0"] .tuile__m').style.visibility);
   v('la tuile d\'origine s\'efface pendant l\'ouverture', source === 'hidden', source);
+
+  /* LES AUTRES VUES SE DÉFILENT — plus de swipe entre pièces pour ça */
+  const vues0 = await p.evaluate(() => ({
+    n: document.querySelectorAll('.plein__vue').length,
+    compte: document.getElementById('pleinVn').textContent,
+    hauteur: document.querySelector('.plein__vue').getBoundingClientRect().height,
+    bande: document.getElementById('pleinVues').clientHeight }));
+  v('la pièce a plusieurs vues empilées', vues0.n >= 2, vues0.n);
+  v('chaque vue tient toute la bande',
+    Math.abs(vues0.hauteur - vues0.bande) < 2, vues0.hauteur + '/' + vues0.bande);
+  v('le compte des vues est annoncé', /Vue 1 sur \d/.test(vues0.compte), vues0.compte);
+  await p.evaluate(() => {
+    const vs = document.getElementById('pleinVues');
+    vs.scrollTo({ top: vs.clientHeight, behavior: 'instant' });
+  });
+  await p.waitForTimeout(600);
+  const vues1 = await p.evaluate(() => ({
+    compte: document.getElementById('pleinVn').textContent,
+    pos: document.getElementById('pleinVues').scrollTop }));
+  v('défiler passe à la vue suivante', /Vue 2 sur \d/.test(vues1.compte), vues1.compte);
+  v('la pièce reste la même', (await p.evaluate(() => __etat())).pleinIdx === 0);
+
   await p.click('#pleinN'); await p.waitForTimeout(900);
   v('la flèche mène à la pièce suivante',
     (await p.evaluate(() => __etat())).pleinIdx === 1);
+  v('et l\'on repart de la première vue',
+    await p.evaluate(() => document.getElementById('pleinVues').scrollTop === 0));
   /* une pièce du nuancier : elle se montre ENTIÈRE, jamais recadrée */
-  await p.evaluate(() => __plein(10)); await p.waitForTimeout(900);
+  await p.evaluate(() => __plein(12)); await p.waitForTimeout(900);
   const nu = await p.evaluate(() => ({
-    contient: document.getElementById('pleinPh').classList.contains('contenir'),
+    contient: document.querySelector('.plein__ph').classList.contains('contenir'),
     titre: document.getElementById('pleinN2').textContent,
     i: document.getElementById('pleinI').textContent }));
   v('le nuancier se montre entier', nu.contient);
@@ -179,6 +260,7 @@ async function glisser(p, x, y, dx, pas) {
     const a = document.getElementById('atelier');
     const s = document.querySelector('.plan6').getBoundingClientRect();
     return { fond: getComputedStyle(a).backgroundColor,
+             colle: getComputedStyle(document.querySelector('.plan6')).position,
              pleineHauteur: Math.abs(s.height - innerHeight) < 2,
              y: a.scrollHeight - a.clientHeight, x: a.scrollWidth - a.clientWidth,
              rail: document.querySelectorAll('.at__rail button').length,
@@ -186,6 +268,7 @@ async function glisser(p, x, y, dx, pas) {
   });
   v('l\'atelier est sombre', lum(rgb(at.fond)) < .04, at.fond);
   v('chaque plan tient toute la page', at.pleineHauteur);
+  v('les plans se calent pour se superposer', at.colle === 'sticky', at.colle);
   v('l\'atelier se traverse à la verticale', at.y > 2000, at.y);
   v('il ne déborde pas latéralement', at.x <= 1, at.x);
   v('le rail donne les six gestes', at.rail === 6, at.rail);
@@ -198,7 +281,16 @@ async function glisser(p, x, y, dx, pas) {
   const fil = await p.evaluate(() => ({
     ici: document.querySelectorAll('.plan6.ici').length,
     railIci: [...document.querySelectorAll('.at__rail button')].findIndex(b => b.classList.contains('ici')),
-    retard: document.querySelector('.plan6[data-i="2"] .plan6__m').style.transform }));
+    retard: document.querySelector('.plan6[data-i="2"] .plan6__m').style.transform,
+    /* le plan qu'on recouvre s'assombrit, recule d'un rien, et reste calé */
+    voile: parseFloat(document.querySelector('.plan6[data-i="0"] .plan6__v').style.opacity || 0),
+    recul: document.querySelector('.plan6[data-i="0"]').style.transform,
+    /* trois plans empilés en haut, le quatrième encore plus bas :
+       c'est la signature de l'empilement (le rectangle d'un plan réduit
+       n'est pas exactement à zéro, il est rentré de sa mise à l'échelle) */
+    hauts: [...document.querySelectorAll('.plan6')]
+      .map(s => s.getBoundingClientRect().top).filter(t => t < 60).length,
+    suivant: Math.round(document.querySelector('.plan6[data-i="3"]').getBoundingClientRect().top) }));
   v('le plan traversé se révèle', fil.ici >= 1, fil.ici);
   v('le rail suit où l\'on est', fil.railIci >= 1, fil.railIci);
   const rail = await p.evaluate(() => {
@@ -209,26 +301,48 @@ async function glisser(p, x, y, dx, pas) {
   /* il est posé en fixe : il ne doit pas partir avec la page */
   v('le rail reste à l\'écran quand on avance', rail.dansEcran, rail.d);
   v('l\'image prend du retard sur la page', /translateY/.test(fil.retard), fil.retard);
+  v('les plans traversés restent empilés en haut',
+    fil.hauts >= 3 && fil.suivant > 300, fil.hauts + ' calés · suivant à ' + fil.suivant);
+  v('il s\'assombrit et recule sous le suivant',
+    fil.voile > .3 && /scale\(0\./.test(fil.recul), fil.voile + ' · ' + fil.recul);
 
   /* ── LA MAISON : la chronique ── */
-  await p.evaluate(() => __lieu('maison')); await p.waitForTimeout(700);
+  await p.evaluate(() => __lieu('maison')); await p.waitForTimeout(900);
   e = await p.evaluate(() => __etat());
-  v('la maison est un lieu à part', e.lieu === 'maison', e.lieu);
+  v('le cartonnier est un lieu à part', e.lieu === 'maison', e.lieu);
   v('cinq chapitres', e.chapitres === 5, e.chapitres);
   const ma = await p.locator('#maison').innerText();
   v('la chronique part de 1904', /1904/.test(ma));
   v('elle arrive à Laurène', /Laurène/.test(ma));
   v('les repères d\'exemple sont signalés', /exemple/i.test(ma));
-  v('le fil d\'Ariane garde le chemin', /GALERIE.*MAISON/i.test(
-    (await p.evaluate(() => __etat())).ariane));
+  v('le fil d\'Ariane garde le chemin', /TIRABOSCHI.*CARTONNIER/i.test(
+    (await p.evaluate(() => __etat())).ariane),
+    (await p.evaluate(() => __etat())).ariane);
   const chap = await p.evaluate(() => {
     const m = document.getElementById('maison');
+    const c = document.querySelector('.chap').getBoundingClientRect();
     return { y: m.scrollHeight - m.clientHeight, x: m.scrollWidth - m.clientWidth,
-             fond: getComputedStyle(m).backgroundColor };
+             fond: getComputedStyle(m).backgroundColor,
+             pleineHauteur: Math.abs(c.height - innerHeight) < 2,
+             annee: parseFloat(getComputedStyle(document.querySelector('.chap__an')).fontSize),
+             frise: document.querySelectorAll('.frise button').length };
   });
-  v('la maison se lit à la verticale', chap.y > 1200, chap.y);
-  v('elle ne déborde pas latéralement', chap.x <= 1, chap.x);
-  v('elle est sur papier clair', lum(rgb(chap.fond)) > .85, chap.fond);
+  v('chaque chapitre tient toute la page', chap.pleineHauteur);
+  v('l\'année est immense', chap.annee >= 120, Math.round(chap.annee) + ' px');
+  v('la frise donne les cinq repères', chap.frise === 5, chap.frise);
+  v('le cartonnier se lit à la verticale', chap.y > 1200, chap.y);
+  v('il ne déborde pas latéralement', chap.x <= 1, chap.x);
+  v('il est sur papier clair', lum(rgb(chap.fond)) > .85, chap.fond);
+  await p.evaluate(() => { document.getElementById('maison').scrollTop = innerHeight * 3.05; });
+  await p.waitForTimeout(900);
+  const frise = await p.evaluate(() => ({
+    ici: [...document.querySelectorAll('.frise button')].findIndex(b => b.classList.contains('ici')),
+    fil: document.getElementById('friseB').style.height,
+    dansEcran: (() => { const r = document.querySelector('.frise').getBoundingClientRect();
+      return r.top >= 0 && r.bottom <= innerHeight; })() }));
+  v('la frise suit le chapitre traversé', frise.ici === 3, frise.ici);
+  v('son fil se remplit', parseFloat(frise.fil) > 40, frise.fil);
+  v('elle reste à l\'écran', frise.dansEcran);
 
   /* ── LA SERRURE : on trace un T ── */
   await p.evaluate(() => __lieu('galerie')); await p.waitForTimeout(400);
@@ -249,6 +363,29 @@ async function glisser(p, x, y, dx, pas) {
     await p.locator('#serrure input').count() === 0);
   v('elle présente neuf points',
     await p.locator('#sePoints circle').count() === 9);
+
+  /* AU CLIC, point par point : sur un pavé tactile on ne trace pas */
+  const grille = await p.evaluate(() => {
+    const g = document.getElementById('seG').getBoundingClientRect();
+    return { l: g.left, t: g.top, w: g.width, h: g.height };
+  });
+  const clic = async i => {
+    await p.mouse.click(grille.l + (10 + (i % 3) * 40) / 100 * grille.w,
+                        grille.t + (12 + Math.floor(i / 3) * 39) / 100 * grille.h);
+    await p.waitForTimeout(130);
+  };
+  for (const i of [0, 1, 2, 4, 7]) await clic(i);
+  const auClic = await p.evaluate(() => __etat());
+  v('les cinq points se prennent au clic', auClic.figure === '0,1,2,4,7', auClic.figure);
+  v('un bouton de validation apparaît',
+    await p.evaluate(() => !document.getElementById('seOk').hidden));
+  await p.click('#seOk'); await p.waitForTimeout(1300);
+  e = await p.evaluate(() => __etat());
+  v('valider au clic ouvre le boudoir', e.lieu === 'boudoir' && !e.serrure,
+    e.lieu + ' / serrure=' + e.serrure);
+  /* on ressort pour refaire la figure au tracé */
+  await p.evaluate(() => __lieu('galerie')); await p.waitForTimeout(500);
+  await p.evaluate(() => __serrure()); await p.waitForTimeout(700);
 
   /* une figure fausse ne doit rien ouvrir */
   await p.evaluate(() => __figure([[0, 3, 6]])); await p.waitForTimeout(900);
@@ -373,7 +510,7 @@ async function glisser(p, x, y, dx, pas) {
 
   /* ── le plan ── */
   await p.click('#planB'); await p.waitForTimeout(800);
-  v('le plan liste les cinq destinations', await p.locator('#planL .pl').count() === 5);
+  v('le plan liste les six destinations', await p.locator('#planL .pl').count() === 6);
   const lignes = await p.evaluate(() => [...document.querySelectorAll('.pl')].map(l => {
     const r = l.getBoundingClientRect();
     const n = l.querySelector('.pl__n').getBoundingClientRect();
@@ -391,7 +528,7 @@ async function glisser(p, x, y, dx, pas) {
     [...document.querySelectorAll('.pl__n')].map(n =>
       n.firstChild.textContent + (n.querySelector('em') ? n.querySelector('em').textContent : '')));
   v('les noms du plan n\'ont pas d\'espace parasite',
-    noms.join('|') === "La Galerie|L'Atelier|La Maison|Le Boudoir|Le Rendez-vous",
+    noms.join('|') === "L'Accueil|La Galerie|L'Atelier|Le Cartonnier|Le Boudoir|Le Rendez-vous",
     noms.join('|'));
   await p.keyboard.press('Escape'); await p.waitForTimeout(500);
 
@@ -433,7 +570,7 @@ async function glisser(p, x, y, dx, pas) {
 
     await q.evaluate(() => __plein(0)); await q.waitForTimeout(1100);
     const pe = await q.evaluate(() => {
-      const ph = document.getElementById('pleinPh').getBoundingClientRect();
+      const ph = document.querySelector('.plein__ph').getBoundingClientRect();
       const c = document.querySelector('.plein__c').getBoundingClientRect();
       const g = document.getElementById('pleinGo').getBoundingClientRect();
       return { libre: ph.right <= c.left + 1 || ph.bottom <= c.top + 1,

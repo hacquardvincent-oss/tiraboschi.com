@@ -484,7 +484,7 @@ scheme-31f09ca3-1031-4740-a2fb-9e46aea899cb → blanc opaque (header/footer)
 |---|---|---|---|
 | Atelier (parcours briques → fiche → matière → certificat) | `tiraboschi-atelier-prototype.html` | — | `tests/atelier/recette.js` |
 | Maison (vitrine immersive → seuil → espace privé) | `tiraboschi-maison-demo.html` | `tools/demo/gabarit-maison.html` | `tests/maison/recette.js` |
-| Galerie · Atelier · Maison · Boudoir | `tiraboschi-galerie-demo.html` | `tools/demo/gabarit-galerie.html` | `tests/galerie/recette.js` |
+| Accueil · Galerie · Atelier · Cartonnier · Boudoir | `tiraboschi-galerie-demo.html` | `tools/demo/gabarit-galerie.html` | `tests/galerie/recette.js` |
 | Configurateur POS (tablette boutique) | `tiraboschi-configurateur.html` | `tools/demo/gabarit-configurateur.html` | — |
 
 ```bash
@@ -493,33 +493,40 @@ python3 tools/demo/assembler.py tools/demo/gabarit-galerie.html tiraboschi-galer
 NODE_PATH=/opt/node22/lib/node_modules node tests/galerie/recette.js
 ```
 
-**Démo Galerie — les cinq règles à ne pas casser**
+**Démo Galerie — les six règles à ne pas casser**
 
-1. **Aucun prix hors du boudoir.** Vérifié sur la galerie, l'atelier, la
-   maison, le rendez-vous, le plan, le plein écran et le cabinet.
-2. **Quatre lieux, quatre façons de se déplacer** — la galerie se
+1. **Aucun prix hors du boudoir.** Vérifié sur l'accueil, la galerie,
+   l'atelier, le cartonnier, le rendez-vous, le plan, le plein écran et
+   le cabinet.
+2. **L'accueil est une PIÈCE, pas un sommaire** : un visuel plein écran
+   qui change avec le lieu désigné, quatre noms, une adresse. Pas de
+   barre de navigation par-dessus.
+3. **Quatre lieux, quatre façons de se déplacer** — la galerie se
    parcourt à l'horizontale (silhouettes accrochées librement, nuancier
-   en grille stricte), l'atelier se traverse (six plans pleine page,
-   sombres, avec retard d'image), la maison se lit (chronique, années en
-   marge), le boudoir ne se parcourt pas : il est le module de mesure.
-3. **Une pièce s'ouvre en PLEIN ÉCRAN**, depuis sa propre tuile (FLIP :
-   le cadre grandit de la tuile jusqu'à l'écran), cartel à côté d'elle.
-   Jamais une fenêtre, jamais une pop-in.
-4. **Le boudoir s'ouvre sur une FIGURE**, pas un code : neuf points, on
-   trace un T — la barre puis le fût, en deux traits. Et la pièce s'y
-   tourne AU DOIGT, prise n'importe où dans la scène ; le rail n'est
-   qu'un second moyen.
-5. **On ne perd pas le visiteur** — fil d'Ariane cliquable, plan (cinq
-   lignes de même hauteur), rendez-vous toujours à portée, fil de visite
-   qui compte les pièces regardées. Les trois ouvertures se rencontrent
-   EN MARCHANT, pas seulement dans le menu.
+   en grille stricte rangée par famille de couleur), l'atelier se
+   traverse en EMPILANT ses six plans (`position:sticky`, voile et
+   recul), le cartonnier se lit en plein écran avec l'année en
+   filigrane et une frise, le boudoir ne se parcourt pas.
+4. **Une pièce s'ouvre en PLEIN ÉCRAN**, depuis sa propre tuile (FLIP),
+   cartel à côté d'elle. On y DÉFILE pour les autres vues de la pièce ;
+   les flèches changent de pièce. Jamais une pop-in.
+5. **Le boudoir s'ouvre sur une FIGURE**, pas un code : neuf points, on
+   trace un T. Au doigt d'un trait, ou point par point au clic (pavé
+   tactile) avec un bouton de validation. Et la pièce s'y tourne AU
+   DOIGT, prise n'importe où dans la scène.
+6. **On ne perd pas le visiteur** — fil d'Ariane cliquable, plan (six
+   lignes de même hauteur), rendez-vous toujours à portée, fil de visite.
+   Les trois ouvertures se rencontrent EN MARCHANT.
 
-**Les visuels** — `tools/demo/visuels/*.webp` (1 400 px, ~1,5 Mo au
-total), tirés des originaux déposés sur `main` : `Photoshoot - December
-25 - BOSCHI/` (l'éditorial JANE/VICTOIRE/DUO), `2026-05-05-photo-
-download-1of1/Highlights/` (les 67 packshots) et les trois `M2A*.jpg`
-(les volumes d'étude). Le script de conversion est en tête de
-`tools/demo/assembler.py`.
+**Les visuels** — `tools/demo/visuels/*.webp` (~2 Mo, 82 fichiers),
+tirés des originaux déposés sur `main` : `Photoshoot - December 25 -
+BOSCHI/` (l'éditorial JANE/VICTOIRE/DUO), `2026-05-05-photo-download-
+1of1/Highlights/` (les 67 packshots, regroupés en 32 pièces de 1 à 3
+vues + 5 Victoire de 2 vues) et deux `M2A*.jpg` (les volumes d'étude).
+Les prises de vue d'une même pièce sont détectées par proximité de
+couleur ; l'ordre du nuancier est un rangement par famille (neutres,
+beiges, bruns, ambre, roses, rouges, magentas, bleus), pas l'ordre des
+fichiers.
 
 **Le volume 3D du boudoir ne correspond PAS au produit réel** : c'est le
 modèle Cycles rendu avant l'arrivée des photographies. À re-rendre
