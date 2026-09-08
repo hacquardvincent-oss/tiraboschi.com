@@ -1,40 +1,47 @@
 # -*- coding: utf-8 -*-
 """Découpe les tours d'objet du shooting « 3D SITE » en séquences web.
 
-Le studio a photographié cinq tours complets (quatre Colette, une Olympe)
-en un seul dossier numéroté. On les sépare par la couleur dominante, puis
-on exporte chaque vue.
+Le studio a photographié cinq tours complets en un seul dossier
+numéroté. On les sépare par la couleur dominante, on DÉTOURE chaque vue
+(voir detour.py) et on exporte.
 
-DEUX RÈGLES, sans lesquelles un tour d'objet ne tourne pas :
+TROIS RÈGLES, sans lesquelles un tour d'objet ne tourne pas :
 
-1. UN CADRAGE COMMUN À TOUTE LA SÉQUENCE. Si l'on recadre chaque vue sur
-   son propre sujet, la pièce saute d'une image à l'autre : elle change
-   de taille et de position à chaque degré. On calcule donc l'union des
-   boîtes englobantes de la séquence entière, et on recadre tout le monde
-   pareil.
-2. UNE HAUTEUR DE SOCLE COMMUNE. Le bas de la pièce doit rester à la même
-   ligne : c'est ce qui donne l'impression qu'elle tourne sur un plateau
-   plutôt qu'elle ne flotte.
+1. UN CADRAGE COMMUN À TOUTE LA SÉQUENCE, borné à l'image. Recadrer
+   chaque vue sur son propre sujet fait sauter la pièce à chaque degré.
+2. LA PIÈCE EST DÉTOURÉE. Le fond de studio visible derrière un objet
+   qu'on fait tourner trahit tout de suite le montage.
+3. ASSEZ DE DÉFINITION POUR LA TAILLE D'AFFICHAGE. Une vue exportée à
+   660 px et montrée à 800 px est floue — c'est le même défaut que sur
+   les visuels de la galerie, et il se voit encore plus sur un objet
+   qu'on manipule.
+
+LA COLETTE IVOIRE EST ÉCARTÉE : son panneau en V a très exactement la
+teinte de la toile de studio, ET il communique avec l'extérieur par
+l'ouverture du sac. Aucun détourage automatique ne peut le retenir.
+Il lui faut une reprise à la main, ou une reprise de vue sur fond
+contrasté.
 
 Lancer depuis la racine :
     python3 tools/demo/tourner.py <dossier-source> [largeur] [qualité]
 """
 import glob, os, re, sys
-import numpy as np
-from PIL import Image, ImageChops, ImageDraw, ImageFilter
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from PIL import Image, ImageChops
+from detour import detourer
 
 SRC = sys.argv[1] if len(sys.argv) > 1 else 'tools/demo/source-3d'
-LARGE = int(sys.argv[2]) if len(sys.argv) > 2 else 660
-Q = int(sys.argv[3]) if len(sys.argv) > 3 else 56
+LARGE = int(sys.argv[2]) if len(sys.argv) > 2 else 1400
+Q = int(sys.argv[3]) if len(sys.argv) > 3 else 60
 DST = 'tools/demo/tours'
 
-# les cinq tours, relevés par couleur dominante (voir le journal de session)
+# les cinq tours, relevés par couleur dominante. L'ivoire est écarté :
+# voir l'en-tête du fichier.
 TOURS = [
-    ('colette-rouge',    1,  39, 'Colette', 'Rouge Carmin',  'Alligator'),
-    ('colette-bordeaux', 40,  72, 'Colette', 'Bordeaux',      'Alligator'),
-    ('colette-ivoire',   73, 101, 'Colette', 'Ivoire',        'Alligator'),
-    ('colette-cognac',  102, 123, 'Colette', 'Cognac',        'Veau lisse'),
-    ('olympe-camel',    124, 138, 'Olympe',  'Camel',         'Veau grainé'),
+    ('colette-rouge',    1,  39, 'Colette', 'Rouge Carmin', 'Alligator'),
+    ('colette-bordeaux', 40,  72, 'Colette', 'Bordeaux',     'Alligator'),
+    ('colette-cognac',  102, 123, 'Colette', 'Cognac',       'Veau lisse'),
+    ('olympe-camel',    124, 138, 'Olympe',  'Camel',        'Veau grainé'),
 ]
 
 
@@ -49,53 +56,6 @@ def union(a, b):
     if not a: return b
     if not b: return a
     return (min(a[0], b[0]), min(a[1], b[1]), max(a[2], b[2]), max(a[3], b[3]))
-
-
-def fondu(im, marge=.13):
-    """Fait disparaître le bord du plateau, sans détourer la pièce.
-
-    Un détourage automatique casse ici : la toile de studio n'est pas
-    d'un gris égal, et sur la Colette ivoire la pièce est AUSSI CLAIRE
-    que le fond — le masque la mange. Essayé, mesuré, abandonné.
-
-    On fait donc l'inverse, et c'est plus juste pour la maison : on
-    garde la prise de vue telle quelle, avec sa vraie ombre portée, et
-    l'on estompe seulement le bord du cadre. Posée sur une page de la
-    même couleur que la toile, la pièce paraît reposer dans la salle —
-    sans un seul artefact de découpe.
-
-    Renvoie l'image adoucie et la couleur exacte de la toile, pour que
-    la page puisse s'y accorder au pixel près.
-    """
-    a = np.asarray(im.convert('RGB'), dtype=np.float32)
-    h, w, _ = a.shape
-    m = max(3, w // 40)
-    bord = np.concatenate([a[:, :m], a[:, -m:]], axis=1).reshape(-1, 3)
-    toile = tuple(int(v) for v in np.median(bord, axis=0))
-    # la toile n'est pas plate : un halo l'éclaire derrière la pièce.
-    # On relève AUSSI ce cœur clair, pour que la page prolonge le même
-    # dégradé — sinon le plateau reste un rectangle plus lumineux.
-    cx, cy = int(w * .5), int(h * .3)
-    d = max(6, w // 22)
-    coeur = a[max(0, cy - d):cy + d, max(0, cx - d):cx + d].reshape(-1, 3)
-    halo = tuple(int(v) for v in np.percentile(coeur, 88, axis=0))
-
-    # un fondu en cosinus sur la marge : le raccord ne se voit pas
-    marge = .22
-    def rampe(n, k):
-        r = np.ones(n, dtype=np.float32)
-        if k < 1: return r
-        t = np.linspace(0, np.pi / 2, k)
-        r[:k] = np.sin(t) ** 2
-        r[-k:] = np.sin(t[::-1]) ** 2
-        return r
-    ax = rampe(w, int(w * marge))
-    ay = rampe(h, int(h * marge * 1.3))
-    al = np.minimum(ax[None, :], ay[:, None]) * 255
-
-    out = im.convert('RGBA')
-    out.putalpha(Image.fromarray(al.astype(np.uint8), 'L'))
-    return out, toile, halo
 
 
 def main():
@@ -124,23 +84,23 @@ def main():
         bb = (max(0, bb[0] - m), max(0, bb[1] - m),
               min(W, bb[2] + m), min(H, bb[3] + m * 1.6))
         haut = round(LARGE * (bb[3] - bb[1]) / (bb[2] - bb[0]))
-        poids = 0; toile = (240, 238, 236); halo = (250, 249, 250)
+        poids = 0
         for k, f in enumerate(vues):
             im = Image.open(f).convert('RGB').crop(tuple(int(v) for v in bb))
             im = im.resize((LARGE, haut), Image.LANCZOS)
-            im, toile, halo = fondu(im)
+            im = detourer(im)
             p = os.path.join(DST, '%s-%02d.webp' % (cle, k))
             im.save(p, 'WEBP', quality=Q, method=6, exact=True)
             poids += os.path.getsize(p)
         total += poids
-        fonds[cle] = {'bord': '#%02x%02x%02x' % toile, 'halo': '#%02x%02x%02x' % halo}
-        print('%-18s %2d vues  %dx%d  %5d Ko  bord %s halo %s  (%s · %s)' %
-              (cle, len(vues), LARGE, haut, poids // 1024,
-               fonds[cle]['bord'], fonds[cle]['halo'], nuance, peau))
+        fonds[cle] = {'modele': modele, 'nuance': nuance, 'peau': peau,
+                      'vues': len(vues)}
+        print('%-18s %2d vues  %dx%d  %6d Ko  (%s · %s)' %
+              (cle, len(vues), LARGE, haut, poids // 1024, nuance, peau))
     import json
-    with open(os.path.join(DST, 'toiles.json'), 'w') as fh:
+    with open(os.path.join(DST, 'tours.json'), 'w') as fh:
         json.dump(fonds, fh, indent=1)
-    print('total %d Ko · toiles → tours/toiles.json' % (total // 1024))
+    print('total %d Ko' % (total // 1024))
 
 
 if __name__ == '__main__':

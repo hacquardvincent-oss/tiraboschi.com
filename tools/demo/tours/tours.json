@@ -1,0 +1,26 @@
+{
+ "colette-rouge": {
+  "modele": "Colette",
+  "nuance": "Rouge Carmin",
+  "peau": "Alligator",
+  "vues": 39
+ },
+ "colette-bordeaux": {
+  "modele": "Colette",
+  "nuance": "Bordeaux",
+  "peau": "Alligator",
+  "vues": 33
+ },
+ "colette-cognac": {
+  "modele": "Colette",
+  "nuance": "Cognac",
+  "peau": "Veau lisse",
+  "vues": 22
+ },
+ "olympe-camel": {
+  "modele": "Olympe",
+  "nuance": "Camel",
+  "peau": "Veau grain\u00e9",
+  "vues": 15
+ }
+}

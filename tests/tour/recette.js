@@ -38,7 +38,7 @@ const ecart = (a, b) => Math.max(...a.map((x, i) => Math.abs(x - b[i])));
   /* ── LE CARROUSEL ── */
   let e = await p.evaluate(() => __etat());
   v('on arrive au carrousel des modèles', e.scene === 'car', e.scene);
-  v('cinq pièces y tournent', e.carTotal === 5, e.carTotal);
+  v('quatre pièces y tournent', e.carTotal === 4, e.carTotal);
   const car = await p.evaluate(() => {
     const ps = [...document.querySelectorAll('.car__p')];
     const r = ps.map(x => x.getBoundingClientRect());
@@ -48,8 +48,33 @@ const ecart = (a, b) => Math.max(...a.map((x, i) => Math.abs(x - b[i])));
              opacites: ps.map(x => +getComputedStyle(x).opacity),
              sources: ps.map(x => (x.querySelector('img').src || '').slice(0, 15)) };
   });
-  v('chaque pièce a sa vignette', car.n === 5 &&
+  v('chaque pièce a sa vignette', car.n === 4 &&
     car.sources.every(s => s.startsWith('data:image/we')), car.sources[0]);
+  /* LA PIÈCE AU CENTRE TIENT LA MOITIÉ DE L'ÉCRAN, et elle est
+     DÉTOURÉE : plus de plateau de studio derrière elle. */
+  const grand = await p.evaluate(() => {
+    const el = document.querySelectorAll('.car__p')[0];
+    const im = el.querySelector('img');
+    const r = im.getBoundingClientRect();
+    /* le coin de la vue doit être transparent : s'il ne l'est pas,
+       c'est que la toile est encore là */
+    const c = document.createElement('canvas');
+    c.width = c.height = 4;
+    const x = c.getContext('2d');
+    x.drawImage(im, 0, 0, 4, 4, 0, 0, 4, 4);
+    return { part: r.width / innerWidth, natif: im.naturalWidth,
+             densite: im.naturalWidth / r.width,
+             coin: x.getImageData(0, 0, 1, 1).data[3],
+             cliquable: getComputedStyle(el).pointerEvents !== 'none' };
+  });
+  v('la pièce au centre tient un tiers de l\'écran au moins',
+    grand.part >= .3, (grand.part * 100).toFixed(0) + ' % de la largeur');
+  v('elle est nette à cette taille',
+    grand.natif >= 1200 && grand.densite >= 1.1,
+    grand.natif + ' px natifs pour ' + Math.round(grand.part * 1440) +
+      ' px affichés (×' + grand.densite.toFixed(2) + ')');
+  v('elle est détourée : pas de toile derrière elle', grand.coin < 24, grand.coin);
+  v('et elle est cliquable', grand.cliquable);
   v('celle du centre domine', car.centre && car.opacites[0] === 1,
     car.opacites.map(o => o.toFixed(2)).join(' '));
   v('les autres s\'effacent en s\'éloignant',
@@ -60,48 +85,64 @@ const ecart = (a, b) => Math.max(...a.map((x, i) => Math.abs(x - b[i])));
 
   /* ── LA PIÈCE ── */
   await p.evaluate(() => __car(0)); await p.waitForTimeout(700);
+  /* CLIQUER SUR LA PIÈCE DOIT FAIRE QUELQUE CHOSE — au centre, elle
+     s'ouvre ; de côté, elle vient au centre. C'était le reproche : le
+     clic ne produisait rien. */
+  await p.click('.car__p[data-id="colette-bordeaux"]');
+  await p.waitForTimeout(1100);
+  v('cliquer une pièce de côté l\'amène au centre',
+    (await p.evaluate(() => __etat())).car === 1,
+    (await p.evaluate(() => __etat())).car);
+  await p.evaluate(() => __car(0)); await p.waitForTimeout(900);
   await p.click('#carGo');
   await p.waitForFunction(() => __pret(), null, { timeout: 30000 });
   await p.waitForTimeout(600);
   e = await p.evaluate(() => __etat());
   v('« prendre la pièce en main » ouvre le tour', e.scene === 'piece', e.scene);
   v('la séquence est chargée en entier', e.vues === 39, e.vues + ' vues');
+  /* LA PIÈCE EST GRANDE ET NETTE DANS LE CONFIGURATEUR AUSSI */
+  const dim = await p.evaluate(() => {
+    const im = document.querySelector('.tour__im img');
+    const r = im.getBoundingClientRect();
+    const c = document.createElement('canvas'); c.width = c.height = 4;
+    const x = c.getContext('2d'); x.drawImage(im, 0, 0, 4, 4, 0, 0, 4, 4);
+    return { h: r.height, part: r.height / innerHeight,
+             natif: im.naturalWidth, densite: im.naturalWidth / r.width,
+             coin: x.getImageData(0, 0, 1, 1).data[3],
+             centre: Math.abs((r.left + r.width / 2) -
+               document.querySelector('.tour').getBoundingClientRect().left -
+               document.querySelector('.tour').getBoundingClientRect().width / 2) };
+  });
+  v('la pièce occupe la hauteur de la scène', dim.part >= .5,
+    (dim.part * 100).toFixed(0) + ' % de la hauteur');
+  v('elle n\'est pas agrandie', dim.densite >= 1.05,
+    dim.natif + ' px natifs (×' + dim.densite.toFixed(2) + ')');
+  v('elle est détourée', dim.coin < 24, dim.coin);
+  v('et centrée dans sa scène', dim.centre <= 3, Math.round(dim.centre) + ' px');
   v('ce sont de vraies prises de vue',
     e.source.length > 20 && (await p.evaluate(() =>
       document.querySelector('.tour__c img').src.startsWith('data:image/webp'))));
 
-  /* LE BORD DU PLATEAU NE DOIT PAS SE VOIR : la page porte la couleur
-     exacte relevée sur la toile de studio */
-  const toile = await p.evaluate(() => {
-    const f = document.getElementById('fond');
-    const s = getComputedStyle(document.documentElement);
-    return { bord: s.getPropertyValue('--toile').trim(),
-             halo: s.getPropertyValue('--halo').trim(),
-             fond: getComputedStyle(f).backgroundImage.includes('radial-gradient'),
-             /* et l'ombre portée est celle de la photographie, pas une
-                seconde ombre en CSS qui ferait un halo noir */
-             ombreCss: getComputedStyle(
-               document.querySelector('.tour__c img')).filter };
+  /* ── LES POINTS SUR LA PIÈCE ──
+     On désigne un élément SUR l'objet, pas seulement dans un rail. */
+  const pts = await p.evaluate(() => __points());
+  v('sept points se posent sur la pièce', pts.length === 7, pts.length);
+  v('seuls ceux qui se voient à cet angle sont montrés',
+    pts.some(x => x.vu) && pts.some(x => !x.vu),
+    pts.filter(x => x.vu).map(x => x.id).join(', '));
+  const surPiece = await p.evaluate(() => {
+    const b = document.querySelector('.pt.vu');
+    const im = document.querySelector('.tour__im img').getBoundingClientRect();
+    const r = b.getBoundingClientRect();
+    /* un point doit tomber SUR la pièce, pas à côté : c'était le
+       défaut — posés en % de la scène, ils manquaient l'objet */
+    return r.left >= im.left - 20 && r.right <= im.right + 20 &&
+           r.top >= im.top - 20 && r.bottom <= im.bottom + 20;
   });
-  v('la page prend la couleur de la toile', /^#[0-9a-f]{6}$/i.test(toile.bord), toile.bord);
-  v('et prolonge son halo', toile.fond && /^#[0-9a-f]{6}$/i.test(toile.halo), toile.halo);
-  v('aucune ombre ajoutée par-dessus la vraie',
-    toile.ombreCss === 'none', toile.ombreCss);
-  const raccord = await p.evaluate(() => {
-    /* on compare le coin de la vue avec le fond de la page : si le
-       plateau se voyait, l'écart sauterait aux yeux */
-    const im = document.querySelector('.tour__c img');
-    const r = im.getBoundingClientRect();
-    /* on lit le PIXEL du coin, à sa taille native : dessiner l'image
-       réduite moyennerait tout le fondu et ne dirait rien */
-    const c = document.createElement('canvas');
-    c.width = c.height = 4;
-    const x = c.getContext('2d');
-    x.drawImage(im, 0, 0, 4, 4, 0, 0, 4, 4);
-    const d = x.getImageData(0, 0, 1, 1).data;
-    return { alpha: d[3], coin: [d[0], d[1], d[2]] };
-  });
-  v('le coin de la vue est transparent', raccord.alpha < 40, raccord.alpha);
+  v('un point tombe bien sur la pièce', surPiece);
+  await p.click('.pt[data-pt="anse"]'); await p.waitForTimeout(1200);
+  v('cliquer un point choisit son élément',
+    (await p.evaluate(() => __etat())).element === 'anse');
 
   /* ── LE GESTE ── */
   const b = await p.locator('#tour').boundingBox();
@@ -134,7 +175,7 @@ const ecart = (a, b) => Math.max(...a.map((x, i) => Math.abs(x - b[i])));
   /* ── CHANGER DE PEAU GARDE L'ANGLE ── */
   await p.evaluate(() => __poser(.62)); await p.waitForTimeout(300);
   const avant = await p.evaluate(() => __etat());
-  await p.evaluate(() => __peau(3));
+  await p.evaluate(() => __peau(2));
   await p.waitForFunction(() => __pret(), null, { timeout: 30000 });
   await p.waitForTimeout(700);
   const apres = await p.evaluate(() => __etat());

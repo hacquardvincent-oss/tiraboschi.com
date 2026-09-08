@@ -27,11 +27,11 @@
   /* la toile du studio, relevée sur les prises de vue elles-mêmes :
      la page porte EXACTEMENT sa couleur, donc le bord du plateau ne
      se voit pas. Et une teinte de la peau choisie vient l'habiller. */
-  --toile:#c9c2cc; --halo:#f2eff3; --ambiance:#5e1a20;
+  --ambiance:#5e1a20;
 }
 *{margin:0;padding:0;box-sizing:border-box;border-radius:0!important}
 html,body{height:100%;overflow:hidden}
-body{font-family:'Playfair Display',Georgia,serif;background:var(--toile);color:var(--encre);
+body{font-family:'Playfair Display',Georgia,serif;background:var(--nuit);color:#f2efe9;
   -webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
 button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 img{display:block}
@@ -41,7 +41,7 @@ img{display:block}
 /* ═══════════ L'EN-TÊTE ═══════════ */
 .ent{position:fixed;top:0;left:0;right:0;height:var(--ent);z-index:70;display:flex;
   align-items:center;gap:clamp(12px,2.4vw,28px);padding:0 clamp(14px,2.6vw,32px);
-  color:var(--encre);border-bottom:1px solid rgba(16,16,16,.12)}
+  color:#f2efe9;border-bottom:1px solid rgba(242,239,233,.12)}
 .ent__n{display:flex;align-items:center;gap:clamp(14px,1.9vw,26px);flex:1 1 0;min-width:0}
 .ent__n--d{justify-content:flex-end}
 .ent__logo{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:6px;
@@ -59,60 +59,80 @@ img{display:block}
   transition:opacity .7s var(--e),visibility .7s;display:flex;flex-direction:column}
 .scene.on{opacity:1;visibility:visible}
 /* l'ambiance suit la peau choisie — c'est elle qui colore la salle */
-.fond{position:fixed;inset:0;z-index:-1;
-  background:radial-gradient(78% 62% at 50% 40%,var(--halo) 0%,var(--toile) 74%);
-  transition:background 1.4s var(--e)}
-/* la teinte de la peau, posée aux quatre coins — on la sent, on ne la
-   voit pas : la pièce reste la seule couleur franche de l'écran */
+/* Les pièces sont DÉTOURÉES : la salle peut donc être ce qu'on veut.
+   On la fait sombre, et c'est la peau choisie qui l'éclaire par le bas
+   — comme un projecteur de studio derrière l'objet. */
+.fond{position:fixed;inset:0;z-index:-1;background:var(--nuit);
+  transition:background 1.2s var(--e)}
 .fond::after{content:'';position:absolute;inset:0;
-  background:radial-gradient(130% 90% at 50% 118%,var(--ambiance) 0%,transparent 58%);
-  opacity:.2;transition:background 1.4s var(--e)}
+  background:radial-gradient(72% 58% at 50% 62%,var(--ambiance) 0%,transparent 68%);
+  opacity:.42;transition:background 1.4s var(--e)}
+.fond::before{content:'';position:absolute;left:50%;bottom:-14%;
+  transform:translateX(-50%);width:min(1100px,86vw);height:52%;
+  background:radial-gradient(50% 50% at 50% 50%,rgba(255,255,255,.09),transparent 70%)}
 
 /* ── LE CARROUSEL DES MODÈLES ── */
-.car{flex:1;min-height:0;position:relative;display:flex;align-items:center;
-  justify-content:center;touch-action:pan-y}
-.car__p{position:absolute;left:50%;top:50%;width:min(38vw,340px);
-  transform-origin:50% 50%;pointer-events:none;
-  transition:transform 1s var(--e),opacity 1s var(--e),filter 1s var(--e)}
-.car__p img{width:100%;height:auto}
-.car__x{position:absolute;left:0;right:0;bottom:clamp(24px,6vh,64px);z-index:3;
-  text-align:center;pointer-events:none}
-.car__n{font-size:clamp(26px,4vw,54px);letter-spacing:-.03em;line-height:1;
+.car{flex:1;min-height:0;display:flex;flex-direction:column;touch-action:pan-y}
+/* la scène et le cartel ne se disputent plus la place : la pièce a sa
+   bande, le texte a la sienne */
+.car__s{position:relative;flex:1;min-height:0}
+/* LA PIÈCE AU CENTRE TIENT LA MOITIÉ DE L'ÉCRAN. Les prises de vue
+   font 1400 px : on peut les montrer grand sans les agrandir. Et elles
+   sont CLIQUABLES — cliquer sur une pièce du côté l'amène au centre,
+   cliquer sur celle du centre entre dedans. */
+.car__p{position:absolute;left:50%;top:50%;width:min(46vw,540px);
+  max-height:100%;
+  transform-origin:50% 50%;cursor:pointer;
+  transition:transform 1.05s var(--e),opacity 1.05s var(--e),filter 1.05s var(--e)}
+.car__p img{width:100%;height:auto;max-height:min(58svh,560px);object-fit:contain;
+  filter:drop-shadow(0 26px 40px rgba(0,0,0,.55))}
+.car__p--ici{cursor:zoom-in}
+.car__x{flex-shrink:0;z-index:3;text-align:center;pointer-events:none;
+  padding:0 20px clamp(30px,5vh,52px)}
+.car__n{font-size:clamp(24px,3.4vw,46px);letter-spacing:-.03em;line-height:1;
   transition:opacity .5s}
 .car__n em{font-style:italic}
 .car__k{margin-top:12px;opacity:.55}
-.car__go{margin-top:22px;pointer-events:auto;border:1px solid currentColor;
+.car__go{margin-top:16px;pointer-events:auto;border:1px solid currentColor;
   padding:14px 32px;font-family:system-ui,sans-serif;text-transform:uppercase;
   letter-spacing:.2em;font-size:10px;min-height:46px;
   transition:background .45s var(--e),color .45s,letter-spacing .5s var(--e)}
-.car__go:hover{background:var(--encre);color:var(--toile);letter-spacing:.26em}
-.car__f{position:absolute;top:50%;transform:translateY(-50%);z-index:4;width:52px;height:52px;
+.car__go:hover{background:#f2efe9;color:var(--nuit);letter-spacing:.26em}
+.car__f{position:absolute;top:42%;transform:translateY(-50%);z-index:4;width:52px;height:52px;
   display:flex;align-items:center;justify-content:center;opacity:.4;transition:opacity .3s}
 .car__f:hover{opacity:1}
 .car__f svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1}
 .car__f--p{left:clamp(8px,3vw,44px)}.car__f--n{right:clamp(8px,3vw,44px)}
-.car__j{position:absolute;left:50%;transform:translateX(-50%);bottom:clamp(10px,2.4vh,20px);
-  width:min(280px,52vw);height:1px;background:rgba(16,16,16,.16)}
-.car__j i{display:block;height:100%;background:var(--encre);transition:width .7s var(--e),
+.car__j{position:absolute;left:50%;transform:translateX(-50%);bottom:10px;
+  width:min(280px,52vw);height:1px;background:rgba(242,239,233,.2)}
+.car__j i{display:block;height:100%;background:#f2efe9;transition:width .7s var(--e),
   margin-left .7s var(--e)}
+/* le compte des pièces, en clair */
+.car__c{position:absolute;left:50%;transform:translateX(-50%);bottom:22px;
+  font-family:system-ui,sans-serif;font-size:9px;letter-spacing:.24em;
+  text-transform:uppercase;color:rgba(242,239,233,.45)}
 
 /* ── LA PIÈCE QUI TOURNE ── */
+/* LA PIÈCE EST LE SUJET : elle prend le milieu, en grand. Le cartel se
+   range à gauche sur une colonne étroite, le rail des éléments à
+   droite sur sa seule largeur. */
 .piece{flex:1;min-height:0;display:grid;
-  grid-template-columns:minmax(0,.9fr) minmax(0,1.5fr) auto;
+  grid-template-columns:minmax(0,.62fr) minmax(0,2.1fr) auto;
   gap:clamp(14px,2.6vw,42px);padding:clamp(14px,2.6vh,34px) clamp(16px,3vw,48px)
   clamp(10px,2vh,24px)}
 @media(max-width:1000px){
   .piece{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr) auto}
 }
 /* le cartel, à gauche */
-.dit{display:flex;flex-direction:column;justify-content:center;gap:14px;min-width:0}
-.dit__k{color:var(--gris)}
-.dit__t{font-size:clamp(24px,3.2vw,46px);letter-spacing:-.028em;line-height:1.06}
+.dit{display:flex;flex-direction:column;justify-content:center;gap:12px;min-width:0}
+.dit__k{color:rgba(242,239,233,.5)}
+.dit__t{font-size:clamp(21px,2.5vw,36px);letter-spacing:-.028em;line-height:1.06}
 .dit__t em{font-style:italic}
-.dit__d{font-family:system-ui,sans-serif;font-size:12.5px;line-height:1.95;
-  color:#3d3b39;max-width:44ch}
-.dit__z{position:relative;width:100%;max-width:340px;height:0;padding-top:66%;
-  overflow:hidden;background:#dedae0;margin-top:6px;cursor:zoom-in}
+.dit__d{font-family:system-ui,sans-serif;font-size:12px;line-height:1.85;
+  color:rgba(242,239,233,.66);max-width:40ch}
+.dit__z{position:relative;width:100%;height:0;padding-top:68%;
+  overflow:hidden;background:#1b1a1c;margin-top:4px;cursor:zoom-in;
+  border:1px solid rgba(242,239,233,.14)}
 .dit__z img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
   opacity:0;transition:opacity .8s var(--e),transform 2.4s var(--e);transform:scale(1.08)}
 .dit__z img.on{opacity:1;transform:none}
@@ -126,14 +146,41 @@ img{display:block}
 .tour{position:relative;display:flex;flex-direction:column;align-items:center;
   justify-content:center;min-width:0;min-height:0;touch-action:none;cursor:grab}
 .tour.tire{cursor:grabbing}
-.tour__c{position:relative;width:100%;max-width:720px;
-  height:min(100%,calc(100vh - var(--ent) - 190px));
+.tour__c{position:relative;width:100%;
+  height:min(100%,calc(100svh - var(--ent) - 170px));
   display:flex;align-items:center;justify-content:center}
-.tour__c img{max-width:100%;max-height:100%;width:auto;height:auto}
+/* LES POINTS SE POSENT SUR L'IMAGE, PAS SUR LA SCÈNE. Placés en % du
+   conteneur, ils tombaient à côté de la pièce : la scène fait toute la
+   largeur, la pièce seulement le centre. */
+.tour__im{position:relative;display:flex;max-width:100%;max-height:100%}
+.tour__im img{max-width:100%;max-height:100%;width:auto;height:auto;
+  filter:drop-shadow(0 30px 46px rgba(0,0,0,.55))}
+/* LES POINTS SUR LA PIÈCE — on désigne l'élément SUR l'objet, pas
+   seulement dans un rail. Ils se posent en coordonnées normalisées et
+   ne s'affichent qu'aux angles où l'élément se voit. */
+.pt{position:absolute;z-index:4;width:30px;height:30px;margin:-15px 0 0 -15px;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transform:scale(.7);pointer-events:none;
+  transition:opacity .45s var(--e),transform .45s var(--e)}
+.pt.vu{opacity:1;transform:none;pointer-events:auto}
+.pt::before{content:'';position:absolute;inset:0;border:1px solid rgba(242,239,233,.7);
+  transform:rotate(45deg);transition:background .35s var(--e),border-color .35s}
+.pt::after{content:'';width:4px;height:4px;background:#f2efe9;position:relative;z-index:1;
+  transition:transform .35s var(--e)}
+.pt:hover::before,.pt.on::before{background:rgba(242,239,233,.18);border-color:#f2efe9}
+.pt:hover::after{transform:scale(1.6)}
+.pt.on::before{background:#f2efe9}
+.pt.on::after{background:var(--nuit)}
+.pt__n{position:absolute;left:calc(100% + 10px);top:50%;transform:translateY(-50%);
+  font-family:system-ui,sans-serif;font-size:9px;letter-spacing:.2em;
+  text-transform:uppercase;white-space:nowrap;color:rgba(242,239,233,.85);
+  opacity:0;transition:opacity .3s;pointer-events:none;
+  text-shadow:0 1px 6px rgba(0,0,0,.7)}
+.pt:hover .pt__n,.pt.on .pt__n{opacity:1}
 /* l'invitation, qui s'efface au premier geste */
 .tour__s{position:absolute;left:0;right:0;bottom:44px;z-index:3;text-align:center;
   pointer-events:none;font-family:system-ui,sans-serif;text-transform:uppercase;
-  letter-spacing:.24em;font-size:9px;color:var(--gris);
+  letter-spacing:.24em;font-size:9px;color:rgba(242,239,233,.55);
   display:flex;align-items:center;justify-content:center;gap:12px;
   transition:opacity .6s var(--e)}
 .tour.deja .tour__s{opacity:0}
@@ -143,7 +190,7 @@ img{display:block}
   70%{stroke-dashoffset:0;opacity:1}90%{opacity:0}100%{stroke-dashoffset:0;opacity:0}}
 /* la ligne de chargement de la séquence */
 .tour__ch{position:absolute;left:50%;transform:translateX(-50%);bottom:72px;z-index:4;
-  width:min(220px,44vw);height:1px;background:rgba(16,16,16,.14);
+  width:min(220px,44vw);height:1px;background:rgba(242,239,233,.18);
   opacity:0;transition:opacity .4s}
 .tour__ch.on{opacity:1}
 .tour__ch i{display:block;height:100%;width:0;background:var(--or);transition:width .2s linear}
@@ -151,13 +198,13 @@ img{display:block}
 .rot{flex-shrink:0;width:min(420px,84%);margin-top:clamp(8px,1.6vh,18px);
   display:flex;align-items:center;gap:14px}
 .rot__l{font-family:system-ui,sans-serif;font-size:9px;letter-spacing:.2em;
-  text-transform:uppercase;color:var(--gris);white-space:nowrap}
+  text-transform:uppercase;color:rgba(242,239,233,.45);white-space:nowrap}
 .rot__p{flex:1;min-width:0;height:24px;position:relative;cursor:pointer;
   touch-action:none;display:flex;align-items:center}
 .rot__p::before{content:'';position:absolute;left:0;right:0;top:50%;height:1px;
-  background:rgba(16,16,16,.16)}
+  background:rgba(242,239,233,.2)}
 .rot__t{position:absolute;top:50%;transform:translate(-50%,-50%);width:1px;height:12px;
-  background:var(--encre);transition:left .28s var(--e)}
+  background:#f2efe9;transition:left .28s var(--e)}
 
 /* ── LE RAIL DES ÉLÉMENTS, à droite ── */
 .rail{display:flex;flex-direction:column;justify-content:center;gap:clamp(8px,1.4vh,14px);
@@ -165,11 +212,11 @@ img{display:block}
 @media(max-width:1000px){
   .rail{flex-direction:row;justify-content:center;flex-wrap:wrap;gap:9px}
 }
-.el{width:52px;height:52px;position:relative;display:flex;align-items:center;
-  justify-content:center;border:1px solid rgba(16,16,16,.2);
+.el{width:50px;height:50px;position:relative;display:flex;align-items:center;
+  justify-content:center;border:1px solid rgba(242,239,233,.22);
   transition:border-color .4s var(--e),background .4s var(--e)}
-.el:hover{border-color:rgba(16,16,16,.55)}
-.el.on{background:rgba(16,16,16,.06);border-color:var(--encre)}
+.el:hover{border-color:rgba(242,239,233,.62)}
+.el.on{background:rgba(242,239,233,.12);border-color:#f2efe9}
 .el svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1;
   stroke-linecap:square;stroke-linejoin:miter}
 .el__n{position:absolute;right:calc(100% + 12px);top:50%;transform:translateY(-50%);
@@ -180,28 +227,29 @@ img{display:block}
 @media(max-width:1000px){.el__n{display:none}}
 
 /* ── LES CHOIX, en bas ── */
-.choix{flex-shrink:0;border-top:1px solid rgba(16,16,16,.14);
+.choix{flex-shrink:0;border-top:1px solid rgba(242,239,233,.14);
   padding:clamp(10px,2vh,20px) clamp(16px,3vw,48px) clamp(14px,2.4vh,26px);
   display:flex;align-items:center;gap:clamp(14px,2.4vw,32px);min-height:96px}
-.choix__k{flex-shrink:0;color:var(--gris);white-space:nowrap}
+.choix__k{flex-shrink:0;color:rgba(242,239,233,.5);white-space:nowrap}
 .choix__l{flex:1;min-width:0;display:flex;gap:clamp(8px,1.2vw,16px);overflow-x:auto;
   scrollbar-width:none;padding:2px 0}
 .choix__l::-webkit-scrollbar{display:none}
 .ch{flex-shrink:0;display:flex;align-items:center;gap:11px;padding:9px 14px 9px 9px;
-  border:1px solid rgba(16,16,16,.18);transition:border-color .4s var(--e),
+  border:1px solid rgba(242,239,233,.2);transition:border-color .4s var(--e),
   background .4s var(--e)}
-.ch:hover{border-color:rgba(16,16,16,.5)}
-.ch.on{border-color:var(--encre);background:rgba(16,16,16,.05)}
+.ch:hover{border-color:rgba(242,239,233,.55)}
+.ch.on{border-color:#f2efe9;background:rgba(242,239,233,.1)}
 .ch__p{width:34px;height:34px;flex-shrink:0;background-size:cover;background-position:center;
-  border:1px solid rgba(16,16,16,.14)}
+  border:1px solid rgba(242,239,233,.16);
+  background-color:#1b1a1c}
 .ch__x{text-align:left;white-space:nowrap}
 .ch__n{font-size:13px;font-style:italic;line-height:1.15}
 .ch__k{display:block;font-family:system-ui,sans-serif;font-size:8.5px;letter-spacing:.16em;
-  text-transform:uppercase;color:var(--gris);margin-top:2px}
+  text-transform:uppercase;color:rgba(242,239,233,.5);margin-top:2px}
 .choix__go{flex-shrink:0;border:1px solid currentColor;padding:14px 26px;min-height:46px;
   font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.2em;font-size:10px;
   transition:background .45s var(--e),color .45s,letter-spacing .5s var(--e)}
-.choix__go:hover{background:var(--encre);color:var(--toile);letter-spacing:.26em}
+.choix__go:hover{background:#f2efe9;color:var(--nuit);letter-spacing:.26em}
 @media(max-width:1000px){.choix{flex-wrap:wrap;min-height:0}.choix__k{width:100%}}
 
 /* ── LE ZOOM MATIÈRE, plein cadre ── */
@@ -230,9 +278,12 @@ img{display:block}
 .plg__f:hover{opacity:1}
 
 /* ── LA NOTE ── */
-.note{position:fixed;left:clamp(14px,2.6vw,32px);top:calc(var(--ent) + 14px);z-index:60;
+.note{position:fixed;left:clamp(14px,2.6vw,32px);top:calc(var(--ent) + 12px);z-index:60;
   font-family:system-ui,sans-serif;font-size:9px;letter-spacing:.14em;
-  color:var(--gris);opacity:.7;max-width:38ch;line-height:1.7}
+  color:rgba(242,239,233,.26);max-width:30ch;line-height:1.6}
+/* elle ne s'affiche QUE sur le carrousel : dans le configurateur, la
+   colonne de gauche est déjà occupée */
+@media(max-width:1500px){.note{display:none}}
 @media(max-width:1000px){.note{display:none}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}}
 </style>
@@ -255,14 +306,17 @@ img{display:block}
 <!-- ══════════ LE CARROUSEL DES MODÈLES ══════════ -->
 <section class="scene on" id="sCar">
   <div class="car" id="car">
-    <button class="car__f car__f--p" id="carP" aria-label="Modèle précédent"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg></button>
-    <button class="car__f car__f--n" id="carN" aria-label="Modèle suivant"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></button>
+    <div class="car__s" id="carS">
+      <button class="car__f car__f--p" id="carP" aria-label="Modèle précédent"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg></button>
+      <button class="car__f car__f--n" id="carN" aria-label="Modèle suivant"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></button>
+    </div>
     <div class="car__x">
       <h1 class="car__n" id="carN2"></h1>
       <p class="car__k cap" id="carK"></p>
       <button class="car__go" id="carGo">Prendre la pièce en main</button>
     </div>
     <div class="car__j"><i id="carJ"></i></div>
+    <p class="car__c" id="carC"></p>
   </div>
 </section>
 
@@ -279,7 +333,7 @@ img{display:block}
     </div>
 
     <div class="tour" id="tour" tabindex="0" role="img" aria-label="La pièce, à faire tourner">
-      <div class="tour__c" id="tourC"></div>
+      <div class="tour__c" id="tourC"><div class="tour__im" id="tourIm"></div></div>
       <p class="tour__s" id="tourS">
         <svg viewBox="0 0 40 20" aria-hidden="true"><path d="M4 10 H34 M28 5 L34 10 L28 15"/></svg>
         Prenez la pièce et faites-la tourner
@@ -313,7 +367,7 @@ img{display:block}
   </div>
 </div>
 
-<p class="note">Démonstration — 138 prises de vue du 8 septembre, cinq tours complets.
+<p class="note" id="note">Démonstration — 138 prises de vue du 8 septembre, cinq tours complets.
   Aucun rendu 3D : ce que l'on fait tourner est photographié.</p>
 
 <script>
@@ -336,7 +390,6 @@ const PIECES = [
     peaux:[
       { id:'colette-rouge',    n:'Rouge Carmin', m:'Alligator',   amb:'#5e1a20' },
       { id:'colette-bordeaux', n:'Bordeaux',     m:'Alligator',   amb:'#3a1f24' },
-      { id:'colette-ivoire',   n:'Ivoire',       m:'Alligator',   amb:'#4a4340' },
       { id:'colette-cognac',   n:'Cognac',       m:'Veau lisse',  amb:'#5a3620' },
     ] },
   { id:'olympe', n:'Olympe', k:'Le seau · cordon de cuir',
@@ -347,38 +400,53 @@ const PIECES = [
 /* Les éléments que l'on personnalise. Chacun sait à QUEL ANGLE la
    pièce se montre le mieux — désigner un élément fait tourner la
    pièce jusqu'à lui, plutôt que de poser un repère par-dessus. */
+/* `p` : la position du point SUR la pièce, en fraction de la vue
+   (x, y depuis le coin haut-gauche). `arc` : la plage d'angles où
+   l'élément se voit — hors de cette plage, le point s'efface plutôt
+   que de désigner une face cachée. */
 const ELEMENTS = [
-  { id:'peau', n:'La peau', a:0, parPeau:{ 'Veau lisse':'z-lisse-profil', 'Veau grainé':'z-cordon' },
+  { id:'peau', n:'La peau', a:0, p:[.5, .68], arc:[0, 1],
+    parPiece:{ 'olympe':'z-grain-camel',
+               'colette/Veau lisse':'z-lisse-profil',
+               'colette/Alligator':'z-croco' },
     t:'La <em>peau</em>',
     d:"Quatre peausseries, une seule règle : pleine fleur, jamais corrigée. L'alligator vient d'élevages certifiés CITES ; le veau lisse de la tannerie Rémy Carriat, en Normandie. Sur cent peaux reçues, une dizaine entre à l'atelier.",
     z:'z-croco', zl:"L'écaille, de tout près",
     icone:'<path d="M3 6 h18 v12 h-18 z"/><path d="M3 12 h18 M9 6 v12 M15 6 v12"/>' },
-  { id:'v', n:'Le V', a:0, parPeau:{ 'Veau lisse':'z-lisse-v', 'Veau grainé':'z-cordon' },
+  { id:'v', n:'Le V', a:0, p:[.5, .58], arc:[.82, .18],
+    parPiece:{ 'olympe':'z-cordon',
+               'colette/Veau lisse':'z-lisse-v',
+               'colette/Alligator':'z-v' },
     t:'Le <em>V</em>',
     d:"Il se taille dans la masse, d'un seul geste, sans repentir : un tranchet qui hésite laisse une trace que la tranche gardera. La pointe tombe au millimètre — elle se décide à la coupe, elle ne se rattrape pas au montage.",
     z:'z-v', zl:'Le V, taillé dans la masse',
     icone:'<path d="M4 6 L12 17 L20 6"/>' },
-  { id:'anse', n:"L'anse", a:.5,
+  { id:'anse', n:"L'anse", a:.5, p:[.5, .17], arc:[0, 1],
+    parPiece:{ 'olympe':'z-ferrure', 'colette/Veau lisse':'z-lisse-anse' },
     t:"L'<em>anse</em>",
     d:"Une seule anse, en tête de cuir, montée sur deux attaches de laiton massif. Elle est posée en dernier, quand la pièce est déjà montée : elle ne se recentre plus.",
     z:'z-anse', zl:"L'attache, sertie à la main",
     icone:'<path d="M7 20 v-9 a5 5 0 0 1 10 0 v9"/>' },
-  { id:'tranche', n:'La tranche', a:.25,
+  { id:'tranche', n:'La tranche', a:.25, p:[.72, .74], arc:[.12, .42],
+    parPiece:{ 'olympe':'z-fond', 'colette/Veau lisse':'z-lisse-profil' },
     t:'La <em>tranche</em>',
     d:"Teinte puis polie à chaud, en trois passes. C'est le détail qui trahit une pièce faite vite : une tranche mal fermée boit l'eau et s'ouvre en deux hivers.",
     z:'z-tranche', zl:'La tranche, teinte et polie',
     icone:'<path d="M4 9 h16 v6 h-16 z"/><path d="M4 12 h16"/>' },
-  { id:'fond', n:'Le fond', a:.32,
+  { id:'fond', n:'Le fond', a:.32, p:[.5, .88], arc:[0, 1],
+    parPiece:{ 'olympe':'z-fond', 'colette/Veau lisse':'z-lisse-fond' },
     t:'Le <em>fond</em>',
     d:"Structuré, il tient la pièce debout sans armature. Le devant se coupe dans le croupon, la partie la plus dense de la peau ; le ventre, plus tendre, ne va jamais aux angles.",
     z:'z-fond', zl:'Le fond et son embase',
     icone:'<path d="M5 7 L19 7 L17 17 L7 17 Z"/>' },
-  { id:'doublure', n:'La doublure', a:.08,
+  { id:'doublure', n:'La doublure', a:.08, p:[.44, .38], arc:[.86, .22],
+    parPiece:{ 'olympe':'z-toile-olympe' },
     t:'La <em>doublure</em>',
     d:"Agneau des Gants de Millau, en Aveyron : une douceur qui tombe comme de la soie tendue. Sur l'Olympe, une toile écrue se retourne sur le cuir — la seule couture visible de la pièce.",
     z:'z-interieur', zl:"L'intérieur, doublé",
     icone:'<path d="M4 5 h16 v14 h-16 z"/><path d="M8 5 v14"/>' },
-  { id:'ferrure', n:'Les ferrures', a:.55,
+  { id:'ferrure', n:'Les ferrures', a:.55, p:[.36, .26], arc:[.42, .72],
+    parPiece:{ 'olympe':'z-ferrure' },
     t:'Les <em>ferrures</em>',
     d:"Laiton massif, finition satinée, pour l'éternité. Serties à la main, à l'œil et au toucher — jamais à la machine. Une ferrure fondue est parfaite et muette ; une ferrure sertie garde la trace de l'heure qu'on lui a donnée.",
     z:'z-ferrure', zl:'Le laiton, serti à la main',
@@ -386,15 +454,9 @@ const ELEMENTS = [
 ];
 
 /* ═══════════ L'AMBIANCE ═══════════ */
-const TOILES = TOURS.__toiles__ || {};
-function ambiance(c, cle) {
-  const r = document.documentElement.style;
-  r.setProperty('--ambiance', c);
-  /* la page prend la couleur EXACTE de la toile de cette séquence :
-     c'est ce qui fait disparaître le bord du plateau */
-  const t = cle && TOILES[cle];
-  if (t) { r.setProperty('--toile', t.bord); r.setProperty('--halo', t.halo); }
-}
+/* Les pièces étant détourées, il n'y a plus de toile à raccorder :
+   l'ambiance ne fait plus qu'éclairer la salle à la teinte du cuir. */
+function ambiance(c) { document.documentElement.style.setProperty('--ambiance', c); }
 
 /* ═══════════════════════════════════════════════════════════════
    LE TOUR — une séquence d'images, pas une scène 3D
@@ -425,13 +487,15 @@ function poser(fr) {
   const i = Math.round(fraction * vues.length) % vues.length;
   const im = vues[i];
   if (im !== posee) {
-    const c = $('tourC');
-    c.replaceChildren(im);
+    const c = $('tourIm');
+    if (posee && posee.parentNode === c) c.replaceChild(im, posee);
+    else c.insertBefore(im, c.firstChild);
     im.alt = PIECES[pieceIdx].n;
     posee = im;
   }
   $('rotT').style.left = (fraction * 100).toFixed(2) + '%';
   $('rotL').textContent = Math.round(fraction * 360) + '°';
+  if (typeof majPoints === 'function') majPoints();
 }
 
 /* changer de peau GARDE L'ANGLE : c'est tout l'intérêt d'un tour
@@ -439,7 +503,7 @@ function poser(fr) {
 function habiller(pi, pe, garderAngle) {
   pieceIdx = pi; peauIdx = pe;
   const P = PIECES[pi], K = P.peaux[pe];
-  ambiance(K.amb, K.id);
+  ambiance(K.amb);
   const ch = $('tourCh'), chb = $('tourChB');
   ch.classList.add('on'); chb.style.width = '0%';
   posee = null;
@@ -459,6 +523,10 @@ function habiller(pi, pe, garderAngle) {
   const largeur = () => Math.max(240, t.getBoundingClientRect().width);
   function arreter() { cancelAnimationFrame(elan); elan = null; }
   t.addEventListener('pointerdown', e => {
+    /* un point de la pièce n'est pas une prise pour la rotation : sans
+       cette sortie, `setPointerCapture` avale le clic et les points ne
+       répondent jamais. */
+    if (e.target.closest('.pt')) return;
     arreter(); id = e.pointerId; x0 = e.clientX; f0 = fraction; bouge = false;
     dernier = e.clientX; vitesse = 0;
     t.classList.add('tire'); t.setPointerCapture(id);
@@ -527,6 +595,36 @@ function versAngle(cible) {
   })(t0);
 }
 
+/* ═══════════ LES POINTS SUR LA PIÈCE ═══════════
+   Désigner un élément SUR l'objet, et pas seulement dans un rail :
+   c'est le geste qu'on attend d'un configurateur. Un point ne
+   s'affiche qu'aux angles où son élément se voit — inutile de montrer
+   la tranche quand on regarde la pièce de face. */
+const POINTS = [];
+ELEMENTS.forEach((el, i) => {
+  if (!el.p) return;
+  const b = document.createElement('button');
+  b.className = 'pt'; b.dataset.pt = el.id;
+  b.style.left = (el.p[0] * 100) + '%';
+  b.style.top = (el.p[1] * 100) + '%';
+  b.innerHTML = '<span class="pt__n">' + esc(el.n) + '</span>';
+  b.setAttribute('aria-label', el.n);
+  b.onclick = () => choisirElement(i);
+  $('tourIm').appendChild(b);
+  POINTS.push({ el, b, i });
+});
+function dansArc(arc, f) {
+  if (!arc) return true;
+  const [a, z] = arc;
+  return a <= z ? (f >= a && f <= z) : (f >= a || f <= z);
+}
+function majPoints() {
+  POINTS.forEach(({ el, b, i }) => {
+    b.classList.toggle('vu', dansArc(el.arc, fraction));
+    b.classList.toggle('on', i === elemIdx);
+  });
+}
+
 /* ═══════════ LE RAIL DES ÉLÉMENTS ═══════════ */
 ELEMENTS.forEach((el, i) => {
   const b = document.createElement('button');
@@ -535,17 +633,29 @@ ELEMENTS.forEach((el, i) => {
   b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' + el.icone + '</svg>' +
     '<span class="el__n">' + esc(el.n) + '</span>';
   b.setAttribute('aria-label', el.n);
-  b.onclick = () => { elemIdx = i; majDit(); versAngle(el.a); majRail(); };
+  b.onclick = () => choisirElement(i);
   $('rail').appendChild(b);
 });
+function choisirElement(i) {
+  elemIdx = i; majDit(); majRail(); majPoints();
+  versAngle(ELEMENTS[i].a);
+}
 function majRail() {
   [...$('rail').children].forEach((b, i) => b.classList.toggle('on', i === elemIdx));
 }
+/* les points suivent la rotation */
+const _poser = poser;
 function majDit() {
   const el = ELEMENTS[elemIdx], P = PIECES[pieceIdx], K = P.peaux[peauIdx];
-  /* certains éléments changent de macro selon la peau : on ne montre
-     pas une écaille d'alligator pour illustrer un veau lisse */
-  const zoom = (el.parPeau && el.parPeau[K.m]) || el.z;
+  /* LE ZOOM DOIT ÊTRE CELUI DU MODÈLE ACTIF. Montrer une écaille
+     d'alligator rouge pendant qu'on regarde une Olympe en veau grainé
+     n'apprend rien et trahit le montage. On cherche donc, dans l'ordre :
+     la macro de CE modèle et de CETTE peau, puis celle de cette peau,
+     puis le défaut de l'élément. */
+  const zoom = (el.parPiece && el.parPiece[P.id + '/' + K.m])
+            || (el.parPiece && el.parPiece[P.id])
+            || (el.parPeau && el.parPeau[K.m])
+            || el.z;
   $('ditK').textContent = P.n + ' · ' + K.n + ' · ' + K.m;
   $('ditT').innerHTML = el.t;
   $('ditD').textContent = el.d;
@@ -615,27 +725,40 @@ ANNEAU.forEach(a => {
   im.alt = a.P.n + ' · ' + a.K.n; im.decoding = 'async';
   im.src = (TOURS[a.id] || [])[0] || '';
   d.appendChild(im);
-  $('car').appendChild(d);
+  /* CLIQUER SUR UNE PIÈCE : de côté, elle vient au centre ; au centre,
+     on entre dedans. Sans cela le carrousel ne répond pas au geste le
+     plus naturel — et c'était le cas. */
+  d.onclick = () => {
+    if (glisse) return;
+    if (ANNEAU.indexOf(a) === carIdx) prendre();
+    else carVers(ANNEAU.indexOf(a));
+  };
+  $('carS').appendChild(d);
   a.el = d;
 });
 function majCar() {
   ANNEAU.forEach((a, i) => {
     const d = i - carIdx;
     const ad = Math.abs(d);
-    /* la pièce au centre est debout ; celles d'à côté reculent, se
-       penchent et s'éteignent */
-    const x = d * 30, z = ad * -180, ry = d * -26, s = 1 - Math.min(.42, ad * .17);
+    /* La pièce au centre est debout, de face, à sa vraie taille. Les
+       voisines s'écartent nettement (80 % de leur largeur) et reculent :
+       on doit LES VOIR, pas seulement les deviner. */
+    const x = d * 78, z = ad * -300, ry = d * -30;
+    const s = 1 - Math.min(.5, ad * .22);
     a.el.style.transform = 'translate(-50%,-50%) translateX(' + x + '%) ' +
-      'perspective(1400px) translateZ(' + z + 'px) rotateY(' + ry + 'deg) ' +
-      'rotate(' + (d * 7) + 'deg) scale(' + s + ')';
-    a.el.style.opacity = ad > 3 ? 0 : (1 - Math.min(.8, ad * .3));
-    a.el.style.filter = ad ? 'brightness(' + (1 - Math.min(.62, ad * .26)) + ')' : 'none';
+      'perspective(1900px) translateZ(' + z + 'px) rotateY(' + ry + 'deg) ' +
+      'scale(' + s + ')';
+    a.el.style.opacity = ad > 2 ? 0 : (1 - Math.min(.62, ad * .34));
+    a.el.style.filter = ad ? 'brightness(' + (1 - Math.min(.5, ad * .25)) + ')' : 'none';
     a.el.style.zIndex = 50 - ad;
+    a.el.style.pointerEvents = ad > 2 ? 'none' : 'auto';
+    a.el.classList.toggle('car__p--ici', ad === 0);
   });
   const a = ANNEAU[carIdx];
   $('carN2').innerHTML = esc(a.P.n) + ' <em>' + esc(a.K.n) + '</em>';
   $('carK').textContent = a.K.m + ' · ' + a.P.k;
-  ambiance(a.K.amb, a.K.id);
+  $('carC').textContent = (carIdx + 1) + ' sur ' + ANNEAU.length;
+  ambiance(a.K.amb);
   const j = $('carJ');
   j.style.width = (100 / ANNEAU.length) + '%';
   j.style.marginLeft = (carIdx * 100 / ANNEAU.length) + '%';
@@ -646,17 +769,21 @@ function carVers(n) {
 }
 $('carP').onclick = () => carVers(carIdx - 1);
 $('carN').onclick = () => carVers(carIdx + 1);
+let glisse = false;
 (function () {
   const c = $('car');
   let x0 = null, i0 = 0;
-  c.addEventListener('pointerdown', e => { x0 = e.clientX; i0 = carIdx; });
+  c.addEventListener('pointerdown', e => { x0 = e.clientX; i0 = carIdx; glisse = false; });
   c.addEventListener('pointermove', e => {
     if (x0 === null) return;
-    const d = Math.round((x0 - e.clientX) / 90);
+    const dx = x0 - e.clientX;
+    if (Math.abs(dx) > 6) glisse = true;
+    /* un tiers de la largeur d'une pièce fait passer à la suivante */
+    const d = Math.round(dx / (Math.max(160, innerWidth * .17)));
     if (d) carVers(i0 + d);
   });
   ['pointerup', 'pointercancel', 'pointerleave'].forEach(t =>
-    c.addEventListener(t, () => { x0 = null; }));
+    c.addEventListener(t, () => { x0 = null; setTimeout(() => { glisse = false; }, 0); }));
   let reste = 0;
   c.addEventListener('wheel', e => {
     const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
@@ -673,17 +800,19 @@ $('carN').onclick = () => carVers(carIdx + 1);
 
 /* ═══════════ LA NAVIGATION ═══════════ */
 function versScene(n) {
+  $('note').style.display = n === 'car' ? '' : 'none';
   $('sCar').classList.toggle('on', n === 'car');
   $('sPiece').classList.toggle('on', n === 'piece');
   $('versCar').classList.toggle('on', n === 'car');
   $('versPiece').classList.toggle('on', n === 'piece');
   if (n === 'car') { majCar(); }
 }
-$('carGo').onclick = () => {
+function prendre() {
   const a = ANNEAU[carIdx];
   versScene('piece');
-  habiller(a.p, a.k, false);
-};
+  return habiller(a.p, a.k, false);
+}
+$('carGo').onclick = prendre;
 $('versCar').onclick = () => versScene('car');
 $('versPiece').onclick = () => {
   versScene('piece');
@@ -723,7 +852,9 @@ window.__car = carVers;
 /* la recette doit emprunter le VRAI chemin : le bouton, pas un
    raccourci qui court-circuiterait ce qu'elle prétend vérifier */
 window.__peau = i => $('choixL').children[i].click();
-window.__element = i => { elemIdx = i; majDit(); versAngle(ELEMENTS[i].a); majRail(); };
+window.__element = i => choisirElement(i);
+window.__points = () => POINTS.map(p => ({ id: p.el.id,
+  vu: p.b.classList.contains('vu'), on: p.b.classList.contains('on') }));
 window.__poser = poser;
 window.__pret = () => vues.length > 0;
 </script>

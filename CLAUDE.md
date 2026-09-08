@@ -663,49 +663,67 @@ modèle Cycles rendu avant l'arrivée des photographies. Le shooting du
 
 **LE TOUR DE LA PIÈCE — configurateur PHOTOGRAPHIQUE (08/09/2026)**
 
-Le shooting « 3D SITE » a livré **cinq tours d'objet complets** :
-Colette rouge (39 vues), bordeaux (33), ivoire (29), cognac (22) et
-Olympe camel (15) — plus **51 macros** dans « ZOOM MATIERE ». De quoi
-faire tourner de vraies pièces au lieu d'un rendu.
+Le shooting « 3D SITE » a livré cinq tours d'objet complets et 51 macros
+(« ZOOM MATIERE »). On fait tourner de vraies pièces, pas un rendu.
 
 ```bash
-python3 tools/demo/tourner.py "<dossier 3D SITE>" 660 58
+python3 tools/demo/tourner.py "<dossier 3D SITE>" 1400 60
 python3 tools/demo/assembler.py tools/demo/gabarit-tour.html tiraboschi-tour-360.html
 NODE_PATH=/opt/node22/lib/node_modules node tests/tour/recette.js
 ```
 
-Cinq règles, chacune née d'un vrai défaut mesuré :
+**LE DÉTOURAGE (`tools/demo/detour.py`)** — abandonné une première fois
+à tort. Quatre idées le rendent fiable, chacune contre un vrai échec :
 
-1. **UN CADRAGE COMMUN À TOUTE LA SÉQUENCE.** Recadrer chaque vue sur
-   son propre sujet fait sauter la pièce à chaque degré. On prend
-   l'union des boîtes englobantes du tour entier — et on la BORNE à
-   l'image : au-delà, PIL comble en noir et le fondu s'y accroche.
-2. **NE PAS DÉTOURER.** Essayé, mesuré, abandonné : la toile de studio
-   n'est pas d'un gris égal et la Colette ivoire est aussi claire que
-   le fond — le masque la mange. On garde la prise de vue telle quelle,
-   avec sa VRAIE ombre portée, et l'on estompe seulement le bord du
-   cadre (fondu en cosinus sur 22 %). La page porte alors la couleur
-   EXACTE de la toile, relevée par `tourner.py` dans `toiles.json` :
-   bord + halo, rejoués en `radial-gradient`. Le plateau disparaît.
-3. **PAS DE SECONDE OMBRE EN CSS.** Un `drop-shadow` par-dessus l'ombre
-   photographiée fait un halo noir autour de la pièce.
-4. **L'ANGLE SE REPÈRE PAR UNE FRACTION DU TOUR, jamais par un numéro
-   de vue.** Les séquences n'ont pas le même nombre de vues (39 contre
-   22) : changer de peau en gardant l'index ferait sauter la pièce.
-   Or garder l'angle est TOUT L'INTÉRÊT — on compare deux cuirs sous le
-   même jour.
-5. **PRÉCHARGER la séquence entière avant d'autoriser le geste.** Une
-   rotation qui décode ses images en route saute, et le saut se voit
-   plus qu'il ne se pardonne. Une ligne de chargement le dit.
+1. **La toile se MODÉLISE en surface quadratique** ajustée sur l'anneau
+   de bordure. Relevée seulement sur les marges, elle paraît sombre —
+   le halo du studio derrière la pièce passe alors pour du sujet, et
+   l'on obtient un rectangle blanc autour du sac.
+2. **L'écart se mesure en TEINTE autant qu'en clarté** (axes opposés
+   rouge-vert et jaune-bleu, pondérés ×3,4 contre ×1,6). Une distance
+   RGB brute ne voit pas un cuir ivoire, aussi clair que la toile.
+3. **L'OMBRE PORTÉE se reconnaît à sa signature** : trois rapports
+   canal/fond presque égaux, tous entre 0,38 et 1. En dessous de 0,38
+   c'est un cuir noir, pas une ombre — la borne haute laissait une
+   flaque grise sous la pièce.
+4. **On n'efface que ce qui COMMUNIQUE avec le bord** (remplissage par
+   diffusion depuis les quatre coins), et l'on découpe une SILHOUETTE
+   au seuil permissif : au seuil strict, un panneau de la teinte de la
+   toile fuit et la diffusion s'engouffre.
 
-Le rail des éléments ne pose PAS de repère sur la pièce : désigner un
-élément **fait tourner la pièce jusqu'à lui** (700 ms, chemin le plus
-court) et appelle la macro correspondante. La macro s'accorde à la peau
-— on ne montre pas une écaille d'alligator pour illustrer un veau lisse.
+**LE REFLET SUR LE SOL LAQUÉ** n'est ni ombre ni sujet et aucune règle
+de couleur ne le distingue. Il est toujours sous la pièce : on éteint
+l'alpha en rampe sur les 5,5 % inférieurs du cadre.
 
-**Ce qui manque encore** : des macros de tranche, de fond et de
-doublure en veau lisse (elles n'existent qu'en alligator rouge), et les
-tours des trois autres modèles (Victoire, Jane, Rafaël).
+**LA COLETTE IVOIRE EST ÉCARTÉE.** Son panneau en V a très exactement
+la teinte de la toile ET communique avec l'extérieur par l'ouverture du
+sac : aucun détourage automatique ne peut le retenir. Il lui faut une
+reprise à la main sur 29 vues, ou une reprise de vue sur fond contrasté.
+
+**LE MODULE** — quatre règles :
+
+1. **LA PIÈCE EST LE SUJET** : au carrousel elle tient un tiers de la
+   largeur au moins ; dans le configurateur, la moitié de la hauteur.
+   Exportée à 1400 px, elle n'est jamais agrandie. La recette mesure
+   `naturalWidth / largeur affichée` aux deux endroits.
+2. **TOUT EST CLIQUABLE.** Une pièce de côté vient au centre, celle du
+   centre s'ouvre. Sans quoi le carrousel ne répond pas au geste le
+   plus naturel — et c'était le cas.
+3. **LES POINTS SE POSENT SUR L'IMAGE**, pas sur la scène : placés en %
+   du conteneur ils tombaient à côté de la pièce. Et le `pointerdown`
+   de la rotation doit LAISSER PASSER un clic sur un point, sinon
+   `setPointerCapture` l'avale et rien ne répond.
+4. **LE ZOOM SUIT LE MODÈLE ACTIF** : on cherche la macro de CE modèle
+   et de CETTE peau, puis de cette peau, puis le défaut. Montrer une
+   écaille d'alligator pendant qu'on regarde un veau lisse n'apprend
+   rien et trahit le montage.
+
+L'angle se repère par une FRACTION du tour, jamais par un numéro de vue
+(39 vues contre 22) : c'est ce qui permet de changer de cuir sans
+bouger l'angle. La séquence est préchargée avant d'autoriser le geste.
+
+**Ce qui manque encore** : les tours de la Victoire, de la Jane et du
+Rafaël, et la reprise de l'ivoire.
 
 **Snippets Shopify prêts (`shopify-snippets/` → à migrer en Phase 3)**
 ```

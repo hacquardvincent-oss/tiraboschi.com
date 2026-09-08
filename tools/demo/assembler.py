@@ -68,9 +68,9 @@ if os.path.isdir('tools/demo/tours'):
         TOURS[cle] = [vues[i] for i in sorted(vues)]
     # la couleur exacte de la toile de studio, relevée par tourner.py :
     # la page s'y accorde, et le bord du plateau ne se voit plus
-    t = 'tools/demo/tours/toiles.json'
+    t = 'tools/demo/tours/tours.json'
     if os.path.exists(t):
-        TOURS['__toiles__'] = json.load(open(t))
+        TOURS['__tours__'] = json.load(open(t))
 
 # position 0 en haute définition — même studio et même cadrage que la série 360°,
 # pour que la pièce au repos ne saute pas quand on la fait tourner
