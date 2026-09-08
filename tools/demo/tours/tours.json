@@ -3,24 +3,36 @@
   "modele": "Colette",
   "nuance": "Rouge Carmin",
   "peau": "Alligator",
-  "vues": 39
+  "vues": 39,
+  "contact": 652,
+  "haut": 933,
+  "derive": 132
  },
  "colette-bordeaux": {
   "modele": "Colette",
   "nuance": "Bordeaux",
   "peau": "Alligator",
-  "vues": 33
+  "vues": 33,
+  "contact": 659,
+  "haut": 933,
+  "derive": 232
  },
  "colette-cognac": {
   "modele": "Colette",
   "nuance": "Cognac",
   "peau": "Veau lisse",
-  "vues": 22
+  "vues": 22,
+  "contact": 617,
+  "haut": 933,
+  "derive": 201
  },
  "olympe-camel": {
   "modele": "Olympe",
   "nuance": "Camel",
   "peau": "Veau grain\u00e9",
-  "vues": 15
+  "vues": 15,
+  "contact": 706,
+  "haut": 933,
+  "derive": 123
  }
 }

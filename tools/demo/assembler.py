@@ -59,6 +59,11 @@ if os.path.isdir('tools/demo/tours'):
         if not f.endswith('.webp'):
             continue
         n = f[:-5]
+        if n.endswith('-o'):
+            m = n[:-2].rsplit('-', 1)
+            if len(m) == 2 and m[1].isdigit():
+                seq[m[0] + '-o'][int(m[1])] = b64('tools/demo/tours/' + f)
+                continue
         m = n.rsplit('-', 1)
         if len(m) == 2 and m[1].isdigit():
             seq[m[0]][int(m[1])] = b64('tools/demo/tours/' + f)

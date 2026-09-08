@@ -28,7 +28,7 @@ Lancer depuis la racine :
 import glob, os, re, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from PIL import Image, ImageChops
-from detour import detourer
+from detour import separer, masque, ligne_contact
 
 SRC = sys.argv[1] if len(sys.argv) > 1 else 'tools/demo/source-3d'
 LARGE = int(sys.argv[2]) if len(sys.argv) > 2 else 1400
@@ -84,19 +84,59 @@ def main():
         bb = (max(0, bb[0] - m), max(0, bb[1] - m),
               min(W, bb[2] + m), min(H, bb[3] + m * 1.6))
         haut = round(LARGE * (bb[3] - bb[1]) / (bb[2] - bb[0]))
-        poids = 0
-        for k, f in enumerate(vues):
+        # 2e passage : LE RECALAGE. La ligne de contact varie d'une vue
+        # à l'autre — le sac bouge dans le cadre, et la détection a son
+        # propre bruit. On relève d'abord toutes les lignes, on prend la
+        # MÉDIANE, et l'on décale chaque vue pour l'y amener. C'est ce
+        # qui donne la sensation d'un plateau tournant plutôt que d'une
+        # pièce qui sautille.
+        cadres, lignes = [], []
+        for f in vues:
             im = Image.open(f).convert('RGB').crop(tuple(int(v) for v in bb))
             im = im.resize((LARGE, haut), Image.LANCZOS)
-            im = detourer(im)
+            al, _ = masque(im)
+            cadres.append(im); lignes.append(ligne_contact(al))
+        ref = int(sorted(lignes)[len(lignes) // 2])
+        saccade_avant = sum(abs(lignes[i + 1] - lignes[i])
+                            for i in range(len(lignes) - 1)) / max(1, len(lignes) - 1)
+
+        # LE RECALAGE EST DÉSACTIVÉ, et c'est une conclusion, pas un
+        # oubli. Recaler chaque vue sur la médiane des lignes détectées
+        # a fait passer la saccade de 6,1 à 27,4 px par vue sur le tour
+        # rouge : la détection par symétrie est trop bruitée pour servir
+        # de base à un déplacement. Le remède était pire que le mal.
+        # Une séparation pièce/sol fiable demande un matting à la main
+        # ou entraîné — pas une heuristique de plus.
+        RECALER = False
+        poids = 0; contacts = []
+        for k, im in enumerate(cadres):
+            dy = (ref - lignes[k]) if RECALER else 0
+            if dy:
+                cal = Image.new('RGB', im.size, im.getpixel((3, 3)))
+                cal.paste(im, (0, dy))
+                im = cal
+            piece, sol, y = separer(im)
+            contacts.append(y)
             p = os.path.join(DST, '%s-%02d.webp' % (cle, k))
-            im.save(p, 'WEBP', quality=Q, method=6, exact=True)
+            piece.save(p, 'WEBP', quality=Q, method=6, exact=True)
             poids += os.path.getsize(p)
+            # l'ombre, à part et en petit : la page la compose et la pilote
+            so = Image.new('RGBA', im.size, (0, 0, 0, 0))
+            so.putalpha(sol)
+            so.thumbnail((520, 520), Image.LANCZOS)
+            q = os.path.join(DST, '%s-%02d-o.webp' % (cle, k))
+            so.save(q, 'WEBP', quality=52, method=6, exact=True)
+            poids += os.path.getsize(q)
         total += poids
+        amp = max(contacts) - min(contacts)
+        saccade = sum(abs(contacts[i + 1] - contacts[i])
+                      for i in range(len(contacts) - 1)) / max(1, len(contacts) - 1)
         fonds[cle] = {'modele': modele, 'nuance': nuance, 'peau': peau,
-                      'vues': len(vues)}
-        print('%-18s %2d vues  %dx%d  %6d Ko  (%s · %s)' %
-              (cle, len(vues), LARGE, haut, poids // 1024, nuance, peau))
+                      'vues': len(vues), 'contact': sum(contacts) // len(contacts),
+                      'haut': haut, 'derive': amp}
+        print('%-18s %2d vues  %dx%d  %6d Ko  saccade %.1f → %.1f px/vue  (%s · %s)' %
+              (cle, len(vues), LARGE, haut, poids // 1024,
+               saccade_avant, saccade, nuance, peau))
     import json
     with open(os.path.join(DST, 'tours.json'), 'w') as fh:
         json.dump(fonds, fh, indent=1)

@@ -722,8 +722,42 @@ L'angle se repère par une FRACTION du tour, jamais par un numéro de vue
 (39 vues contre 22) : c'est ce qui permet de changer de cuir sans
 bouger l'angle. La séquence est préchargée avant d'autoriser le geste.
 
+**L'OMBRE SORT EN FICHIER SÉPARÉ** (`X-NN-o.webp`, 520 px, gris sur
+alpha) : c'est ce qui permet de la piloter — l'allonger, l'adoucir, ou
+l'effacer pour faire léviter la pièce — sans retoucher une vue. La page
+la compose sous la pièce (`.tour__o`), et `.tour.leve` la met en
+lévitation.
+
+**LE FOND EST PAPIER** (`--papier2:#f2efea`), tranché par Vincent le
+08/09 : cohérent avec la galerie blanche de la maison, et justement pas
+le registre sombre de la référence Ciao. La teinte du cuir se pose en
+lavis à 9 % dans les angles.
+
+**LE RECALAGE EST DÉSACTIVÉ, ET C'EST UNE CONCLUSION MESURÉE.** Recaler
+chaque vue sur la médiane des lignes de contact détectées a fait passer
+la saccade de 6,1 à 27,4 px par vue sur le tour rouge, et de 34,6 à
+96,8 sur le bordeaux : la détection par symétrie miroir est trop
+bruitée pour servir de base à un déplacement. Le remède était pire que
+le mal. Ne pas réessayer avec une heuristique de plus — il faut un
+matting à la main ou entraîné.
+
+**La bonne mesure n'est pas l'amplitude, c'est la SACCADE** (écart de
+la ligne de contact entre deux vues consécutives). Une dérive lente et
+continue ne se voit pas ; un saut, si. Relevé actuel : rouge 6,1 px/vue
+(bon), cognac 20,2, olympe 24,7, **bordeaux 34,6 (visible)**.
+
+**ON NE PEUT PAS GÉNÉRER LES VUES MANQUANTES.** Mesuré sur le tour
+rouge en retirant des vues et en comparant la reconstruction à la
+vérité (`tools/demo/interpoler.py`) : l'erreur ne descend jamais sous
+7 %, et le flux optique est SYSTÉMATIQUEMENT PIRE que le fondu croisé
+(8,5 % contre 6,9 % à 18°). À 24° d'écart — le pas de l'Olympe — des
+faces entières entrent et sortent du champ : l'anse se déchire, le V se
+tord. Aucune méthode 2D n'invente une surface qu'aucune vue ne montre.
+Un tour clairsemé se recomplète au plateau, pas au logiciel.
+
 **Ce qui manque encore** : les tours de la Victoire, de la Jane et du
-Rafaël, et la reprise de l'ivoire.
+Rafaël ; la reprise de l'ivoire ; le complément de l'Olympe (15 vues) ;
+et une reprise du bordeaux, qui saccade.
 
 **Snippets Shopify prêts (`shopify-snippets/` → à migrer en Phase 3)**
 ```

@@ -155,6 +155,82 @@ def masque(im):
     return img, Image.fromarray((~dehors).astype(np.uint8) * 255, 'L').getbbox()
 
 
+def ligne_contact(al, rgb=None):
+    """Le y où la pièce touche le sol.
+
+    Premier critère essayé — « le dernier y où la silhouette fait
+    encore le quart de sa largeur » — et écarté : le reflet du plateau
+    laqué est le MIROIR du sac, donc aussi large que lui. La ligne
+    dérivait encore de 112 px sur un tour.
+
+    Le bon signal est la SYMÉTRIE. Sous la ligne de contact, l'image
+    est le reflet de ce qui est juste au-dessus. On cherche donc le y
+    qui rend la bande du dessous la plus semblable au miroir de la
+    bande du dessus. C'est un critère physique, pas un réglage.
+    """
+    a = np.asarray(al, dtype=np.float32) / 255.0
+    h, w = a.shape
+    lig = a.sum(axis=1)
+    if lig.max() <= 0:
+        return h - 1
+    plein = np.where(lig > lig.max() * .06)[0]
+    if not len(plein):
+        return h - 1
+    d = max(6, h // 14)
+    best, score = int(plein.max()), -1e9
+    # on ne cherche que dans le tiers bas de la silhouette
+    depart = max(plein.min() + d, int(plein.min() + (plein.max() - plein.min()) * .62))
+    for y in range(depart, min(h - 2, int(plein.max()) + 1)):
+        haut = a[max(0, y - d):y]
+        bas = a[y:y + d]
+        n = min(len(haut), len(bas))
+        if n < 4:
+            continue
+        miroir = haut[-n:][::-1]
+        cible = bas[:n]
+        # ressemblance au miroir, pondérée par la matière présente
+        sim = -np.abs(miroir - cible).mean()
+        # et l'on préfère un y bas : le contact est sous la pièce
+        sim += (y / h) * .04
+        if sim > score:
+            score, best = sim, y
+    return int(best)
+
+
+def separer(im):
+    """Renvoie (la pièce, le sol) — deux images RGBA distinctes.
+
+    L'ombre et le reflet sortent à part : c'est ce qui permet ensuite
+    de faire léviter la pièce, d'allonger son ombre ou de changer de
+    fond sans retoucher une seule vue.
+    """
+    al, bb = masque(im)
+    y = ligne_contact(al)
+    a = np.asarray(al).copy()
+
+    # la pièce : tout ce qui est au-dessus de la ligne de contact,
+    # avec un fondu de deux pixels pour ne pas trancher net
+    ap = a.copy()
+    f = 3
+    ap[y + f:] = 0
+    if f:
+        ap[y:y + f] = (ap[y:y + f] *
+                       np.linspace(1, 0, f, dtype=np.float32)[:, None]).astype(np.uint8)
+    piece = Image.new('RGBA', im.size, (0, 0, 0, 0))
+    piece.paste(im.convert('RGB'), (0, 0), Image.fromarray(ap, 'L'))
+
+    # le sol : une ombre douce, en niveaux de gris, sous la ligne
+    sol = Image.new('L', im.size, 0)
+    if bb:
+        cx = (bb[0] + bb[2]) / 2
+        rx = (bb[2] - bb[0]) * .44
+        ry = max(5, im.size[1] * .022)
+        ImageDraw.Draw(sol).ellipse(
+            [cx - rx, y - ry * .8, cx + rx, y + ry], fill=150)
+        sol = sol.filter(ImageFilter.GaussianBlur(max(5, im.size[0] // 64)))
+    return piece, sol, y
+
+
 def detourer(im, ombre=True):
     """La pièce sur fond transparent, avec une ombre douce reposée."""
     al, bb = masque(im)
