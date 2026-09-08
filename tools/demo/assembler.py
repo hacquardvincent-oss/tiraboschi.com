@@ -48,6 +48,30 @@ if os.path.isdir('tools/demo/films'):
         elif f.endswith('.webp'):
             AFFICHES[n] = b64('tools/demo/films/' + f)
 
+# Les tours d'objet : cinq séquences photographiées (shooting 08/09/2026),
+# découpées par tools/demo/tourner.py, plus les macros de matière.
+# Une séquence = une liste de vues dans l'ordre du tour ; un zoom = une image.
+TOURS = {}
+if os.path.isdir('tools/demo/tours'):
+    import collections
+    seq = collections.defaultdict(dict)
+    for f in sorted(os.listdir('tools/demo/tours')):
+        if not f.endswith('.webp'):
+            continue
+        n = f[:-5]
+        m = n.rsplit('-', 1)
+        if len(m) == 2 and m[1].isdigit():
+            seq[m[0]][int(m[1])] = b64('tools/demo/tours/' + f)
+        else:
+            TOURS[n] = b64('tools/demo/tours/' + f)
+    for cle, vues in seq.items():
+        TOURS[cle] = [vues[i] for i in sorted(vues)]
+    # la couleur exacte de la toile de studio, relevée par tourner.py :
+    # la page s'y accorde, et le bord du plateau ne se voit plus
+    t = 'tools/demo/tours/toiles.json'
+    if os.path.exists(t):
+        TOURS['__toiles__'] = json.load(open(t))
+
 # position 0 en haute définition — même studio et même cadrage que la série 360°,
 # pour que la pièce au repos ne saute pas quand on la fait tourner
 RENDUS = {m: b64('tools/rot360/hd-%s.webp' % m)
@@ -95,6 +119,7 @@ s = (s.replace('"__VISUELS__"', json.dumps(VISUELS))
       .replace('"__ROT__"', json.dumps(ROT))
       .replace('"__NUANCES__"', json.dumps(NUANCES, ensure_ascii=False))
       .replace('"__FILMS__"', json.dumps(FILMS))
-      .replace('"__AFFICHES__"', json.dumps(AFFICHES)))
+      .replace('"__AFFICHES__"', json.dumps(AFFICHES))
+      .replace('"__TOURS__"', json.dumps(TOURS)))
 open(SORTIE, 'w', encoding='utf-8').write(s)
 print('%s : %d Ko' % (SORTIE, len(s) // 1024))

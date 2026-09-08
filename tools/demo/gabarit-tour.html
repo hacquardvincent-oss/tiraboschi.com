@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0c0c0d">
+<title>TIRABOSCHI · Le tour de la pièce</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   LE TOUR DE LA PIÈCE — configurateur photographique
+   Même grammaire d'interaction qu'une expérience produit en 3D
+   (carrousel de modèles, rotation continue, rail d'éléments, zoom
+   matière), mais bâtie sur de VRAIES PRISES DE VUE : 138 vues du
+   shooting du 8 septembre, cinq tours complets.
+
+   Sur du cuir, la photographie bat le rendu : une écaille d'alligator,
+   une tranche teinte, un grain de galuchat ne se calculent pas.
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+  --blanc:#ffffff; --papier:#faf9f7; --encre:#101010; --gris:#767472;
+  --trait:#e6e4e0; --or:#a08553; --nuit:#0c0c0d;
+  --e:cubic-bezier(.16,1,.3,1); --barre:38px; --ent:88px;
+  --haut:calc(var(--ent) + var(--barre));
+  /* la toile du studio, relevée sur les prises de vue elles-mêmes :
+     la page porte EXACTEMENT sa couleur, donc le bord du plateau ne
+     se voit pas. Et une teinte de la peau choisie vient l'habiller. */
+  --toile:#c9c2cc; --halo:#f2eff3; --ambiance:#5e1a20;
+}
+*{margin:0;padding:0;box-sizing:border-box;border-radius:0!important}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Playfair Display',Georgia,serif;background:var(--toile);color:var(--encre);
+  -webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+img{display:block}
+.cap{font-family:system-ui,sans-serif;font-size:9px;letter-spacing:.28em;
+  text-transform:uppercase}
+
+/* ═══════════ L'EN-TÊTE ═══════════ */
+.ent{position:fixed;top:0;left:0;right:0;height:var(--ent);z-index:70;display:flex;
+  align-items:center;gap:clamp(12px,2.4vw,28px);padding:0 clamp(14px,2.6vw,32px);
+  color:var(--encre);border-bottom:1px solid rgba(16,16,16,.12)}
+.ent__n{display:flex;align-items:center;gap:clamp(14px,1.9vw,26px);flex:1 1 0;min-width:0}
+.ent__n--d{justify-content:flex-end}
+.ent__logo{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:6px;
+  font-size:clamp(19px,2.1vw,29px);letter-spacing:.4em;text-transform:uppercase;
+  text-indent:.4em;white-space:nowrap;line-height:1}
+.ent__logo small{font-family:system-ui,sans-serif;font-size:8.5px;letter-spacing:.28em;
+  opacity:.5;text-transform:uppercase;text-indent:.28em}
+.lien{font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.2em;
+  font-size:11px;opacity:.6;transition:opacity .3s;white-space:nowrap}
+.lien:hover,.lien.on{opacity:1}
+@media(max-width:900px){.ent__n .lien{display:none}}
+
+/* ═══════════ LES SCÈNES ═══════════ */
+.scene{position:fixed;inset:var(--ent) 0 0;opacity:0;visibility:hidden;
+  transition:opacity .7s var(--e),visibility .7s;display:flex;flex-direction:column}
+.scene.on{opacity:1;visibility:visible}
+/* l'ambiance suit la peau choisie — c'est elle qui colore la salle */
+.fond{position:fixed;inset:0;z-index:-1;
+  background:radial-gradient(78% 62% at 50% 40%,var(--halo) 0%,var(--toile) 74%);
+  transition:background 1.4s var(--e)}
+/* la teinte de la peau, posée aux quatre coins — on la sent, on ne la
+   voit pas : la pièce reste la seule couleur franche de l'écran */
+.fond::after{content:'';position:absolute;inset:0;
+  background:radial-gradient(130% 90% at 50% 118%,var(--ambiance) 0%,transparent 58%);
+  opacity:.2;transition:background 1.4s var(--e)}
+
+/* ── LE CARROUSEL DES MODÈLES ── */
+.car{flex:1;min-height:0;position:relative;display:flex;align-items:center;
+  justify-content:center;touch-action:pan-y}
+.car__p{position:absolute;left:50%;top:50%;width:min(38vw,340px);
+  transform-origin:50% 50%;pointer-events:none;
+  transition:transform 1s var(--e),opacity 1s var(--e),filter 1s var(--e)}
+.car__p img{width:100%;height:auto}
+.car__x{position:absolute;left:0;right:0;bottom:clamp(24px,6vh,64px);z-index:3;
+  text-align:center;pointer-events:none}
+.car__n{font-size:clamp(26px,4vw,54px);letter-spacing:-.03em;line-height:1;
+  transition:opacity .5s}
+.car__n em{font-style:italic}
+.car__k{margin-top:12px;opacity:.55}
+.car__go{margin-top:22px;pointer-events:auto;border:1px solid currentColor;
+  padding:14px 32px;font-family:system-ui,sans-serif;text-transform:uppercase;
+  letter-spacing:.2em;font-size:10px;min-height:46px;
+  transition:background .45s var(--e),color .45s,letter-spacing .5s var(--e)}
+.car__go:hover{background:var(--encre);color:var(--toile);letter-spacing:.26em}
+.car__f{position:absolute;top:50%;transform:translateY(-50%);z-index:4;width:52px;height:52px;
+  display:flex;align-items:center;justify-content:center;opacity:.4;transition:opacity .3s}
+.car__f:hover{opacity:1}
+.car__f svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1}
+.car__f--p{left:clamp(8px,3vw,44px)}.car__f--n{right:clamp(8px,3vw,44px)}
+.car__j{position:absolute;left:50%;transform:translateX(-50%);bottom:clamp(10px,2.4vh,20px);
+  width:min(280px,52vw);height:1px;background:rgba(16,16,16,.16)}
+.car__j i{display:block;height:100%;background:var(--encre);transition:width .7s var(--e),
+  margin-left .7s var(--e)}
+
+/* ── LA PIÈCE QUI TOURNE ── */
+.piece{flex:1;min-height:0;display:grid;
+  grid-template-columns:minmax(0,.9fr) minmax(0,1.5fr) auto;
+  gap:clamp(14px,2.6vw,42px);padding:clamp(14px,2.6vh,34px) clamp(16px,3vw,48px)
+  clamp(10px,2vh,24px)}
+@media(max-width:1000px){
+  .piece{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr) auto}
+}
+/* le cartel, à gauche */
+.dit{display:flex;flex-direction:column;justify-content:center;gap:14px;min-width:0}
+.dit__k{color:var(--gris)}
+.dit__t{font-size:clamp(24px,3.2vw,46px);letter-spacing:-.028em;line-height:1.06}
+.dit__t em{font-style:italic}
+.dit__d{font-family:system-ui,sans-serif;font-size:12.5px;line-height:1.95;
+  color:#3d3b39;max-width:44ch}
+.dit__z{position:relative;width:100%;max-width:340px;height:0;padding-top:66%;
+  overflow:hidden;background:#dedae0;margin-top:6px;cursor:zoom-in}
+.dit__z img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  opacity:0;transition:opacity .8s var(--e),transform 2.4s var(--e);transform:scale(1.08)}
+.dit__z img.on{opacity:1;transform:none}
+.dit__zl{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:10px 14px;
+  background:linear-gradient(to top,rgba(10,10,10,.7),transparent);
+  font-family:system-ui,sans-serif;font-size:9px;letter-spacing:.22em;
+  text-transform:uppercase;color:rgba(255,255,255,.85)}
+@media(max-width:1000px){.dit{gap:9px}.dit__z{display:none}}
+
+/* la scène : c'est ici que la pièce tourne */
+.tour{position:relative;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;min-width:0;min-height:0;touch-action:none;cursor:grab}
+.tour.tire{cursor:grabbing}
+.tour__c{position:relative;width:100%;max-width:720px;
+  height:min(100%,calc(100vh - var(--ent) - 190px));
+  display:flex;align-items:center;justify-content:center}
+.tour__c img{max-width:100%;max-height:100%;width:auto;height:auto}
+/* l'invitation, qui s'efface au premier geste */
+.tour__s{position:absolute;left:0;right:0;bottom:44px;z-index:3;text-align:center;
+  pointer-events:none;font-family:system-ui,sans-serif;text-transform:uppercase;
+  letter-spacing:.24em;font-size:9px;color:var(--gris);
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  transition:opacity .6s var(--e)}
+.tour.deja .tour__s{opacity:0}
+.tour__s svg{width:26px;height:14px;fill:none;stroke:currentColor;stroke-width:1}
+.tour__s path{stroke-dasharray:34;stroke-dashoffset:34;animation:filer 2.8s var(--e) infinite}
+@keyframes filer{0%{stroke-dashoffset:34}45%{stroke-dashoffset:0}
+  70%{stroke-dashoffset:0;opacity:1}90%{opacity:0}100%{stroke-dashoffset:0;opacity:0}}
+/* la ligne de chargement de la séquence */
+.tour__ch{position:absolute;left:50%;transform:translateX(-50%);bottom:72px;z-index:4;
+  width:min(220px,44vw);height:1px;background:rgba(16,16,16,.14);
+  opacity:0;transition:opacity .4s}
+.tour__ch.on{opacity:1}
+.tour__ch i{display:block;height:100%;width:0;background:var(--or);transition:width .2s linear}
+/* le rail d'angle, sous la pièce */
+.rot{flex-shrink:0;width:min(420px,84%);margin-top:clamp(8px,1.6vh,18px);
+  display:flex;align-items:center;gap:14px}
+.rot__l{font-family:system-ui,sans-serif;font-size:9px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--gris);white-space:nowrap}
+.rot__p{flex:1;min-width:0;height:24px;position:relative;cursor:pointer;
+  touch-action:none;display:flex;align-items:center}
+.rot__p::before{content:'';position:absolute;left:0;right:0;top:50%;height:1px;
+  background:rgba(16,16,16,.16)}
+.rot__t{position:absolute;top:50%;transform:translate(-50%,-50%);width:1px;height:12px;
+  background:var(--encre);transition:left .28s var(--e)}
+
+/* ── LE RAIL DES ÉLÉMENTS, à droite ── */
+.rail{display:flex;flex-direction:column;justify-content:center;gap:clamp(8px,1.4vh,14px);
+  flex-shrink:0}
+@media(max-width:1000px){
+  .rail{flex-direction:row;justify-content:center;flex-wrap:wrap;gap:9px}
+}
+.el{width:52px;height:52px;position:relative;display:flex;align-items:center;
+  justify-content:center;border:1px solid rgba(16,16,16,.2);
+  transition:border-color .4s var(--e),background .4s var(--e)}
+.el:hover{border-color:rgba(16,16,16,.55)}
+.el.on{background:rgba(16,16,16,.06);border-color:var(--encre)}
+.el svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1;
+  stroke-linecap:square;stroke-linejoin:miter}
+.el__n{position:absolute;right:calc(100% + 12px);top:50%;transform:translateY(-50%);
+  font-family:system-ui,sans-serif;font-size:9.5px;letter-spacing:.2em;
+  text-transform:uppercase;white-space:nowrap;opacity:0;pointer-events:none;
+  transition:opacity .3s,right .4s var(--e)}
+.el:hover .el__n{opacity:.8;right:calc(100% + 16px)}
+@media(max-width:1000px){.el__n{display:none}}
+
+/* ── LES CHOIX, en bas ── */
+.choix{flex-shrink:0;border-top:1px solid rgba(16,16,16,.14);
+  padding:clamp(10px,2vh,20px) clamp(16px,3vw,48px) clamp(14px,2.4vh,26px);
+  display:flex;align-items:center;gap:clamp(14px,2.4vw,32px);min-height:96px}
+.choix__k{flex-shrink:0;color:var(--gris);white-space:nowrap}
+.choix__l{flex:1;min-width:0;display:flex;gap:clamp(8px,1.2vw,16px);overflow-x:auto;
+  scrollbar-width:none;padding:2px 0}
+.choix__l::-webkit-scrollbar{display:none}
+.ch{flex-shrink:0;display:flex;align-items:center;gap:11px;padding:9px 14px 9px 9px;
+  border:1px solid rgba(16,16,16,.18);transition:border-color .4s var(--e),
+  background .4s var(--e)}
+.ch:hover{border-color:rgba(16,16,16,.5)}
+.ch.on{border-color:var(--encre);background:rgba(16,16,16,.05)}
+.ch__p{width:34px;height:34px;flex-shrink:0;background-size:cover;background-position:center;
+  border:1px solid rgba(16,16,16,.14)}
+.ch__x{text-align:left;white-space:nowrap}
+.ch__n{font-size:13px;font-style:italic;line-height:1.15}
+.ch__k{display:block;font-family:system-ui,sans-serif;font-size:8.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--gris);margin-top:2px}
+.choix__go{flex-shrink:0;border:1px solid currentColor;padding:14px 26px;min-height:46px;
+  font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.2em;font-size:10px;
+  transition:background .45s var(--e),color .45s,letter-spacing .5s var(--e)}
+.choix__go:hover{background:var(--encre);color:var(--toile);letter-spacing:.26em}
+@media(max-width:1000px){.choix{flex-wrap:wrap;min-height:0}.choix__k{width:100%}}
+
+/* ── LE ZOOM MATIÈRE, plein cadre ── */
+.plg{position:fixed;inset:0;z-index:90;background:var(--nuit);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .6s var(--e),visibility .6s;display:flex;flex-direction:column}
+.plg.on{opacity:1;visibility:visible;pointer-events:auto}
+.plg__i{position:relative;flex:1;min-height:0;overflow:hidden}
+.plg__i img{width:100%;height:100%;object-fit:cover;transform:scale(1.1);
+  transition:transform 6s var(--e)}
+.plg.on .plg__i img{transform:none}
+.plg__x{position:absolute;left:0;right:0;bottom:0;z-index:2;
+  padding:clamp(20px,5vh,52px) clamp(20px,4vw,64px);
+  background:linear-gradient(to top,rgba(10,10,10,.9) 0%,rgba(10,10,10,.62) 52%,transparent 100%);
+  display:flex;flex-direction:column;gap:9px}
+.plg__t{font-size:clamp(24px,3.4vw,48px);letter-spacing:-.025em;line-height:1.1;color:#fff}
+.plg__t em{font-style:italic}
+.plg__d{font-family:system-ui,sans-serif;font-size:12.5px;line-height:1.9;
+  color:rgba(255,255,255,.88);max-width:52ch}
+.plg__f{position:absolute;right:clamp(16px,2.6vw,34px);top:clamp(16px,2.6vh,30px);z-index:3;
+  font-family:system-ui,sans-serif;text-transform:uppercase;letter-spacing:.2em;font-size:9px;
+  display:flex;align-items:center;gap:10px;color:#fff;
+  background:rgba(10,10,10,.55);backdrop-filter:blur(8px);padding:11px 16px;
+  transition:background .35s var(--e)}
+.plg__f:hover{background:rgba(10,10,10,.8)}
+.plg__f:hover{opacity:1}
+
+/* ── LA NOTE ── */
+.note{position:fixed;left:clamp(14px,2.6vw,32px);top:calc(var(--ent) + 14px);z-index:60;
+  font-family:system-ui,sans-serif;font-size:9px;letter-spacing:.14em;
+  color:var(--gris);opacity:.7;max-width:38ch;line-height:1.7}
+@media(max-width:1000px){.note{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<div class="fond" id="fond"></div>
+
+<header class="ent">
+  <nav class="ent__n">
+    <button class="lien on" id="versCar">Les modèles</button>
+    <button class="lien" id="versPiece">La pièce</button>
+  </nav>
+  <span class="ent__logo">Tiraboschi <small>Paris · 1904</small></span>
+  <nav class="ent__n ent__n--d">
+    <button class="lien" id="versRdv">Prendre rendez-vous</button>
+  </nav>
+</header>
+
+<!-- ══════════ LE CARROUSEL DES MODÈLES ══════════ -->
+<section class="scene on" id="sCar">
+  <div class="car" id="car">
+    <button class="car__f car__f--p" id="carP" aria-label="Modèle précédent"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg></button>
+    <button class="car__f car__f--n" id="carN" aria-label="Modèle suivant"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></button>
+    <div class="car__x">
+      <h1 class="car__n" id="carN2"></h1>
+      <p class="car__k cap" id="carK"></p>
+      <button class="car__go" id="carGo">Prendre la pièce en main</button>
+    </div>
+    <div class="car__j"><i id="carJ"></i></div>
+  </div>
+</section>
+
+<!-- ══════════ LA PIÈCE QUI TOURNE ══════════ -->
+<section class="scene" id="sPiece">
+  <div class="piece">
+    <div class="dit">
+      <p class="dit__k cap" id="ditK"></p>
+      <h2 class="dit__t" id="ditT"></h2>
+      <p class="dit__d" id="ditD"></p>
+      <figure class="dit__z" id="ditZ">
+        <figcaption class="dit__zl" id="ditZl"></figcaption>
+      </figure>
+    </div>
+
+    <div class="tour" id="tour" tabindex="0" role="img" aria-label="La pièce, à faire tourner">
+      <div class="tour__c" id="tourC"></div>
+      <p class="tour__s" id="tourS">
+        <svg viewBox="0 0 40 20" aria-hidden="true"><path d="M4 10 H34 M28 5 L34 10 L28 15"/></svg>
+        Prenez la pièce et faites-la tourner
+      </p>
+      <div class="tour__ch" id="tourCh"><i id="tourChB"></i></div>
+      <div class="rot">
+        <span class="rot__l" id="rotL">0°</span>
+        <div class="rot__p" id="rotP"><i class="rot__t" id="rotT"></i></div>
+      </div>
+    </div>
+
+    <nav class="rail" id="rail" aria-label="Les éléments de la pièce"></nav>
+  </div>
+
+  <div class="choix">
+    <p class="choix__k cap" id="choixK"></p>
+    <div class="choix__l" id="choixL"></div>
+    <button class="choix__go" id="choixGo">Faire naître cette pièce</button>
+  </div>
+</section>
+
+<!-- ══════════ LE ZOOM MATIÈRE ══════════ -->
+<div class="plg" id="plg" role="dialog" aria-modal="true" aria-labelledby="plgT">
+  <div class="plg__i" id="plgI">
+    <button class="plg__f" id="plgX">Fermer <span aria-hidden="true">✕</span></button>
+    <div class="plg__x">
+      <p class="cap" style="opacity:.75;color:#fff">La matière, de tout près</p>
+      <h3 class="plg__t" id="plgT"></h3>
+      <p class="plg__d" id="plgD"></p>
+    </div>
+  </div>
+</div>
+
+<p class="note">Démonstration — 138 prises de vue du 8 septembre, cinq tours complets.
+  Aucun rendu 3D : ce que l'on fait tourner est photographié.</p>
+
+<script>
+const TOURS = "__TOURS__";
+const $ = i => document.getElementById(i);
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+  .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ═══════════════════════════════════════════════════════════════
+   LES PIÈCES
+   Chaque peau est un TOUR COMPLET, avec son propre nombre de vues
+   (39, 33, 29, 22, 15) : le studio n'a pas tourné du même pas. On
+   repère donc l'angle par une FRACTION du tour, jamais par un
+   numéro de vue — sinon changer de peau ferait sauter la pièce.
+   ═══════════════════════════════════════════════════════════════ */
+const PIECES = [
+  { id:'colette', n:'Colette', k:'Le V taillé dans la masse',
+    d:"La signature de la maison, poussée à son extrême : un V taillé dans la masse qui ouvre le sac sans fermoir. Sa tenue ne doit rien à une armature — seulement à l'épaisseur du cuir et à la façon dont la peau a été placée sur le gabarit.",
+    peaux:[
+      { id:'colette-rouge',    n:'Rouge Carmin', m:'Alligator',   amb:'#5e1a20' },
+      { id:'colette-bordeaux', n:'Bordeaux',     m:'Alligator',   amb:'#3a1f24' },
+      { id:'colette-ivoire',   n:'Ivoire',       m:'Alligator',   amb:'#4a4340' },
+      { id:'colette-cognac',   n:'Cognac',       m:'Veau lisse',  amb:'#5a3620' },
+    ] },
+  { id:'olympe', n:'Olympe', k:'Le seau · cordon de cuir',
+    d:"Un seau que le cordon referme d'un geste. La doublure de toile écrue se retourne sur le cuir : c'est la seule couture visible de la pièce, et elle se voit exprès.",
+    peaux:[ { id:'olympe-camel', n:'Camel', m:'Veau grainé', amb:'#4a3122' } ] },
+];
+
+/* Les éléments que l'on personnalise. Chacun sait à QUEL ANGLE la
+   pièce se montre le mieux — désigner un élément fait tourner la
+   pièce jusqu'à lui, plutôt que de poser un repère par-dessus. */
+const ELEMENTS = [
+  { id:'peau', n:'La peau', a:0, parPeau:{ 'Veau lisse':'z-lisse-profil', 'Veau grainé':'z-cordon' },
+    t:'La <em>peau</em>',
+    d:"Quatre peausseries, une seule règle : pleine fleur, jamais corrigée. L'alligator vient d'élevages certifiés CITES ; le veau lisse de la tannerie Rémy Carriat, en Normandie. Sur cent peaux reçues, une dizaine entre à l'atelier.",
+    z:'z-croco', zl:"L'écaille, de tout près",
+    icone:'<path d="M3 6 h18 v12 h-18 z"/><path d="M3 12 h18 M9 6 v12 M15 6 v12"/>' },
+  { id:'v', n:'Le V', a:0, parPeau:{ 'Veau lisse':'z-lisse-v', 'Veau grainé':'z-cordon' },
+    t:'Le <em>V</em>',
+    d:"Il se taille dans la masse, d'un seul geste, sans repentir : un tranchet qui hésite laisse une trace que la tranche gardera. La pointe tombe au millimètre — elle se décide à la coupe, elle ne se rattrape pas au montage.",
+    z:'z-v', zl:'Le V, taillé dans la masse',
+    icone:'<path d="M4 6 L12 17 L20 6"/>' },
+  { id:'anse', n:"L'anse", a:.5,
+    t:"L'<em>anse</em>",
+    d:"Une seule anse, en tête de cuir, montée sur deux attaches de laiton massif. Elle est posée en dernier, quand la pièce est déjà montée : elle ne se recentre plus.",
+    z:'z-anse', zl:"L'attache, sertie à la main",
+    icone:'<path d="M7 20 v-9 a5 5 0 0 1 10 0 v9"/>' },
+  { id:'tranche', n:'La tranche', a:.25,
+    t:'La <em>tranche</em>',
+    d:"Teinte puis polie à chaud, en trois passes. C'est le détail qui trahit une pièce faite vite : une tranche mal fermée boit l'eau et s'ouvre en deux hivers.",
+    z:'z-tranche', zl:'La tranche, teinte et polie',
+    icone:'<path d="M4 9 h16 v6 h-16 z"/><path d="M4 12 h16"/>' },
+  { id:'fond', n:'Le fond', a:.32,
+    t:'Le <em>fond</em>',
+    d:"Structuré, il tient la pièce debout sans armature. Le devant se coupe dans le croupon, la partie la plus dense de la peau ; le ventre, plus tendre, ne va jamais aux angles.",
+    z:'z-fond', zl:'Le fond et son embase',
+    icone:'<path d="M5 7 L19 7 L17 17 L7 17 Z"/>' },
+  { id:'doublure', n:'La doublure', a:.08,
+    t:'La <em>doublure</em>',
+    d:"Agneau des Gants de Millau, en Aveyron : une douceur qui tombe comme de la soie tendue. Sur l'Olympe, une toile écrue se retourne sur le cuir — la seule couture visible de la pièce.",
+    z:'z-interieur', zl:"L'intérieur, doublé",
+    icone:'<path d="M4 5 h16 v14 h-16 z"/><path d="M8 5 v14"/>' },
+  { id:'ferrure', n:'Les ferrures', a:.55,
+    t:'Les <em>ferrures</em>',
+    d:"Laiton massif, finition satinée, pour l'éternité. Serties à la main, à l'œil et au toucher — jamais à la machine. Une ferrure fondue est parfaite et muette ; une ferrure sertie garde la trace de l'heure qu'on lui a donnée.",
+    z:'z-ferrure', zl:'Le laiton, serti à la main',
+    icone:'<circle cx="12" cy="12" r="5"/><path d="M12 3 v4 M12 17 v4"/>' },
+];
+
+/* ═══════════ L'AMBIANCE ═══════════ */
+const TOILES = TOURS.__toiles__ || {};
+function ambiance(c, cle) {
+  const r = document.documentElement.style;
+  r.setProperty('--ambiance', c);
+  /* la page prend la couleur EXACTE de la toile de cette séquence :
+     c'est ce qui fait disparaître le bord du plateau */
+  const t = cle && TOILES[cle];
+  if (t) { r.setProperty('--toile', t.bord); r.setProperty('--halo', t.halo); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LE TOUR — une séquence d'images, pas une scène 3D
+   On PRÉCHARGE la séquence entière avant d'autoriser le geste :
+   une rotation qui décode ses images en route saute, et le saut se
+   voit plus qu'il ne se pardonne.
+   ═══════════════════════════════════════════════════════════════ */
+const cache = {};
+function precharger(cle, surAvance) {
+  if (cache[cle]) return Promise.resolve(cache[cle]);
+  const src = TOURS[cle] || [];
+  let faits = 0;
+  return Promise.all(src.map(s => new Promise(ok => {
+    const im = new Image();
+    const fini = () => { faits++; if (surAvance) surAvance(faits / src.length); ok(im); };
+    im.onload = fini; im.onerror = fini;
+    im.src = s;
+  }))).then(ims => (cache[cle] = ims));
+}
+
+let pieceIdx = 0, peauIdx = 0, fraction = 0, elemIdx = 0;
+let vues = [], posee = null;
+
+/* la fraction du tour → la vue la plus proche */
+function poser(fr) {
+  fraction = ((fr % 1) + 1) % 1;
+  if (!vues.length) return;
+  const i = Math.round(fraction * vues.length) % vues.length;
+  const im = vues[i];
+  if (im !== posee) {
+    const c = $('tourC');
+    c.replaceChildren(im);
+    im.alt = PIECES[pieceIdx].n;
+    posee = im;
+  }
+  $('rotT').style.left = (fraction * 100).toFixed(2) + '%';
+  $('rotL').textContent = Math.round(fraction * 360) + '°';
+}
+
+/* changer de peau GARDE L'ANGLE : c'est tout l'intérêt d'un tour
+   photographié — on compare deux cuirs sous le même jour. */
+function habiller(pi, pe, garderAngle) {
+  pieceIdx = pi; peauIdx = pe;
+  const P = PIECES[pi], K = P.peaux[pe];
+  ambiance(K.amb, K.id);
+  const ch = $('tourCh'), chb = $('tourChB');
+  ch.classList.add('on'); chb.style.width = '0%';
+  posee = null;
+  return precharger(K.id, p => { chb.style.width = (p * 100).toFixed(0) + '%'; })
+    .then(ims => {
+      vues = ims;
+      ch.classList.remove('on');
+      poser(garderAngle ? fraction : 0);
+      majChoix(); majDit();
+    });
+}
+
+/* ── le geste : on prend la pièce et on la tourne ── */
+(function () {
+  const t = $('tour');
+  let id = null, x0 = 0, f0 = 0, dernier = 0, vitesse = 0, elan = null, bouge = false;
+  const largeur = () => Math.max(240, t.getBoundingClientRect().width);
+  function arreter() { cancelAnimationFrame(elan); elan = null; }
+  t.addEventListener('pointerdown', e => {
+    arreter(); id = e.pointerId; x0 = e.clientX; f0 = fraction; bouge = false;
+    dernier = e.clientX; vitesse = 0;
+    t.classList.add('tire'); t.setPointerCapture(id);
+  });
+  t.addEventListener('pointermove', e => {
+    if (id === null || e.pointerId !== id) return;
+    const d = e.clientX - x0;
+    if (Math.abs(d) > 3) { bouge = true; t.classList.add('deja'); }
+    /* une largeur de scène = un tour et demi : assez pour faire le
+       tour d'un geste, sans que la pièce s'emballe */
+    poser(f0 + d / (largeur() * 1.5));
+    vitesse = e.clientX - dernier; dernier = e.clientX;
+  });
+  function fin(e) {
+    if (id === null || (e && e.pointerId !== id)) return;
+    t.releasePointerCapture(id); id = null; t.classList.remove('tire');
+    if (RM || Math.abs(vitesse) < 2) return;
+    /* l'élan : la pièce continue et s'arrête d'elle-même */
+    let v = vitesse / (largeur() * 1.5);
+    (function suite() {
+      v *= .94;
+      if (Math.abs(v) < .0002) return;
+      poser(fraction + v);
+      elan = requestAnimationFrame(suite);
+    })();
+  }
+  t.addEventListener('pointerup', fin);
+  t.addEventListener('pointercancel', fin);
+  /* le balayage à deux doigts d'un pavé tactile arrive en `wheel` */
+  let reste = 0;
+  t.addEventListener('wheel', e => {
+    const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    if (!d) return;
+    e.preventDefault(); arreter(); t.classList.add('deja');
+    reste += d;
+    poser(fraction + reste / (largeur() * 1.5)); reste = 0;
+  }, { passive: false });
+  t.addEventListener('keydown', e => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    e.preventDefault(); t.classList.add('deja');
+    poser(fraction + (e.key === 'ArrowRight' ? 1 : -1) / Math.max(8, vues.length));
+  });
+  /* le rail d'angle */
+  const p = $('rotP');
+  const suivre = e => {
+    const r = p.getBoundingClientRect();
+    t.classList.add('deja');
+    poser((e.clientX - r.left) / r.width);
+  };
+  p.addEventListener('pointerdown', e => { p.setPointerCapture(e.pointerId); suivre(e); });
+  p.addEventListener('pointermove', e => { if (e.buttons) suivre(e); });
+})();
+
+/* tourner DOUCEMENT jusqu'à un angle : c'est la pièce qui se
+   présente, on ne saute pas d'un côté à l'autre */
+function versAngle(cible) {
+  if (RM) { poser(cible); return; }
+  const d0 = fraction;
+  let delta = ((cible - d0) % 1 + 1.5) % 1 - .5;   /* le chemin le plus court */
+  const t0 = performance.now(), duree = 700;
+  (function pas(t) {
+    const p = Math.min(1, (t - t0) / duree);
+    const e = 1 - Math.pow(1 - p, 3);
+    poser(d0 + delta * e);
+    if (p < 1) requestAnimationFrame(pas);
+  })(t0);
+}
+
+/* ═══════════ LE RAIL DES ÉLÉMENTS ═══════════ */
+ELEMENTS.forEach((el, i) => {
+  const b = document.createElement('button');
+  b.className = 'el' + (i === 0 ? ' on' : '');
+  b.dataset.el = el.id;
+  b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' + el.icone + '</svg>' +
+    '<span class="el__n">' + esc(el.n) + '</span>';
+  b.setAttribute('aria-label', el.n);
+  b.onclick = () => { elemIdx = i; majDit(); versAngle(el.a); majRail(); };
+  $('rail').appendChild(b);
+});
+function majRail() {
+  [...$('rail').children].forEach((b, i) => b.classList.toggle('on', i === elemIdx));
+}
+function majDit() {
+  const el = ELEMENTS[elemIdx], P = PIECES[pieceIdx], K = P.peaux[peauIdx];
+  /* certains éléments changent de macro selon la peau : on ne montre
+     pas une écaille d'alligator pour illustrer un veau lisse */
+  const zoom = (el.parPeau && el.parPeau[K.m]) || el.z;
+  $('ditK').textContent = P.n + ' · ' + K.n + ' · ' + K.m;
+  $('ditT').innerHTML = el.t;
+  $('ditD').textContent = el.d;
+  /* le zoom matière : il se remplace en fondu, il ne clignote pas */
+  const z = $('ditZ');
+  const anc = z.querySelector('img');
+  if (!anc || anc.dataset.z !== zoom) {
+    const im = document.createElement('img');
+    im.dataset.z = zoom; im.alt = el.zl; im.decoding = 'async';
+    im.src = TOURS[zoom] || '';
+    im.onload = () => requestAnimationFrame(() => im.classList.add('on'));
+    z.insertBefore(im, z.firstChild);
+    if (anc) { anc.classList.remove('on'); setTimeout(() => anc.remove(), 900); }
+  }
+  $('ditZl').textContent = el.zl;
+  $('ditZ').onclick = () => ouvrirZoom(el, zoom);
+}
+
+/* ═══════════ LES CHOIX DE PEAU ═══════════ */
+function majChoix() {
+  const P = PIECES[pieceIdx];
+  $('choixK').textContent = 'La peau · ' + P.peaux.length +
+    (P.peaux.length > 1 ? ' proposées' : ' proposée');
+  const l = $('choixL'); l.innerHTML = '';
+  P.peaux.forEach((k, i) => {
+    const b = document.createElement('button');
+    b.className = 'ch' + (i === peauIdx ? ' on' : '');
+    b.dataset.peau = k.id;
+    const p = (TOURS[k.id] || [])[0] || '';
+    b.innerHTML = '<span class="ch__p" style="background-image:url(' + p + ')"></span>' +
+      '<span class="ch__x"><span class="ch__n">' + esc(k.n) + '</span>' +
+      '<span class="ch__k">' + esc(k.m) + '</span></span>';
+    /* CHANGER DE PEAU GARDE L'ANGLE : on compare deux cuirs sous le
+       même jour, c'est tout l'intérêt d'un tour photographié */
+    b.onclick = () => habiller(pieceIdx, i, true);
+    l.appendChild(b);
+  });
+}
+
+/* ═══════════ LE ZOOM MATIÈRE, PLEIN CADRE ═══════════ */
+function ouvrirZoom(el, zoom) {
+  const i = $('plgI');
+  const anc = i.querySelector('img'); if (anc) anc.remove();
+  const im = document.createElement('img');
+  im.alt = el.zl; im.src = TOURS[zoom || el.z] || '';
+  i.insertBefore(im, i.firstChild);
+  $('plgT').innerHTML = el.t;
+  $('plgD').textContent = el.d;
+  $('plg').classList.add('on');
+}
+$('plgX').onclick = () => $('plg').classList.remove('on');
+addEventListener('keydown', e => { if (e.key === 'Escape') $('plg').classList.remove('on'); });
+
+/* ═══════════════════════════════════════════════════════════════
+   LE CARROUSEL — l'anneau des modèles
+   Une pièce au centre, debout et éclairée ; les autres en retrait,
+   inclinées et sourdes. On tourne l'anneau, on ne défile pas une
+   liste.
+   ═══════════════════════════════════════════════════════════════ */
+const ANNEAU = [];
+PIECES.forEach((P, i) => P.peaux.forEach((k, j) => ANNEAU.push({ p: i, k: j, id: k.id, P, K: k })));
+let carIdx = 0;
+ANNEAU.forEach(a => {
+  const d = document.createElement('div');
+  d.className = 'car__p'; d.dataset.id = a.id;
+  const im = document.createElement('img');
+  im.alt = a.P.n + ' · ' + a.K.n; im.decoding = 'async';
+  im.src = (TOURS[a.id] || [])[0] || '';
+  d.appendChild(im);
+  $('car').appendChild(d);
+  a.el = d;
+});
+function majCar() {
+  ANNEAU.forEach((a, i) => {
+    const d = i - carIdx;
+    const ad = Math.abs(d);
+    /* la pièce au centre est debout ; celles d'à côté reculent, se
+       penchent et s'éteignent */
+    const x = d * 30, z = ad * -180, ry = d * -26, s = 1 - Math.min(.42, ad * .17);
+    a.el.style.transform = 'translate(-50%,-50%) translateX(' + x + '%) ' +
+      'perspective(1400px) translateZ(' + z + 'px) rotateY(' + ry + 'deg) ' +
+      'rotate(' + (d * 7) + 'deg) scale(' + s + ')';
+    a.el.style.opacity = ad > 3 ? 0 : (1 - Math.min(.8, ad * .3));
+    a.el.style.filter = ad ? 'brightness(' + (1 - Math.min(.62, ad * .26)) + ')' : 'none';
+    a.el.style.zIndex = 50 - ad;
+  });
+  const a = ANNEAU[carIdx];
+  $('carN2').innerHTML = esc(a.P.n) + ' <em>' + esc(a.K.n) + '</em>';
+  $('carK').textContent = a.K.m + ' · ' + a.P.k;
+  ambiance(a.K.amb, a.K.id);
+  const j = $('carJ');
+  j.style.width = (100 / ANNEAU.length) + '%';
+  j.style.marginLeft = (carIdx * 100 / ANNEAU.length) + '%';
+}
+function carVers(n) {
+  carIdx = Math.max(0, Math.min(ANNEAU.length - 1, n));
+  majCar();
+}
+$('carP').onclick = () => carVers(carIdx - 1);
+$('carN').onclick = () => carVers(carIdx + 1);
+(function () {
+  const c = $('car');
+  let x0 = null, i0 = 0;
+  c.addEventListener('pointerdown', e => { x0 = e.clientX; i0 = carIdx; });
+  c.addEventListener('pointermove', e => {
+    if (x0 === null) return;
+    const d = Math.round((x0 - e.clientX) / 90);
+    if (d) carVers(i0 + d);
+  });
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(t =>
+    c.addEventListener(t, () => { x0 = null; }));
+  let reste = 0;
+  c.addEventListener('wheel', e => {
+    const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    if (!d) return;
+    e.preventDefault(); reste += d;
+    if (Math.abs(reste) > 60) { carVers(carIdx + Math.sign(reste)); reste = 0; }
+  }, { passive: false });
+  addEventListener('keydown', e => {
+    if (!$('sCar').classList.contains('on')) return;
+    if (e.key === 'ArrowRight') carVers(carIdx + 1);
+    if (e.key === 'ArrowLeft') carVers(carIdx - 1);
+  });
+})();
+
+/* ═══════════ LA NAVIGATION ═══════════ */
+function versScene(n) {
+  $('sCar').classList.toggle('on', n === 'car');
+  $('sPiece').classList.toggle('on', n === 'piece');
+  $('versCar').classList.toggle('on', n === 'car');
+  $('versPiece').classList.toggle('on', n === 'piece');
+  if (n === 'car') { majCar(); }
+}
+$('carGo').onclick = () => {
+  const a = ANNEAU[carIdx];
+  versScene('piece');
+  habiller(a.p, a.k, false);
+};
+$('versCar').onclick = () => versScene('car');
+$('versPiece').onclick = () => {
+  versScene('piece');
+  if (!vues.length) habiller(ANNEAU[carIdx].p, ANNEAU[carIdx].k, false);
+};
+$('choixGo').onclick = () => alert('Démonstration — dans la Plateforme, cette pièce ' +
+  'devient une demande de rendez-vous assignée à Laurène.');
+$('versRdv').onclick = $('choixGo').onclick;
+
+majCar();
+
+/* ═══════════ LES REPÈRES DE RECETTE ═══════════ */
+window.__etat = () => ({
+  scene: $('sPiece').classList.contains('on') ? 'piece' : 'car',
+  car: carIdx, carTotal: ANNEAU.length,
+  piece: PIECES[pieceIdx].id, peau: PIECES[pieceIdx].peaux[peauIdx].id,
+  vues: vues.length, fraction: +fraction.toFixed(4),
+  angle: Math.round(fraction * 360),
+  element: ELEMENTS[elemIdx].id,
+  zoom: $('plg').classList.contains('on'),
+  ambiance: getComputedStyle(document.documentElement).getPropertyValue('--ambiance').trim(),
+  /* une empreinte de la vue : l'en-tête WebP est identique d'une vue à
+     l'autre (mêmes dimensions), il faut donc piocher DANS la charge */
+  source: (function () {
+    const u = posee && posee.src || '';
+    return u ? u.length + ':' + u.slice(Math.floor(u.length * .55),
+                                        Math.floor(u.length * .55) + 24) : '';
+  })(),
+});
+window.__scene = versScene;
+window.__prendre = () => {
+  const a = ANNEAU[carIdx];
+  versScene('piece');
+  return habiller(a.p, a.k, false);
+};
+window.__car = carVers;
+/* la recette doit emprunter le VRAI chemin : le bouton, pas un
+   raccourci qui court-circuiterait ce qu'elle prétend vérifier */
+window.__peau = i => $('choixL').children[i].click();
+window.__element = i => { elemIdx = i; majDit(); versAngle(ELEMENTS[i].a); majRail(); };
+window.__poser = poser;
+window.__pret = () => vues.length > 0;
+</script>
+</body></html>
