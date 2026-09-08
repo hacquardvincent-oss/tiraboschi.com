@@ -141,6 +141,14 @@ img{display:block}
   font-family:system-ui,sans-serif;font-size:9px;letter-spacing:.22em;
   text-transform:uppercase;color:rgba(255,255,255,.85)}
 @media(max-width:1000px){.dit{gap:9px}.dit__z{display:none}}
+/* EN PORTRAIT, une pièce à 46 vw ne fait que 14 % de la hauteur : elle
+   se perd. On lui donne la largeur de l'écran, et les voisines
+   s'écartent moins pour rester visibles. */
+@media(max-width:820px){
+  .car__p{width:min(84vw,520px)}
+  .car__p img{max-height:min(46svh,460px)}
+  .tour__im img{max-height:min(52svh,520px)}
+}
 
 /* la scène : c'est ici que la pièce tourne */
 .tour{position:relative;display:flex;flex-direction:column;align-items:center;
@@ -367,8 +375,7 @@ img{display:block}
   </div>
 </div>
 
-<p class="note" id="note">Démonstration — 138 prises de vue du 8 septembre, cinq tours complets.
-  Aucun rendu 3D : ce que l'on fait tourner est photographié.</p>
+
 
 <script>
 const TOURS = "__TOURS__";
@@ -800,7 +807,6 @@ let glisse = false;
 
 /* ═══════════ LA NAVIGATION ═══════════ */
 function versScene(n) {
-  $('note').style.display = n === 'car' ? '' : 'none';
   $('sCar').classList.toggle('on', n === 'car');
   $('sPiece').classList.toggle('on', n === 'piece');
   $('versCar').classList.toggle('on', n === 'car');
