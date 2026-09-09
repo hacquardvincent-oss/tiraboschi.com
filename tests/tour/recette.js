@@ -128,14 +128,45 @@ const MESURE = `(sel => {
   v('et elle est cliquable', coin.cliquable);
   v('celle du centre domine', car.ici === 0 && car.opacites[0] === 1,
     car.opacites.map(o => o.toFixed(2)).join(' '));
-  v('les autres s\'effacent en s\'éloignant',
-    car.opacites[1] < car.opacites[0] && car.opacites[2] < car.opacites[1],
+  /* LA VOISINE GARDE SA COULEUR. À 0,67 d'opacité sur un fond papier,
+     un carmin devient rose : sur la vidéo de recette on croyait voir
+     six modèles là où il y en a quatre. La profondeur se dit par
+     l'échelle et la perspective, pas en délavant le cuir. */
+  v('les voisines gardent leur couleur', car.opacites[1] >= .95,
     car.opacites.map(o => o.toFixed(2)).join(' '));
+  const recul = await p.evaluate(() => {
+    const ps = [...document.querySelectorAll('.car__p')];
+    const l = ps.map(x => x.getBoundingClientRect().width);
+    return { c: l[0], v: l[1] };
+  });
+  v('et elles reculent par l\'échelle', recul.v < recul.c * .92,
+    Math.round(recul.c) + ' px contre ' + Math.round(recul.v));
 
-  /* ═══ L'ÉVENTAIL ═══
-     Au repos les pièces sont SERRÉES ; sous la main elles s'écartent,
-     puis se referment. À écart fixe, elles paraissaient simplement
-     éloignées — c'était le reproche. */
+  /* ═══ ELLES SE TOUCHENT, ELLES NE SE RECOUVRENT PAS ═══
+     « Les sacs se superposent au lieu d'être juste rapprochés, format
+     cover flow. » On mesure la matière, pas les cadres : une vue
+     détourée est aux deux tiers transparente. */
+  const bords = await p.evaluate(() => {
+    const M = [...document.querySelectorAll('.car__p')].map(el => {
+      const im = el.querySelector('img'), r = im.getBoundingClientRect();
+      const N = 90, H = Math.round(N * im.naturalHeight / im.naturalWidth);
+      const c = document.createElement('canvas'); c.width = N; c.height = H;
+      const x = c.getContext('2d'); x.drawImage(im, 0, 0, N, H);
+      const d = x.getImageData(0, 0, N, H).data;
+      let g = N, dr = -1;
+      for (let j = 0; j < H; j++) for (let i = 0; i < N; i++)
+        if (d[(j * N + i) * 4 + 3] > 40) { if (i < g) g = i; if (i > dr) dr = i; }
+      return dr < 0 ? null : { g: r.left + g / N * r.width,
+                               d: r.left + (dr + 1) / N * r.width };
+    });
+    return { centre: M[0], droite: M[1] };
+  });
+  v('les pièces ne se recouvrent pas',
+    bords.droite && bords.centre && bords.droite.g >= bords.centre.d - 4,
+    bords.centre ? Math.round(bords.droite.g - bords.centre.d) + ' px d\'écart' : '?');
+
+  /* ═══ L'ÉVENTAIL RESPIRE ═══
+     Serrées au repos, écartées sous la main, refermées quand on lâche. */
   const ecarts = async () => p.evaluate(() => {
     const ps = [...document.querySelectorAll('.car__p')];
     const c = ps.map(x => { const r = x.getBoundingClientRect(); return r.left + r.width / 2; });
@@ -157,10 +188,10 @@ const MESURE = `(sel => {
   await p.mouse.move(8, 8); await p.waitForTimeout(1500);
   const referme = await ecarts();
   v('au repos les pièces sont serrées l\'une contre l\'autre',
-    serre < ouvert * .62, Math.round(serre) + ' px');
-  v('sous la main l\'éventail s\'ouvre', ouvert > serre + 40 && ouv > .5,
+    serre < ouvert * .93, Math.round(serre) + ' px');
+  v('sous la main l\'éventail s\'ouvre', ouvert > serre + 20 && ouv > .5,
     Math.round(serre) + ' px → ' + Math.round(ouvert) + ' px');
-  v('et il se referme quand on lâche', referme < ouvert * .72,
+  v('et il se referme quand on lâche', referme < ouvert * .95,
     Math.round(referme) + ' px');
   await p.evaluate(() => __car(0)); await p.waitForTimeout(900);
   await p.click('#carN'); await p.waitForTimeout(1200);
@@ -219,8 +250,47 @@ const MESURE = `(sel => {
   /* ELLE EST AU CENTRE DE L'ÉCRAN, pas de sa seule colonne : avec un
      rail « auto » à droite et un cartel plus étroit à gauche, elle
      tombait 163 px à droite du milieu. */
-  v('et centrée sur l\'écran', Math.abs(dim.cadreX - 720) <= 12,
-    Math.round(dim.cadreX - 720) + ' px du centre');
+  /* le CADRE, pas l'image : celle-ci porte en plus le calage qui
+     épingle la pièce sur son axe */
+  const cadreX = await p.evaluate(() => {
+    const r = document.getElementById('tourIm').getBoundingClientRect();
+    return r.left + r.width / 2;
+  });
+  v('et centrée sur l\'écran', Math.abs(cadreX - 720) <= 12,
+    Math.round(cadreX - 720) + ' px du centre');
+  /* ═══ LA PIÈCE TOURNE SUR ELLE-MÊME ═══
+     Le studio n'a pas centré le sac sur l'axe du plateau : il orbitait
+     de 236 à 334 px sur un cadre de 1400 — « les sacs ne tournent pas
+     autour du même axe central au sac ». Chaque vue est épinglée par le
+     milieu de sa silhouette et par sa base. */
+  const AXE = `(() => {
+    const im = document.querySelector('.tour__im>img');
+    const r = im.getBoundingClientRect();
+    const N = 100, H = Math.round(N * im.naturalHeight / im.naturalWidth);
+    const c = document.createElement('canvas'); c.width = N; c.height = H;
+    const x = c.getContext('2d'); x.drawImage(im, 0, 0, N, H);
+    const d = x.getImageData(0, 0, N, H).data;
+    let g = N, dr = -1, bs = -1;
+    for (let j = 0; j < H; j++) for (let i = 0; i < N; i++)
+      if (d[(j * N + i) * 4 + 3] > 40) { if (i < g) g = i; if (i > dr) dr = i; if (j > bs) bs = j; }
+    return { cx: r.left + (g + dr + 1) / 2 / N * r.width,
+             bas: r.top + (bs + 1) / H * r.height };
+  })()`;
+  const orbite = [];
+  for (let k = 0; k < 12; k++) {
+    await p.evaluate(f => __poser(f), k / 12);
+    await p.waitForTimeout(120);
+    orbite.push(await p.evaluate(AXE));
+  }
+  await p.evaluate(() => __poser(0)); await p.waitForTimeout(200);
+  const ax = orbite.map(o => o.cx), ay = orbite.map(o => o.bas);
+  const amp = (t) => Math.max(...t) - Math.min(...t);
+  v('la pièce tourne sur elle-même, elle ne dérive pas',
+    amp(ax) <= 14 && amp(ay) <= 14,
+    amp(ax).toFixed(0) + ' px en x, ' + amp(ay).toFixed(0) + ' px en y sur un tour');
+  v('et son axe est au milieu de l\'écran',
+    Math.abs(ax.reduce((a, b) => a + b) / ax.length - 720) <= 14,
+    Math.round(ax.reduce((a, b) => a + b) / ax.length - 720) + ' px du centre');
   v('ce sont de vraies prises de vue',
     e.source.length > 20 && (await p.evaluate(() =>
       document.querySelector('.tour__c img').src.startsWith('data:image/webp'))));
@@ -277,7 +347,7 @@ const MESURE = `(sel => {
     !recule.pres && recule.approche === 1, '×' + recule.approche);
   /* on peut tourner AUTOUR d'un détail tant qu'il se voit ; passé son
      arc, rester au plus près montrerait une face qui ne le porte pas */
-  await p.evaluate(() => __element(6)); await p.waitForTimeout(1500);
+  await p.evaluate(() => __element(3)); await p.waitForTimeout(1600);
   const ferr = await p.evaluate(() => __etat());
   await p.evaluate(() => __poser(0)); await p.waitForTimeout(500);
   v('tourner le dos à un détail fait reculer tout seul',
@@ -327,6 +397,13 @@ const MESURE = `(sel => {
   await p.waitForTimeout(700);
   const apres = await p.evaluate(() => __etat());
   v('on change de peau', apres.peau === 'colette-cognac', apres.peau);
+  /* LA VUE PRÉCÉDENTE NE RESTE PAS DERRIÈRE. Elles sont toutes en
+     `position:absolute;inset:0` : la nouvelle s'insérait AVANT
+     l'ancienne, qui restait donc AU-DESSUS. On voyait le sac
+     précédent, ou deux sacs l'un sur l'autre. */
+  v('une seule vue reste dans le cadre',
+    (await p.evaluate(() => document.querySelectorAll('.tour__im>img').length)) === 1,
+    await p.evaluate(() => document.querySelectorAll('.tour__im>img').length));
   /* les séquences n'ont PAS le même nombre de vues (39 contre 22) :
      l'angle se repère par une fraction du tour, jamais par un numéro */
   v('les deux tours n\'ont pas le même nombre de vues',
@@ -360,13 +437,26 @@ const MESURE = `(sel => {
   v('avec sa macro de matière', dit.z.startsWith('data:image/webp'));
   /* la macro s'accorde à la peau : pas une écaille pour un veau lisse */
   await p.evaluate(() => __element(0)); await p.waitForTimeout(900);
-  const zLisse = await p.evaluate(() => (document.querySelector('#ditZ img') || {}).dataset.z);
+  const zLisse = await p.evaluate(() => __etat().macro);
   await p.evaluate(() => __peau(0));
   await p.waitForFunction(() => __pret(), null, { timeout: 30000 });
   await p.waitForTimeout(900);
-  const zCroco = await p.evaluate(() => (document.querySelector('#ditZ img') || {}).dataset.z);
+  const zCroco = await p.evaluate(() => __etat().macro);
   v('la macro s\'accorde à la peau choisie', zLisse !== zCroco,
     zLisse + ' (veau) contre ' + zCroco + ' (alligator)');
+  /* ET À LA COULEUR, PAS SEULEMENT À LA MATIÈRE. Le bordeaux et le
+     rouge sont tous deux en alligator : indexées par matière, ils
+     recevaient la MÊME macro — écarlate. On regardait un sac bordeaux
+     avec une écaille rouge à côté. */
+  await p.evaluate(() => __peau(1));
+  await p.waitForFunction(() => __pret(), null, { timeout: 30000 });
+  await p.waitForTimeout(900);
+  const zBordeaux = await p.evaluate(() => __etat().macro);
+  v('et à la couleur, pas seulement à la matière', zBordeaux !== zCroco,
+    zCroco + ' contre ' + zBordeaux);
+  await p.evaluate(() => __peau(0));
+  await p.waitForFunction(() => __pret(), null, { timeout: 30000 });
+  await p.waitForTimeout(700);
 
   /* ── LE ZOOM MATIÈRE ── */
   await p.evaluate(() => document.getElementById('ditZ').click());
@@ -408,8 +498,13 @@ const MESURE = `(sel => {
   v('et la légende de la macro ne parle plus d\'écaille',
     !/écaille/i.test(leg) && leg.length > 6, leg);
   await p.evaluate(() => __reculer());
+  /* on revient sur la Colette : c'est elle qui porte le discours que la
+     recette vérifie, et le texte d'une scène masquée ne compte pas */
   await p.evaluate(() => __scene('car'));
-  await p.evaluate(() => __car(0)); await p.waitForTimeout(600);
+  await p.evaluate(() => __car(0)); await p.waitForTimeout(700);
+  await p.evaluate(() => __prendre());
+  await p.waitForFunction(() => __pret(), null, { timeout: 30000 });
+  await p.waitForTimeout(800);
 
   /* ── LE DISCOURS ── */
   const txt = await p.evaluate(() => document.body.innerText);

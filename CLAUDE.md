@@ -668,6 +668,7 @@ Le shooting « 3D SITE » a livré cinq tours d'objet complets et 51 macros
 
 ```bash
 python3 tools/demo/tourner.py "<dossier 3D SITE>" 1400 60
+python3 tools/demo/macros.py  "<dossier ZOOM MATIERE>" 1500 58
 python3 tools/demo/assembler.py tools/demo/gabarit-tour.html tiraboschi-tour-360.html
 NODE_PATH=/opt/node22/lib/node_modules node tests/tour/recette.js
 ```
@@ -733,17 +734,31 @@ trou se recompose en blanc. Si le fond passait un jour au sombre, la
 doublure de l'Olympe se creuserait — il faudrait alors la reprendre à
 la main.
 
-**REMETTRE LA PIÈCE SUR SON AXE — et cette fois cela marche.**
+**REMETTRE LA PIÈCE SUR SON AXE — deux étapes, et la seconde n'est pas
+la même question.**
 « Lorsque le sac tourne il y a un effet de déplacement dû au décalage,
 alors qu'on devrait juste voir le sac tourner sur lui-même. »
+« L'axe doit se situer sur le bas du V ou au milieu du sac. »
 
-Sur un plateau tournant, le centre de masse de la silhouette est une
-fonction PÉRIODIQUE LISSE de l'angle : quelques harmoniques la
-décrivent. C'est de la parallaxe, elle est vraie, et il ne faut pas y
-toucher — sur la Colette rouge elle vaut 177 px d'amplitude. Ce qui
-S'ÉCARTE de cette courbe, en revanche, n'est pas de la rotation : c'est
-la pièce reposée un peu à côté entre deux prises. On ajuste donc une
-série de Fourier tronquée, et l'on ramène chaque vue sur la courbe.
+**Étape 1 — le tremblement.** Sur un plateau tournant, le centre de
+masse de la silhouette est une fonction PÉRIODIQUE LISSE de l'angle :
+quelques harmoniques la décrivent. Ce qui S'ÉCARTE de cette courbe
+n'est pas de la rotation : c'est la pièce reposée un peu à côté entre
+deux prises. Série de Fourier tronquée, chaque vue revient sur la
+courbe.
+
+**Étape 2 — L'ORBITE.** La courbe elle-même, on l'avait laissée : elle
+est PHYSIQUEMENT VRAIE (le studio n'a pas centré le sac sur l'axe du
+plateau, donc il orbite) et cela paraissait donc juste. Erreur : on ne
+regarde pas un plateau, on regarde un sac. Mesuré sur l'export final,
+l'orbite vaut **236 à 334 px sur un cadre de 1400** — un quart de la
+largeur. Chaque vue est donc ÉPINGLÉE, par le milieu de sa silhouette
+et par sa base (`cal` dans `tours.json`, appliqué en `translate` par la
+page). Relevé après : la pièce tient dans 4 px sur un tour complet.
+
+La leçon vaut au-delà du cas : *une correction physiquement fondée peut
+rester un défaut de produit.* Le premier réflexe — « la parallaxe est
+réelle, on n'y touche pas » — était rigoureux et faux.
 
 **ORDRE 3 EN X, ORDRE 2 EN Y**, et ce n'est pas un réglage : en x la
 parallaxe est réelle et riche (l'ordre 1 laisse 14,7 px de résidu sur
@@ -752,11 +767,11 @@ plateau NE MONTE PAS — le vrai signal est presque plat, tout le reste
 est de la manipulation. Résidus corrigés, à l'échelle de l'export :
 
 ```
-tour               vues   cadre        pièce   remise sur l'axe (x / y)
-colette-rouge       39    1400×1453    48 %     8,8 / 20,8 px
-colette-bordeaux    33    1400×1449    45 %    12,0 / 13,0 px
-colette-cognac      22    1400×1604    46 %    24,7 /  7,3 px
-olympe-camel        15    1400×2199    57 %    15,7 / 25,3 px
+tour               vues   cadre        pièce   tremblement    orbite épinglée
+colette-rouge       39    1400×1453    48 %     8,8 / 20,8      298 / 184 px
+colette-bordeaux    33    1400×1449    45 %    12,0 / 13,0      334 / 120 px
+colette-cognac      22    1400×1604    46 %    24,7 /  7,3      242 /  58 px
+olympe-camel        15    1400×2199    57 %    15,7 / 25,3      236 / 123 px
 ```
 9,4 Mo de vues et d'ombres, 13,5 Mo une fois la page assemblée. Le
 poids a doublé, et c'est le prix du cadrage serré : à définition égale,
@@ -774,6 +789,33 @@ détourage au lieu d'un reflet supposé.
 de la courbe en x (sur un tour complet la parallaxe s'annule en
 moyenne). Le cadre est rendu symétrique autour d'elle, donc la page n'a
 qu'à centrer l'image pour que la pièce tourne rond.
+
+**QUATRE DÉFAUTS RELEVÉS SUR UN ENREGISTREMENT DE L'ÉCRAN** (09/09) —
+la vidéo montre ce qu'aucune capture ne montre :
+
+1. **LA VUE PRÉCÉDENTE RESTAIT DERRIÈRE.** À chaque changement de peau
+   ou de modèle, `poser()` insérait la nouvelle vue et laissait
+   l'ancienne : toutes en `position:absolute;inset:0`, et la nouvelle
+   s'insérant AVANT, c'est l'ANCIENNE qui restait AU-DESSUS. On voyait
+   le sac précédent, ou deux sacs l'un sur l'autre, ou — quand la
+   séquence changeait de format — un cadre vide. C'est l'origine de
+   « les sacs se superposent si on change de modèle » ET d'une partie
+   des clignotements.
+2. **LES MACROS ÉTAIENT INDEXÉES PAR MATIÈRE, PAS PAR PEAU.** La
+   Colette bordeaux et la rouge sont toutes deux en alligator : même
+   macro, écarlate, à côté d'un sac bordeaux. Les 51 gros plans du
+   shooting couvrent les CINQ déclinaisons — il suffisait de les
+   nommer. Table dans `tools/demo/macros.py`, relevée à l'œil : on ne
+   distingue pas une tranche d'une anse automatiquement.
+3. **LE FONDU DE LA MACRO CLIGNOTAIT EN BLANC.** La nouvelle image,
+   insérée AVANT l'ancienne, montait en opacité SOUS une ancienne qui
+   descendait : au croisement, deux demi-images sur un fond clair.
+   Même faute d'ordre que le point 1.
+4. **LES VOISINES DU CARROUSEL PERDAIENT LEUR COULEUR.** À 0,67
+   d'opacité sur un fond papier, un carmin devient rose et un camel
+   devient ivoire : sur la vidéo on croyait voir six modèles là où il
+   y en a quatre. La profondeur se dit par l'échelle et la
+   perspective, jamais en délavant le cuir.
 
 **LE MODULE** — sept règles :
 
@@ -797,10 +839,12 @@ qu'à centrer l'image pour que la pièce tourne rond.
    « auto » à droite et un cartel de .62fr à gauche, le centre de la
    colonne du milieu tombait **163 px à droite** du centre de l'écran :
    la pièce paraissait décalée parce qu'elle l'était.
-4. **L'ÉVENTAIL S'OUVRE SOUS LA MAIN.** Au repos les pièces sont
-   serrées, presque l'une derrière l'autre ; dès qu'on pose la main
-   dessus elles s'écartent et se redressent, puis se referment quand on
-   lâche. À écart fixe, elles paraissaient simplement éloignées. Et la
+4. **ELLES SE TOUCHENT, ELLES NE SE RECOUVRENT PAS.** « Format cover
+   flow. » Le calcul : la pièce du centre occupe une demi-largeur de
+   chaque côté ; la voisine, réduite (×.84), reculée (2000/2200) et
+   tournée (cos 26°), en occupe .5 × .84 × .91 × .90 = .344. Il faut
+   donc .845 d'écart au minimum — on prend .90, et l'ouverture monte à
+   1.12 sous la main. L'éventail RESPIRE, il ne s'empile plus. Et la
    position est CONTINUE : la pièce suit le doigt, elle ne saute pas
    d'un cran tous les tiers d'écran.
 5. **TOUT EST CLIQUABLE.** Une pièce de côté vient au centre, celle du
@@ -815,10 +859,15 @@ qu'à centrer l'image pour que la pièce tourne rond.
    contre-échelle `--z` : sans elle un losange de 30 px en ferait 78 et
    masquerait ce qu'il désigne. Et l'on recule tout seul quand la pièce
    tourne le dos au détail.
-7. **LES POINTS SE POSENT SUR L'IMAGE**, pas sur la scène : placés en %
-   du conteneur ils tombaient à côté de la pièce. Et le `pointerdown`
-   de la rotation doit LAISSER PASSER un clic sur un point, sinon
-   `setPointerCapture` l'avale et rien ne répond.
+7. **UN REPÈRE DÉSIGNE UN POINT DE LA PIÈCE, PAS DU CADRE.** Posé en
+   fraction du conteneur, il montre un point fixe de l'écran : de face
+   la pièce est large, de profil étroite, et le repère des ferrures
+   tombait à 200 px de la ferrure. La boîte de CHAQUE vue est relevée à
+   l'export (`boite`) et la page y place les repères. Le rapprochement
+   se recalcule aussi À L'ARRIVÉE de la rotation : calculé avant, il
+   cadre l'angle qu'on quitte. Et le `pointerdown` de la rotation doit
+   LAISSER PASSER un clic sur un repère ou sur le bouton de recul,
+   sinon `setPointerCapture` l'avale et rien ne répond.
 8. **LE ZOOM SUIT LE MODÈLE ACTIF** : on cherche la macro de CE modèle
    et de CETTE peau, puis de cette peau, puis le défaut. Montrer une
    écaille d'alligator pendant qu'on regarde un veau lisse n'apprend
@@ -1822,6 +1871,27 @@ Règles structurelles (à l'origine de bugs réels — recette 31/07/2026) :
 □ Un bouton posé DANS une scène qui appelle `setPointerCapture` au
   `pointerdown` ne reçoit jamais son clic : l'exclure comme les autres
   éléments interactifs de la scène.
+□ Un calque qu'on remplace par fondu doit être inséré APRÈS celui qu'il
+  remplace, sinon il monte en opacité SOUS un sortant qui descend : au
+  croisement on voit le fond à travers les deux. Vrai pour une image de
+  séquence comme pour une vignette.
+□ Quand on change de séquence, RETIRER les nœuds de la précédente. Un
+  `insertBefore` sans suppression empile les vues : toutes en
+  `position:absolute;inset:0`, c'est l'ANCIENNE qui reste au-dessus.
+□ Un repère posé en fraction du CONTENEUR désigne un point de l'écran,
+  pas un point de l'objet : dès que l'objet change de silhouette il ne
+  montre plus rien. L'exprimer en fraction de la BOÎTE DE L'OBJET, vue
+  par vue.
+□ Un cadrage calculé AVANT une animation cadre l'état qu'on quitte :
+  le recalculer à l'arrivée.
+□ Ne jamais dire la profondeur par l'OPACITÉ sur un fond clair : à
+  0,67 un carmin devient rose et un camel devient ivoire. L'échelle et
+  la perspective ne mentent pas sur la couleur.
+□ Une tuile dont la taille vient de `naturalWidth` n'existe pas tant
+  que l'image n'est pas décodée : sur une page autonome de 14 Mo, cela
+  fait une seconde d'écran vide. Prendre le format dans les métadonnées.
+□ Dans `radial-gradient`, un rayon TROP COURT mange le sujet : à 64 %
+  le fondu commençait au tiers du cadre et délavait la pièce elle-même.
 ```
 
 ---

@@ -58,8 +58,10 @@ img{display:block}
 @media(max-width:900px){.ent__n .lien{display:none}}
 
 /* ═══════════ LES SCÈNES ═══════════ */
+/* un fondu court : au-delà, les pièces du carrousel flottent encore
+   derrière celle du configurateur, et l'on croit à une superposition */
 .scene{position:fixed;inset:var(--ent) 0 0;opacity:0;visibility:hidden;
-  transition:opacity .7s var(--e),visibility .7s;display:flex;flex-direction:column}
+  transition:opacity .38s var(--e),visibility .38s;display:flex;flex-direction:column}
 .scene.on{opacity:1;visibility:visible}
 /* l'ambiance suit la peau choisie — c'est elle qui colore la salle */
 /* Les pièces sont DÉTOURÉES : la salle peut donc être ce qu'on veut.
@@ -194,8 +196,11 @@ img{display:block}
    a et b sont les RAYONS de l'ellipse, en pourcentage de la largeur et
    de la hauteur de la boîte — pas son diamètre. À 125 %, la bordure
    tombait à 40 % du rayon, donc en plein dans la partie opaque, et le
-   fondu ne se voyait pas du tout. */
-.tour.pres .tour__c{--lucarne:radial-gradient(64% 64% at 50% 50%,#000 60%,transparent 100%)}
+   fondu ne se voyait pas du tout. Trop court, à l'inverse (64 %), il
+   mangeait la pièce elle-même : un profil étroit se retrouvait à
+   moitié délavé. À 80 %, le bord droit du cadre reste franc et seuls
+   les angles s'estompent. */
+.tour.pres .tour__c{--lucarne:radial-gradient(80% 80% at 50% 50%,#000 76%,transparent 104%)}
 /* LA BOÎTE EST POSÉE EN PIXELS, AU FORMAT EXACT DE LA VUE (voir
    `cadrer()`). En flex, une image à `height:auto` bornée par un
    `max-height` en pourcentage sur un parent de hauteur automatique
@@ -490,22 +495,16 @@ const PIECES = [
    1400 × 1453. Les mêmes fractions y désignent autre chose — le
    repère du « V » tombait sur la bandoulière. D'où `pPar`. */
 const ELEMENTS = [
-  { id:'peau', n:'La peau', a:0, p:[.5, .60], arc:[0, 1], zone:0.34,
-    pPar:{ 'olympe':[.5, .77] },
-    parPiece:{ 'olympe':'z-grain-camel',
-               'colette/Veau lisse':'z-lisse-profil',
-               'colette/Alligator':'z-croco' },
+  { id:'peau', n:'La peau', a:0, p:[.5, .62], arc:[0, 1], zone:0.34,
+    pPar:{ 'olympe':[.5, .80] },
     t:'La <em>peau</em>',
     d:"Quatre peausseries, une seule règle : pleine fleur, jamais corrigée. L'alligator vient d'élevages certifiés CITES ; le veau lisse de la tannerie Rémy Carriat, en Normandie. Sur cent peaux reçues, une dizaine entre à l'atelier.",
-    z:'z-croco', zl:"L'écaille, de tout près",
+    zl:"L'écaille, de tout près",
     zlPar:{ 'olympe':'Le grain du veau, de tout près',
             'colette/Veau lisse':'Le veau lisse, de tout près' },
     icone:'<path d="M3 6 h18 v12 h-18 z"/><path d="M3 12 h18 M9 6 v12 M15 6 v12"/>' },
-  { id:'v', n:'Le V', a:0, p:[.5, .35], arc:[.82, .18], zone:0.36,
-    pPar:{ 'olympe':[.30, .62] },
-    parPiece:{ 'olympe':'z-cordon',
-               'colette/Veau lisse':'z-lisse-v',
-               'colette/Alligator':'z-v' },
+  { id:'v', n:'Le V', a:0, p:[.5, .50], arc:[.82, .18], zone:0.36,
+    pPar:{ 'olympe':[.22, .62] },
     t:'Le <em>V</em>',
     d:"Il se taille dans la masse, d'un seul geste, sans repentir : un tranchet qui hésite laisse une trace que la tranche gardera. La pointe tombe au millimètre — elle se décide à la coupe, elle ne se rattrape pas au montage.",
     /* l'Olympe n'a pas de V : elle a un cordon. Montrer une photo de
@@ -514,45 +513,53 @@ const ELEMENTS = [
     nPar:{ 'olympe':'Le cordon' },
     tPar:{ 'olympe':'Le <em>cordon</em>' },
     dPar:{ 'olympe':"Un cordon de cuir referme le seau d'un geste, sans fermoir ni aimant : la tension du cuir suffit à le tenir. Il coulisse dans deux passants sertis de laiton, et se termine par deux embouts tournés dans la masse." },
-    z:'z-v', zl:'Le V, taillé dans la masse',
+    zl:'Le V, taillé dans la masse',
     zlPar:{ 'olympe':'Le cordon et son embout' },
     icone:'<path d="M4 6 L12 17 L20 6"/>' },
-  { id:'anse', n:"L'anse", a:.5, p:[.5, .14], arc:[0, 1], zone:0.24,
-    pPar:{ 'olympe':[.5, .20] },
-    parPiece:{ 'olympe':'z-ferrure', 'colette/Veau lisse':'z-lisse-anse' },
+  { id:'anse', n:"L'anse", a:.08, p:[.5, .09], arc:[0, 1], zone:0.24,
+    pPar:{ 'olympe':[.5, .12] },
     t:"L'<em>anse</em>",
     d:"Une seule anse, en tête de cuir, montée sur deux attaches de laiton massif. Elle est posée en dernier, quand la pièce est déjà montée : elle ne se recentre plus.",
-    z:'z-anse', zl:"L'attache, sertie à la main",
+    zl:"L'attache, sertie à la main",
     icone:'<path d="M7 20 v-9 a5 5 0 0 1 10 0 v9"/>' },
-  { id:'tranche', n:'La tranche', a:.25, p:[.70, .72], arc:[.12, .42], zone:0.2,
-    pPar:{ 'olympe':[.72, .78] },
-    parPiece:{ 'olympe':'z-fond', 'colette/Veau lisse':'z-lisse-profil' },
+  { id:'tranche', n:'La tranche', a:.25, p:[.78, .62], arc:[.12, .42], zone:0.2,
+    pPar:{ 'olympe':[.80, .84] },
     t:'La <em>tranche</em>',
     d:"Teinte puis polie à chaud, en trois passes. C'est le détail qui trahit une pièce faite vite : une tranche mal fermée boit l'eau et s'ouvre en deux hivers.",
-    z:'z-tranche', zl:'La tranche, teinte et polie',
+    zl:'La tranche, teinte et polie',
     icone:'<path d="M4 9 h16 v6 h-16 z"/><path d="M4 12 h16"/>' },
-  { id:'fond', n:'Le fond', a:.32, p:[.5, .82], arc:[0, 1], zone:0.26,
-    pPar:{ 'olympe':[.5, .90] },
-    parPiece:{ 'olympe':'z-fond', 'colette/Veau lisse':'z-lisse-fond' },
+  { id:'fond', n:'Le fond', a:.32, p:[.5, .93], arc:[0, 1], zone:0.26,
+    pPar:{ 'olympe':[.5, .96] },
     t:'Le <em>fond</em>',
     d:"Structuré, il tient la pièce debout sans armature. Le devant se coupe dans le croupon, la partie la plus dense de la peau ; le ventre, plus tendre, ne va jamais aux angles.",
-    z:'z-fond', zl:'Le fond et son embase',
+    zl:'Le fond et son embase',
     icone:'<path d="M5 7 L19 7 L17 17 L7 17 Z"/>' },
-  { id:'doublure', n:'La doublure', a:.08, p:[.46, .32], arc:[.86, .22], zone:0.28,
-    pPar:{ 'olympe':[.5, .60] },
-    parPiece:{ 'olympe':'z-toile-olympe' },
+  { id:'doublure', n:'La doublure', a:.10, p:[.40, .44], arc:[.86, .22], zone:0.28,
+    pPar:{ 'olympe':[.5, .58] },
     t:'La <em>doublure</em>',
     d:"Agneau des Gants de Millau, en Aveyron : une douceur qui tombe comme de la soie tendue. Sur l'Olympe, une toile écrue se retourne sur le cuir — la seule couture visible de la pièce.",
-    z:'z-interieur', zl:"L'intérieur, doublé",
+    zl:"L'intérieur, doublé",
     icone:'<path d="M4 5 h16 v14 h-16 z"/><path d="M8 5 v14"/>' },
-  { id:'ferrure', n:'Les ferrures', a:.55, p:[.38, .24], arc:[.42, .72], zone:0.15,
-    pPar:{ 'olympe':[.70, .55] },
-    parPiece:{ 'olympe':'z-ferrure' },
+  { id:'ferrure', n:'Les ferrures', a:.13, p:[.28, .44], arc:[.86, .40], zone:0.15,
+    pPar:{ 'olympe':[.66, .55] },
     t:'Les <em>ferrures</em>',
     d:"Laiton massif, finition satinée, pour l'éternité. Serties à la main, à l'œil et au toucher — jamais à la machine. Une ferrure fondue est parfaite et muette ; une ferrure sertie garde la trace de l'heure qu'on lui a donnée.",
-    z:'z-ferrure', zl:'Le laiton, serti à la main',
+    zl:'Le laiton, serti à la main',
     icone:'<circle cx="12" cy="12" r="5"/><path d="M12 3 v4 M12 17 v4"/>' },
 ];
+
+/* la macro de CETTE peau pour CET élément ; à défaut, celle du même
+   élément sur une autre peau — mieux vaut la bonne pièce dans une
+   autre couleur qu'une image absente */
+function macro(peau, el) {
+  const k = 'm-' + peau + '-' + el;
+  if (TOURS[k]) return k;
+  for (const P of PIECES) for (const K of P.peaux) {
+    const a = 'm-' + K.id + '-' + el;
+    if (TOURS[a]) return a;
+  }
+  return '';
+}
 
 /* ═══════════ L'AMBIANCE ═══════════ */
 /* Les pièces étant détourées, il n'y a plus de toile à raccorder :
@@ -647,7 +654,7 @@ let zoomEl = null, zoomCle = '', approcheK = 1;
 function approcher(i) {
   const el = ELEMENTS[i], b = $('tourIm'), c = $('tourC');
   if (!el || !el.p || !b.style.width) return;
-  const q = posDe(el);
+  const q = surCadre(posDe(el));
   const bw = parseFloat(b.style.width), bh = parseFloat(b.style.height);
   const r = c.getBoundingClientRect();
   if (!bw || !bh || !r.width) return;
@@ -681,10 +688,28 @@ function poser(fr) {
   if (im !== posee) {
     const c = $('tourIm');
     if (posee && posee.parentNode === c) c.replaceChild(im, posee);
-    else c.insertBefore(im, c.firstChild);
+    else {
+      /* ON CHANGE DE SÉQUENCE : les vues de la précédente sont encore
+         dans le cadre. Toutes sont en `position:absolute;inset:0`, donc
+         elles se superposent — et comme la nouvelle s'insère AVANT,
+         c'est l'ANCIENNE qui reste au-dessus. On voyait le sac
+         précédent, ou deux sacs l'un sur l'autre. */
+      [...c.children].forEach(v => { if (v.tagName === 'IMG') v.remove(); });
+      c.insertBefore(im, c.firstChild);
+    }
     im.alt = PIECES[pieceIdx].n;
     posee = im;
   }
+  /* ── LA PIÈCE TOURNE SUR ELLE-MÊME ──
+     Le studio n'a pas centré le sac sur l'axe du plateau : il orbite,
+     de 236 à 334 px sur un cadre de 1400 — un quart de la largeur. On
+     épingle donc chaque vue par le milieu de sa silhouette et par sa
+     base, relevés à l'export (`cal`). */
+  const c9 = ((TOURS.__tours__ || {})[cleVue] || {}).cal;
+  const q9 = c9 && c9[i];
+  const t9 = q9 ? 'translate(' + (q9[0] * 100).toFixed(3) + '%,'
+                              + (q9[1] * 100).toFixed(3) + '%)' : '';
+  im.style.transform = t9;
   /* et son ombre, qui est un fichier à part : c'est ce qui permet de
      l'adoucir ou de l'effacer sans retoucher une vue */
   const so = (ombres[cleVue] || [])[i];
@@ -693,10 +718,11 @@ function poser(fr) {
     if (o.firstChild !== so) {
       if (o.firstChild) o.replaceChild(so, o.firstChild); else o.appendChild(so);
     }
+    so.style.transform = t9;   /* l'ombre suit la pièce */
   }
   $('rotT').style.left = (fraction * 100).toFixed(2) + '%';
   $('rotL').textContent = Math.round(fraction * 360) + '°';
-  if (typeof majPoints === 'function') majPoints();
+  if (typeof majPoints === 'function') { majPos(); majPoints(); }
 }
 
 /* changer de peau GARDE L'ANGLE : c'est tout l'intérêt d'un tour
@@ -757,6 +783,7 @@ function habiller(pi, pe, garderAngle) {
   function fin(e) {
     if (id === null || (e && e.pointerId !== id)) return;
     t.releasePointerCapture(id); id = null; t.classList.remove('tire');
+    if (zoomEl !== null) setTimeout(() => { if (zoomEl !== null) approcher(zoomEl); }, 60);
     if (RM || Math.abs(vitesse) < 2) return;
     /* l'élan : la pièce continue et s'arrête d'elle-même */
     let v = vitesse / (largeur() * 1.5);
@@ -809,6 +836,11 @@ function versAngle(cible) {
     const e = 1 - Math.pow(1 - p, 3);
     poser(d0 + delta * e);
     if (p < 1) requestAnimationFrame(pas);
+    /* ON RECADRE UNE FOIS LA PIÈCE ARRIVÉE. Le rapprochement se calcule
+       sur la boîte de la vue COURANTE : lancé avant la rotation, il
+       visait l'angle qu'on quittait, et le repère désigné se retrouvait
+       à côté de ce qu'il montre. */
+    else if (zoomEl !== null) approcher(zoomEl);
   })(t0);
 }
 
@@ -837,16 +869,33 @@ ELEMENTS.forEach((el, i) => {
   $('tourIm').appendChild(b);
   POINTS.push({ el, b, i });
 });
-/* la position d'un repère, résolue pour le modèle en cours */
+/* ═══════════ OÙ SE POSE UN REPÈRE ═══════════
+   `p` désigne un point DE LA PIÈCE, en fraction de sa boîte — pas du
+   cadre. C'est la seule façon qu'il désigne encore quelque chose quand
+   la pièce tourne : de face elle est large, de profil étroite, et un
+   point fixe du cadre tombait à 200 px de la ferrure qu'il montrait.
+   La boîte de chaque vue est relevée à l'export (`boite`). */
 function posDe(el) {
   const P = PIECES[pieceIdx], K = P.peaux[peauIdx];
   return (el.pPar && (el.pPar[P.id + '/' + K.m] || el.pPar[P.id])) || el.p;
 }
+function boiteVue() {
+  const t = (TOURS.__tours__ || {})[cleVue];
+  const b = t && t.boite;
+  if (!b || !b.length) return [0, 0, 1, 1];
+  const i = Math.round(fraction * b.length) % b.length;
+  return b[i] || b[0];
+}
+/* du repère de la pièce à celui du cadre */
+function surCadre(q) {
+  const b = boiteVue();
+  return [b[0] + q[0] * (b[2] - b[0]), b[1] + q[1] * (b[3] - b[1])];
+}
 function majPos() {
   POINTS.forEach(({ el, b }) => {
-    const q = posDe(el);
-    b.style.left = (q[0] * 100) + '%';
-    b.style.top = (q[1] * 100) + '%';
+    const q = surCadre(posDe(el));
+    b.style.left = (q[0] * 100).toFixed(2) + '%';
+    b.style.top = (q[1] * 100).toFixed(2) + '%';
   });
 }
 function dansArc(arc, f) {
@@ -911,7 +960,12 @@ function majDit() {
      titre « Le V », ou une écaille d'alligator légendée pour un veau
      grainé — et le montage se voit. */
   const par = (m, def) => (m && (m[P.id + '/' + K.m] || m[P.id])) || def;
-  const zoom = par(el.parPiece, (el.parPeau && el.parPeau[K.m]) || el.z);
+  /* UNE MACRO PAR PEAU ET PAR ÉLÉMENT. Indexées par MATIÈRE, la Colette
+     bordeaux et la Colette rouge — toutes deux en alligator —
+     recevaient la même : on regardait un sac bordeaux avec une écaille
+     écarlate à côté. Les 51 gros plans du shooting couvrent les cinq
+     déclinaisons ; il suffisait de les nommer. */
+  const zoom = macro(K.id, el.id);
   zoomCle = zoom;
   $('ditK').textContent = P.n + ' · ' + K.n + ' · ' + K.m;
   $('ditT').innerHTML = par(el.tPar, el.t);
@@ -920,12 +974,21 @@ function majDit() {
   const z = $('ditZ');
   const anc = z.querySelector('img');
   if (!anc || anc.dataset.z !== zoom) {
+    /* LA NOUVELLE MACRO PASSE AU-DESSUS DE L'ANCIENNE, et l'ancienne
+       ne s'efface qu'ensuite. Insérée AVANT, elle montait en opacité
+       SOUS une ancienne qui descendait : au croisement on avait deux
+       demi-images sur un fond clair — le clignotement blanc que le
+       client a vu. */
     const im = document.createElement('img');
     im.dataset.z = zoom; im.alt = el.zl; im.decoding = 'async';
     im.src = TOURS[zoom] || '';
-    im.onload = () => requestAnimationFrame(() => im.classList.add('on'));
-    z.insertBefore(im, z.firstChild);
-    if (anc) { anc.classList.remove('on'); setTimeout(() => anc.remove(), 900); }
+    const montrer = () => requestAnimationFrame(() => {
+      im.classList.add('on');
+      if (anc) setTimeout(() => anc.remove(), 900);
+    });
+    im.onload = montrer;
+    if (im.complete) montrer();
+    z.insertBefore(im, $('ditZl'));
   }
   const leg = par(el.zlPar, el.zl);
   $('ditZl').textContent = leg;
@@ -960,7 +1023,7 @@ function ouvrirZoom(el, zoom, leg) {
   const i = $('plgI');
   const anc = i.querySelector('img'); if (anc) anc.remove();
   const im = document.createElement('img');
-  im.alt = leg || el.zl; im.src = TOURS[zoom || el.z] || '';
+  im.alt = leg || el.zl; im.src = TOURS[zoom] || '';
   i.insertBefore(im, i.firstChild);
   $('plgT').innerHTML = par(el.tPar, el.t);
   $('plgD').textContent = par(el.dPar, el.d);
@@ -987,6 +1050,13 @@ ANNEAU.forEach(a => {
      avant le décodage, `naturalWidth` vaut zéro et la boîte se
      mesurerait à rien */
   im.onload = () => { cadrerCar(); majCar(); };
+  /* la vignette est la vue 0 de la séquence : elle se cale comme les
+     autres, sinon le sac paraît décalé dans sa tuile */
+  const c0 = ((TOURS.__tours__ || {})[a.id] || {}).cal;
+  if (c0 && c0[0]) {
+    im.style.transform = 'translate(' + (c0[0][0] * 100).toFixed(3) + '%,'
+                                      + (c0[0][1] * 100).toFixed(3) + '%)';
+  }
   im.src = (TOURS[a.id] || [])[0] || '';
   d.appendChild(im);
   const h = document.createElement('span');
@@ -1021,7 +1091,13 @@ function cadrerCar() {
   if (!s.width || !s.height) return;
   ANNEAU.forEach(a => {
     const im = a.el.firstChild;
-    const nw = im.naturalWidth || 1400, nh = im.naturalHeight || 930;
+    /* LE FORMAT VIENT DE `tours.json`, PAS DU DÉCODAGE. En l'attendant,
+       `naturalWidth` vaut zéro, la tuile se mesurait à rien, et le
+       carrousel restait VIDE une seconde entière au chargement — c'est
+       la première image que l'on voit du module. */
+    const t0 = (TOURS.__tours__ || {})[a.id] || {};
+    const nw = (t0.cadre && t0.cadre[0]) || im.naturalWidth || 1400;
+    const nh = (t0.cadre && t0.cadre[1]) || im.naturalHeight || 930;
     /* LA PIÈCE TIENT LA MOITIÉ DE L'ÉCRAN, et l'on n'agrandit jamais
        la prise de vue au-delà de sa définition. */
     let w = Math.min(s.width * .5 / partDe(a.id), nw);
@@ -1045,7 +1121,14 @@ function cadrerCar() {
    se redressent — puis il se referme quand on lâche. C'est le geste de
    la référence, et c'est ce qui manquait : à écart fixe, les modèles
    paraissaient simplement éloignés les uns des autres. */
-const SERRE = .30, OUVERT = 1.04;
+/* ELLES SE TOUCHENT, ELLES NE SE RECOUVRENT PAS. « Les sacs se
+   superposent au lieu d'être juste rapprochés, format cover flow. »
+   Le calcul : la pièce du centre occupe une demi-largeur de chaque
+   côté ; la voisine, réduite (×.84), reculée (2000/2200) et tournée
+   (cos 26°), en occupe .5 × .84 × .91 × .90 = .344. Il faut donc au
+   moins .845 d'écart pour qu'elles ne mordent pas — on prend .90, et
+   l'ouverture monte à 1.12 sous la main. */
+const SERRE = .90, OUVERT = 1.12;
 let carPos = 0, carCible = 0, ouv = 0, ouvCible = 0, battement = null, enGeste = false;
 /* TROIS RAISONS D'OUVRIR L'ÉVENTAIL, et une seule valeur qui en
    découle. Chacune posait sa consigne dans son coin : le passage d'un
@@ -1070,14 +1153,19 @@ function majCar() {
   const ec = largeurPiece(centre) * (SERRE + (OUVERT - SERRE) * ouv);
   ANNEAU.forEach((a, i) => {
     const d = rang(i - carPos), ad = Math.abs(d);
-    const z = -Math.min(2.4, ad) * (200 + 200 * ouv);
-    const ry = Math.max(-36, Math.min(36, d * -26));
-    const s = 1 - Math.min(.46, ad * (.30 - .09 * ouv));
+    const z = -Math.min(2.4, ad) * 200;
+    const ry = Math.max(-30, Math.min(30, d * -26));
+    const s = 1 - Math.min(.34, ad * .16);
     a.el.style.transform = 'translate(-50%,-50%) translateX(' + (d * ec).toFixed(1) + 'px) ' +
       'perspective(2000px) translateZ(' + z.toFixed(0) + 'px) rotateY(' + ry.toFixed(1) + 'deg) ' +
       'scale(' + s.toFixed(3) + ')';
-    a.el.style.opacity = ad > 2.4 ? 0 : (1 - Math.min(.66, ad * .33));
-    a.el.style.filter = ad > .05 ? 'brightness(' + (1 - Math.min(.42, ad * .21)).toFixed(3) + ')' : 'none';
+    /* LA VOISINE GARDE SA COULEUR. À 0,67 d'opacité sur un fond
+       papier, un carmin devient rose et un camel devient ivoire : sur
+       la vidéo de recette, on croyait voir six modèles là où il y en a
+       quatre. La profondeur se dit par l'échelle et la perspective, pas
+       en délavant le cuir. */
+    a.el.style.opacity = ad > 2.4 ? 0 : (1 - Math.max(0, ad - 1) * .26).toFixed(3);
+    a.el.style.filter = ad > .05 ? 'brightness(' + (1 - Math.min(.14, ad * .07)).toFixed(3) + ')' : 'none';
     a.el.style.zIndex = String(60 - Math.round(ad * 10));
     a.hit.style.pointerEvents = ad > 2.4 ? 'none' : 'auto';
     a.el.classList.toggle('car__p--ici', ad < .5);
@@ -1224,6 +1312,7 @@ window.__etat = () => ({
   vues: vues.length, fraction: +fraction.toFixed(4),
   angle: Math.round(fraction * 360),
   element: ELEMENTS[elemIdx].id,
+  macro: zoomCle,
   zoom: $('plg').classList.contains('on'),
   pres: $('tour').classList.contains('pres'),
   approche: +approcheK.toFixed(3),

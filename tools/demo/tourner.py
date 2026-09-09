@@ -168,17 +168,47 @@ def relever(cle):
     fs = sorted(glob.glob(os.path.join(DST, '%s-[0-9][0-9].webp' % cle)))
     if not fs:
         return {}
-    ls, hs = [], []
+    ls, hs, cx, bas = [], [], [], []
     for f in fs:
         a = np.asarray(Image.open(f).convert('RGBA'))[..., 3].astype(np.float32)
         b = bornes(Image.fromarray(a.astype(np.uint8), 'L'))
-        if b:
-            ls.append(b[2] - b[0])
-            hs.append(b[3] - b[1])
+        if not b:
+            continue
+        ls.append(b[2] - b[0])
+        hs.append(b[3] - b[1])
+        cx.append((b[0] + b[2]) / 2)
+        bas.append(b[3])
     if not ls:
         return {}
     W, H = Image.open(fs[0]).size
-    return {'cadre': [W, H], 'piecemax': max(ls), 'hautmax': max(hs)}
+    # ── LA PIÈCE TOURNE SUR ELLE-MÊME, pas autour du plateau.
+    # La série de Fourier remettait la pièce sur la COURBE de parallaxe :
+    # elle est vraie physiquement — l'objet n'était pas centré sur le
+    # plateau, il orbitait — mais on ne regarde pas un plateau, on
+    # regarde un sac. « L'axe doit se situer sur le bas du V ou au
+    # milieu du sac. » On épingle donc, vue par vue, le MILIEU de la
+    # silhouette et sa BASE : le sac reste en place et tourne.
+    med = float(np.median(bas))
+    cal = [[round((W / 2 - cx[i]) / W, 5), round((med - bas[i]) / H, 5)]
+           for i in range(len(cx))]
+    # ── OÙ EST LA PIÈCE DANS SON CADRE, VUE PAR VUE.
+    # Les repères se posaient en fraction du CADRE : ils désignaient
+    # donc un point fixe de l'écran, pas un point de l'objet. De face la
+    # pièce est large, de profil elle est étroite — le repère des
+    # ferrures tombait à 200 px de la ferrure. On publie la boîte de
+    # chaque vue (déjà recalée), et la page y place les repères.
+    boites = []
+    for i, f in enumerate(fs):
+        a = np.asarray(Image.open(f).convert('RGBA'))[..., 3].astype(np.float32)
+        b = bornes(Image.fromarray(a.astype(np.uint8), 'L'))
+        if not b:
+            boites.append(boites[-1] if boites else [.4, .1, .6, .9])
+            continue
+        boites.append([round(b[0] / W + cal[i][0], 4), round(b[1] / H + cal[i][1], 4),
+                       round(b[2] / W + cal[i][0], 4), round(b[3] / H + cal[i][1], 4)])
+    return {'cadre': [W, H], 'piecemax': max(ls), 'hautmax': max(hs),
+            'cal': cal, 'boite': boites,
+            'orbite': [round(float(np.ptp(cx))), round(float(np.ptp(bas)))]}
 
 
 def main():
