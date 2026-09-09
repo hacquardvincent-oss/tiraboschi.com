@@ -748,6 +748,26 @@ $('tourR').onclick = reculer;
    fantôme : dès que le geste cesse, la pièce rejoint la vue la plus
    proche en 180 ms, comme un plateau qui trouve son cran. */
 let calage = null;
+/* ═══════════ LE RENDU SUIT L'ÉCRAN, PAS LA SOURIS ═══════════
+   `poser()` était appelé depuis `pointermove`. Or une souris rapporte
+   à 60–125 Hz, un pavé tactile bien moins, et l'écran rafraîchit à 60
+   ou 120 : mesuré sur un geste à vitesse constante, LA MOITIÉ DES
+   IMAGES NE BOUGEAIENT PAS, et le pas variait de ±25 % d'une image à
+   l'autre. C'est ce qui se sent comme un accroc.
+
+   Le geste ne fait donc plus que POSER UNE CIBLE ; une boucle liée à
+   l'écran la rejoint, un peu à chaque image. Toutes les images
+   bougent, du même pas — et la pièce y gagne un poids, celui d'un
+   objet qu'on lance et qui suit. */
+let cibleF = 0, suit = null, enPrise = false;
+function suivre() {
+  const d = ((cibleF - fraction) % 1 + 1.5) % 1 - .5;
+  if (Math.abs(d) < 2e-5 && !enPrise) { suit = null; poser(cibleF); return; }
+  poser(fraction + d * .34);
+  suit = requestAnimationFrame(suivre);
+}
+function relancerSuivi() { if (suit === null) suit = requestAnimationFrame(suivre); }
+function arreterSuivi() { cancelAnimationFrame(suit); suit = null; }
 function vueDe(k) { return vues[((k % vues.length) + vues.length) % vues.length]; }
 function calerVue(im, i) {
   /* le calage d'axe, vue par vue (voir `cal` dans tours.json) */
@@ -813,10 +833,11 @@ function poser(fr) {
 }
 /* rejoindre la vue la plus proche — le cran du plateau */
 function caler() {
-  cancelAnimationFrame(calage);
+  cancelAnimationFrame(calage); arreterSuivi();
   if (!vues.length) return;
   const n = vues.length, d0 = fraction;
   const cible = Math.round(fraction * n) / n;
+  cibleF = cible;
   let delta = ((cible - d0) % 1 + 1.5) % 1 - .5;
   if (RM || Math.abs(delta) < 1e-4) { poser(cible); return; }
   const t0 = performance.now();
@@ -920,6 +941,7 @@ $('tourMain').onclick = () => modeMain(!enMain);
     /* les boutons de la scène gardent leur clic */
     if (e.target.closest('.tour__r, .tour__m')) return;
     cibleP = e.target.closest('.pt'); bouge = false;
+    enPrise = true; cibleF = fraction;
     arreter();
     doigts.set(e.pointerId, { x: e.clientX, y: e.clientY });
     repartir();
@@ -949,8 +971,10 @@ $('tourMain').onclick = () => modeMain(!enMain);
       return;
     }
     /* ON LA FAIT TOURNER. Une largeur de scène = un tour et demi :
-       assez pour faire le tour d'un geste, sans qu'elle s'emballe. */
-    poser(f0 + (c.x - x0) / (largeur() * 1.5));
+       assez pour faire le tour d'un geste, sans qu'elle s'emballe.
+       On ne pose qu'une CIBLE : c'est l'écran qui la rejoint. */
+    cibleF = f0 + (c.x - x0) / (largeur() * 1.5);
+    relancerSuivi();
     /* LA VITESSE SE LISSE ET SE MESURE PAR SECONDE. Prise sur une seule
        image, elle dépend de la cadence d'affichage : l'élan partait en
        trombe ou pas du tout selon la machine. */
@@ -965,6 +989,7 @@ $('tourMain').onclick = () => modeMain(!enMain);
     doigts.delete(e.pointerId);
     try { t.releasePointerCapture(e.pointerId); } catch (x) {}
     if (doigts.size) { repartir(); return; }
+    enPrise = false;
     t.classList.remove('tire');
     /* sans mouvement, c'était un clic sur le repère */
     if (cibleP && !bouge) {
@@ -983,10 +1008,13 @@ $('tourMain').onclick = () => modeMain(!enMain);
        la vue la plus proche — sinon elle s'arrête sur un fondu, et un
        fondu figé est un fantôme. */
     let v = vitesse / (largeur() * 1.5);
+    relancerSuivi();
     elan = requestAnimationFrame(function suite() {
       v *= .935;
       if (Math.abs(v) < .00025) { caler(); return; }
-      poser(fraction + v);
+      /* l'élan pousse LA CIBLE ; la boucle de suivi fait le reste, et
+         le mouvement garde exactement la même texture qu'au doigt */
+      cibleF += v; relancerSuivi();
       elan = requestAnimationFrame(suite);
     });
   }
@@ -1004,8 +1032,8 @@ $('tourMain').onclick = () => modeMain(!enMain);
   t.addEventListener('wheel', e => {
     e.preventDefault(); arreter(); t.classList.add('deja');
     if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
-      poser(fraction + e.deltaX / (largeur() * 1.5));
-      clearTimeout(repos); repos = setTimeout(caler, 160);
+      cibleF += e.deltaX / (largeur() * 1.5); relancerSuivi();
+      clearTimeout(repos); repos = setTimeout(caler, 200);
       return;
     }
     if (!e.deltaY) return;
@@ -1030,18 +1058,19 @@ $('tourMain').onclick = () => modeMain(!enMain);
   t.addEventListener('keydown', e => {
     if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
     e.preventDefault(); t.classList.add('deja');
-    poser(fraction + (e.key === 'ArrowRight' ? 1 : -1) / Math.max(8, vues.length));
+    cibleF = fraction + (e.key === 'ArrowRight' ? 1 : -1) / Math.max(8, vues.length);
+    relancerSuivi();
   });
 
   /* le rail d'angle — il tourne la pièce quel que soit le mode */
   const p = $('rotP');
-  const suivre = e => {
+  const glisserRail = e => {
     const r = p.getBoundingClientRect();
     t.classList.add('deja');
-    poser((e.clientX - r.left) / r.width);
+    cibleF = (e.clientX - r.left) / r.width; relancerSuivi();
   };
-  p.addEventListener('pointerdown', e => { p.setPointerCapture(e.pointerId); suivre(e); });
-  p.addEventListener('pointermove', e => { if (e.buttons) suivre(e); });
+  p.addEventListener('pointerdown', e => { p.setPointerCapture(e.pointerId); glisserRail(e); });
+  p.addEventListener('pointermove', e => { if (e.buttons) glisserRail(e); });
   p.addEventListener('pointerup', caler);
 })();
 
@@ -1049,6 +1078,7 @@ $('tourMain').onclick = () => modeMain(!enMain);
    présente, on ne saute pas d'un côté à l'autre */
 let tourneAuto = false;
 function versAngle(cible) {
+  arreterSuivi(); cibleF = cible;
   if (RM) { poser(cible); return; }
   const d0 = fraction;
   tourneAuto = true;
@@ -1569,7 +1599,7 @@ window.__peau = i => $('choixL').children[i].click();
 window.__element = i => choisirElement(i);
 window.__points = () => POINTS.map(p => ({ id: p.el.id,
   vu: p.b.classList.contains('vu'), on: p.b.classList.contains('on') }));
-window.__poser = poser;
+window.__poser = f => { arreterSuivi(); cibleF = ((f % 1) + 1) % 1; poser(f); };
 window.__reculer = reculer;
 window.__main = modeMain;
 window.__caler = caler;

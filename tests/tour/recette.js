@@ -387,6 +387,44 @@ const MESURE = `(sel => {
   v('elle tourne au balayage à deux doigts',
     (await p.evaluate(() => __etat())).angle !== 0,
     (await p.evaluate(() => __etat())).angle + '°');
+  /* ═══ TOUTES LES IMAGES BOUGENT ═══
+     `poser()` était appelé depuis `pointermove`. Une souris rapporte à
+     60–125 Hz, un pavé tactile bien moins, l'écran rafraîchit à 60 ou
+     120 : mesuré sur un geste à vitesse constante, LA MOITIÉ DES
+     IMAGES NE BOUGEAIENT PAS (101 sur 192) et le pas variait de ±100 %.
+     Le geste ne pose plus qu'une cible ; une boucle liée à l'écran la
+     rejoint. */
+  await p.evaluate(() => { __reculer(); __poser(0); }); await p.waitForTimeout(500);
+  await p.evaluate(() => {
+    window.__f = [];
+    /* la boucle s'arrête d'elle-même : sinon elle survit à la lecture
+       et pousse dans un tableau qu'on vient d'effacer */
+    (function boucle() {
+      if (!window.__f) return;
+      window.__f.push(__etat().fraction);
+      requestAnimationFrame(boucle);
+    })();
+  });
+  const bg = await p.locator('#tourC').boundingBox();
+  await p.mouse.move(bg.x + bg.width * .5, bg.y + bg.height * .85);
+  await p.mouse.down();
+  for (let i = 1; i <= 60; i++) {
+    await p.mouse.move(bg.x + bg.width * .5 - i * 7, bg.y + bg.height * .85);
+    await p.waitForTimeout(12);
+  }
+  await p.mouse.up();
+  const flux = await p.evaluate(() => {
+    const f = window.__f; window.__f = null;
+    let n = 0;
+    for (let i = 1; i < f.length; i++) if (f[i] !== f[i - 1]) n++;
+    return { images: f.length - 1, bougees: n };
+  });
+  v('toutes les images du geste font avancer la pièce',
+    flux.images > 40 && flux.bougees / flux.images >= .85,
+    flux.bougees + ' sur ' + flux.images + ' ('
+      + Math.round(flux.bougees / flux.images * 100) + ' %)');
+  await p.waitForTimeout(2200);
+
   /* ON SAISIT LA PIÈCE PARTOUT, REPÈRES COMPRIS. Sept repères, c'était
      sept endroits où la prise ne faisait rien. Sans mouvement c'est un
      clic ; avec mouvement, une rotation. */

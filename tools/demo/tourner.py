@@ -155,6 +155,34 @@ def lisser(v, ordre):
     return A @ coef
 
 
+def axe_corps(a):
+    """Le milieu du SAC, pas celui de la silhouette.
+
+    Une anse et surtout une bandoulière balancent d'un bord à l'autre
+    quand la pièce tourne : centrer la silhouette ENTIÈRE, c'est faire
+    bouger le sac pour compenser le mouvement de sa lanière. Mesuré,
+    corps encore mobile de 22 px sur la Colette et de 35 sur l'Olympe
+    après un calage sur la silhouette — 2,5 % de la largeur du cadre.
+
+    Le corps, c'est la partie LARGE : on ne garde que les lignes qui
+    font au moins 60 % de la plus large, et l'on prend la MÉDIANE de
+    leurs milieux — une médiane, parce qu'une poignée de lignes de
+    transition ne doit pas tirer l'axe.
+    """
+    m = a > 40
+    larg = m.sum(axis=1)
+    if not larg.max():
+        return a.shape[1] / 2
+    lignes = np.where(larg >= larg.max() * .6)[0]
+    if not len(lignes):
+        return a.shape[1] / 2
+    mil = []
+    for y in lignes:
+        x = np.where(m[y])[0]
+        mil.append((x.min() + x.max() + 1) / 2)
+    return float(np.median(mil))
+
+
 def relever(cle):
     """La place que la pièce prend RÉELLEMENT dans sa vue.
 
@@ -176,12 +204,13 @@ def relever(cle):
             continue
         ls.append(b[2] - b[0])
         hs.append(b[3] - b[1])
-        cx.append((b[0] + b[2]) / 2)
+        cx.append(axe_corps(a))
         bas.append(b[3])
     if not ls:
         return {}
     W, H = Image.open(fs[0]).size
-    # ── LA PIÈCE TOURNE SUR ELLE-MÊME, pas autour du plateau.
+    # ── LA PIÈCE TOURNE SUR ELLE-MÊME, pas autour du plateau,
+    # et c'est LE SAC qu'on épingle, pas sa lanière (voir `axe_corps`).
     # La série de Fourier remettait la pièce sur la COURBE de parallaxe :
     # elle est vraie physiquement — l'objet n'était pas centré sur le
     # plateau, il orbitait — mais on ne regarde pas un plateau, on

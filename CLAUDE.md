@@ -747,6 +747,16 @@ n'est pas de la rotation : c'est la pièce reposée un peu à côté entre
 deux prises. Série de Fourier tronquée, chaque vue revient sur la
 courbe.
 
+**Étape 1 bis — C'EST LE SAC QU'ON ÉPINGLE, PAS SA LANIÈRE.** Une anse,
+et surtout une bandoulière, balancent d'un bord à l'autre quand la
+pièce tourne. Centrer la SILHOUETTE ENTIÈRE revient donc à déplacer le
+sac pour compenser le mouvement de sa lanière. Mesuré, après un calage
+sur la silhouette : le corps bougeait encore de 22 px sur la Colette et
+de **35 px sur l'Olympe** — 2,5 % de la largeur du cadre. On prend donc
+la partie LARGE (les lignes qui font au moins 60 % de la plus large) et
+la MÉDIANE de leurs milieux : `axe_corps()`. Après quoi le corps ne
+bouge plus **d'un seul pixel** sur les quatre tours.
+
 **Étape 2 — L'ORBITE.** La courbe elle-même, on l'avait laissée : elle
 est PHYSIQUEMENT VRAIE (le studio n'a pas centré le sac sur l'axe du
 plateau, donc il orbite) et cela paraissait donc juste. Erreur : on ne
@@ -817,7 +827,10 @@ la vidéo montre ce qu'aucune capture ne montre :
    y en a quatre. La profondeur se dit par l'échelle et la
    perspective, jamais en délavant le cuir.
 
-**LA FLUIDITÉ — trois causes, dont une qui expliquait tout le reste**
+**LA FLUIDITÉ — QUATRE CAUSES, et aucune n'était le nombre d'images
+par seconde.** Mesuré avant de toucher à quoi que ce soit : 16,7 ms
+médians par image, 9 images longues sur 352. Le rendu tenait déjà les
+60 Hz. Ce qui manquait était ailleurs.
 (09/09) : « peut-on avoir une option de prise en main du sac afin de le
 saisir et de le déplacer comme on veut ? est-ce qu'on peut rendre
 l'expérience plus fluide ? »
@@ -842,6 +855,23 @@ l'expérience plus fluide ? »
 3. **L'ÉLAN SE MESURE PAR SECONDE, PAS PAR IMAGE.** Pris sur un seul
    `pointermove`, il dépendait de la cadence d'affichage. Moyenne
    glissante, et division par le temps réel.
+4. **LE RENDU SUIVAIT LA SOURIS, PAS L'ÉCRAN.** `poser()` était appelé
+   depuis `pointermove`. Or une souris rapporte à 60–125 Hz, un pavé
+   tactile bien moins, et l'écran rafraîchit à 60 ou 120. Mesuré sur un
+   geste à VITESSE CONSTANTE :
+
+   ```
+                                    avant        après
+   images sans mouvement       101 / 192      6 / 246
+   écart-type du pas              1,296°       0,287°
+   irrégularité (σ / moyenne)      1,054        0,332
+   ```
+
+   Le geste ne fait plus que POSER UNE CIBLE ; une boucle liée à
+   l'écran la rejoint d'un tiers à chaque image. Toutes les images
+   bougent, du même pas — et la pièce y gagne un poids, celui d'un
+   objet qu'on lance et qui suit. L'élan pousse la même cible, si bien
+   que le lancer a exactement la texture du geste.
 
 **LA PRISE EN MAIN** — un mode, pas un mode d'emploi. Bouton sous le
 rail d'angle : « Prendre la pièce en main ». On la saisit alors et on
@@ -1957,6 +1987,12 @@ Règles structurelles (à l'origine de bugs réels — recette 31/07/2026) :
   clic, avec mouvement c'est un glissé.
 □ `img.onload` ne dit pas que l'image est prête à peindre : attendre
   `img.decode()` avant d'annoncer qu'une séquence est chargée.
+□ Ne jamais rendre depuis `pointermove` : la souris et l'écran n'ont
+  pas la même cadence, et la moitié des images restent alors figées.
+  Le geste pose une CIBLE, une boucle liée à l'écran la rejoint.
+□ Centrer un objet sur sa SILHOUETTE, c'est le faire bouger pour
+  compenser ce qui pend (anse, bandoulière, cordon). L'axe se prend
+  sur la partie LARGE — le corps.
 ```
 
 ---
