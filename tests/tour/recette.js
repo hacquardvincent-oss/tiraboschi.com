@@ -361,12 +361,17 @@ const MESURE = `(sel => {
   await p.keyboard.press('Escape'); await p.waitForTimeout(500);
   await p.evaluate(() => __reculer());
 
-  /* ── LE GESTE ── */
-  const b = await p.locator('#tour').boundingBox();
-  await p.mouse.move(b.x + b.width * .5, b.y + b.height * .5);
+  /* ── LE GESTE ──
+     on saisit LA PIÈCE, pas la scène : `#tour` contient aussi le rail
+     d'angle et le bouton de prise en main, qui ont leurs propres
+     gestes — son centre ne tombe plus sur le sac. */
+  const b = await p.locator('#tourC').boundingBox();
+  /* on saisit LE CUIR, à l'écart des repères : un repère n'est pas une
+     prise, et `pointerdown` l'exclut exprès */
+  await p.mouse.move(b.x + b.width * .5, b.y + b.height * .82);
   await p.mouse.down();
   for (let i = 1; i <= 14; i++) {
-    await p.mouse.move(b.x + b.width * .5 - i * 22, b.y + b.height * .5);
+    await p.mouse.move(b.x + b.width * .5 - i * 22, b.y + b.height * .82);
     await p.waitForTimeout(16);
   }
   await p.mouse.up(); await p.waitForTimeout(900);
@@ -382,12 +387,86 @@ const MESURE = `(sel => {
   v('elle tourne au balayage à deux doigts',
     (await p.evaluate(() => __etat())).angle !== 0,
     (await p.evaluate(() => __etat())).angle + '°');
+  /* ON SAISIT LA PIÈCE PARTOUT, REPÈRES COMPRIS. Sept repères, c'était
+     sept endroits où la prise ne faisait rien. Sans mouvement c'est un
+     clic ; avec mouvement, une rotation. */
+  await p.evaluate(() => { __reculer(); __poser(0); }); await p.waitForTimeout(400);
+  const rp = await p.locator('.pt.vu').first().boundingBox();
+  await p.mouse.move(rp.x + rp.width / 2, rp.y + rp.height / 2);
+  await p.mouse.down();
+  for (let i = 1; i <= 10; i++) {
+    await p.mouse.move(rp.x + rp.width / 2 - i * 24, rp.y + rp.height / 2);
+    await p.waitForTimeout(16);
+  }
+  /* on laisse l'élan s'éteindre : il court plus d'une seconde */
+  await p.mouse.up(); await p.waitForTimeout(1700);
+  v('on la saisit même sur un repère',
+    (await p.evaluate(() => __etat())).angle !== 0,
+    (await p.evaluate(() => __etat())).angle + '°');
+
   /* et au clavier, pour qui n'a pas de souris */
   await p.evaluate(() => __poser(0)); await p.waitForTimeout(200);
   await p.locator('#tour').focus();
   await p.keyboard.press('ArrowRight'); await p.waitForTimeout(300);
   v('elle tourne aussi au clavier',
     (await p.evaluate(() => __etat())).angle !== 0);
+
+  /* ═══ LA PRISE EN MAIN ═══
+     « Une option de prise en main du sac afin de le saisir et de le
+     déplacer comme on veut. » */
+  await p.evaluate(() => __reculer()); await p.waitForTimeout(700);
+  const bt = await p.locator('#tourC').boundingBox();
+  await p.click('#tourMain'); await p.waitForTimeout(400);
+  v('on peut prendre la pièce en main', (await p.evaluate(() => __etat())).main);
+  const angleAvant = (await p.evaluate(() => __etat())).angle;
+  await p.mouse.move(bt.x + bt.width * .5, bt.y + bt.height * .4);
+  await p.mouse.down();
+  for (let i = 1; i <= 8; i++) {
+    await p.mouse.move(bt.x + bt.width * .5 + i * 14, bt.y + bt.height * .4 + i * 9);
+    await p.waitForTimeout(20);
+  }
+  await p.mouse.up(); await p.waitForTimeout(500);
+  const porte = await p.evaluate(() => __etat());
+  v('et la porter où l\'on veut', porte.porte[0] > 60 && porte.porte[1] > 40,
+    porte.porte.join(' / '));
+  /* en main, le geste NE FAIT PAS tourner : c'est tout l'intérêt */
+  v('en main, le geste ne la fait plus tourner', porte.angle === angleAvant,
+    angleAvant + '° → ' + porte.angle + '°');
+  /* la molette approche et éloigne, autour du curseur */
+  await p.mouse.move(bt.x + bt.width * .5, bt.y + bt.height * .4);
+  for (let i = 0; i < 6; i++) { await p.mouse.wheel(0, -90); await p.waitForTimeout(40); }
+  await p.waitForTimeout(300);
+  const zoome = await p.evaluate(() => __etat());
+  v('la molette l\'approche', zoome.approche > 1.15, '×' + zoome.approche);
+  await p.dblclick('#tour', { position: { x: 40, y: 40 } });
+  await p.waitForTimeout(900);
+  const repose = await p.evaluate(() => __etat());
+  v('un double-clic la repose', repose.approche === 1 && repose.porte[0] === 0,
+    '×' + repose.approche + ' ' + repose.porte.join('/'));
+  await p.click('#tourMain'); await p.waitForTimeout(400);
+  v('et l\'on revient à la rotation', !(await p.evaluate(() => __etat())).main);
+
+  /* ═══ LE MOUVEMENT EST CONTINU ═══
+     15 à 39 vues, c'est un pas de 9 à 24 degrés : d'une vue à l'autre
+     la pièce saute. Deux calques et un fondu, et l'on ne saute plus —
+     sans inventer aucune vue. Puis LE CRAN : à l'arrêt, un fondu figé
+     serait un fantôme. */
+  await p.evaluate(() => __poser(.5 + .25 / 39)); await p.waitForTimeout(120);
+  const entre = await p.evaluate(() => {
+    const g = [...document.querySelectorAll('.tour__im>img')];
+    return { n: g.length, op: g.map(x => +getComputedStyle(x).opacity) };
+  });
+  v('entre deux vues, elles se fondent l\'une dans l\'autre',
+    entre.n === 2 && entre.op.every(o => o > .05 && o < .95),
+    entre.n + ' calques · ' + entre.op.map(o => o.toFixed(2)).join(' '));
+  await p.evaluate(() => __caler()); await p.waitForTimeout(500);
+  const cale = await p.evaluate(() => {
+    const g = [...document.querySelectorAll('.tour__im>img')];
+    return { n: g.length, op: g.map(x => +getComputedStyle(x).opacity) };
+  });
+  v('et à l\'arrêt la pièce se pose sur une vue nette',
+    cale.op.filter(o => o > .99).length === 1 && cale.op.filter(o => o > .02).length === 1,
+    cale.n + ' calques · ' + cale.op.map(o => o.toFixed(2)).join(' '));
 
   /* ── CHANGER DE PEAU GARDE L'ANGLE ── */
   await p.evaluate(() => __poser(.62)); await p.waitForTimeout(300);
@@ -400,9 +479,13 @@ const MESURE = `(sel => {
   /* LA VUE PRÉCÉDENTE NE RESTE PAS DERRIÈRE. Elles sont toutes en
      `position:absolute;inset:0` : la nouvelle s'insérait AVANT
      l'ancienne, qui restait donc AU-DESSUS. On voyait le sac
-     précédent, ou deux sacs l'un sur l'autre. */
-  v('une seule vue reste dans le cadre',
-    (await p.evaluate(() => document.querySelectorAll('.tour__im>img').length)) === 1,
+     précédent, ou deux sacs l'un sur l'autre. Le fondu en pose deux —
+     mais jamais une d'un AUTRE tour. */
+  v('aucune vue d\'un autre tour ne traîne dans le cadre',
+    (await p.evaluate(() => __etrangeres())) === 0,
+    await p.evaluate(() => __etrangeres()));
+  v('et au repos il n\'en reste qu\'une',
+    (await p.evaluate(() => document.querySelectorAll('.tour__im>img').length)) <= 2,
     await p.evaluate(() => document.querySelectorAll('.tour__im>img').length));
   /* les séquences n'ont PAS le même nombre de vues (39 contre 22) :
      l'angle se repère par une fraction du tour, jamais par un numéro */

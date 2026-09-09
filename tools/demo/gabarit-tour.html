@@ -37,7 +37,14 @@ html,body{height:100%;overflow:hidden}
 body{font-family:'Playfair Display',Georgia,serif;background:var(--papier2);color:var(--encre);
   -webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
 button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
-img{display:block}
+/* UNE IMAGE SE GLISSE, PAR DÉFAUT. Le navigateur démarre son
+   glisser-déposer natif dès le premier mouvement et ÉMET UN
+   `pointercancel` : la prise était perdue au bout d'un pixel, et la
+   pièce s'arrêtait de tourner sous le doigt. Mesuré : trois
+   `pointermove` seulement sur les sept envoyés. C'était là, la
+   raideur. */
+img{display:block;-webkit-user-drag:none;user-drag:none}
+.tour,.car{user-select:none;-webkit-user-select:none}
 .cap{font-family:system-ui,sans-serif;font-size:9px;letter-spacing:.28em;
   text-transform:uppercase}
 
@@ -274,6 +281,19 @@ img{display:block}
   opacity:0;transition:opacity .4s}
 .tour__ch.on{opacity:1}
 .tour__ch i{display:block;height:100%;width:0;background:var(--or);transition:width .2s linear}
+/* LA PRISE EN MAIN — l'autre façon de tenir la pièce. Sous le rail
+   d'angle et non dedans : à 9 px et .2em d'interlettrage, le libellé
+   fait 190 px, et le rail n'en a que 420. */
+.tour__m{flex-shrink:0;margin-top:clamp(6px,1.2vh,12px);
+  font-family:system-ui,sans-serif;font-size:9px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--gris);white-space:nowrap;
+  border-bottom:1px solid transparent;padding:3px 1px;
+  transition:color .35s var(--e),border-color .35s var(--e)}
+.tour__m:hover{color:var(--encre);border-color:rgba(16,16,16,.28)}
+.tour.main .tour__m{color:var(--encre);border-color:var(--encre)}
+/* en main, le curseur dit qu'on porte et non qu'on tourne */
+.tour.main{cursor:grab}
+.tour.main.tire{cursor:grabbing}
 /* le rail d'angle, sous la pièce */
 .rot{flex-shrink:0;width:min(420px,84%);margin-top:clamp(8px,1.6vh,18px);
   display:flex;align-items:center;gap:14px}
@@ -430,6 +450,7 @@ img{display:block}
         <span class="rot__l" id="rotL">0°</span>
         <div class="rot__p" id="rotP"><i class="rot__t" id="rotT"></i></div>
       </div>
+      <button class="tour__m" id="tourMain" aria-pressed="false">Prendre la pièce en main</button>
     </div>
 
     <nav class="rail" id="rail" aria-label="Les éléments de la pièce"></nav>
@@ -578,7 +599,8 @@ const ombres = {};
 function prechargerOmbres(cle) {
   if (ombres[cle]) return;
   ombres[cle] = (TOURS[cle + '-o'] || []).map(s => {
-    const im = new Image(); im.alt = ''; im.decoding = 'async'; im.src = s;
+    const im = new Image(); im.alt = ''; im.decoding = 'async';
+    im.draggable = false; im.src = s;
     return im;
   });
 }
@@ -587,16 +609,21 @@ function precharger(cle, surAvance) {
   if (cache[cle]) return Promise.resolve(cache[cle]);
   const src = TOURS[cle] || [];
   let faits = 0;
+  /* ON DÉCODE AVANT DE RENDRE LA MAIN. `onload` dit que l'octet est
+     là, pas que l'image est prête à peindre : la première rotation
+     décodait ses vues en route, et cela se sentait. */
   return Promise.all(src.map(s => new Promise(ok => {
     const im = new Image();
+    im.draggable = false;
     const fini = () => { faits++; if (surAvance) surAvance(faits / src.length); ok(im); };
-    im.onload = fini; im.onerror = fini;
+    im.onload = () => { (im.decode ? im.decode() : Promise.resolve()).then(fini, fini); };
+    im.onerror = fini;
     im.src = s;
   }))).then(ims => (cache[cle] = ims));
 }
 
 let pieceIdx = 0, peauIdx = 0, fraction = 0, elemIdx = 0;
-let vues = [], posee = null, natW = 0, natH = 0, cleVue = '';
+let vues = [], posee = null, natW = 0, natH = 0, cleVue = '', enCharge = false;
 
 /* ═══════════ LE CADRE DE LA PIÈCE ═══════════
    On pose la boîte EN PIXELS, au format exact de la prise de vue. La
@@ -619,6 +646,7 @@ function cadrer() {
   ajuster($('tourIm'), $('tourC').getBoundingClientRect());
   cadrerCar();
   if (zoomEl !== null) approcher(zoomEl);
+  else { borner(); appliquer(false); }
 }
 addEventListener('resize', cadrer);
 /* LA SCÈNE SE MESURE QUAND ELLE EST POSÉE, pas avant. Sur téléphone,
@@ -640,17 +668,53 @@ if (window.ResizeObserver) {
   }).observe($('carS'));
 }
 
-/* ═══════════ SE RAPPROCHER D'UN ÉLÉMENT ═══════════
-   « Si je clique sur l'anse, il se rapproche de moi. » Alors la pièce
-   avance : on l'agrandit AUTOUR DU POINT DÉSIGNÉ — l'origine de la
-   transformation est le point lui-même, donc il ne bouge pas — puis on
-   le translate au centre de la lucarne.
+/* ═══════════ LA PRÉSENTATION : APPROCHE, DÉPLACEMENT, ÉCHELLE ═══════════
+   UNE SEULE transformation décrit comment la pièce est présentée —
+   déplacée, agrandie. Trois fonctions y écrivaient chacune la leur ;
+   il suffirait de prendre la pièce en main après s'être approché d'un
+   détail pour que l'une efface l'autre. Tout passe par `vueT`.
 
-   Le grossissement se PLAFONNE À LA DÉFINITION DE LA PRISE DE VUE :
-   au-delà on montre du flou, et c'est précisément le reproche qui a
-   ouvert ce chantier. Pour aller plus près que ça, il y a la macro —
-   une vraie photographie, pas un agrandissement. */
+   L'ORIGINE EST TOUJOURS LE CENTRE DE LA BOÎTE. Un `transform-origin`
+   qui se déplace rend impossible de composer un déplacement avec un
+   agrandissement : le même `translate` ne veut plus dire la même chose
+   d'un appel à l'autre. Avec une origine fixe, amener un point q au
+   centre s'écrit d'une ligne — `T = −(q − ½) · taille · k`. */
 let zoomEl = null, zoomCle = '', approcheK = 1;
+const vueT = { x: 0, y: 0, k: 1 };
+
+function appliquer(anime) {
+  const b = $('tourIm');
+  b.style.transition = anime ? 'transform .8s var(--e)' : 'transform 0s';
+  b.style.transform = 'translate(' + vueT.x.toFixed(1) + 'px,' + vueT.y.toFixed(1)
+    + 'px) scale(' + vueT.k.toFixed(4) + ')';
+  b.style.setProperty('--z', (1 / vueT.k).toFixed(4));
+  approcheK = vueT.k;
+  $('tour').classList.toggle('pres',
+    vueT.k > 1.02 || Math.abs(vueT.x) > 3 || Math.abs(vueT.y) > 3);
+}
+
+/* on ne perd pas la pièce hors du cadre : elle reste à portée de main */
+function borner() {
+  const b = $('tourIm'), r = $('tourC').getBoundingClientRect();
+  const bw = parseFloat(b.style.width) || 0, bh = parseFloat(b.style.height) || 0;
+  /* on en garde toujours la moitié sous les yeux : « comme on veut »
+     ne veut pas dire « jusqu'à la perdre » */
+  const mx = Math.max(0, (bw * vueT.k + r.width) / 2
+                        - Math.min(bw * vueT.k, r.width) * .5);
+  const my = Math.max(0, (bh * vueT.k + r.height) / 2
+                        - Math.min(bh * vueT.k, r.height) * .5);
+  vueT.x = Math.max(-mx, Math.min(mx, vueT.x));
+  vueT.y = Math.max(-my, Math.min(my, vueT.y));
+}
+/* l'agrandissement se plafonne à la définition de la prise de vue :
+   au-delà on montre du flou, et c'est le reproche qui a ouvert ce
+   chantier. Pour aller plus près, il y a la macro. */
+function kMax() {
+  const bw = parseFloat($('tourIm').style.width) || 1;
+  return Math.max(1.4, natW / bw * 1.15);
+}
+
+/* ── SE RAPPROCHER D'UN ÉLÉMENT ── */
 function approcher(i) {
   const el = ELEMENTS[i], b = $('tourIm'), c = $('tourC');
   if (!el || !el.p || !b.style.width) return;
@@ -660,69 +724,107 @@ function approcher(i) {
   if (!bw || !bh || !r.width) return;
   const zone = el.zone || .3;
   let k = (.72 * Math.min(r.width, r.height)) / (zone * Math.min(bw, bh));
-  k = Math.max(1.3, Math.min(k, Math.max(1.35, natW / bw * 1.15)));
-  const x = (r.width - bw) / 2 + q[0] * bw;
-  const y = (r.height - bh) / 2 + q[1] * bh;
-  b.style.transformOrigin = (q[0] * 100).toFixed(2) + '% ' + (q[1] * 100).toFixed(2) + '%';
-  b.style.transform = 'translate(' + (r.width / 2 - x).toFixed(1) + 'px,'
-    + (r.height / 2 - y).toFixed(1) + 'px) scale(' + k.toFixed(3) + ')';
-  b.style.setProperty('--z', (1 / k).toFixed(3));
-  approcheK = k; zoomEl = i;
-  $('tour').classList.add('pres');
+  vueT.k = Math.max(1.3, Math.min(k, kMax()));
+  vueT.x = -(q[0] - .5) * bw * vueT.k;
+  vueT.y = -(q[1] - .5) * bh * vueT.k;
+  borner(); appliquer(true);
+  zoomEl = i;
 }
 function reculer() {
-  const b = $('tourIm');
-  b.style.transform = ''; b.style.transformOrigin = '';
-  b.style.setProperty('--z', '1');
-  approcheK = 1; zoomEl = null;
-  $('tour').classList.remove('pres');
+  vueT.x = vueT.y = 0; vueT.k = 1;
+  appliquer(true);
+  zoomEl = null;
 }
 $('tourR').onclick = reculer;
 
-/* la fraction du tour → la vue la plus proche */
+/* ═══════════ LA VUE : DEUX CALQUES, UN FONDU ═══════════
+   Une séquence de 15 à 39 vues, c'est un pas de 9 à 24 degrés : d'une
+   vue à l'autre, la pièce SAUTE. On garde donc DEUX calques et l'on
+   fond de l'un à l'autre selon la position CONTINUE dans le tour. Le
+   mouvement redevient fluide sans qu'on invente rien — on ne fabrique
+   aucune vue, on superpose deux vraies prises.
+
+   ET L'ON SE CALE À L'ARRÊT. Un fondu figé à mi-chemin, c'est un
+   fantôme : dès que le geste cesse, la pièce rejoint la vue la plus
+   proche en 180 ms, comme un plateau qui trouve son cran. */
+let calage = null;
+function vueDe(k) { return vues[((k % vues.length) + vues.length) % vues.length]; }
+function calerVue(im, i) {
+  /* le calage d'axe, vue par vue (voir `cal` dans tours.json) */
+  const c9 = ((TOURS.__tours__ || {})[cleVue] || {}).cal;
+  const q9 = c9 && c9[i];
+  im.style.transform = q9 ? 'translate(' + (q9[0] * 100).toFixed(3) + '%,'
+                                         + (q9[1] * 100).toFixed(3) + '%)' : '';
+}
 function poser(fr) {
   fraction = ((fr % 1) + 1) % 1;
   if (!vues.length) return;
-  const i = Math.round(fraction * vues.length) % vues.length;
-  const im = vues[i];
-  if (im !== posee) {
-    const c = $('tourIm');
-    if (posee && posee.parentNode === c) c.replaceChild(im, posee);
-    else {
-      /* ON CHANGE DE SÉQUENCE : les vues de la précédente sont encore
-         dans le cadre. Toutes sont en `position:absolute;inset:0`, donc
-         elles se superposent — et comme la nouvelle s'insère AVANT,
-         c'est l'ANCIENNE qui reste au-dessus. On voyait le sac
-         précédent, ou deux sacs l'un sur l'autre. */
-      [...c.children].forEach(v => { if (v.tagName === 'IMG') v.remove(); });
-      c.insertBefore(im, c.firstChild);
-    }
-    im.alt = PIECES[pieceIdx].n;
-    posee = im;
+  const n = vues.length, c = $('tourIm');
+  const pos = fraction * n;
+  let i = Math.floor(pos) % n, j = (i + 1) % n;
+  const brut = pos - Math.floor(pos);
+  /* LE FONDU DÉPEND DU PAS ANGULAIRE, et c'est mesuré : à 9° (39 vues)
+     deux vues voisines se ressemblent assez pour se fondre, et le
+     mouvement devient continu. À 24° — le pas de l'Olympe — elles ne
+     se ressemblent plus du tout : un fondu à mi-chemin y montre DEUX
+     sacs, deux anses, deux bandoulières. On resserre donc la
+     dissolution à mesure que le pas s'élargit ; au-delà de 20° elle
+     n'est plus qu'une coupe. */
+  const pas = 360 / n;
+  const melange = Math.max(0, Math.min(1, (20 - pas) / 8));
+  let t = Math.min(1, Math.max(0, (brut - .5) / Math.max(.06, melange) + .5));
+  /* au-delà de 20° de pas, plus de fondu du tout : à mi-chemin il
+     montrerait deux sacs entiers */
+  const fondu = n > 1 && melange > .02 && t > .02 && t < .98;
+  if (!fondu) { if (t >= .5) i = j; t = 0; }
+  const av = vueDe(i), ap = fondu ? vueDe(j) : null;
+
+  /* ON CHANGE DE SÉQUENCE : retirer les vues de la précédente. Toutes
+     sont en `position:absolute;inset:0` — laissées là, elles
+     s'empilent, et c'est l'ANCIENNE qui reste au-dessus. */
+  [...c.children].forEach(v => {
+    if (v.tagName === 'IMG' && v !== av && v !== ap) v.remove();
+  });
+  if (av.parentNode !== c) c.insertBefore(av, c.firstChild);
+  av.alt = PIECES[pieceIdx].n;
+  av.style.opacity = fondu ? (1 - t).toFixed(3) : '1';
+  calerVue(av, i);
+  if (ap) {
+    if (ap.parentNode !== c) c.insertBefore(ap, av.nextSibling);
+    else if (ap.previousSibling !== av) c.insertBefore(ap, av.nextSibling);
+    ap.alt = ''; ap.style.opacity = t.toFixed(3);
+    calerVue(ap, j);
   }
-  /* ── LA PIÈCE TOURNE SUR ELLE-MÊME ──
-     Le studio n'a pas centré le sac sur l'axe du plateau : il orbite,
-     de 236 à 334 px sur un cadre de 1400 — un quart de la largeur. On
-     épingle donc chaque vue par le milieu de sa silhouette et par sa
-     base, relevés à l'export (`cal`). */
-  const c9 = ((TOURS.__tours__ || {})[cleVue] || {}).cal;
-  const q9 = c9 && c9[i];
-  const t9 = q9 ? 'translate(' + (q9[0] * 100).toFixed(3) + '%,'
-                              + (q9[1] * 100).toFixed(3) + '%)' : '';
-  im.style.transform = t9;
-  /* et son ombre, qui est un fichier à part : c'est ce qui permet de
-     l'adoucir ou de l'effacer sans retoucher une vue */
-  const so = (ombres[cleVue] || [])[i];
+  posee = av;
+
+  /* l'ombre, fichier à part : elle suit la vue dominante */
+  const dom = t < .5 ? i : j;
+  const so = (ombres[cleVue] || [])[dom];
   if (so) {
     const o = $('tourO');
     if (o.firstChild !== so) {
       if (o.firstChild) o.replaceChild(so, o.firstChild); else o.appendChild(so);
     }
-    so.style.transform = t9;   /* l'ombre suit la pièce */
+    calerVue(so, dom);
   }
   $('rotT').style.left = (fraction * 100).toFixed(2) + '%';
   $('rotL').textContent = Math.round(fraction * 360) + '°';
   if (typeof majPoints === 'function') { majPos(); majPoints(); }
+}
+/* rejoindre la vue la plus proche — le cran du plateau */
+function caler() {
+  cancelAnimationFrame(calage);
+  if (!vues.length) return;
+  const n = vues.length, d0 = fraction;
+  const cible = Math.round(fraction * n) / n;
+  let delta = ((cible - d0) % 1 + 1.5) % 1 - .5;
+  if (RM || Math.abs(delta) < 1e-4) { poser(cible); return; }
+  const t0 = performance.now();
+  calage = requestAnimationFrame(function pas(t) {
+    const p = Math.min(1, (t - t0) / 180);
+    poser(d0 + delta * (1 - Math.pow(1 - p, 3)));
+    if (p < 1) calage = requestAnimationFrame(pas);
+  });
 }
 
 /* changer de peau GARDE L'ANGLE : c'est tout l'intérêt d'un tour
@@ -737,10 +839,10 @@ function habiller(pi, pe, garderAngle) {
   /* changer de peau garde aussi LE RAPPROCHEMENT : comparer deux cuirs
      de tout près est exactement ce à quoi sert un tour photographié */
   const presAvant = garderAngle ? zoomEl : null;
-  posee = null;
+  posee = null; enCharge = true;
   return precharger(K.id, p => { chb.style.width = (p * 100).toFixed(0) + '%'; })
     .then(ims => {
-      vues = ims;
+      vues = ims; enCharge = false;
       ch.classList.remove('on');
       /* LE FORMAT VIENT DE LA PRISE DE VUE, pas d'une valeur écrite en
          dur : chaque tour a son propre cadrage, calculé sur l'union des
@@ -748,6 +850,7 @@ function habiller(pi, pe, garderAngle) {
       const n = ims.find(im => im.naturalWidth);
       if (n) { natW = n.naturalWidth; natH = n.naturalHeight; }
       reculer();
+      if (enMain) modeMain(false);
       cadrer();
       poser(garderAngle ? fraction : 0);
       majChoix(); majDit(); majRail(); majPos();
@@ -755,62 +858,182 @@ function habiller(pi, pe, garderAngle) {
     });
 }
 
-/* ── le geste : on prend la pièce et on la tourne ── */
+/* ═══════════════════════════════════════════════════════════════
+   LE GESTE — DEUX FAÇONS DE TENIR LA PIÈCE
+
+   « Une option de prise en main du sac afin de le saisir et de le
+   déplacer comme on veut. »
+
+   · LA FAIRE TOURNER (par défaut) : on la prend et on la fait pivoter.
+   · LA PRENDRE EN MAIN : on la saisit et on la porte où l'on veut,
+     on l'approche, on l'éloigne. La rotation reste accessible au rail
+     d'angle, aux flèches et au balayage horizontal.
+
+   Dans les deux modes : la molette verticale (ou le pincement à deux
+   doigts) approche et éloigne ; le balayage HORIZONTAL fait tourner ;
+   un double-clic repose la pièce.
+   ═══════════════════════════════════════════════════════════════ */
+let enMain = false;
+function modeMain(v) {
+  enMain = v;
+  $('tour').classList.toggle('main', enMain);
+  const b = $('tourMain');
+  b.textContent = enMain ? 'Reposer la pièce' : 'Prendre la pièce en main';
+  b.setAttribute('aria-pressed', enMain ? 'true' : 'false');
+  $('tour').classList.add('deja');
+}
+$('tourMain').onclick = () => modeMain(!enMain);
+
 (function () {
   const t = $('tour');
-  let id = null, x0 = 0, f0 = 0, dernier = 0, vitesse = 0, elan = null, bouge = false;
+  /* on suit TOUS les doigts posés : c'est ce qui permet le pincement,
+     et sur une tablette de boutique c'est le geste qu'on essaie
+     d'abord */
+  const doigts = new Map();
+  let f0 = 0, x0 = 0, y0 = 0, tx0 = 0, ty0 = 0, k0 = 1;
+  let vitesse = 0, dernier = 0, dernierT = 0, elan = null, pince = 0;
   const largeur = () => Math.max(240, t.getBoundingClientRect().width);
-  function arreter() { cancelAnimationFrame(elan); elan = null; }
+  function arreter() { cancelAnimationFrame(elan); elan = null; cancelAnimationFrame(calage); }
+  const centre = () => {
+    let sx = 0, sy = 0;
+    doigts.forEach(d => { sx += d.x; sy += d.y; });
+    return { x: sx / doigts.size, y: sy / doigts.size };
+  };
+  const ecart = () => {
+    const v = [...doigts.values()];
+    return v.length < 2 ? 0 : Math.hypot(v[0].x - v[1].x, v[0].y - v[1].y);
+  };
+  function repartir() {
+    const c = centre();
+    x0 = c.x; y0 = c.y; f0 = fraction;
+    tx0 = vueT.x; ty0 = vueT.y; k0 = vueT.k;
+    pince = ecart();
+  }
+
+  /* UN REPÈRE EST AUSSI UNE PRISE. On l'excluait du geste pour que son
+     clic passe — mais sept repères sur la pièce, ce sont sept endroits
+     où la saisir ne fait rien. On prend donc la pièce PARTOUT, et l'on
+     décide à la levée : sans mouvement c'est un clic, avec mouvement
+     c'est une rotation. */
+  let cibleP = null, bouge = false, dernierRep = 0;
   t.addEventListener('pointerdown', e => {
-    /* un point de la pièce n'est pas une prise pour la rotation : sans
-       cette sortie, `setPointerCapture` avale le clic et les points ne
-       répondent jamais. Le bouton de recul non plus — il était dans la
-       scène, donc muet, et l'on restait au plus près. */
-    if (e.target.closest('.pt, .tour__r')) return;
-    arreter(); id = e.pointerId; x0 = e.clientX; f0 = fraction; bouge = false;
-    dernier = e.clientX; vitesse = 0;
-    t.classList.add('tire'); t.setPointerCapture(id);
+    /* les boutons de la scène gardent leur clic */
+    if (e.target.closest('.tour__r, .tour__m')) return;
+    cibleP = e.target.closest('.pt'); bouge = false;
+    arreter();
+    doigts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    repartir();
+    vitesse = 0; dernier = e.clientX; dernierT = performance.now();
+    t.classList.add('tire');
+    t.setPointerCapture(e.pointerId);
   });
+
   t.addEventListener('pointermove', e => {
-    if (id === null || e.pointerId !== id) return;
-    const d = e.clientX - x0;
-    if (Math.abs(d) > 3) { bouge = true; t.classList.add('deja'); }
-    /* une largeur de scène = un tour et demi : assez pour faire le
-       tour d'un geste, sans que la pièce s'emballe */
-    poser(f0 + d / (largeur() * 1.5));
-    vitesse = e.clientX - dernier; dernier = e.clientX;
+    if (!doigts.has(e.pointerId)) return;
+    doigts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const c = centre();
+    if (Math.abs(c.x - x0) > 4 || Math.abs(c.y - y0) > 4) { bouge = true; t.classList.add('deja'); }
+
+    if (doigts.size >= 2) {
+      /* PINCEMENT : on approche, et la pièce suit les deux doigts */
+      const d = ecart();
+      if (pince > 8 && d > 8) vueT.k = Math.max(1, Math.min(kMax(), k0 * d / pince));
+      vueT.x = tx0 + (c.x - x0); vueT.y = ty0 + (c.y - y0);
+      borner(); appliquer(false);
+      return;
+    }
+    if (enMain) {
+      /* ON PORTE LA PIÈCE : elle va exactement où va le doigt */
+      vueT.x = tx0 + (c.x - x0); vueT.y = ty0 + (c.y - y0);
+      borner(); appliquer(false);
+      return;
+    }
+    /* ON LA FAIT TOURNER. Une largeur de scène = un tour et demi :
+       assez pour faire le tour d'un geste, sans qu'elle s'emballe. */
+    poser(f0 + (c.x - x0) / (largeur() * 1.5));
+    /* LA VITESSE SE LISSE ET SE MESURE PAR SECONDE. Prise sur une seule
+       image, elle dépend de la cadence d'affichage : l'élan partait en
+       trombe ou pas du tout selon la machine. */
+    const now = performance.now();
+    const dt = Math.max(8, now - dernierT);
+    vitesse = vitesse * .6 + ((e.clientX - dernier) / dt * 16.7) * .4;
+    dernier = e.clientX; dernierT = now;
   });
+
   function fin(e) {
-    if (id === null || (e && e.pointerId !== id)) return;
-    t.releasePointerCapture(id); id = null; t.classList.remove('tire');
-    if (zoomEl !== null) setTimeout(() => { if (zoomEl !== null) approcher(zoomEl); }, 60);
-    if (RM || Math.abs(vitesse) < 2) return;
-    /* l'élan : la pièce continue et s'arrête d'elle-même */
+    if (!doigts.has(e.pointerId)) return;
+    doigts.delete(e.pointerId);
+    try { t.releasePointerCapture(e.pointerId); } catch (x) {}
+    if (doigts.size) { repartir(); return; }
+    t.classList.remove('tire');
+    /* sans mouvement, c'était un clic sur le repère */
+    if (cibleP && !bouge) {
+      const rep = cibleP; cibleP = null;
+      const now = performance.now();
+      if (now - dernierRep > 320) { dernierRep = now; rep.click(); }
+      return;
+    }
+    cibleP = null;
+    if (zoomEl !== null && !enMain) {
+      setTimeout(() => { if (zoomEl !== null) approcher(zoomEl); }, 60);
+    }
+    if (enMain) return;
+    if (RM || Math.abs(vitesse) < 1.2) { caler(); return; }
+    /* L'ÉLAN, puis LE CRAN. La pièce continue, ralentit, et se pose sur
+       la vue la plus proche — sinon elle s'arrête sur un fondu, et un
+       fondu figé est un fantôme. */
     let v = vitesse / (largeur() * 1.5);
-    (function suite() {
-      v *= .94;
-      if (Math.abs(v) < .0002) return;
+    elan = requestAnimationFrame(function suite() {
+      v *= .935;
+      if (Math.abs(v) < .00025) { caler(); return; }
       poser(fraction + v);
       elan = requestAnimationFrame(suite);
-    })();
+    });
   }
   t.addEventListener('pointerup', fin);
   t.addEventListener('pointercancel', fin);
-  /* le balayage à deux doigts d'un pavé tactile arrive en `wheel` */
-  let reste = 0;
+  /* la ceinture avec les bretelles : `-webkit-user-drag` ne suffit pas
+     partout, et un `dragstart` qui passe casse la prise */
+  t.addEventListener('dragstart', e => e.preventDefault());
+
+  /* LA MOLETTE : le balayage HORIZONTAL fait tourner, le VERTICAL
+     approche. C'est la répartition qu'un pavé tactile impose de
+     lui-même — deux doigts de côté pour tourner un objet, deux doigts
+     vers le haut pour s'en approcher. */
+  let repos = null;
   t.addEventListener('wheel', e => {
-    const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-    if (!d) return;
     e.preventDefault(); arreter(); t.classList.add('deja');
-    reste += d;
-    poser(fraction + reste / (largeur() * 1.5)); reste = 0;
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+      poser(fraction + e.deltaX / (largeur() * 1.5));
+      clearTimeout(repos); repos = setTimeout(caler, 160);
+      return;
+    }
+    if (!e.deltaY) return;
+    const r = $('tourC').getBoundingClientRect();
+    const av = vueT.k;
+    vueT.k = Math.max(1, Math.min(kMax(), vueT.k * Math.exp(-e.deltaY / 420)));
+    /* on approche AUTOUR DU CURSEUR : le détail qu'on vise ne fuit pas */
+    const sx = e.clientX - (r.left + r.width / 2) - vueT.x;
+    const sy = e.clientY - (r.top + r.height / 2) - vueT.y;
+    vueT.x -= sx * (vueT.k / av - 1);
+    vueT.y -= sy * (vueT.k / av - 1);
+    if (vueT.k <= 1.001) { vueT.x = vueT.y = 0; zoomEl = null; }
+    borner(); appliquer(false);
   }, { passive: false });
+
+  /* un double-clic repose la pièce — le geste d'annulation attendu */
+  t.addEventListener('dblclick', e => {
+    if (e.target.closest('.pt, .tour__r, .tour__m')) return;
+    reculer();
+  });
+
   t.addEventListener('keydown', e => {
     if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
     e.preventDefault(); t.classList.add('deja');
     poser(fraction + (e.key === 'ArrowRight' ? 1 : -1) / Math.max(8, vues.length));
   });
-  /* le rail d'angle */
+
+  /* le rail d'angle — il tourne la pièce quel que soit le mode */
   const p = $('rotP');
   const suivre = e => {
     const r = p.getBoundingClientRect();
@@ -819,6 +1042,7 @@ function habiller(pi, pe, garderAngle) {
   };
   p.addEventListener('pointerdown', e => { p.setPointerCapture(e.pointerId); suivre(e); });
   p.addEventListener('pointermove', e => { if (e.buttons) suivre(e); });
+  p.addEventListener('pointerup', caler);
 })();
 
 /* tourner DOUCEMENT jusqu'à un angle : c'est la pièce qui se
@@ -836,11 +1060,13 @@ function versAngle(cible) {
     const e = 1 - Math.pow(1 - p, 3);
     poser(d0 + delta * e);
     if (p < 1) requestAnimationFrame(pas);
-    /* ON RECADRE UNE FOIS LA PIÈCE ARRIVÉE. Le rapprochement se calcule
-       sur la boîte de la vue COURANTE : lancé avant la rotation, il
-       visait l'angle qu'on quittait, et le repère désigné se retrouvait
-       à côté de ce qu'il montre. */
-    else if (zoomEl !== null) approcher(zoomEl);
+    else {
+      caler();
+      /* ON RECADRE UNE FOIS LA PIÈCE ARRIVÉE. Le rapprochement se
+         calcule sur la boîte de la vue COURANTE : lancé avant la
+         rotation, il visait l'angle qu'on quittait. */
+      if (zoomEl !== null) approcher(zoomEl);
+    }
   })(t0);
 }
 
@@ -1045,7 +1271,7 @@ ANNEAU.forEach(a => {
   const d = document.createElement('div');
   d.className = 'car__p'; d.dataset.id = a.id;
   const im = document.createElement('img');
-  im.alt = a.P.n + ' · ' + a.K.n; im.decoding = 'async';
+  im.alt = a.P.n + ' · ' + a.K.n; im.decoding = 'async'; im.draggable = false;
   /* le cadre se pose au format de la vue, donc DÈS QU'ON LE CONNAÎT :
      avant le décodage, `naturalWidth` vaut zéro et la boîte se
      mesurerait à rien */
@@ -1239,6 +1465,7 @@ let glisse = false;
       survol = dedans; majOuverture();
     }, { passive: true });
   }
+  c.addEventListener('dragstart', e => e.preventDefault());
   c.addEventListener('pointerdown', e => {
     x0 = e.clientX; p0 = carPos; carCible = carPos; glisse = false;
     enGeste = true; majOuverture();
@@ -1316,6 +1543,8 @@ window.__etat = () => ({
   zoom: $('plg').classList.contains('on'),
   pres: $('tour').classList.contains('pres'),
   approche: +approcheK.toFixed(3),
+  main: enMain,
+  porte: [Math.round(vueT.x), Math.round(vueT.y)],
   ouverture: +ouv.toFixed(3),
   carPos: +carPos.toFixed(3),
   ambiance: getComputedStyle(document.documentElement).getPropertyValue('--ambiance').trim(),
@@ -1342,6 +1571,15 @@ window.__points = () => POINTS.map(p => ({ id: p.el.id,
   vu: p.b.classList.contains('vu'), on: p.b.classList.contains('on') }));
 window.__poser = poser;
 window.__reculer = reculer;
-window.__pret = () => vues.length > 0;
+window.__main = modeMain;
+window.__caler = caler;
+/* PRÊT VEUT DIRE : CETTE peau-ci est décodée. Un simple « il y a des
+   vues » restait vrai avec celles de la peau précédente, et la recette
+   lisait alors un état qui n'était plus le bon. */
+window.__pret = () => !enCharge && vues.length > 0;
+/* combien de vues étrangères à la séquence courante traînent dans le
+   cadre — le fondu en pose deux, jamais une d'un autre tour */
+window.__etrangeres = () => [...$('tourIm').children]
+  .filter(v => v.tagName === 'IMG' && !vues.includes(v)).length;
 </script>
 </body></html>

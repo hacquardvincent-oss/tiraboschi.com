@@ -817,6 +817,58 @@ la vidéo montre ce qu'aucune capture ne montre :
    y en a quatre. La profondeur se dit par l'échelle et la
    perspective, jamais en délavant le cuir.
 
+**LA FLUIDITÉ — trois causes, dont une qui expliquait tout le reste**
+(09/09) : « peut-on avoir une option de prise en main du sac afin de le
+saisir et de le déplacer comme on veut ? est-ce qu'on peut rendre
+l'expérience plus fluide ? »
+
+1. **UNE IMAGE SE GLISSE, PAR DÉFAUT.** Le navigateur démarre son
+   glisser-déposer natif dès le premier mouvement sur une `<img>` et
+   ÉMET UN `pointercancel` : **la prise était perdue au bout d'un
+   pixel**. Mesuré en comptant les événements — trois `pointermove`
+   reçus sur les sept envoyés. La pièce s'arrêtait de suivre le doigt,
+   et c'était là, l'essentiel de la raideur.
+   `-webkit-user-drag:none` + `draggable=false` + `dragstart` annulé.
+2. **UNE SÉQUENCE DE 15 À 39 VUES SAUTE.** 9° pour la Colette rouge,
+   24° pour l'Olympe. Deux calques, un fondu selon la position
+   CONTINUE dans le tour, et le mouvement redevient continu — sans
+   inventer aucune vue, on superpose deux vraies prises.
+   **MAIS LE FONDU DÉPEND DU PAS**, et c'est mesuré : à 9° deux vues
+   voisines se ressemblent assez ; à 24° un fondu à mi-chemin montre
+   DEUX sacs, deux anses, deux bandoulières. La dissolution se resserre
+   à mesure que le pas s'élargit et disparaît au-delà de 20°.
+   **ET L'ON SE CALE À L'ARRÊT** : un fondu figé est un fantôme, la
+   pièce rejoint la vue la plus proche en 180 ms — le cran du plateau.
+3. **L'ÉLAN SE MESURE PAR SECONDE, PAS PAR IMAGE.** Pris sur un seul
+   `pointermove`, il dépendait de la cadence d'affichage. Moyenne
+   glissante, et division par le temps réel.
+
+**LA PRISE EN MAIN** — un mode, pas un mode d'emploi. Bouton sous le
+rail d'angle : « Prendre la pièce en main ». On la saisit alors et on
+la porte où l'on veut ; la rotation reste au rail, aux flèches et au
+balayage horizontal. Dans les deux modes : molette verticale ou
+pincement à deux doigts pour approcher (autour du curseur), double-clic
+pour reposer. On en garde toujours la moitié sous les yeux — « comme on
+veut » ne veut pas dire « jusqu'à la perdre ».
+
+**UN REPÈRE EST AUSSI UNE PRISE.** On les excluait du geste pour que
+leur clic passe — mais sept repères sur la pièce, ce sont sept endroits
+où la saisir ne fait rien. On prend donc la pièce PARTOUT et l'on
+décide à la levée : sans mouvement c'est un clic, avec mouvement c'est
+une rotation.
+
+**UNE SEULE TRANSFORMATION DE PRÉSENTATION** (`vueT`), origine toujours
+au centre de la boîte. Trois fonctions écrivaient chacune la leur ; il
+suffisait de prendre la pièce en main après s'être approché d'un détail
+pour que l'une efface l'autre. Avec une origine fixe, amener un point q
+au centre s'écrit d'une ligne : `T = −(q − ½) · taille · k`.
+
+**ON DÉCODE AVANT DE RENDRE LA MAIN.** `onload` dit que l'octet est là,
+pas que l'image est prête à peindre : la première rotation décodait ses
+vues en route. `img.decode()` dans le préchargement — et `__pret()`
+ne dit vrai que pour LA peau courante, sinon la recette lit un état qui
+n'est plus le bon.
+
 **LE MODULE** — sept règles :
 
 1. **LA PIÈCE EST LE SUJET**, et c'est la PIÈCE qu'on mesure, pas le
@@ -1892,6 +1944,19 @@ Règles structurelles (à l'origine de bugs réels — recette 31/07/2026) :
   fait une seconde d'écran vide. Prendre le format dans les métadonnées.
 □ Dans `radial-gradient`, un rayon TROP COURT mange le sujet : à 64 %
   le fondu commençait au tiers du cadre et délavait la pièce elle-même.
+□ UNE `<img>` SE GLISSE PAR DÉFAUT : le navigateur démarre son
+  glisser-déposer natif et ÉMET UN `pointercancel`. Toute prise sur une
+  image est perdue au bout d'un pixel — mesuré, trois `pointermove`
+  reçus sur sept. `-webkit-user-drag:none`, `draggable=false`, et
+  `dragstart` annulé.
+□ Une vitesse prise sur une seule image dépend de la cadence
+  d'affichage : la diviser par le temps réel et la lisser.
+□ Un élément qui intercepte les clics AU MILIEU d'une surface qu'on
+  saisit (un repère sur l'objet) doit laisser passer le GESTE et ne
+  garder que le CLIC : on décide à la levée, sans mouvement c'est un
+  clic, avec mouvement c'est un glissé.
+□ `img.onload` ne dit pas que l'image est prête à peindre : attendre
+  `img.decode()` avant d'annoncer qu'une séquence est chargée.
 ```
 
 ---
