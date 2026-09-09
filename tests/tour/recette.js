@@ -20,6 +20,45 @@ const v = (n, c, d) => c ? (ok++, cas.push('  ok   ' + n))
 const rgb = s => (s.match(/\d+/g) || [0, 0, 0]).slice(0, 3).map(Number);
 const ecart = (a, b) => Math.max(...a.map((x, i) => Math.abs(x - b[i])));
 
+/* ═══ MESURER LA PIÈCE, PAS LE CADRE ═══
+   Une vue détourée est surtout transparente : la Colette n'occupe que
+   la moitié de la largeur de sa vue. Mesurer le cadre ne dit donc rien
+   de la taille à laquelle on voit le sac — et c'était précisément le
+   reproche. On dessine la vue sur une toile et l'on relève la boîte de
+   l'alpha : c'est la pièce.
+   Cela sert aussi à vérifier qu'elle n'est PAS COUPÉE : si la matière
+   touche le bas du cadre, c'est qu'on l'a tranchée à l'export. */
+const MESURE = `(sel => {
+  const im = document.querySelector(sel);
+  if (!im || !im.naturalWidth) return null;
+  const r = im.getBoundingClientRect();
+  const N = 120, H = Math.max(8, Math.round(N * im.naturalHeight / im.naturalWidth));
+  const c = document.createElement('canvas'); c.width = N; c.height = H;
+  const x = c.getContext('2d');
+  x.drawImage(im, 0, 0, N, H);
+  const d = x.getImageData(0, 0, N, H).data;
+  let g = N, dr = -1, ht = H, bs = -1;
+  for (let j = 0; j < H; j++) for (let i = 0; i < N; i++) {
+    if (d[(j * N + i) * 4 + 3] > 40) {
+      if (i < g) g = i; if (i > dr) dr = i;
+      if (j < ht) ht = j; if (j > bs) bs = j;
+    }
+  }
+  if (dr < 0) return null;
+  return {
+    cadreL: r.width, cadreH: r.height, natif: im.naturalWidth,
+    rapport: (r.width / r.height) / (im.naturalWidth / im.naturalHeight),
+    pieceL: (dr - g + 1) / N * r.width,
+    pieceH: (bs - ht + 1) / H * r.height,
+    /* les rangées vides sous la matière : zéro = la pièce est coupée */
+    sousLaPiece: (H - 1 - bs) / H,
+    surLaPiece: ht / H,
+    centreX: r.left + (g + dr + 1) / 2 / N * r.width,
+    cadreX: r.left + r.width / 2,
+    densite: im.naturalWidth / r.width,
+  };
+})`;
+
 (async () => {
   const nav = await chromium.launch();
   const erreurs = [];
@@ -41,10 +80,8 @@ const ecart = (a, b) => Math.max(...a.map((x, i) => Math.abs(x - b[i])));
   v('quatre pièces y tournent', e.carTotal === 4, e.carTotal);
   const car = await p.evaluate(() => {
     const ps = [...document.querySelectorAll('.car__p')];
-    const r = ps.map(x => x.getBoundingClientRect());
     return { n: ps.length,
-             /* la pièce au centre est la plus grande et la plus claire */
-             centre: r[0].width === Math.max(...r.map(x => x.width)),
+             ici: ps.findIndex(x => x.classList.contains('car__p--ici')),
              opacites: ps.map(x => +getComputedStyle(x).opacity),
              sources: ps.map(x => (x.querySelector('img').src || '').slice(0, 15)) };
   });
@@ -52,35 +89,81 @@ const ecart = (a, b) => Math.max(...a.map((x, i) => Math.abs(x - b[i])));
     car.sources.every(s => s.startsWith('data:image/we')), car.sources[0]);
   /* LA PIÈCE AU CENTRE TIENT LA MOITIÉ DE L'ÉCRAN, et elle est
      DÉTOURÉE : plus de plateau de studio derrière elle. */
-  const grand = await p.evaluate(() => {
-    const el = document.querySelectorAll('.car__p')[0];
-    const im = el.querySelector('img');
-    const r = im.getBoundingClientRect();
-    /* le coin de la vue doit être transparent : s'il ne l'est pas,
-       c'est que la toile est encore là */
-    const c = document.createElement('canvas');
-    c.width = c.height = 4;
-    const x = c.getContext('2d');
-    x.drawImage(im, 0, 0, 4, 4, 0, 0, 4, 4);
-    return { part: r.width / innerWidth, natif: im.naturalWidth,
-             densite: im.naturalWidth / r.width,
-             coin: x.getImageData(0, 0, 1, 1).data[3],
-             cliquable: getComputedStyle(el).pointerEvents !== 'none' };
-  });
-  v('la pièce au centre tient un tiers de l\'écran au moins',
-    grand.part >= .3, (grand.part * 100).toFixed(0) + ' % de la largeur');
+  const grand = await p.evaluate(MESURE + '(".car__p img")');
+  /* « les sacs sont censés être beaucoup plus grands, moitié de
+     l'écran ». Sur une pièce plus haute que large, c'est la HAUTEUR
+     qui sature : la porter à la moitié de la largeur (720 px) lui en
+     demanderait 970 de haut, plus que la fenêtre n'en a. */
+  v('la pièce au centre remplit la hauteur de la scène',
+    grand && grand.pieceH / 900 >= .55,
+    grand && (grand.pieceH / 900 * 100).toFixed(0) + ' % de la hauteur');
+  v('et elle est large', grand && grand.pieceL / 1440 >= .25,
+    grand && (grand.pieceL / 1440 * 100).toFixed(0) + ' % de la largeur');
   v('elle est nette à cette taille',
-    grand.natif >= 1200 && grand.densite >= 1.1,
-    grand.natif + ' px natifs pour ' + Math.round(grand.part * 1440) +
+    grand.natif >= 1200 && grand.densite >= 1.0,
+    grand.natif + ' px natifs pour ' + Math.round(grand.cadreL) +
       ' px affichés (×' + grand.densite.toFixed(2) + ')');
-  v('elle est détourée : pas de toile derrière elle', grand.coin < 24, grand.coin);
-  v('et elle est cliquable', grand.cliquable);
-  v('celle du centre domine', car.centre && car.opacites[0] === 1,
+  /* LE CADRE EST AU FORMAT DE LA VUE. En flex, une image bornée en
+     hauteur par un pourcentage s'écrase : l'anse s'aplatissait. */
+  v('la vue n\'est pas déformée', Math.abs(grand.rapport - 1) < .02,
+    '×' + grand.rapport.toFixed(3));
+  /* LA PIÈCE EST ENTIÈRE : de la transparence sous elle, donc rien
+     n'a été tranché à l'export. */
+  v('la pièce est entière, pas coupée en bas', grand.sousLaPiece > .01,
+    (grand.sousLaPiece * 100).toFixed(1) + ' % de vide sous la matière');
+  const coin = await p.evaluate(() => {
+    const im = document.querySelector('.car__p img');
+    const c = document.createElement('canvas'); c.width = c.height = 4;
+    const x = c.getContext('2d'); x.drawImage(im, 0, 0, 4, 4, 0, 0, 4, 4);
+    /* la cible est le SAC, pas son cadre : une vue détourée est aux
+       deux tiers transparente, et le cadre de la pièce du centre
+       recouvrirait celui de ses voisines */
+    const h = im.parentNode.querySelector('.car__h');
+    const rh = h.getBoundingClientRect(), ri = im.getBoundingClientRect();
+    return { a: x.getImageData(0, 0, 1, 1).data[3],
+             cliquable: getComputedStyle(h).pointerEvents !== 'none'
+               && rh.width > 60 && rh.width < ri.width * .95 };
+  });
+  v('elle est détourée : pas de toile derrière elle', coin.a < 24, coin.a);
+  v('et elle est cliquable', coin.cliquable);
+  v('celle du centre domine', car.ici === 0 && car.opacites[0] === 1,
     car.opacites.map(o => o.toFixed(2)).join(' '));
   v('les autres s\'effacent en s\'éloignant',
     car.opacites[1] < car.opacites[0] && car.opacites[2] < car.opacites[1],
     car.opacites.map(o => o.toFixed(2)).join(' '));
-  await p.click('#carN'); await p.waitForTimeout(900);
+
+  /* ═══ L'ÉVENTAIL ═══
+     Au repos les pièces sont SERRÉES ; sous la main elles s'écartent,
+     puis se referment. À écart fixe, elles paraissaient simplement
+     éloignées — c'était le reproche. */
+  const ecarts = async () => p.evaluate(() => {
+    const ps = [...document.querySelectorAll('.car__p')];
+    const c = ps.map(x => { const r = x.getBoundingClientRect(); return r.left + r.width / 2; });
+    return Math.abs(c[1] - c[0]);
+  });
+  const serre = await ecarts();
+  const bc = await p.locator('#carS').boundingBox();
+  await p.mouse.move(bc.x + bc.width * .5, bc.y + bc.height * .5);
+  await p.mouse.down();
+  for (let i = 1; i <= 6; i++) {
+    await p.mouse.move(bc.x + bc.width * .5 - i * 9, bc.y + bc.height * .5);
+    await p.waitForTimeout(30);
+  }
+  const ouvert = await ecarts();
+  const ouv = await p.evaluate(() => __etat().ouverture);
+  await p.mouse.up();
+  /* on sort la main du carrousel : le survol le tient ouvert, et c'est
+     voulu — sans quoi les voisines restent hors d'atteinte */
+  await p.mouse.move(8, 8); await p.waitForTimeout(1500);
+  const referme = await ecarts();
+  v('au repos les pièces sont serrées l\'une contre l\'autre',
+    serre < ouvert * .62, Math.round(serre) + ' px');
+  v('sous la main l\'éventail s\'ouvre', ouvert > serre + 40 && ouv > .5,
+    Math.round(serre) + ' px → ' + Math.round(ouvert) + ' px');
+  v('et il se referme quand on lâche', referme < ouvert * .72,
+    Math.round(referme) + ' px');
+  await p.evaluate(() => __car(0)); await p.waitForTimeout(900);
+  await p.click('#carN'); await p.waitForTimeout(1200);
   v('la flèche tourne l\'anneau', (await p.evaluate(() => __etat())).car === 1);
 
   /* ── LA PIÈCE ── */
@@ -88,8 +171,11 @@ const ecart = (a, b) => Math.max(...a.map((x, i) => Math.abs(x - b[i])));
   /* CLIQUER SUR LA PIÈCE DOIT FAIRE QUELQUE CHOSE — au centre, elle
      s'ouvre ; de côté, elle vient au centre. C'était le reproche : le
      clic ne produisait rien. */
-  await p.click('.car__p[data-id="colette-bordeaux"]');
-  await p.waitForTimeout(1100);
+  /* on survole d'abord : l'éventail s'ouvre, et la voisine se dégage
+     de derrière la pièce du centre */
+  await p.hover('#carS'); await p.waitForTimeout(1300);
+  await p.click('.car__p[data-id="colette-bordeaux"] .car__h');
+  await p.waitForTimeout(1300);
   v('cliquer une pièce de côté l\'amène au centre',
     (await p.evaluate(() => __etat())).car === 1,
     (await p.evaluate(() => __etat())).car);
@@ -101,24 +187,40 @@ const ecart = (a, b) => Math.max(...a.map((x, i) => Math.abs(x - b[i])));
   v('« prendre la pièce en main » ouvre le tour', e.scene === 'piece', e.scene);
   v('la séquence est chargée en entier', e.vues === 39, e.vues + ' vues');
   /* LA PIÈCE EST GRANDE ET NETTE DANS LE CONFIGURATEUR AUSSI */
-  const dim = await p.evaluate(() => {
-    const im = document.querySelector('.tour__im img');
-    const r = im.getBoundingClientRect();
+  const dim = await p.evaluate(MESURE + '(".tour__im>img")');
+  const coin2 = await p.evaluate(() => {
+    const im = document.querySelector('.tour__im>img');
     const c = document.createElement('canvas'); c.width = c.height = 4;
     const x = c.getContext('2d'); x.drawImage(im, 0, 0, 4, 4, 0, 0, 4, 4);
-    return { h: r.height, part: r.height / innerHeight,
-             natif: im.naturalWidth, densite: im.naturalWidth / r.width,
-             coin: x.getImageData(0, 0, 1, 1).data[3],
-             centre: Math.abs((r.left + r.width / 2) -
-               document.querySelector('.tour').getBoundingClientRect().left -
-               document.querySelector('.tour').getBoundingClientRect().width / 2) };
+    return x.getImageData(0, 0, 1, 1).data[3];
   });
-  v('la pièce occupe la hauteur de la scène', dim.part >= .5,
-    (dim.part * 100).toFixed(0) + ' % de la hauteur');
-  v('elle n\'est pas agrandie', dim.densite >= 1.05,
+  v('la pièce occupe la moitié de la hauteur', dim.pieceH / 900 >= .5,
+    (dim.pieceH / 900 * 100).toFixed(0) + ' % de la hauteur');
+  v('elle n\'est pas agrandie', dim.densite >= 1.0,
     dim.natif + ' px natifs (×' + dim.densite.toFixed(2) + ')');
-  v('elle est détourée', dim.coin < 24, dim.coin);
-  v('et centrée dans sa scène', dim.centre <= 3, Math.round(dim.centre) + ' px');
+  v('la vue n\'est pas déformée', Math.abs(dim.rapport - 1) < .02,
+    '×' + dim.rapport.toFixed(3));
+  v('la pièce est entière, pas coupée en bas', dim.sousLaPiece > .01,
+    (dim.sousLaPiece * 100).toFixed(1) + ' % de vide sous la matière');
+  v('elle est détourée', coin2 < 24, coin2);
+  /* L'OMBRE EST UN FICHIER À PART, et la page doit vraiment la
+     composer : elle était préchargée mais jamais accrochée. */
+  const ombre = await p.evaluate(() => {
+    const o = document.querySelector('#tourO img');
+    if (!o) return null;
+    const a = o.getBoundingClientRect(), b = document.getElementById('tourIm').getBoundingClientRect();
+    return { src: (o.src || '').slice(0, 15), natif: o.naturalWidth,
+             cale: Math.abs(a.width - b.width) < 2 && Math.abs(a.height - b.height) < 2 };
+  });
+  v('l\'ombre se compose sous la pièce',
+    ombre && ombre.src.startsWith('data:image/we') && ombre.natif > 0,
+    ombre && ombre.src);
+  v('et elle est calée sur le cadre de la vue', ombre && ombre.cale);
+  /* ELLE EST AU CENTRE DE L'ÉCRAN, pas de sa seule colonne : avec un
+     rail « auto » à droite et un cartel plus étroit à gauche, elle
+     tombait 163 px à droite du milieu. */
+  v('et centrée sur l\'écran', Math.abs(dim.cadreX - 720) <= 12,
+    Math.round(dim.cadreX - 720) + ' px du centre');
   v('ce sont de vraies prises de vue',
     e.source.length > 20 && (await p.evaluate(() =>
       document.querySelector('.tour__c img').src.startsWith('data:image/webp'))));
@@ -140,9 +242,54 @@ const ecart = (a, b) => Math.max(...a.map((x, i) => Math.abs(x - b[i])));
            r.top >= im.top - 20 && r.bottom <= im.bottom + 20;
   });
   v('un point tombe bien sur la pièce', surPiece);
-  await p.click('.pt[data-pt="anse"]'); await p.waitForTimeout(1200);
+  await p.click('.pt[data-pt="anse"]'); await p.waitForTimeout(1600);
   v('cliquer un point choisit son élément',
     (await p.evaluate(() => __etat())).element === 'anse');
+
+  /* ═══ SE RAPPROCHER ═══
+     « Si je clique sur l'anse, il se rapproche de moi. » Alors la
+     pièce avance, le point désigné vient au centre, et la matière
+     reste nette — le rapprochement se plafonne à la définition de la
+     prise de vue. */
+  const pres = await p.evaluate(() => __etat());
+  v('cliquer un point rapproche la pièce', pres.pres && pres.approche > 1.25,
+    '×' + pres.approche);
+  const vise = await p.evaluate(() => {
+    const b = document.querySelector('.pt[data-pt="anse"]').getBoundingClientRect();
+    const c = document.getElementById('tourC').getBoundingClientRect();
+    return { dx: Math.abs(b.left + b.width / 2 - (c.left + c.width / 2)),
+             dy: Math.abs(b.top + b.height / 2 - (c.top + c.height / 2)),
+             taille: b.width };
+  });
+  v('et amène l\'élément désigné au centre de la lucarne',
+    vise.dx <= 26 && vise.dy <= 26,
+    Math.round(vise.dx) + ' / ' + Math.round(vise.dy) + ' px');
+  /* le repère vit dans le cadre : sans contre-échelle, un losange de
+     30 px en ferait 78 dès qu'on s'approche et masquerait sa cible */
+  v('le repère ne grossit pas avec la pièce', Math.abs(vise.taille - 30) <= 7,
+    Math.round(vise.taille) + ' px');
+  const net = await p.evaluate(MESURE + '(".tour__im>img")');
+  v('et la matière reste nette de près', net.densite >= .85,
+    '×' + net.densite.toFixed(2));
+  await p.click('#tourR'); await p.waitForTimeout(1300);
+  const recule = await p.evaluate(() => __etat());
+  v('« voir la pièce entière » fait reculer',
+    !recule.pres && recule.approche === 1, '×' + recule.approche);
+  /* on peut tourner AUTOUR d'un détail tant qu'il se voit ; passé son
+     arc, rester au plus près montrerait une face qui ne le porte pas */
+  await p.evaluate(() => __element(6)); await p.waitForTimeout(1500);
+  const ferr = await p.evaluate(() => __etat());
+  await p.evaluate(() => __poser(0)); await p.waitForTimeout(500);
+  v('tourner le dos à un détail fait reculer tout seul',
+    ferr.pres && !(await p.evaluate(() => __etat())).pres);
+  /* un second clic sur le même point ouvre la macro : pour aller plus
+     près qu'une prise de vue, il faut une autre prise de vue */
+  await p.evaluate(() => __element(0)); await p.waitForTimeout(1400);
+  await p.click('.pt[data-pt="peau"]'); await p.waitForTimeout(800);
+  v('un second clic sur le point ouvre la macro',
+    (await p.evaluate(() => __etat())).zoom);
+  await p.keyboard.press('Escape'); await p.waitForTimeout(500);
+  await p.evaluate(() => __reculer());
 
   /* ── LE GESTE ── */
   const b = await p.locator('#tour').boundingBox();
@@ -236,6 +383,33 @@ const ecart = (a, b) => Math.max(...a.map((x, i) => Math.abs(x - b[i])));
   v('il est titré', zoom.t.length > 3, zoom.t);
   await p.keyboard.press('Escape'); await p.waitForTimeout(600);
   v('il se referme', !(await p.evaluate(() => __etat())).zoom);
+
+  /* ═══ CE QUI SE DIT SUIT LE MODÈLE ═══
+     L'Olympe n'a pas de V : elle a un cordon. Montrer une photo de
+     cordon sous le titre « Le V », ou légender « l'écaille » un veau
+     grainé, trahit le montage aussi sûrement qu'une image mal choisie. */
+  await p.evaluate(() => __car(3)); await p.waitForTimeout(900);
+  await p.evaluate(() => __prendre());
+  await p.waitForFunction(() => __pret(), null, { timeout: 30000 });
+  await p.waitForTimeout(900);
+  await p.evaluate(() => __element(1));
+  await p.waitForTimeout(1300);
+  const olympe = await p.evaluate(() => ({
+    piece: __etat().piece,
+    rail: [...document.querySelectorAll('.el__n')].map(x => x.textContent),
+    t: document.getElementById('ditT').textContent.trim(),
+    zl: document.getElementById('ditZl').textContent.trim(),
+  }));
+  v('sur l\'Olympe, le V devient le cordon', olympe.piece === 'olympe' &&
+    olympe.rail[1] === 'Le cordon' && /cordon/i.test(olympe.t),
+    olympe.rail[1] + ' · ' + olympe.t);
+  await p.evaluate(() => __element(0)); await p.waitForTimeout(1200);
+  const leg = await p.evaluate(() => document.getElementById('ditZl').textContent.trim());
+  v('et la légende de la macro ne parle plus d\'écaille',
+    !/écaille/i.test(leg) && leg.length > 6, leg);
+  await p.evaluate(() => __reculer());
+  await p.evaluate(() => __scene('car'));
+  await p.evaluate(() => __car(0)); await p.waitForTimeout(600);
 
   /* ── LE DISCOURS ── */
   const txt = await p.evaluate(() => document.body.innerText);

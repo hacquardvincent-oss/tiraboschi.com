@@ -673,47 +673,153 @@ NODE_PATH=/opt/node22/lib/node_modules node tests/tour/recette.js
 ```
 
 **LE DÉTOURAGE (`tools/demo/detour.py`)** — abandonné une première fois
-à tort. Quatre idées le rendent fiable, chacune contre un vrai échec :
+à tort. Six idées le rendent fiable, chacune contre un vrai échec :
 
-1. **La toile se MODÉLISE en surface quadratique** ajustée sur l'anneau
-   de bordure. Relevée seulement sur les marges, elle paraît sombre —
-   le halo du studio derrière la pièce passe alors pour du sujet, et
-   l'on obtient un rectangle blanc autour du sac.
+1. **La toile se MODÉLISE en surface polynomiale**, et **DEUX FOIS**.
+   Ajustée sur le seul anneau de bordure, elle extrapole vers le centre
+   — or le studio y allume un ovale de contre-jour qu'aucune
+   extrapolation ne devine. Le halo s'écarte alors du modèle autant
+   qu'un cuir, se classe sujet, forme un anneau FERMÉ autour de la
+   pièce que le remplissage ne peut plus franchir, et l'on garde une
+   auréole de toile grande comme le sac. Second ajustement, au degré 3,
+   sur le vrai fond une fois la pièce localisée : l'auréole disparaît,
+   et l'ouverture du V redevient transparente.
 2. **L'écart se mesure en TEINTE autant qu'en clarté** (axes opposés
    rouge-vert et jaune-bleu, pondérés ×3,4 contre ×1,6). Une distance
    RGB brute ne voit pas un cuir ivoire, aussi clair que la toile.
-3. **L'OMBRE PORTÉE se reconnaît à sa signature** : trois rapports
-   canal/fond presque égaux, tous entre 0,38 et 1. En dessous de 0,38
-   c'est un cuir noir, pas une ombre — la borne haute laissait une
-   flaque grise sous la pièce.
+3. **LA TOILE se reconnaît à sa signature** : trois rapports canal/fond
+   presque égaux. Cela vaut de l'ombre portée comme du halo — d'où
+   l'absence de borne haute. En dessous de 0,38 en revanche c'est un
+   cuir noir, pas une ombre.
 4. **On n'efface que ce qui COMMUNIQUE avec le bord** (remplissage par
    diffusion depuis les quatre coins), et l'on découpe une SILHOUETTE
    au seuil permissif : au seuil strict, un panneau de la teinte de la
    toile fuit et la diffusion s'engouffre.
+5. **La boîte de la pièce se prend PAR LA MASSE**, ligne à ligne et
+   colonne à colonne, pas par les extrêmes : quelques pixels rescapés
+   dans un coin donnaient une boîte d'un bord à l'autre du cadre, et
+   c'est elle qui commande tout le cadrage de la séquence.
+6. **LA PIÈCE NE SE COUPE PAS AU-DESSUS DE SA BASE.** Une première
+   version cherchait la « ligne de contact » par symétrie miroir, pour
+   trancher le reflet d'un sol laqué. Mesuré : elle tombait **75 à
+   180 px AU-DESSUS de la base réelle**, et le bas des sacs partait
+   avec le reflet — c'est le défaut que le client a vu, « les sacs sont
+   tout simplement coupés en bas ». Le reflet qu'elle traquait n'existe
+   pas ici : la masse d'alpha tombe de 97 % à 1 % en dix lignes à la
+   base. Le studio a posé la pièce sur une toile MATE. La base se prend
+   donc là où la matière s'arrête, et rien de plus.
 
-**LE REFLET SUR LE SOL LAQUÉ** n'est ni ombre ni sujet et aucune règle
-de couleur ne le distingue. Il est toujours sous la pièce : on éteint
-l'alpha en rampe sur les 5,5 % inférieurs du cadre.
+**LE CADRE SE PREND SUR LA PIÈCE, PAS SUR LE STUDIO.** Le cadrage par
+écart au pixel du coin retenait la nappe entière : la pièce n'occupait
+que **380 px sur 1400** — 27 % du cadre, le reste en toile exportée en
+pure perte. Elle paraissait floue parce qu'elle était petite. Le cadre
+se prend sur l'UNION DES SILHOUETTES détourées, avec 11 % de marge —
+marge nécessaire, pas décorative : `masque()` modélise la toile sur un
+anneau de bordure de 7 %, et un cadre serré au point d'y faire entrer
+la pièce ferait ajuster la nappe sur le sujet. La pièce passe ainsi de
+27 % à 48–66 % de la largeur de sa vue selon l'angle.
 
 **LA COLETTE IVOIRE EST ÉCARTÉE.** Son panneau en V a très exactement
 la teinte de la toile ET communique avec l'extérieur par l'ouverture du
 sac : aucun détourage automatique ne peut le retenir. Il lui faut une
 reprise à la main sur 29 vues, ou une reprise de vue sur fond contrasté.
 
-**LE MODULE** — quatre règles :
+**LA TOILE ÉCRUE DE L'OLYMPE EST PHOTOMÉTRIQUEMENT LA TOILE DU STUDIO** —
+mesuré : écart 7,6 contre 7,8, rapport de clarté 0,99 contre 1,01,
+étalement 0,005 contre 0,004. Aucune règle de couleur ne les sépare, et
+la doublure sort donc en partie transparente. **Cela ne se voit pas
+parce que le fond de la page est du papier**, de la même valeur : le
+trou se recompose en blanc. Si le fond passait un jour au sombre, la
+doublure de l'Olympe se creuserait — il faudrait alors la reprendre à
+la main.
 
-1. **LA PIÈCE EST LE SUJET** : au carrousel elle tient un tiers de la
-   largeur au moins ; dans le configurateur, la moitié de la hauteur.
-   Exportée à 1400 px, elle n'est jamais agrandie. La recette mesure
-   `naturalWidth / largeur affichée` aux deux endroits.
-2. **TOUT EST CLIQUABLE.** Une pièce de côté vient au centre, celle du
-   centre s'ouvre. Sans quoi le carrousel ne répond pas au geste le
-   plus naturel — et c'était le cas.
-3. **LES POINTS SE POSENT SUR L'IMAGE**, pas sur la scène : placés en %
+**REMETTRE LA PIÈCE SUR SON AXE — et cette fois cela marche.**
+« Lorsque le sac tourne il y a un effet de déplacement dû au décalage,
+alors qu'on devrait juste voir le sac tourner sur lui-même. »
+
+Sur un plateau tournant, le centre de masse de la silhouette est une
+fonction PÉRIODIQUE LISSE de l'angle : quelques harmoniques la
+décrivent. C'est de la parallaxe, elle est vraie, et il ne faut pas y
+toucher — sur la Colette rouge elle vaut 177 px d'amplitude. Ce qui
+S'ÉCARTE de cette courbe, en revanche, n'est pas de la rotation : c'est
+la pièce reposée un peu à côté entre deux prises. On ajuste donc une
+série de Fourier tronquée, et l'on ramène chaque vue sur la courbe.
+
+**ORDRE 3 EN X, ORDRE 2 EN Y**, et ce n'est pas un réglage : en x la
+parallaxe est réelle et riche (l'ordre 1 laisse 14,7 px de résidu sur
+le rouge, l'ordre 3 en laisse 5,4) ; en y un objet rigide sur un
+plateau NE MONTE PAS — le vrai signal est presque plat, tout le reste
+est de la manipulation. Résidus corrigés, à l'échelle de l'export :
+
+```
+tour               vues   cadre        pièce   remise sur l'axe (x / y)
+colette-rouge       39    1400×1453    48 %     8,8 / 20,8 px
+colette-bordeaux    33    1400×1449    45 %    12,0 / 13,0 px
+colette-cognac      22    1400×1604    46 %    24,7 /  7,3 px
+olympe-camel        15    1400×2199    57 %    15,7 / 25,3 px
+```
+9,4 Mo de vues et d'ombres, 13,5 Mo une fois la page assemblée. Le
+poids a doublé, et c'est le prix du cadrage serré : à définition égale,
+la pièce porte trois fois plus de pixels utiles qu'avant.
+
+C'est aussi ce qui rachète l'échec précédent, qu'il ne faut pas pour
+autant oublier : **recaler sur la MÉDIANE d'une ligne de contact
+détectée par symétrie** forçait une constante là où il y a une courbe,
+avec un détecteur bruité par-dessus ; la saccade passait de 6,1 à
+27,4 px/vue. La différence n'est pas « une heuristique de plus » : on
+suit une courbe au lieu d'une constante, et on la mesure sur l'alpha du
+détourage au lieu d'un reflet supposé.
+
+**LE CENTRE DU CADRE EST L'AXE DE ROTATION** : la composante continue
+de la courbe en x (sur un tour complet la parallaxe s'annule en
+moyenne). Le cadre est rendu symétrique autour d'elle, donc la page n'a
+qu'à centrer l'image pour que la pièce tourne rond.
+
+**LE MODULE** — sept règles :
+
+1. **LA PIÈCE EST LE SUJET**, et c'est la PIÈCE qu'on mesure, pas le
+   cadre : une vue détourée est surtout transparente, et le cadre ne
+   dit rien de la taille à laquelle on voit le sac. La recette dessine
+   la vue sur une toile et relève la boîte de l'alpha. Sur une pièce
+   plus haute que large, c'est la HAUTEUR qui sature : la porter à la
+   moitié de la largeur (720 px) lui en demanderait 970 de haut, plus
+   que la fenêtre n'en a. On vise donc 55 % de la hauteur, et l'on
+   dimensionne sur `piecemax` (relevé à l'export) pour que tous les
+   modèles paraissent de la même taille.
+2. **LE CADRE EST POSÉ EN PIXELS PAR LE JS, AU FORMAT DE LA VUE.** En
+   flex, une image en `height:auto` bornée par un `max-height` en
+   POURCENTAGE, dans un parent de hauteur AUTOMATIQUE, s'étire dans le
+   sens de la contrainte : l'anse s'aplatissait et le bas sortait du
+   cadre. Le pourcentage ne se résout pas contre une hauteur auto — il
+   est purement et simplement ignoré. La recette mesure le rapport
+   affiché contre le rapport natif et exige moins de 2 % d'écart.
+3. **LES DEUX COLONNES DE BORD ONT LA MÊME LARGEUR.** Avec un rail
+   « auto » à droite et un cartel de .62fr à gauche, le centre de la
+   colonne du milieu tombait **163 px à droite** du centre de l'écran :
+   la pièce paraissait décalée parce qu'elle l'était.
+4. **L'ÉVENTAIL S'OUVRE SOUS LA MAIN.** Au repos les pièces sont
+   serrées, presque l'une derrière l'autre ; dès qu'on pose la main
+   dessus elles s'écartent et se redressent, puis se referment quand on
+   lâche. À écart fixe, elles paraissaient simplement éloignées. Et la
+   position est CONTINUE : la pièce suit le doigt, elle ne saute pas
+   d'un cran tous les tiers d'écran.
+5. **TOUT EST CLIQUABLE.** Une pièce de côté vient au centre, celle du
+   centre s'ouvre.
+6. **CLIQUER UN ÉLÉMENT RAPPROCHE LA PIÈCE.** On l'agrandit AUTOUR DU
+   POINT DÉSIGNÉ (l'origine de la transformation est le point, donc il
+   ne bouge pas), puis on le translate au centre de la lucarne. Le
+   grossissement se **plafonne à la définition de la prise de vue** :
+   au-delà on montre du flou, et c'est le reproche qui a ouvert ce
+   chantier. Pour aller plus près, un second clic ouvre la MACRO — une
+   vraie photographie, pas un agrandissement. Le repère porte une
+   contre-échelle `--z` : sans elle un losange de 30 px en ferait 78 et
+   masquerait ce qu'il désigne. Et l'on recule tout seul quand la pièce
+   tourne le dos au détail.
+7. **LES POINTS SE POSENT SUR L'IMAGE**, pas sur la scène : placés en %
    du conteneur ils tombaient à côté de la pièce. Et le `pointerdown`
    de la rotation doit LAISSER PASSER un clic sur un point, sinon
    `setPointerCapture` l'avale et rien ne répond.
-4. **LE ZOOM SUIT LE MODÈLE ACTIF** : on cherche la macro de CE modèle
+8. **LE ZOOM SUIT LE MODÈLE ACTIF** : on cherche la macro de CE modèle
    et de CETTE peau, puis de cette peau, puis le défaut. Montrer une
    écaille d'alligator pendant qu'on regarde un veau lisse n'apprend
    rien et trahit le montage.
@@ -725,26 +831,12 @@ bouger l'angle. La séquence est préchargée avant d'autoriser le geste.
 **L'OMBRE SORT EN FICHIER SÉPARÉ** (`X-NN-o.webp`, 520 px, gris sur
 alpha) : c'est ce qui permet de la piloter — l'allonger, l'adoucir, ou
 l'effacer pour faire léviter la pièce — sans retoucher une vue. La page
-la compose sous la pièce (`.tour__o`), et `.tour.leve` la met en
-lévitation.
+la compose sous la pièce (`.tour__o`).
 
 **LE FOND EST PAPIER** (`--papier2:#f2efea`), tranché par Vincent le
 08/09 : cohérent avec la galerie blanche de la maison, et justement pas
 le registre sombre de la référence Ciao. La teinte du cuir se pose en
 lavis à 9 % dans les angles.
-
-**LE RECALAGE EST DÉSACTIVÉ, ET C'EST UNE CONCLUSION MESURÉE.** Recaler
-chaque vue sur la médiane des lignes de contact détectées a fait passer
-la saccade de 6,1 à 27,4 px par vue sur le tour rouge, et de 34,6 à
-96,8 sur le bordeaux : la détection par symétrie miroir est trop
-bruitée pour servir de base à un déplacement. Le remède était pire que
-le mal. Ne pas réessayer avec une heuristique de plus — il faut un
-matting à la main ou entraîné.
-
-**La bonne mesure n'est pas l'amplitude, c'est la SACCADE** (écart de
-la ligne de contact entre deux vues consécutives). Une dérive lente et
-continue ne se voit pas ; un saut, si. Relevé actuel : rouge 6,1 px/vue
-(bon), cognac 20,2, olympe 24,7, **bordeaux 34,6 (visible)**.
 
 **ON NE PEUT PAS GÉNÉRER LES VUES MANQUANTES.** Mesuré sur le tour
 rouge en retirant des vues et en comparant la reconstruction à la
@@ -755,9 +847,38 @@ faces entières entrent et sortent du champ : l'anse se déchire, le V se
 tord. Aucune méthode 2D n'invente une surface qu'aucune vue ne montre.
 Un tour clairsemé se recomplète au plateau, pas au logiciel.
 
+**TROIS PIÈGES DU CARROUSEL**, chacun contre un vrai échec :
+
+1. **ON CLIQUE LE SAC, PAS SON CADRE.** Une vue détourée est aux deux
+   tiers transparente : le cadre de la pièce du centre recouvre celui
+   de ses voisines, et l'on ne peut plus les atteindre. La cible
+   (`.car__h`) suit la matière, dimensionnée sur `piecemax`/`hautmax`.
+2. **PAS DE TRANSITION CSS SUR UNE PROPRIÉTÉ ANIMÉE EN JS.** L'éventail
+   est calculé image par image ; une `transition:transform` par-dessus
+   poursuit une cible qui bouge à chaque image. La tuile n'est jamais
+   « stable » — la recette attendait 27 secondes qu'elle s'arrête.
+3. **UNE SEULE VALEUR POUR TROIS RAISONS D'OUVRIR.** Survol, glissé et
+   passage d'un modèle à l'autre posaient chacun leur consigne dans
+   leur coin : le passage refermait au bout de 400 ms un éventail que
+   la main tenait ouvert, et la voisine redevenait inatteignable.
+   `majOuverture()` recalcule la consigne à partir des trois états.
+
+Et le survol se décide **par la géométrie**, pas par
+`pointerenter`/`pointerleave` : les tuiles se déplacent sous le curseur
+à chaque image, et les entrées/sorties qui en découlent refermaient
+l'éventail au moment précis où l'on visait une voisine.
+
+**CE QUI SE DIT SUIT LE MODÈLE, pas seulement l'image** : l'Olympe n'a
+pas de V, elle a un cordon ; sa peau n'est pas une écaille. Le titre,
+le texte, la légende, le nom du repère ET SA POSITION se résolvent tous
+par « ce modèle / cette peau / par défaut ». La position surtout : les
+cadres n'ont pas le même format (1400×2199 contre 1400×1453), donc les
+mêmes fractions y désignent autre chose — le repère du « V » tombait
+sur la bandoulière.
+
 **Ce qui manque encore** : les tours de la Victoire, de la Jane et du
-Rafaël ; la reprise de l'ivoire ; le complément de l'Olympe (15 vues) ;
-et une reprise du bordeaux, qui saccade.
+Rafaël ; la reprise de l'ivoire ; le complément de l'Olympe (15 vues,
+24° entre deux — trop clairsemé).
 
 **Snippets Shopify prêts (`shopify-snippets/` → à migrer en Phase 3)**
 ```
@@ -1679,6 +1800,28 @@ Règles structurelles (à l'origine de bugs réels — recette 31/07/2026) :
   déjà `position:fixed`).
 □ Une `<img>` sans `src` compte comme cassée : lui donner un pixel
   transparent en amorce.
+□ Une image en `height:auto` bornée par un `max-height` EN POURCENTAGE,
+  dans un parent de hauteur AUTOMATIQUE, ne respecte pas son format :
+  le pourcentage ne se résout pas contre une hauteur auto, il est
+  ignoré, et en flex l'image s'étire dans le sens de la contrainte.
+  Poser la boîte en pixels, au format de la source.
+□ Ne jamais poser une `transition` CSS sur une propriété qu'un
+  `requestAnimationFrame` écrit à chaque image : la transition poursuit
+  une cible mouvante, l'easing se joue deux fois, et l'élément n'est
+  jamais « stable » pour un clic.
+□ Dans `radial-gradient(a b at …)`, a et b sont les RAYONS de
+  l'ellipse en pourcentage de la boîte, pas son diamètre : à 125 % le
+  bord de la boîte tombe à 40 % du rayon, donc dans la partie opaque,
+  et le fondu ne se voit pas.
+□ Un élément dont l'image est largement transparente garde une CIBLE
+  DE CLIC rectangulaire pleine : elle recouvre ses voisins. Donner au
+  sujet sa propre cible.
+□ Une consigne d'animation écrite depuis trois endroits se contredit :
+  la recalculer d'une seule fonction à partir des états qui la
+  justifient.
+□ Un bouton posé DANS une scène qui appelle `setPointerCapture` au
+  `pointerdown` ne reçoit jamais son clic : l'exclure comme les autres
+  éléments interactifs de la scène.
 ```
 
 ---

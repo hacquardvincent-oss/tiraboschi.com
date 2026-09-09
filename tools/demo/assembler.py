@@ -51,6 +51,10 @@ if os.path.isdir('tools/demo/films'):
 # Les tours d'objet : cinq séquences photographiées (shooting 08/09/2026),
 # découpées par tools/demo/tourner.py, plus les macros de matière.
 # Une séquence = une liste de vues dans l'ordre du tour ; un zoom = une image.
+# `X-NN.webp` est la pièce détourée, `X-NN-o.webp` son ombre seule.
+# `__tours__` porte ce que la page ne peut pas deviner d'une image : le
+# format du cadre et LA PLACE QUE LA PIÈCE Y PREND (`piecemax`) — sans
+# quoi on dimensionne un cadre, et le sac paraît petit dedans.
 TOURS = {}
 if os.path.isdir('tools/demo/tours'):
     import collections

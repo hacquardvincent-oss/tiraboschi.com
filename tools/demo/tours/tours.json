@@ -4,35 +4,75 @@
   "nuance": "Rouge Carmin",
   "peau": "Alligator",
   "vues": 39,
-  "contact": 652,
-  "haut": 933,
-  "derive": 132
+  "contact": 1302,
+  "haut": 1453,
+  "piece": 671,
+  "residu": [
+   8.8,
+   20.8
+  ],
+  "cadre": [
+   1400,
+   1453
+  ],
+  "piecemax": 931,
+  "hautmax": 1278
  },
  "colette-bordeaux": {
   "modele": "Colette",
   "nuance": "Bordeaux",
   "peau": "Alligator",
   "vues": 33,
-  "contact": 659,
-  "haut": 933,
-  "derive": 232
+  "contact": 1296,
+  "haut": 1449,
+  "piece": 634,
+  "residu": [
+   12.0,
+   13.0
+  ],
+  "cadre": [
+   1400,
+   1449
+  ],
+  "piecemax": 858,
+  "hautmax": 1255
  },
  "colette-cognac": {
   "modele": "Colette",
   "nuance": "Cognac",
   "peau": "Veau lisse",
   "vues": 22,
-  "contact": 617,
-  "haut": 933,
-  "derive": 201
+  "contact": 1395,
+  "haut": 1604,
+  "piece": 638,
+  "residu": [
+   24.7,
+   7.3
+  ],
+  "cadre": [
+   1400,
+   1604
+  ],
+  "piecemax": 886,
+  "hautmax": 1315
  },
  "olympe-camel": {
   "modele": "Olympe",
   "nuance": "Camel",
   "peau": "Veau grain\u00e9",
   "vues": 15,
-  "contact": 706,
-  "haut": 933,
-  "derive": 123
+  "contact": 2042,
+  "haut": 2199,
+  "piece": 802,
+  "residu": [
+   15.7,
+   25.3
+  ],
+  "cadre": [
+   1400,
+   2199
+  ],
+  "piecemax": 885,
+  "hautmax": 1957
  }
 }

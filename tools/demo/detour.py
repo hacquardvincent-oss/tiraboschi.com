@@ -36,22 +36,51 @@ def _otsu(h):
     return int(np.argmax(inter))
 
 
-def _nappe(a):
-    """la toile de studio, ajustée en surface quadratique sur le bord"""
-    h, w, _ = a.shape
+def _base(h, w, deg):
     ys, xs = np.mgrid[0:h, 0:w]
     x = (xs / w - .5).astype(np.float32)
     y = (ys / h - .5).astype(np.float32)
-    base = np.stack([np.ones_like(x), x, y, x * x, x * y, y * y], axis=-1)
-    # l'anneau de bordure : 7 % de chaque côté, là où il n'y a jamais
-    # la pièce (le cadrage commun la garde au centre)
-    mx, my = max(2, int(w * .07)), max(2, int(h * .07))
-    ring = np.zeros((h, w), bool)
-    ring[:my], ring[-my:], ring[:, :mx], ring[:, -mx:] = True, True, True, True
-    A = base[ring].reshape(-1, 6)
+    cols = [(x ** i) * (y ** j)
+            for i in range(deg + 1) for j in range(deg + 1 - i)]
+    return np.stack(cols, axis=-1)
+
+
+def _anneau(h, w):
+    """l'anneau de bordure : 7 % de chaque côté, jamais la pièce"""
+    r = np.zeros((h, w), bool)
+    my, mx = max(2, int(h * .07)), max(2, int(w * .07))
+    r[:my], r[-my:], r[:, :mx], r[:, -mx:] = True, True, True, True
+    return r
+
+
+def _nappe(a, ech=None, deg=2):
+    """La toile de studio, ajustée en surface polynomiale.
+
+    Prise sur le seul anneau de bordure, elle EXTRAPOLE vers le centre
+    — et le studio y allume un ovale de contre-jour qu'aucune
+    extrapolation ne devine. Le halo s'écarte alors du modèle autant
+    qu'un cuir, se retrouve classé sujet, forme un anneau fermé autour
+    de la pièce que le remplissage ne peut plus franchir, et l'on garde
+    une auréole de toile grande comme le sac (vue de face de la Colette
+    rouge). D'où le second ajustement de `masque()` : une fois la pièce
+    localisée, on refait la nappe SUR LE VRAI FOND, ovale compris.
+    """
+    h, w, _ = a.shape
+    base = _base(h, w, deg)
+    if ech is None:
+        ech = _anneau(h, w)
+    # on n'ajuste que sur un pixel sur quatre : la nappe est lisse, et
+    # le système passe de plusieurs millions de lignes à quelques
+    # centaines de milliers
+    pas = np.zeros((h, w), bool)
+    pas[::2, ::2] = True
+    ech = ech & pas
+    if ech.sum() < base.shape[-1] * 8:
+        ech = _anneau(h, w) & pas
+    A = base[ech].reshape(-1, base.shape[-1])
     out = np.empty_like(a)
     for c in range(3):
-        coef, *_ = np.linalg.lstsq(A, a[..., c][ring].ravel(), rcond=None)
+        coef, *_ = np.linalg.lstsq(A, a[..., c][ech].ravel(), rcond=None)
         out[..., c] = base @ coef
     return out
 
@@ -71,68 +100,81 @@ def masque(im):
     """
     a = np.asarray(im.convert('RGB'), dtype=np.float32)
     h, w, _ = a.shape
-    # LA TOILE SE MODÉLISE, elle ne se relève pas sur les marges. Le
-    # studio éclaire un halo derrière la pièce : pris depuis le bord, le
-    # fond paraît sombre, et le halo passe alors pour du sujet — c'est
-    # ce qui mangeait la Colette ivoire. On ajuste donc une surface
-    # quadratique sur l'anneau de bordure : une nappe de studio est
-    # lisse, un polynôme du second degré la décrit très bien.
-    fond = _nappe(a)
-    fond = np.maximum(fond, 1.0)
-    # L'ÉCART SE MESURE EN TEINTE AUTANT QU'EN CLARTÉ. Une distance
-    # RGB brute ne voit pas la Colette ivoire : elle est aussi CLAIRE
-    # que la toile. Elle en est pourtant nettement plus CHAUDE — la
-    # toile tire sur le mauve, le cuir sur le crème. On sépare donc les
-    # deux axes chromatiques et on leur donne plus de poids.
+
     def opp(x):
+        """clarté, axe rouge-vert, axe jaune-bleu"""
         return (x.mean(axis=2),
                 x[..., 0] - x[..., 1],
                 (x[..., 0] + x[..., 1]) * .5 - x[..., 2])
-    la, ra, ya = opp(a)
-    lf, rf, yf = opp(fond)
-    ecart = (np.abs(la - lf) * 1.6
-             + np.abs(ra - rf) * 3.4
-             + np.abs(ya - yf) * 3.4)
 
-    # la signature d'une ombre : même teinte, moins de clarté
-    r = a / fond
-    etalement = r.max(axis=2) - r.min(axis=2)
-    moyenne = r.mean(axis=2)
-    # ATTENTION : un cuir NOIR passe aussi le test des trois rapports
-    # égaux — il est sombre partout. On borne donc l'assombrissement :
-    # une ombre portée baisse la clarté de 10 à 40 %, pas de 80 %.
-    # La borne basse doit descendre assez pour couvrir l'ombre DENSE
-    # juste sous la pièce : à .58 elle passait pour du sujet et laissait
-    # une flaque grise sous le sac. À .38 elle est reconnue, et un cuir
-    # noir reste sauf — il descend bien plus bas encore.
-    est_ombre = (etalement < .075) & (moyenne < .995) & (moyenne > .38)
+    def juger(fond):
+        """l'écart à la toile, et ce qui EST de la toile"""
+        fond = np.maximum(fond, 1.0)
+        # L'ÉCART SE MESURE EN TEINTE AUTANT QU'EN CLARTÉ. Une distance
+        # RGB brute ne voit pas la Colette ivoire : elle est aussi CLAIRE
+        # que la toile. Elle en est pourtant nettement plus CHAUDE — la
+        # toile tire sur le mauve, le cuir sur le crème. On sépare donc
+        # les deux axes chromatiques et on leur donne plus de poids.
+        la, ra, ya = opp(a)
+        lf, rf, yf = opp(fond)
+        ecart = (np.abs(la - lf) * 1.6
+                 + np.abs(ra - rf) * 3.4
+                 + np.abs(ya - yf) * 3.4)
+        # LA SIGNATURE DE LA TOILE : même teinte que la nappe, seule la
+        # clarté change. C'est vrai de l'OMBRE PORTÉE (plus sombre) comme
+        # du HALO du contre-jour (plus clair).
+        # ATTENTION : un cuir NOIR passe aussi le test des trois rapports
+        # égaux — il est sombre partout. On borne donc l'assombrissement :
+        # une ombre portée baisse la clarté de 10 à 40 %, pas de 80 %.
+        # La borne basse doit descendre assez pour couvrir l'ombre DENSE
+        # juste sous la pièce : à .58 elle passait pour du sujet et
+        # laissait une flaque grise sous le sac. À .38 elle est reconnue,
+        # et un cuir noir reste sauf — il descend bien plus bas encore.
+        # Vers le haut, aucune borne : un cuir CLAIR ET NEUTRE (la Colette
+        # ivoire) se perdrait, mais elle est déjà écartée pour cette
+        # raison exacte. Ce que la maison montre en clair et neutre — la
+        # toile écrue de l'Olympe — est ENCLOS dans le cuir, donc sauvé
+        # par le remplissage depuis les bords.
+        r = a / fond
+        est_toile = ((r.max(axis=2) - r.min(axis=2)) < .075) & (r.mean(axis=2) > .38)
+        # le seuil se calcule, il ne se choisit pas — mais on l'établit
+        # SUR CE QUI N'EST PAS DE LA TOILE, sinon elle tire tout vers le haut
+        hist, _ = np.histogram(np.clip(ecart[~est_toile], 0, 255), bins=256,
+                               range=(0, 256))
+        hist[:8] = 0
+        s = max(12, _otsu(hist))
+        # DEUX SEUILS, ET C'EST LE PLUS PERMISSIF QUI DÉCOUPE. Le panneau
+        # en V de la Colette ivoire a très exactement la teinte de la
+        # toile : au seuil strict il fuit, et le remplissage par diffusion
+        # s'engouffre par la fuite pour manger tout le panneau. Au seuil
+        # permissif la silhouette se ferme, et le panneau reste enfermé
+        # dedans. On découpe donc une SILHOUETTE, pas un pixel à la fois.
+        return ecart, s, (ecart > s * .42) & ~est_toile
 
-    # le seuil se calcule, il ne se choisit pas — mais on l'établit
-    # SUR CE QUI N'EST PAS UNE OMBRE, sinon elle tire tout vers le haut
-    util = ecart[~est_ombre]
-    hist, _ = np.histogram(np.clip(util, 0, 255), bins=256, range=(0, 256))
-    hist[:8] = 0
-    s = max(12, _otsu(hist))
+    def enfler(sujet):
+        """la silhouette dilatée : le canal par lequel une cavité
+        communique avec l'extérieur ne fait que quelques pixels ;
+        le fermer rend la cavité inatteignable depuis le bord"""
+        sil = Image.fromarray(np.where(sujet, 255, 0).astype(np.uint8), 'L')
+        for _ in range(max(2, w // 190)):
+            sil = sil.filter(ImageFilter.MaxFilter(3))
+        return sil
 
-    # DEUX SEUILS, ET C'EST LE PLUS PERMISSIF QUI DÉCOUPE. Le panneau
-    # en V de la Colette ivoire a très exactement la teinte de la toile :
-    # au seuil strict il fuit, et le remplissage par diffusion s'engouffre
-    # par la fuite pour manger tout le panneau. Au seuil permissif la
-    # silhouette se ferme, et le panneau reste enfermé dedans.
-    # On découpe donc une SILHOUETTE, pas un pixel à la fois.
-    sujet = (ecart > s * .42) & ~est_ombre
+    # ── PREMIER AJUSTEMENT : sur l'anneau de bordure seul.
+    _, _, sujet = juger(_nappe(a))
+    # ── SECOND AJUSTEMENT : sur le VRAI fond, ovale de contre-jour
+    # compris. Sans lui, le halo s'écarte du modèle autant qu'un cuir,
+    # forme un anneau fermé autour de la pièce, et l'on garde une
+    # auréole de toile grande comme le sac (relevé sur la vue de face
+    # de la Colette rouge). Le degré passe à 3 : on a maintenant des
+    # points de mesure PARTOUT, plus seulement au bord, et une nappe de
+    # studio a un ventre que le second degré ne décrit pas.
+    dedans = np.asarray(enfler(sujet)) > 0
+    ecart, s, sujet = juger(_nappe(a, ~dedans, deg=3))
 
     # on n'efface que ce qui COMMUNIQUE avec le bord : les creux
     # intérieurs (l'ouverture du V, sous l'anse) ne s'y rattachent pas
-    # on DILATE la silhouette avant de diffuser : le panneau en V
-    # communique avec l'extérieur par un canal de quelques pixels (là où
-    # il rejoint l'ouverture du sac). Fermer ce canal, puis éroder
-    # d'autant, rend le panneau inatteignable depuis le bord.
-    D = max(2, w // 190)
-    sil = Image.fromarray(np.where(sujet, 255, 0).astype(np.uint8), 'L')
-    for _ in range(D):
-        sil = sil.filter(ImageFilter.MaxFilter(3))
-    mk = Image.fromarray(255 - np.asarray(sil), 'L')
+    mk = Image.fromarray(255 - np.asarray(enfler(sujet)), 'L')
     for xy in ((1, 1), (w - 2, 1), (1, h - 2), (w - 2, h - 2)):
         try:
             ImageDraw.floodfill(mk, xy, 128, thresh=8)
@@ -155,67 +197,70 @@ def masque(im):
     return img, Image.fromarray((~dehors).astype(np.uint8) * 255, 'L').getbbox()
 
 
-def ligne_contact(al, rgb=None):
-    """Le y où la pièce touche le sol.
+def bornes(al, seuil=.015):
+    """La boîte de la pièce, PAR LA MASSE et non par les extrêmes.
 
-    Premier critère essayé — « le dernier y où la silhouette fait
-    encore le quart de sa largeur » — et écarté : le reflet du plateau
-    laqué est le MIROIR du sac, donc aussi large que lui. La ligne
-    dérivait encore de 112 px sur un tour.
-
-    Le bon signal est la SYMÉTRIE. Sous la ligne de contact, l'image
-    est le reflet de ce qui est juste au-dessus. On cherche donc le y
-    qui rend la bande du dessous la plus semblable au miroir de la
-    bande du dessus. C'est un critère physique, pas un réglage.
+    La boîte rendue par le remplissage (`masque`) va d'un bord à
+    l'autre : quelques pixels rescapés dans un coin suffisent. On
+    mesure donc la masse d'alpha ligne par ligne et colonne par
+    colonne, et l'on ne garde que ce qui pèse au moins `seuil` de la
+    ligne (ou colonne) la plus chargée. Une anse fine pèse encore 20 %
+    d'une ligne pleine ; une poussière, 0,2 %.
     """
-    a = np.asarray(al, dtype=np.float32) / 255.0
-    h, w = a.shape
-    lig = a.sum(axis=1)
-    if lig.max() <= 0:
-        return h - 1
-    plein = np.where(lig > lig.max() * .06)[0]
-    if not len(plein):
-        return h - 1
-    d = max(6, h // 14)
-    best, score = int(plein.max()), -1e9
-    # on ne cherche que dans le tiers bas de la silhouette
-    depart = max(plein.min() + d, int(plein.min() + (plein.max() - plein.min()) * .62))
-    for y in range(depart, min(h - 2, int(plein.max()) + 1)):
-        haut = a[max(0, y - d):y]
-        bas = a[y:y + d]
-        n = min(len(haut), len(bas))
-        if n < 4:
-            continue
-        miroir = haut[-n:][::-1]
-        cible = bas[:n]
-        # ressemblance au miroir, pondérée par la matière présente
-        sim = -np.abs(miroir - cible).mean()
-        # et l'on préfère un y bas : le contact est sous la pièce
-        sim += (y / h) * .04
-        if sim > score:
-            score, best = sim, y
-    return int(best)
+    a = np.asarray(al, dtype=np.float32)
+    col, lig = a.sum(axis=0), a.sum(axis=1)
+    if col.max() <= 0:
+        return None
+    x = np.where(col > col.max() * seuil)[0]
+    y = np.where(lig > lig.max() * seuil)[0]
+    if not len(x) or not len(y):
+        return None
+    return int(x.min()), int(y.min()), int(x.max()) + 1, int(y.max()) + 1
 
 
 def separer(im):
     """Renvoie (la pièce, le sol) — deux images RGBA distinctes.
 
-    L'ombre et le reflet sortent à part : c'est ce qui permet ensuite
-    de faire léviter la pièce, d'allonger son ombre ou de changer de
-    fond sans retoucher une seule vue.
+    L'ombre sort à part : c'est ce qui permet ensuite de faire léviter
+    la pièce, d'allonger son ombre ou de changer de fond sans retoucher
+    une seule vue.
+
+    ═══ LA PIÈCE NE SE COUPE PAS AU-DESSUS DE SA BASE ═══
+
+    Une première version cherchait la « ligne de contact » par symétrie
+    miroir, pour trancher le reflet d'un sol laqué. Mesuré sur ce
+    shooting-ci, elle tombait 75 à 180 px AU-DESSUS de la base réelle :
+    le bas des sacs partait avec le reflet. C'est le défaut que le
+    client a vu — « les sacs sont tout simplement coupés en bas ».
+
+    Et le reflet qu'elle traquait n'existe pas ici : la masse d'alpha
+    tombe de 97 % à 1 % en une dizaine de lignes à la base (relevé sur
+    les vues 1, 20 et 130). Le studio a posé la pièce sur une toile
+    mate, pas sur un plateau laqué ; l'ombre portée, elle, part déjà
+    avec la signature d'ombre de `masque()`.
+
+    La base se prend donc là où la matière s'arrête, tout simplement.
     """
-    al, bb = masque(im)
-    y = ligne_contact(al)
+    al, _ = masque(im)
+    bb = bornes(al)
+    y = (bb[3] if bb else im.size[1]) - 1
     a = np.asarray(al).copy()
 
-    # la pièce : tout ce qui est au-dessus de la ligne de contact,
-    # avec un fondu de deux pixels pour ne pas trancher net
+    # la pièce : tout ce qui tient dans la boîte de masse, avec un
+    # fondu de trois pixels sous la base pour ne pas trancher net. Ce
+    # qui est HORS de la boîte n'est pas de la pièce — un éclat de
+    # toile rescapé dans un coin, une frange de halo — et cela
+    # élargirait le cadrage commun de toute la séquence.
     ap = a.copy()
-    f = 3
+    f = min(3, max(0, ap.shape[0] - y))
     ap[y + f:] = 0
     if f:
         ap[y:y + f] = (ap[y:y + f] *
                        np.linspace(1, 0, f, dtype=np.float32)[:, None]).astype(np.uint8)
+    if bb:
+        ap[:bb[1]] = 0
+        ap[:, :bb[0]] = 0
+        ap[:, bb[2]:] = 0
     piece = Image.new('RGBA', im.size, (0, 0, 0, 0))
     piece.paste(im.convert('RGB'), (0, 0), Image.fromarray(ap, 'L'))
 
